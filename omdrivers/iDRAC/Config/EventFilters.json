@@ -1,0 +1,138 @@
+{
+    "$ref": "#/definitions/EventFilters",
+    "$schema": "s\\iDRAC.Config\\EventFilters.xml",
+    "definitions": {
+        "Alert#EmailTypes": {
+            "enum": [
+                "Enabled",
+                "Disabled"
+            ],
+            "enumDescriptions": [
+                "Enabled",
+                "Disabled"
+            ],
+            "type": "string"
+        },
+        "Alert#IPMITypes": {
+            "enum": [
+                "Enabled",
+                "Disabled"
+            ],
+            "enumDescriptions": [
+                "Enabled",
+                "Disabled"
+            ],
+            "type": "string"
+        },
+        "Alert#OSLogTypes": {
+            "enum": [
+                "Enabled",
+                "Disabled"
+            ],
+            "enumDescriptions": [
+                "Enabled",
+                "Disabled"
+            ],
+            "type": "string"
+        },
+        "Alert#SNMPTypes": {
+            "enum": [
+                "Enabled",
+                "Disabled"
+            ],
+            "enumDescriptions": [
+                "Enabled",
+                "Disabled"
+            ],
+            "type": "string"
+        },
+        "Alert#SyslogTypes": {
+            "enum": [
+                "Enabled",
+                "Disabled"
+            ],
+            "enumDescriptions": [
+                "Enabled",
+                "Disabled"
+            ],
+            "type": "string"
+        },
+        "Alert#WSEventingTypes": {
+            "enum": [
+                "Enabled",
+                "Disabled"
+            ],
+            "enumDescriptions": [
+                "Enabled",
+                "Disabled"
+            ],
+            "type": "string"
+        },
+        "EventFilters": {
+            "config_groups": {
+                "Action": [
+                    "Action"
+                ],
+                "SystemHealth": [
+                    "DisplayName",
+                    "Alert#Email",
+                    "Alert#IPMI",
+                    "Alert#OSLog",
+                    "Alert#SNMP",
+                    "Alert#Syslog",
+                    "Alert#WSEventing"
+                ]
+            },
+            "properties": {
+                "Action": {
+                    "description": "action",
+                    "longDescription": "Action enablement",
+                    "qualifier": "Action"
+                },
+                "Alert#Email": {
+                    "description": "Email enablement",
+                    "longDescription": "Email enablement",
+                    "qualifier": "SystemHealth",
+                    "type": "Alert#EmailTypes"
+                },
+                "Alert#IPMI": {
+                    "description": "IPMI enablement",
+                    "longDescription": "IPMI enablement",
+                    "qualifier": "SystemHealth",
+                    "type": "Alert#IPMITypes"
+                },
+                "Alert#OSLog": {
+                    "description": "OSLog enablement",
+                    "longDescription": "OSLog enablement",
+                    "qualifier": "SystemHealth",
+                    "type": "Alert#OSLogTypes"
+                },
+                "Alert#SNMP": {
+                    "description": "SNMP enablement",
+                    "longDescription": "SNMP enablement",
+                    "qualifier": "SystemHealth",
+                    "type": "Alert#SNMPTypes"
+                },
+                "Alert#Syslog": {
+                    "description": "Syslog enablement",
+                    "longDescription": "Syslog enablement",
+                    "qualifier": "SystemHealth",
+                    "type": "Alert#SyslogTypes"
+                },
+                "Alert#WSEventing": {
+                    "description": "WSEventing enablement",
+                    "longDescription": "WSEventing enablement",
+                    "qualifier": "SystemHealth",
+                    "type": "Alert#WSEventingTypes"
+                },
+                "DisplayName": {
+                    "description": "Display Name",
+                    "longDescription": "This field displays the name of the filter",
+                    "qualifier": "SystemHealth"
+                }
+            },
+            "type": "object"
+        }
+    },
+    "title": "s\\iDRAC.Config\\EventFilters.xml"
+}

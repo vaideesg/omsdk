@@ -1,0 +1,6 @@
+{
+    "ipaddr" : "<ipaddr_of_idrac>",
+    "driver" : "iDRAC",
+    "user.name" : "<idrac_user>",
+    "user.password" : "<idrac_password>"
+}

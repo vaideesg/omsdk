@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <REGISTRY xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+        <!-- Registry XML Generated 2014-09-09 19:30:43.381000 ; input file should be in csv format and sorted by AttributeName -->
+        <!--Copyright(C)2010 Dell Inc.  All rights reserved-->
+
+    <REGISTRY_DECLARATION>
+      <IDENTIFICATION NAME="Dell Attribute Registry" VERSION="1.0.0" LANGUAGE="en"/>
+      <SPECIFICATION NAME="Fiber Channel Profile" VERSION="1.0.0"/>
+      <CIM_SCHEMA VERSION="2.17.0"/>
+      <OWNING_ENTITY NAME="Dell"/>
+      <EDITOR EMAIL="Dell_Support@Dell.com" NAME="Dell Support" ORGANIZATION="Dell"/>
+      <DESCRIPTION>This Registry defines a representation of system hardware or firmware Attribute instances, such as BIOS or NIC Attributes, as defined by Dell.</DESCRIPTION>
+    </REGISTRY_DECLARATION>
+    <REGISTRY_ENTRIES>
+      <Attribute>
+        <AttributeName>BootScanSelection</AttributeName>
+        <DisplayName>Boot Scan Selection</DisplayName>
+        <AttributeType>Enumeration</AttributeType>
+        <HelpText>Specifies the adapter initiator behavior for booting the system from specified Fibre Channel boot target(s) or fabric discovered target(s)</HelpText>
+        <GroupName>FCTarget</GroupName>
+        <GroupDisplayName>Fibre Channel Target Configuration</GroupDisplayName>
+        <DisplayOrder>302</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <AttributeValue>
+          <ValueName>Disabled</ValueName>
+          <DisplayValueName>Disabled</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>SpecifiedLUN</ValueName>
+          <DisplayValueName>Specified LUN</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>FirstLUN</ValueName>
+          <DisplayValueName>First LUN</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>FirstLUN0</ValueName>
+          <DisplayValueName>First LUN 0</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>FirstNOTLUN0</ValueName>
+          <DisplayValueName>First NOT LUN 0</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>FabricDiscovered</ValueName>
+          <DisplayValueName>Fabric Discovered</DisplayValueName>
+        </AttributeValue>
+      </Attribute>
+      <Attribute>
+        <AttributeName>BusDeviceFunction</AttributeName>
+        <DisplayName>Bus:Device:Function</DisplayName>
+        <AttributeType>String</AttributeType>
+        <GroupName>FCDevice</GroupName>
+        <GroupDisplayName>Firmware and Device Information</GroupDisplayName>
+        <DisplayOrder>204</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>No</ProgrammaticWrite>
+          <RegEx>^([0-9a-fA-F]{1,2}[:]){2}([0-9a-fA-F]{1,2})$</RegEx>
+        </Modifiers>
+        <Min>8</Min>
+        <Max>8</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>ChipMdl</AttributeName>
+        <DisplayName>Chip Type</DisplayName>
+        <AttributeType>String</AttributeType>
+        <GroupName>FCDevice</GroupName>
+        <GroupDisplayName>Firmware and Device Information</GroupDisplayName>
+        <DisplayOrder>202</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>No</ProgrammaticWrite>
+        </Modifiers>
+      </Attribute>
+      <Attribute>
+        <AttributeName>DeviceName</AttributeName>
+        <DisplayName>Device Name</DisplayName>
+        <AttributeType>String</AttributeType>
+        <HelpText>Product name of the Fibre Channel Host Bus Adapter.</HelpText>
+        <GroupName>PortConfig</GroupName>
+        <GroupDisplayName>Port Configuration Page</GroupDisplayName>
+        <DisplayOrder>102</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>No</ProgrammaticWrite>
+        </Modifiers>
+      </Attribute>
+      <Attribute>
+        <AttributeName>EFIVersion</AttributeName>
+        <DisplayName>EFI Driver Version</DisplayName>
+        <AttributeType>String</AttributeType>
+        <GroupName>FCDevice</GroupName>
+        <GroupDisplayName>Firmware and Device Information</GroupDisplayName>
+        <DisplayOrder>206</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>No</ProgrammaticWrite>
+        </Modifiers>
+      </Attribute>
+      <Attribute>
+        <AttributeName>FabricLoginRetryCount</AttributeName>
+        <DisplayName>Fabric Login Retry Count</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the number of times the initiator will attempt to login to devices on the Storage Area Network</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>407</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+      </Attribute>
+      <Attribute>
+        <AttributeName>FabricLoginTimeout</AttributeName>
+        <DisplayName>Fabric Login Timeout</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the time in milliseconds that the initiator waits before it tries to login to the Fibre Channel Storage Area Network Fabric again</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>408</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <Min>1</Min>
+        <Max>255000</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>FamilyVersion</AttributeName>
+        <DisplayName>Family Firmware Version</DisplayName>
+        <AttributeType>String</AttributeType>
+        <GroupName>FCDevice</GroupName>
+        <GroupDisplayName>Firmware and Device Information</GroupDisplayName>
+        <DisplayOrder>205</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>No</ProgrammaticWrite>
+          <RegEx>^([0-9a-fA-F]{1,2}[.]){2}([0-9a-fA-F]{1,2})$</RegEx>
+        </Modifiers>
+        <Min>5</Min>
+        <Max>8</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>FCDevice</AttributeName>
+        <DisplayName>Firmware and Device Information</DisplayName>
+        <AttributeType>Form Title</AttributeType>
+        <HelpText>View device and firmware version information</HelpText>
+        <GroupName>PortConfig</GroupName>
+        <GroupDisplayName>Port Configuration Page</GroupDisplayName>
+        <DisplayOrder>201</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+      </Attribute>
+      <Attribute>
+        <AttributeName>FCTape</AttributeName>
+        <DisplayName>FC Tape Enable</DisplayName>
+        <AttributeType>Enumeration</AttributeType>
+        <HelpText>Specifies the state of Fibre Channel Tape support</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>402</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>Disabled</DefaultValue>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <AttributeValue>
+          <ValueName>Enabled</ValueName>
+          <DisplayValueName>Enabled</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>Disabled</ValueName>
+          <DisplayValueName>Disabled</DisplayValueName>
+        </AttributeValue>
+      </Attribute>
+      <Attribute>
+        <AttributeName>FCTarget</AttributeName>
+        <DisplayName>Fibre Channel Target Configuration</DisplayName>
+        <AttributeType>Form Title</AttributeType>
+        <HelpText>Enable connection and configure boot and communication parameters for the Fibre Channel boot target(s)</HelpText>
+        <GroupName>PortConfig</GroupName>
+        <GroupDisplayName>Port Configuration Page</GroupDisplayName>
+        <DisplayOrder>301</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+      </Attribute>
+      <Attribute>
+        <AttributeName>FirstFCTargetLUN</AttributeName>
+        <DisplayName>First FC Target LUN</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the LUN (Logical Unit Number) of the first Fibre Channel boot target</HelpText>
+        <GroupName>FCTarget</GroupName>
+        <GroupDisplayName>Fibre Channel Target Configuration</GroupDisplayName>
+        <DisplayOrder>305</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>0</DefaultValue>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <Min>0</Min>
+      </Attribute>
+      <Attribute>
+        <AttributeName>FirstFCTargetWWPN</AttributeName>
+        <DisplayName>First FC Target World Wide Port Name</DisplayName>
+        <AttributeType>String</AttributeType>
+        <HelpText>Specifies the World Wide Port Name of the first Fibre Channel boot target</HelpText>
+        <GroupName>FCTarget</GroupName>
+        <GroupDisplayName>Fibre Channel Target Configuration</GroupDisplayName>
+        <DisplayOrder>304</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>00:00:00:00:00:00:00:00</DefaultValue>
+        <PoolType>WWPN_WWN</PoolType>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+          <RegEx>^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$</RegEx>
+        </Modifiers>
+        <Min>23</Min>
+        <Max>23</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>FramePayloadSize</AttributeName>
+        <DisplayName>Frame Payload Size</DisplayName>
+        <AttributeType>Enumeration</AttributeType>
+        <HelpText>Specifies the maximum Fibre Channel frame payload size in bytes</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>406</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>2048</DefaultValue>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <AttributeValue>
+          <ValueName>Auto</ValueName>
+          <DisplayValueName>Austo</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>512</ValueName>
+          <DisplayValueName>512</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>1024</ValueName>
+          <DisplayValueName>1024</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>2048</ValueName>
+          <DisplayValueName>2048</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>2112</ValueName>
+          <DisplayValueName>2112</DisplayValueName>
+        </AttributeValue>
+      </Attribute>
+      <Attribute>
+        <AttributeName>HardZone</AttributeName>
+        <DisplayName>Hard Zone Enable</DisplayName>
+        <AttributeType>Enumeration</AttributeType>
+        <HelpText>Specifies the state of Fibre Channel hard zoning</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>403</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <AttributeValue>
+          <ValueName>Enabled</ValueName>
+          <DisplayValueName>Enabled</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>Disabled</ValueName>
+          <DisplayValueName>Disabled</DisplayValueName>
+        </AttributeValue>
+      </Attribute>
+      <Attribute>
+        <AttributeName>HardZoneAddress</AttributeName>
+        <DisplayName>Hard Zone Address</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the Hard Zone address to be used if Fibre Channel hard zoning is enabled</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>404</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+      </Attribute>
+      <Attribute>
+        <AttributeName>HBAConfig</AttributeName>
+        <DisplayName>HBA Configuration Page</DisplayName>
+        <AttributeType>Form Title</AttributeType>
+        <HelpText>Configure advanced settings for adapter and port</HelpText>
+        <GroupName>PortConfig</GroupName>
+        <GroupDisplayName>Port Configuration Page</GroupDisplayName>
+        <DisplayOrder>401</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+      </Attribute>
+      <Attribute>
+        <AttributeName>LinkDownTimeout</AttributeName>
+        <DisplayName>Link Down Timeout</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the number of milliseconds the Fibre Channel uplink port can be offline before the system is notified that the SAN fabric connectivity is lost and the uplink port is marked as being down</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>413</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>3000</DefaultValue>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <Min>1</Min>
+        <Max>255000</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>LoopResetDelay</AttributeName>
+        <DisplayName>Loop Reset Delay</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the Fibre Channel Arbitrated Loop Reset Delay for the port.  After resetting the loop, the adapter firmware refrains from initiating any loop activity for the number of seconds specified in this setting</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>405</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>5</DefaultValue>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <Min>0</Min>
+        <Max>60</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>PCIDeviceID</AttributeName>
+        <DisplayName>PCI Device ID</DisplayName>
+        <AttributeType>String</AttributeType>
+        <GroupName>FCDevice</GroupName>
+        <GroupDisplayName>Firmware and Device Information</GroupDisplayName>
+        <DisplayOrder>203</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>No</ProgrammaticWrite>
+          <RegEx>^[0-9a-fA-F]{4}$</RegEx>
+        </Modifiers>
+        <Min>4</Min>
+        <Max>4</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>PortConfig</AttributeName>
+        <DisplayName>Port Configuration Page</DisplayName>
+        <AttributeType>Form Title</AttributeType>
+        <HelpText>View and configure Fibre Channel Host Bus Adapter information and settings for the adapter and port.</HelpText>
+        <GroupName>Top</GroupName>
+        <GroupDisplayName>Top</GroupDisplayName>
+        <DisplayOrder>101</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+      </Attribute>
+      <Attribute>
+        <AttributeName>PortDownRetryCount</AttributeName>
+        <DisplayName>Port Down Retry Count</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the number of times the Fibre Channel uplink port will try reconnecting to a target port before the port is marked as being down</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>412</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>3</DefaultValue>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+      </Attribute>
+      <Attribute>
+        <AttributeName>PortDownTimeout</AttributeName>
+        <DisplayName>Port Down Timeout</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the timeout in milliseconds that the Fibre Channel uplink port will wait before trying to reconnect to a target device port before the port is marked as down</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>411</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <Min>1</Min>
+        <Max>255000</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>PortLoginRetryCount</AttributeName>
+        <DisplayName>Port Login Retry Count</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the number of times the adapter firmware initiator will try logging into a target device port</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>409</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>3</DefaultValue>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+      </Attribute>
+      <Attribute>
+        <AttributeName>PortLoginTimeout</AttributeName>
+        <DisplayName>Port Login Timeout</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the timeout in milliseconds that the initiator uses when attempting to login to the target device port</HelpText>
+        <GroupName>HBAConfig</GroupName>
+        <GroupDisplayName>HBA Configuration Page</GroupDisplayName>
+        <DisplayOrder>410</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>3000</DefaultValue>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <Min>1</Min>
+        <Max>255000</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>PortNumber</AttributeName>
+        <DisplayName>Port Number</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>The Fibre Channel Host Bus Adapter port number as labeled externally on the adapter.</HelpText>
+        <GroupName>PortConfig</GroupName>
+        <GroupDisplayName>Port Configuration Page</GroupDisplayName>
+        <DisplayOrder>103</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>No</ProgrammaticWrite>
+        </Modifiers>
+        <Min>1</Min>
+      </Attribute>
+      <Attribute>
+        <AttributeName>PortSpeed</AttributeName>
+        <DisplayName>Port Speed</DisplayName>
+        <AttributeType>Enumeration</AttributeType>
+        <HelpText>Specifies the data rate of the Fibre Channel Host Bus Adapter port. Value can be Automatic or specified in Gbps.</HelpText>
+        <GroupName>PortConfig</GroupName>
+        <GroupDisplayName>Port Configuration Page</GroupDisplayName>
+        <DisplayOrder>104</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <AttributeValue>
+          <ValueName>Auto</ValueName>
+          <DisplayValueName>Auto</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>1G</ValueName>
+          <DisplayValueName>1 Gbps</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>2G</ValueName>
+          <DisplayValueName>2 Gbps</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>4G</ValueName>
+          <DisplayValueName>4 Gbps</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>8G</ValueName>
+          <DisplayValueName>8 Gbps</DisplayValueName>
+        </AttributeValue>
+        <AttributeValue>
+          <ValueName>16G</ValueName>
+          <DisplayValueName>16 Gbps</DisplayValueName>
+        </AttributeValue>
+      </Attribute>
+      <Attribute>
+        <AttributeName>SecondFCTargetLUN</AttributeName>
+        <DisplayName>Second FC Target LUN</DisplayName>
+        <AttributeType>Integer</AttributeType>
+        <HelpText>Specifies the LUN (Logical Unit Number) of the second Fibre Channel boot target</HelpText>
+        <GroupName>FCTarget</GroupName>
+        <GroupDisplayName>Fibre Channel Target Configuration</GroupDisplayName>
+        <DisplayOrder>308</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>0</DefaultValue>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+        </Modifiers>
+        <Min>0</Min>
+      </Attribute>
+      <Attribute>
+        <AttributeName>SecondFCTargetWWPN</AttributeName>
+        <DisplayName>Second FC Target World Wide Port Name</DisplayName>
+        <AttributeType>String</AttributeType>
+        <HelpText>Specifies the World Wide Port Name of the second Fibre Channel boot target</HelpText>
+        <GroupName>FCTarget</GroupName>
+        <GroupDisplayName>Fibre Channel Target Configuration</GroupDisplayName>
+        <DisplayOrder>307</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Typical</ExpertiseLevel>
+        <DefaultValue>00:00:00:00:00:00:00:00</DefaultValue>
+        <PoolType>WWPN_WWN</PoolType>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+          <RegEx>^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$</RegEx>
+        </Modifiers>
+        <Min>23</Min>
+        <Max>23</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>VirtualWWN</AttributeName>
+        <DisplayName>Virtual World Wide Node Name</DisplayName>
+        <AttributeType>String</AttributeType>
+        <HelpText>Virtual Fibre Channel World Wide Node Name is used instead of the permanent World Wide Node Name when its value is different</HelpText>
+        <GroupName>PortConfig</GroupName>
+        <GroupDisplayName>Port Configuration Page</GroupDisplayName>
+        <DisplayOrder>106</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <PoolType>WWPN_WWN</PoolType>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+          <RegEx>^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$</RegEx>
+        </Modifiers>
+        <Min>23</Min>
+        <Max>23</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>VirtualWWPN</AttributeName>
+        <DisplayName>Virtual World Wide Port Name</DisplayName>
+        <AttributeType>String</AttributeType>
+        <HelpText>Virtual Fibre Channel World Wide Port Name of the port is used instead of the permanent World Wide Port Name when its value is different</HelpText>
+        <GroupName>PortConfig</GroupName>
+        <GroupDisplayName>Port Configuration Page</GroupDisplayName>
+        <DisplayOrder>108</DisplayOrder>
+        <IsReadOnly>false</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <PoolType>WWPN_WWN</PoolType>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>Yes</ProgrammaticWrite>
+          <RegEx>^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$</RegEx>
+        </Modifiers>
+        <Min>23</Min>
+        <Max>23</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>VndrFormSet</AttributeName>
+        <DisplayName>&lt;Device Name&gt; - &lt;Current active World Wide Port Name of port&gt;</DisplayName>
+        <AttributeType>Form Title</AttributeType>
+        <GroupName>Top</GroupName>
+        <GroupDisplayName>Top</GroupDisplayName>
+        <DisplayOrder>100</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+      </Attribute>
+      <Attribute>
+        <AttributeName>WWN</AttributeName>
+        <DisplayName>World Wide Node Name</DisplayName>
+        <AttributeType>String</AttributeType>
+        <HelpText>Permanent Fibre Channel World Wide Node Name assigned during manufacturing.</HelpText>
+        <GroupName>PortConfig</GroupName>
+        <GroupDisplayName>Port Configuration Page</GroupDisplayName>
+        <DisplayOrder>105</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <PoolType>WWPN_WWN</PoolType>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>No</ProgrammaticWrite>
+          <RegEx>^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$</RegEx>
+        </Modifiers>
+        <Min>23</Min>
+        <Max>23</Max>
+      </Attribute>
+      <Attribute>
+        <AttributeName>WWPN</AttributeName>
+        <DisplayName>World Wide Port Name</DisplayName>
+        <AttributeType>String</AttributeType>
+        <HelpText>Permanent Fibre Channel World Wide Port Name assigned to the port during manufacturing</HelpText>
+        <GroupName>PortConfig</GroupName>
+        <GroupDisplayName>Port Configuration Page</GroupDisplayName>
+        <DisplayOrder>107</DisplayOrder>
+        <IsReadOnly>true</IsReadOnly>
+        <ExpertiseLevel>Expert</ExpertiseLevel>
+        <PoolType>WWPN_WWN</PoolType>
+        <Modifiers>
+          <ProgrammaticRead>Yes</ProgrammaticRead>
+          <ProgrammaticWrite>No</ProgrammaticWrite>
+          <RegEx>^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$</RegEx>
+        </Modifiers>
+        <Min>23</Min>
+        <Max>23</Max>
+      </Attribute>
+    </REGISTRY_ENTRIES>
+  </REGISTRY>
