@@ -5,9 +5,13 @@ import threading
 import json
 import time
 from omsdk.sdkconsole import iConsoleRegistry, iConsoleDriver, iConsoleDiscovery
-from omsdk.sdkprint import pretty, LogMan
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkproto import PCONSOLE
 import sys
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -34,8 +38,8 @@ class Results:
         with self.faillock:
             self.nfailed = self.nfailed + 1
     def printx(self):
-        print("Number Passed: " + str(self.npass))
-        print("Number Failed: " + str(self.nfailed))
+        logger.debug("Number Passed: " + str(self.npass))
+        logger.debug("Number Failed: " + str(self.nfailed))
 
 class ListProc:
     NumThreads=20
@@ -51,7 +55,7 @@ class ListProc:
         self.slist = []
         self.simulate = True
         if not os.path.isfile(self.listfile):
-            print("Unable to find file")
+            logger.debug("Unable to find file")
         else:
             with open(self.listfile, "r") as mylist:
                 for line in mylist:
@@ -77,7 +81,7 @@ class ListProc:
         if P <= 0:
             P = 1
         rlist = [slist[i:i+P] for i in range(0,len(slist),P)]
-        print("Number of threads: " + str(len(rlist)))
+        logger.debug("Number of threads: " + str(len(rlist)))
         counter = 0
         results = Results()
         for i in rlist:
@@ -115,7 +119,7 @@ class ListProc:
                 results.passed(entity)
             else:
                 results.failed(entity)
-        print("Time for " + str(c) + " thread = " + str(time.time()-t1))
+        logger.debug("Time for " + str(c) + " thread = " + str(time.time()-t1))
 
     def _scalable(self, d, c, results):
         t1 = time.time()
@@ -132,7 +136,7 @@ class ListProc:
                 results.passed(eb)
             except Exception as e:
                 results.failed(eb)
-        print("Time for " + str(c) + " thread = " + str(time.time()-t1))
+        logger.debug("Time for " + str(c) + " thread = " + str(time.time()-t1))
 
     def _detailed(self, d, c, results):
         t1 = time.time()
@@ -149,5 +153,5 @@ class ListProc:
                 results.passed(eb)
             except Exception as e:
                 results.failed(eb)
-        print("Time for " + str(c) + " thread = " + str(time.time()-t1))
+        logger.debug("Time for " + str(c) + " thread = " + str(time.time()-t1))
 

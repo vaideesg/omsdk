@@ -2,7 +2,11 @@ from enum import Enum
 from omsdk.sdkcenum import TypeHelper, EnumWrapper
 import sys
 import json
-from omsdk.sdkprint import pretty
+from omsdk.sdkprint import PrettyPrint
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -128,5 +132,5 @@ class CredentialStore:
 
     def printx(self):
         for cred in self.creds_store:
-            print(cred)
-            pretty().printx(self.creds_store[cred])
+            logger.debug(cred)
+            logger.debug(PrettyPrint.prettify_json(self.creds_store[cred]))

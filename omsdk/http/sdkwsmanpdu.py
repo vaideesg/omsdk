@@ -9,6 +9,10 @@ import sys
 import xml.etree.ElementTree as ET
 
 import sys
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -118,7 +122,7 @@ class WsManRequest:
             return output.getvalue()
 
     def printx(self):
-        print(ET.dump(self.root))
+        logger.debug(ET.dump(self.root))
     
 
 class WsManResponse:
@@ -214,7 +218,7 @@ class WsManResponse:
                 if len(objns.nodeValue.strip()) > 0:
                     tst[objns.nodeName] = objns.nodeValue
             else:
-                print(">>> not element>>" + str(objns.nodeType))
+                logger.debug(">>> not element>>" + str(objns.nodeType))
         return tst
     
     def get_message(self, fault):

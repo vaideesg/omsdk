@@ -2,12 +2,16 @@ import os
 import pprint
 import json
 import re
+import logging
 
 import xml.etree.ElementTree as ET
 from xml.dom.minidom import parse
 import xml.dom.minidom
-from omsdk.sdkprint import pretty, LogMan
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkftp import FtpHelper
+
+
+logger = logging.getLogger(__name__)
 
 
 class UpdateRepo:
@@ -32,20 +36,20 @@ class UpdateRepo:
 
     def set_folder(self, folder, mkdirs=False):
         if self.folder:
-            print("ERROR: folder already initialized!")
+            logger.debug("ERROR: folder already initialized!")
             return self
         if not os.path.exists(folder):
             if mkdirs:
                 os.makedirs(folder)
                 self.folder = folder
             else:
-                print("ERROR: Folder not found!")
+                logger.debug("ERROR: Folder not found!")
         elif os.path.isdir(folder):
             self.folder = folder
             self._load_catalog()
         else:
             self.folder = None
-            print("ERROR: Folder is actually a file!")
+            logger.debug("ERROR: Folder is actually a file!")
 
     @property
     def UpdateFilePaths(self):
@@ -75,7 +79,7 @@ class UpdateRepo:
                 continue
             model = nodes[0].get('systemID')
             if not model:
-                print("Could not find model")
+                logger.debug("Could not find model")
                 continue
             self.addBundle(model, node, False)
             components = self.root.findall("./SoftwareComponent/SupportedSystems/Brand/Model[@systemID='{0}']/.../.../...".format(model))
@@ -85,7 +89,7 @@ class UpdateRepo:
     def _finish_init(self):
         if not self.tree:
             if not self.source:
-                print("Initialization failed!")
+                logger.debug("Initialization failed!")
                 return self
             self.root = ET.Element(self.source.root.tag)
             for (k, v) in self.source.root.items():
@@ -95,7 +99,7 @@ class UpdateRepo:
 
     def set_source(self, source):
         if self.source:
-            print("ERROR: Source already initialized!")
+            logger.debug("ERROR: Source already initialized!")
             return self
         self.source = source
         return self
@@ -140,14 +144,14 @@ class UpdateRepo:
 
     def filter_by_component(self, model,swidentity, compfqdd=None,ostype="WIN"):
         if len(compfqdd) <= 0: compfqdd = None
-        LogMan.debug('filter_by_component::compfqdd=' + str(compfqdd))
-        LogMan.debugjson(swidentity)
+        logger.debug('filter_by_component::compfqdd=' + str(compfqdd))
+        logger.debug(PrettyPrint.prettify_json(swidentity))
         count = 0
         self.filter_bundle(model, "WIN")
         for firm in swidentity["Firmware"]:
             if compfqdd and firm['FQDD'] not in compfqdd:
                 continue
-            LogMan.debug(firm['FQDD'])
+            logger.debug(firm['FQDD'])
             if 'ComponentID' in firm and firm['ComponentID']:
                 count += self.filter_by_compid(model, firm['ComponentID'], ostype)
                 continue

@@ -4,13 +4,16 @@ import time
 import xml.etree.ElementTree as ET
 from enum import Enum
 from datetime import datetime
-from omsdk.sdkprint import LogMan, pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 from omsdk.lifecycle.sdklicenseapi import iBaseLicenseApi
 from omdrivers.lifecycle.iDRAC.iDRACConfig import LicenseApiOptionsEnum
 import base64
 import sys
+import logging
 
+
+logger = logging.getLogger(__name__)
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
@@ -109,7 +112,7 @@ class iDRACLicense(iBaseLicenseApi):
 
     def _import_license_fqdd(self, license_file, fqdd = "iDRAC.Embedded.1", options = LicenseApiOptionsEnum.NoOptions):
         if not os.path.exists(license_file) or not os.path.isfile(license_file):
-            print(license_file + " is not a file!")
+            logger.debug(license_file + " is not a file!")
             return False
         content = ''
         with open(license_file, 'rb') as f:
@@ -135,7 +138,7 @@ class iDRACLicense(iBaseLicenseApi):
                         creds = license_share_path.creds, name="Import",
                         fqdd=fqdd, options=options)
             rjson = self._job_mgr._job_wait(rjson['Message'], rjson)
-            LogMan.debugjson(rjson)
+            logger.debug(PrettyPrint.prettify_json(rjson))
             if rjson['Status'] == 'Success':
                 retval['Imported'] += 1
             else:
@@ -147,7 +150,7 @@ class iDRACLicense(iBaseLicenseApi):
 
     def _replace_license_fqdd(self, license_file, entitlementId, fqdd = "iDRAC.Embedded.1", options = LicenseApiOptionsEnum.NoOptions):
         if not os.path.exists(license_file) or not os.path.isfile(license_file):
-            print(license_file + " is not a file!")
+            logger.debug(license_file + " is not a file!")
             return False
         content = ''
         with open(license_file) as f:

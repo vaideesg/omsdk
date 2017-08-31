@@ -1,6 +1,6 @@
 import os
 import sys
-
+import logging
 import re
 import time
 import base64
@@ -9,15 +9,19 @@ from enum import Enum
 from datetime import datetime
 from omsdk.sdkdevice import iDeviceRegistry, iDeviceDriver, iDeviceDiscovery
 from omsdk.sdkdevice import iDeviceTopologyInfo
-from omsdk.sdkprint import LogMan, pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkproto import PWSMAN,PREDFISH, PSNMP
 from omsdk.sdkfile import FileOnShare, Share
 from omsdk.sdkcreds import UserCredentials
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 
+
+logger = logging.getLogger(__name__)
+
+
 class NoConfig:
     def __init__(self, arg1):
-        print("iDRAC:Not implemented")
+        logger.debug("iDRAC:Not implemented")
 
 
 PY2 = sys.version_info[0] == 2
@@ -42,10 +46,11 @@ try:
     from omdrivers.lifecycle.iDRAC.iDRACUpdate import iDRACUpdate
     from omdrivers.lifecycle.iDRAC.iDRACUpdate import iDRACFirmEnum
     from omdrivers.lifecycle.iDRAC.iDRACLicense import iDRACLicense
+    from omdrivers.lifecycle.iDRAC.iDRACSecurity import iDRACSecurity
     from omdrivers.lifecycle.iDRAC.iDRACLicense import iDRACLicenseEnum
     from omdrivers.lifecycle.iDRAC.iDRACCredsMgmt import iDRACCredsMgmt
 except ImportError as ex:
-    print(str(ex))
+    logger.debug(str(ex))
     iDRACJobs = NoConfig
     iDRACConfig = NoConfig
     iDRACLogs = NoConfig
@@ -1124,7 +1129,24 @@ if PySnmpPresent:
                     "12" : "Warning",
                     "13" : "Warning",
                 }
-            }
+	    },
+            "PrimaryStatus" : {
+                'Lookup'  :  'True',
+                'Values' : {
+                    "1" : "Warning",
+                    "2" : "Warning",
+                    "3" : "Healthy",
+                    "4" : "Warning",
+                    "5" : "Critical",
+                    "6" : "Critical"
+                }
+	     },
+	    "CurrentMACAddress" : { 
+		'Macedit' : 'True'
+		},
+            "PermanentMACAddress" : {
+                'Macedit' : 'True'
+                }
         },
         iDRACCompEnum.VirtualDisk : {
             "Size" : { 'Type' : 'Bytes', 'InUnits' : 'MB' },
@@ -1173,14 +1195,66 @@ if PySnmpPresent:
             "FreeSize" : { 'Type' : 'Bytes' , 'InUnits' : 'MB', 'Metrics' : 'GB' },
         },
         iDRACCompEnum.System : {
-            'PrimaryStatus' : { 'CopyTo' : 'RollupStatus' },
+            "SystemGeneration" : {
+                'Lookup' :  'True',
+                'Values' : {
+                    "1"  : "other",
+                    "2"  : "unknown",
+                    "16" : "12G Monolithic",
+                    "17" : "12G Modular",
+                    "21" : "12G DCS",
+                    "32" : "13G Monolithic",
+                    "33" : "13G Modular",
+                    "34" : "13G DCS",
+                    "48" : "14G Monolithic",
+                    "49" : "14G Modular",
+                    "50" : "14G DCS"
+                }
+            },
+            "PrimaryStatus" : {
+                'Lookup'  :  'True',
+                'Values' : {
+                    "1" : "Warning",
+                    "2" : "Warning",
+                    "3" : "Healthy",
+                    "4" : "Warning",
+                    "5" : "Critical",
+                    "6" : "Critical"
+                }
+            },
+            "TempRollupStatus" : {
+                'Lookup'  :  'True',
+                'Values' : {
+                    "1" : "Warning",
+                    "2" : "Warning",
+                    "3" : "Healthy",
+                    "4" : "Warning",
+                    "5" : "Critical",
+                    "6" : "Critical"
+                }
+            }
         },
         iDRACCompEnum.PowerSupply : {
             'TotalOutputPower' :  {'UnitScale': '-1', 'UnitAppend' : 'W'},
             'RatedInputWattage' :  {'UnitScale': '-1', 'UnitAppend' : 'W'}
         },
         iDRACCompEnum.Sensors_Temperature : {
-            'Reading(Degree Celsius)' :  {'UnitScale': '-1', 'UnitAppend' : 'Degree Celsius'}
+            'Reading(Degree Celsius)' :  {'UnitScale': '-1', 'UnitAppend' : 'Degree Celsius'},
+            "PrimaryStatus" : {
+                'Lookup'  :  'True',
+                'Values' : {
+                    "1" : "Warning",
+                    "2" : "Warning",
+                    "3" : "Healthy",
+                    "4" : "Warning",
+                    "5" : "Critical",
+                    "6" : "Critical",
+                    "7" : "Warning",
+                    "8" : "Critical",
+                    "9" : "Critical",
+                    "10" : "Critical"
+                }
+            }
         },
         iDRACCompEnum.Sensors_Voltage : {
             'Reading(V)' :  {'UnitScale': '-3', 'UnitAppend' : 'V'}
@@ -1351,6 +1425,7 @@ class iDRACEntity(iDeviceDriver):
         self.log_mgr = iDRACLogs(self)
         self.update_mgr = iDRACUpdate(self)
         self.license_mgr = iDRACLicense(self)
+        self.security_mgr = iDRACSecurity(self)
         self.user_mgr = iDRACCredsMgmt(self)
         self.comp_union_spec = iDRACUnionCompSpec
         self.comp_misc_join_spec = iDRACDynamicValUnion

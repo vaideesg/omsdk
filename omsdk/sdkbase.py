@@ -1,18 +1,21 @@
 import os
 import json
+import logging
 import re
 from enum import Enum
 from datetime import datetime
 from omsdk.sdkenum import MonitorScope, MonitorScopeMap
 from omsdk.sdkenum import MonitorScopeFilter, ComponentScope
 from omsdk.sdkenum import MonitorScopeFilter_All
-from omsdk.sdkprint import LogMan, pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkproto import ProtocolFactory, ProtocolEnum
 from omsdk.sdkcenum import TypeHelper, EnumWrapper
 from omsdk.sdkconnfactory import ConnectionFactory
 from omsdk.sdkprotopref import ProtoMethods
 import sys
 
+
+logger = logging.getLogger(__name__)
 
 class iBaseRegistry(object):
 
@@ -24,7 +27,7 @@ class iBaseRegistry(object):
 
     def print_components(self):
         for comp in self.ComponentEnum:
-            print (TypeHelper.resolve(comp))
+            print(TypeHelper.resolve(comp))
 
     def convert_comp_to_enum(self, comps, comp_union_spec, merge_join_spec, misc_join_spec, more_details_spec):
         en = []
@@ -80,11 +83,11 @@ class iBaseRegistry(object):
     def my_load(self, srcdir):
         fname = os.path.join(srcdir, self.name, self.name + ".Monitor")
         if os.path.exists(fname) and not os.path.isdir(fname):
-            LogMan.info(self.name + ":: Loading defs")
+            logger.info(self.name + ":: Loading defs")
             with open(fname) as enum_data:
                 self.defs = json.load(enum_data)
         else:
-            LogMan.info(fname + " does not exist!!")
+            logger.info(fname + " does not exist!!")
         #comps = {}
         #for comp in self.defs:
         #    comps[comp] = comp
@@ -216,7 +219,7 @@ class iBaseDriver(object):
 
     def my_connect(self, pOptions):
         if not self.cfactory.connect(self.ref.name, self.ipaddr, self.creds, self.protofactory, pOptions):
-            LogMan.debug("Connection failed to " + self.ipaddr)
+            logger.debug("Connection failed to " + self.ipaddr)
             return False
 
         retval = self.cfactory.identify(self.entityjson)
@@ -334,7 +337,7 @@ class iBaseDriver(object):
             # Enum
             enname = TypeHelper.resolve(entry)
             if not enname in device_json:
-                LogMan.debug("Component " +enname+ " is not present in device!")
+                logger.debug("Component " +enname+ " is not present in device!")
                 continue
     
             if isinstance(device_json[enname], dict):
@@ -377,7 +380,7 @@ class iBaseDriver(object):
                     comp_tree[enname] = dict_list
                     comp_tree[enname]["_unknown_"] = list_list
             else:
-                print("Unexpected format!")
+                logger.debug("Unexpected format!")
         return comp_tree
     # End Containment Tree APIs
 
@@ -428,9 +431,9 @@ class iBaseDriver(object):
             self._build_device_map()
             self.inited = True
         elif self.inited == True:
-            print("already present")
+            logger.debug("already present")
         else:
-            print("failed to connect to device!")
+            logger.debug("failed to connect to device!")
         return self.inited
 
     def _build_device_map(self):
@@ -462,7 +465,7 @@ class iBaseDriver(object):
             toret = devicejson[component]
             if not component in self.components:
                 if not component in ['topology', 'devices', 'doc.prop']:
-                    LogMan.debug(component + " is not defined in ref!")
+                    logger.debug(component + " is not defined in ref!")
                 continue
             myret = []
             for entry in toret:
@@ -571,7 +574,7 @@ class iBaseDriver(object):
                             del entityjson[keylist[2]]
                             if temp:
                                 tempList.append(temp)
-                    # pretty().printx(tempList)
+                    # logger.debug(PrettyPrint.prettify_json(tempList))
                     if isinstance(entityjson[target_comp], dict):
                         fan = entityjson[target_comp]
                         for tmp in tempList:
@@ -708,14 +711,14 @@ class iBaseDriver(object):
                         my_counter = my_counter + 1
                         if not arg in args:
                             if inited:
-                                print("ERROR: " + cmd + " has additional arg" + arg)
+                                logger.debug("ERROR: " + cmd + " has additional arg" + arg)
                             else:
                                 arg_counter= arg_counter+1
                                 args[arg] = proto_cmd['Args'][arg]
                         if arg in args and args[arg] != proto_cmd['Args'][arg]:
-                            print("ERROR: " + cmd + " different argument type")
+                            logger.debug("ERROR: " + cmd + " different argument type")
                     if my_counter != arg_counter:
-                        print("ERROR: " + cmd + " different # of arguments across protocols!")
+                        logger.debug("ERROR: " + cmd + " different # of arguments across protocols!")
                 inited = True
         return commands
 
@@ -728,7 +731,7 @@ class iBaseDriver(object):
         def func1(**kwargs):
             myname = func1.__name__
             if not hasattr(self, 'cfactory') or self.cfactory == None:
-                LogMan.debug("Protocol not initialized!")
+                logger.debug("Protocol not initialized!")
                 return { 'Status' : 'Failed', 'Message' : 'Protocol not initialized' }
             return self.cfactory.operation(fname, **kwargs)
 

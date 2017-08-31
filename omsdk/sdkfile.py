@@ -4,16 +4,19 @@ import re
 import tempfile
 import glob
 import json
+import logging
 from enum import Enum
 from datetime import datetime
-from omsdk.sdkprint import pretty, MyEncoder, LogMan
+from omsdk.sdkprint import MyEncoder, PrettyPrint
 from omsdk.sdkenum import DeviceGroupFilter
 from omsdk.sdkcenum import EnumWrapper,TypeHelper
+
 import platform
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
+logger = logging.getLogger(__name__)
 # idrac.get_share_type_mapped():
 #   { ShareType.NFS : 0, ShareType.CIFS : 2, ShareType.VFLASH : 4 }
 #   { IPAddressTypeEnum.IPv4 : 1, IPAddressTypeEnum.IPv6 : 2,  }
@@ -173,15 +176,15 @@ class _PathObject(object):
         return self._get_full_path(self.paths + npaths)
 
     def printx(self, sname):
-        print("Share (" + str(self.share_type) + "): " + str(self.share_name))
+        logger.debug("Share (" + str(self.share_type) + "): " + str(self.share_name))
         if self.ipaddr and len(self.ipaddr) > 0:
-            print("  " + sname + " IPAddress " + str(self.ipaddr))
-            print("  " + sname + " IPType " + str(self.iptype))
+            logger.debug("  " + sname + " IPAddress " + str(self.ipaddr))
+            logger.debug("  " + sname + " IPType " + str(self.iptype))
         if self.file_name and len(self.file_name) > 0:
-            print("  " + sname + " Filename " + str(self.file_name))
-        print("  " + sname + " Full Path " + str(self.full_path))
-        print("  " + sname + " Mountable Path " + str(self.mountable_path))
-        print("  " + sname + " Share Path " + str(self.share_path))
+            logger.debug("  " + sname + " Filename " + str(self.file_name))
+        logger.debug("  " + sname + " Full Path " + str(self.full_path))
+        logger.debug("  " + sname + " Mountable Path " + str(self.mountable_path))
+        logger.debug("  " + sname + " Share Path " + str(self.share_path))
 
 class RemotePath(_PathObject):
     def __init__(self, share_type, isFolder, ipaddr, *args):
@@ -331,17 +334,17 @@ class FileOnShare(Share):
                     if field:
                         mapinfo[field.group(1).strip()] = field.group(2).strip()
         except Exception as ex:
-            print("Tempfile creation failed: " + str(ex))
+            logger.debug("Tempfile creation failed: " + str(ex))
 
         try:
             os.close(fd)
         except Exception as ex:
-            print(str(ex))
+            logger.debug(str(ex))
 
         try:
             os.remove(fonshare)
         except Exception as ex:
-            print(str(ex))
+            logger.debug(str(ex))
 
         return mapinfo
 
@@ -356,10 +359,10 @@ class FileOnShare(Share):
             return self.mounted
 
         if platform.system() == "Windows":
-            LogMan.debug("net use /d " + self.mount_point.mountable_path)
+            logger.debug("net use /d " + self.mount_point.mountable_path)
             err = os.system("net use /d " + self.mount_point.mountable_path + " >nul 2>&1")
-            LogMan.debug("net use /d returned : " + str(err) + ". Ignoring!")
-            LogMan.debug("net use " + self.mount_point.mountable_path + 
+            logger.debug("net use /d returned : " + str(err) + ". Ignoring!")
+            logger.debug("net use " + self.mount_point.mountable_path +
               " " + self.remote.mountable_path + 
               " /user:" + self.creds.username + " " + self.creds.password)
             err = os.system("net use " + self.mount_point.mountable_path + 
@@ -367,10 +370,10 @@ class FileOnShare(Share):
               " /user:" + self.creds.username + " " + self.creds.password + " >nul 2>&1")
             if err == 0:
                 self.mounted = True
-                print("net use succeeded!")
+                logger.debug("net use succeeded!")
             else:
                 self.mounted = False
-                print("net use failed with err code:" + str(err))
+                logger.debug("net use failed with err code:" + str(err))
         if platform.system() == "Linux":
             self.mounted = True
         return self.mounted
@@ -402,11 +405,11 @@ class FileOnShare(Share):
             (fd, fname) = tempfile.mkstemp(prefix=prefix, suffix=suffix,
                         dir=self.mount_point.share_path, text=text)
         except FileNotFoundError as ex:
-            print(str(ex))
-            print("Share is not proper configured!")
+            logger.debug(str(ex))
+            logger.debug("Share is not proper configured!")
             return None
         except Exception as ex:
-            print("Failed to create temp file: " +str(ex))
+            logger.debug("Failed to create temp file: " +str(ex))
             return None
         common_path = fname.replace(self.mount_point.mountable_path + psep, '')
 
@@ -442,7 +445,7 @@ class FileOnShare(Share):
         try:
             fname = datetime.strftime(datetime.now(), fname)
         except Exception as ex:
-            print(str(ex))
+            logger.debug(str(ex))
         psep = ''
         if 'path_sep' in Share._ShareSpec[folder.share_type]:
             psep = Share._ShareSpec[folder.share_type]['path_sep']
@@ -512,7 +515,7 @@ class FileOnShare(Share):
             os.makedirs(fname)
             return True
         except Exception as ex:
-            print("makedirs(): Failed to create folder: " +str(ex))
+            logger.debug("makedirs(): Failed to create folder: " +str(ex))
             return False
 
     @property
@@ -523,20 +526,20 @@ class FileOnShare(Share):
         try :
             os.close(self.fd)
         except Exception as ex:
-            print(str(ex))
+            logger.debug(str(ex))
 
         try :
             if os.path.exists(self.mount_point.full_path):
                 os.remove(self.mount_point.full_path)
         except Exception as ex:
-            print(str(ex))
+            logger.debug(str(ex))
 
         # Windows Kludge: Remove the file without 1 suffix
         try :
             if os.path.exists(self.mount_point.full_path[0:-1]):
                 os.remove(self.mount_point.full_path[0:-1])
         except Exception as ex:
-            print(str(ex))
+            logger.debug(str(ex))
     
     @property
     def remote_share_type(self):
@@ -575,9 +578,9 @@ class FileOnShare(Share):
         if self.mount_point:
             self.mount_point.printx("Mount")
         if self.creds:
-            print("   Username " + self.creds.username)
-            print("   Password " + self.creds.password)
-        print("   Template " + str(self.is_template))
+            logger.debug("   Username " + self.creds.username)
+            logger.debug("   Password " + self.creds.password)
+        logger.debug("   Template " + str(self.is_template))
 
 class cfgprocessor:
 	UNGROUPED = "<ungrouped>"
@@ -623,7 +626,7 @@ class cfgprocessor:
 					fields[tokentype.group(1)] = tokentype.group(2)
 					continue
 				if (self.finalline.match(line.rstrip('\n'))): continue
-				print("notsure>>" + line.rstrip('\n'))
+				logger.debug("notsure>>" + line.rstrip('\n'))
 			if (len(fields) > 0):
 				if not "register" in fields:
 					n = mytype + "-none"
@@ -635,18 +638,18 @@ class cfgprocessor:
 		return self
 	
 	def printx(self):
-		print("====")
+		logger.debug("====")
 		for i in self.datasets:
-			print("=====" + i + "=======")
-			pretty().printx(self.datasets[i])
-			print("=====================")
-		print("====")
+			logger.debug("=====" + i + "=======")
+			logger.debug(PrettyPrint.prettify_json(self.datasets[i]))
+			logger.debug("=====================")
+		logger.debug("====")
 		return self
 
 	def hostit(self):
 		#self.svcnames = {}
 		#for i in self.datasets:
-		#	print("=====" + i + "=======")
+		#	logger.debug("=====" + i + "=======")
 		#for host in self.datasets["service-0"]:
 		#	if 'use' in host:
 		#		self.svcnames[host['name']] = host['use']

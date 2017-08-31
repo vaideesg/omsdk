@@ -5,6 +5,10 @@ sys.path.append(os.getcwd())
 from inspect import signature
 from omsdk.sdkcenum import TypeHelper,EnumWrapper
 import re
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -130,11 +134,11 @@ class StringApiVisitor(SDKApiVisitor):
 
     def method_finish(self):
         self.mystring = self.mystring + ")"
-        print(self.mystring)
+        logger.debug(self.mystring)
         self.reset()
 
     def property_name(self, name):
         self.mystring = name
-        print(self.mystring)
+        logger.debug(self.mystring)
         self.reset()
 

@@ -3,21 +3,23 @@ from omsdk.sdkcreds import ProtocolCredentialsFactory, CredentialsEnum
 from omsdk.sdksnmp import SNMPProtocol, EntityMibConvertor
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 from omsdk.sdkprotopref import ProtoPreference, ProtocolEnum
-from omsdk.sdkprint import LogMan, pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkunits import UnitsFactory
 from omsdk.sdkentitymib import EntityCompEnum, EntitySNMPViews, EntityComponentTree
 import json
 import re
 import os
-
+import logging
 import sys
-
 
 from omsdk.http.sdkwsmanbase import WsManOptions
 from omsdk.http.sdkwsman import WsManProtocol
 
+
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
+
+logger = logging.getLogger(__name__)
 
 class Simulation:
     def __init__(self):
@@ -110,7 +112,7 @@ class ProtocolWrapper(object):
         return "proto(" + str(self.enumid) + ")"
 
     def p(self):
-        print("selected protocol is " + self.enumid.name)
+        logger.debug("selected protocol is " + self.enumid.name)
 
     def connect(self, ipaddr, creds, pOptions):
         self.ipaddr = ipaddr
@@ -121,11 +123,11 @@ class ProtocolWrapper(object):
             elif TypeHelper.resolve(creds.enid) == TypeHelper.resolve(supported_cred):
                 self.creds = creds
             else:
-                LogMan.debug("Invalid credentials provided!")
+                logger.debug("Invalid credentials provided!")
         if self.creds is None:
             return False
 
-        LogMan.debug("Connecting to " + ipaddr + " using " + str(self.creds))
+        logger.debug("Connecting to " + ipaddr + " using " + str(self.creds))
         if Simulator.is_simulating():
             return self.simulator_connect()
         # no options for me!
@@ -159,15 +161,15 @@ class ProtocolWrapper(object):
                         units_spec['Metrics'] =  \
                             self.view_fieldspec[en][i]['Metrics']
                     rjson[i] = UnitsFactory.Convert(units_spec)
-                #LogMan.debug("orig_value: " + str(orig_value) + ", " +\
-                #             "new_value: " + str(rjson[i]))
+                logger.debug("orig_value: " + str(orig_value) + ", " +\
+                             "new_value: " + str(rjson[i]))
             if 'Lookup' in self.view_fieldspec[en][i]:
                 orig_value = rjson[i]
                 if 'Values' in self.view_fieldspec[en][i] and \
                    orig_value in self.view_fieldspec[en][i]['Values']:
                     rjson[i] = self.view_fieldspec[en][i]['Values'][orig_value]
-                #LogMan.debug("orig_value: " + str(orig_value) + ", " +\
-                #             "new_value: " + str(rjson[i]))
+                logger.debug("orig_value: " + str(orig_value) + ", " +\
+                             "new_value: " + str(rjson[i]))
             if 'Rename' in self.view_fieldspec[en][i]:
                 orig_value = rjson[i]
                 del rjson[i]
@@ -178,7 +180,7 @@ class ProtocolWrapper(object):
                 rjson[self.view_fieldspec[en][i]['CopyTo']] = orig_value
 
             if 'UnitModify' in self.view_fieldspec[en][i]:
-                # print("Modifying UNit for ",i)
+                # logger.debug("Modifying UNit for ",i)
                 unit_spec = self.view_fieldspec[en][i]
                 unit_name = unit_spec['UnitName']
                 unit_str = 'Units'
@@ -190,9 +192,13 @@ class ProtocolWrapper(object):
                 rjson[i] = UnitsFactory.append_sensors_unit(rjson[i], rjson[unit_spec['UnitModify']], unit_str)
 
             if 'UnitScale' in self.view_fieldspec[en][i]:
-                # print("Scaling UNit for ",i)
+                # logger.debug("Scaling UNit for ",i)
                 unit_spec = self.view_fieldspec[en][i]
                 rjson[i] = UnitsFactory.append_sensors_unit(rjson[i], unit_spec['UnitScale'], unit_spec['UnitAppend'])
+
+            if 'Macedit' in self.view_fieldspec[en][i]:
+                s = rjson[i]
+                rjson[i] = str(':'.join([s[j]+s[j+1] for j in range(2,14,2)]))
 
     def simulator_save(self, retval, clsName):
         mypath = "."
@@ -242,10 +248,10 @@ class ProtocolWrapper(object):
 
     def _enumerate_view(self, index, views, bTrue):
         if not index in views:
-            LogMan.debug("WARN: no " + str(index) + " for " + str(self.enumid))
+            logger.debug("WARN: no " + str(index) + " for " + str(self.enumid))
             return { 'Status' : 'Success', 'Message' : 'Not supported' }
         clsName = TypeHelper.resolve(index)
-        LogMan.debug("Collecting " + clsName + " ... via " + str(self.enumid) + "..." )
+        logger.debug("Collecting " + clsName + " ... via " + str(self.enumid) + "..." )
         if Simulator.is_simulating():
             retval = self.simulator_load(clsName)
         else:
@@ -292,11 +298,11 @@ class ProtocolWrapper(object):
         counter = 1
         fcmd = self.cmds[cmdname]
         for name, value in kwargs.items():
-            LogMan.debug(str(counter) + ":"+ str(name) + "=" + str(value))
+            logger.debug(str(counter) + ":"+ str(name) + "=" + str(value))
             counter = counter + 1
             if not name in fcmd["Args"]:
                 str_err = name + " argument is invalid!"
-                print(str_err)
+                logger.debug(str_err)
                 return { 'Status' : 'Failed', 'Message' : str_err }
             argtype = fcmd["Args"][name]
             if not TypeHelper.belongs_to(argtype, value):
@@ -304,14 +310,14 @@ class ProtocolWrapper(object):
                 str_err = str_err + "Expected "+ str(argtype) + ". "
                 str_err = str_err + "But got "+ str(type(value))
                 str_err = str_err + "But got "+ str(value)
-                print(str_err)
+                logger.debug(str_err)
                 return { 'Status' : 'Failed', 'Message' : str_err }
             argvals[name] = value
     
         for name in fcmd["Args"]:
             if not name in argvals:
                 str_err = name + " argument is empty!"
-                print(str_err)
+                logger.debug(str_err)
                 return { 'Status' : 'Failed', 'Message' : str_err }
         paramlist = []
         for (pname, argname, field, ftype, dest) in fcmd["Parameters"]:
@@ -321,7 +327,7 @@ class ProtocolWrapper(object):
                 argval = getattr(argvals[argname], field)
             paramlist.append(argval)
 
-        LogMan.debugjson(paramlist)
+        logger.debug(PrettyPrint.prettify_json(paramlist))
     
         if Simulator.is_simulating():
             str_out = cmdname + "("
@@ -330,7 +336,7 @@ class ProtocolWrapper(object):
                 str_out = str_out + comma + type(i).__name__ + str(i)
             comma = ","
             str_out = str_out + ")"
-            print(str_out)
+            logger.debug(str_out)
             rjson= { 'Status' : 'Success' }
         else:
             rjson = self.proto.operation(self.cmds, cmdname, *paramlist)
@@ -341,10 +347,10 @@ class ProtocolWrapper(object):
 
     def opget(self, index, selector):
         if not index in self.views:
-            print("WARN: no " + str(index) + " for " + str(self.enumid))
+            logger.debug("WARN: no " + str(index) + " for " + str(self.enumid))
             return { 'Status' : 'Success', 'Message' : 'Not supported' }
         clsName = TypeHelper.resolve(index)
-        LogMan.debug("Collecting " + clsName + " ... via " + str(self.enumid) + "..." )
+        logger.debug("Collecting " + clsName + " ... via " + str(self.enumid) + "..." )
         if Simulator.is_simulating():
             retval = self.simulator_load(clsName)
         else:
@@ -384,7 +390,7 @@ class PWSMAN(ProtocolWrapper):
 
     def my_connect(self, ipaddr, creds, pOptions):
         if pOptions:
-            print("Using wsman options!")
+            logger.debug("Using wsman options!")
         self.proto = WsManProtocol(ipaddr, creds, WsManOptions())
         if self.proto is None:
             return False
@@ -416,7 +422,7 @@ class PSNMP(ProtocolWrapper):
 
     def my_connect(self, ipaddr, creds, pOptions):
         if pOptions:
-            print("Using snmp options!")
+            logger.debug("Using snmp options!")
         self.proto = SNMPProtocol(ipaddr, creds.community, creds.writeCommunity)
         if self.proto is None:
             return False
@@ -576,5 +582,5 @@ class ProtocolFactory(object):
 
     def printx(self):
         for i in self.protos:
-            print(i)
+            logger.debug(i)
         self.pref.printx()

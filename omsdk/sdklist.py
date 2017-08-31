@@ -5,9 +5,13 @@ import threading
 import json
 import time
 from omsdk.sdkconsole import iConsoleRegistry, iConsoleDriver, iConsoleDiscovery
-from omsdk.sdkprint import pretty, LogMan
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkproto import PCONSOLE
 import sys
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -15,8 +19,6 @@ PY3 = sys.version_info[0] == 3
 
 #logging.basicConfig(level=logging.DEBUG,
 #    format='[%(levelname)s] (%(threadName)-10s) %(message)s',)
-
-
 
 class ListProc:
     def __init__(self, sd, listfile, creds):
@@ -32,7 +34,7 @@ class ListProc:
     def process(self):
         self.threadlist = []
         if not os.path.isfile(self.listfile):
-            print("Unable to find file")
+            logger.debug("Unable to find file")
             return None
         counter = 0
         with open(self.listfile, "r") as mylist:
@@ -43,7 +45,7 @@ class ListProc:
                           target=self._worker, args=(device,str(counter),))
                 self.threadlist.append(thr)
                 thr.start()
-        logging.debug('Waiting for _worker threads')
+        logger.debug('Waiting for _worker threads')
         for t in self.threadlist:
             t.join()
         return self
@@ -52,14 +54,14 @@ class ListProc:
     def printx(self):
         with self.myentitylistlock:
             for device in self.entityjson["devices"]["Devices"]:
-                print("-======" + str(device) + "----------")
+                logger.debug("-======" + str(device) + "----------")
                 if not device is None:
-                    pretty().printx(device.entityjson)
-                print("-==================-------")
+                    logger.debug(PrettyPrint.prettify_json(device.entityjson))
+                logger.debug("-==================-------")
 
 
     def _worker(self, device, counter):
-        logging.debug("Starting")
+        logger.debug("Starting")
         devEntity = self.sd.get_driver(self.sd.driver_enum.iDRAC, device, self.creds)
         with self.myentitylistlock:
             if not devEntity is None:
@@ -73,8 +75,8 @@ class ListProc:
             with open('.\\output\\ff\\detailed.' + str(counter), 'w') as f:
                 json.dump(entity.get_json_device(), f)
                 f.flush()
-        print("Time for " + str(counter) + " thread = " + str(time.time()-t1))
-        logging.debug("Exiting")
+        logger.debug("Time for " + str(counter) + " thread = " + str(time.time()-t1))
+        logger.debug("Exiting")
 
     def get_data(self):
         counter = 0

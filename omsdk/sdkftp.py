@@ -4,10 +4,14 @@ import glob
 sys.path.append(os.getcwd())
 from ftplib import FTP, error_perm
 import socket
-from omsdk.sdkprint import pretty
+from omsdk.sdkprint import PrettyPrint
 import time
 import gzip
 import shutil
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 class FtpCredentials:
     def __init__(self, user='anonymous', password='anonymous@'):
@@ -20,24 +24,24 @@ class FtpHelper:
             self.ftp = FTP(site, timeout=60)
         except socket.error as e:
             self.ftp = None
-            print("ERROR: Connection failed: " + str(e))
+            logger.debug("ERROR: Connection failed: " + str(e))
             return
         except socket.gaierror as e:
             self.ftp = None
-            print("ERROR: Connection failed: " + str(e))
+            logger.debug("ERROR: Connection failed: " + str(e))
             return
         try:
             self.ftp.login(creds.user, creds.password)
         except error_perm:
-            print('ERROR:: cannot login anonymously')
+            logger.debug('ERROR:: cannot login anonymously')
             self.close()
             return
         except socket.timeout:
-            print('ERROR:: socket timedout')
+            logger.debug('ERROR:: socket timedout')
             self.close()
             return
         except Exception as err:
-            print('ERROR:: ' + str(err))
+            logger.debug('ERROR:: ' + str(err))
             self.close()
             return
 
@@ -47,9 +51,9 @@ class FtpHelper:
                 self.ftp.quit()
             self.ftp = None
         except socket.timeout:
-            print('ERROR:: socket timedout')
+            logger.debug('ERROR:: socket timedout')
         except Exception as err:
-            print('ERROR:: ' + str(err))
+            logger.debug('ERROR:: ' + str(err))
 
     #def list_files_to_download(self, lfolder="."):
     #    ldownload =[]
@@ -71,7 +75,7 @@ class FtpHelper:
 
     def is_later_than(self, fname, lfname):
         if not os.path.exists(lfname):
-            print(lfname + " does not exist")
+            logger.debug(lfname + " does not exist")
             ltime = time.gmtime(0)
         else:
             ltime = time.gmtime(os.stat(lfname).st_mtime)
@@ -105,12 +109,12 @@ class FtpHelper:
         try:
             if not self.ftp:
                 return False
-            #print('Downloading ' + fname + " to " + lfname)
+            #logger.debug('Downloading ' + fname + " to " + lfname)
             f = open(lfname, 'wb')
             self.ftp.retrbinary('RETR '+ fname, f.write)
             f.close()
         except Exception as ex:
-            print("File Download failed:" + str(ex))
+            logger.debug("File Download failed:" + str(ex))
             return False
         return True
 
@@ -123,19 +127,19 @@ class FtpHelper:
                 try:
                     os.makedirs(nfolder)
                 except Exception as ex:
-                    print("Cannot create directory : " + str(ex))
+                    logger.debug("Cannot create directory : " + str(ex))
                     return False
             elif not os.path.isdir(nfolder):
-                print("cannot create directory, file exists: " + nfolder)
+                logger.debug("cannot create directory, file exists: " + nfolder)
                 return False
         return self.download_file(fname, lfile)
 
     def download_file_to_folder(self, fname, lfolder = "."):
         if not os.path.exists(lfolder) or not os.path.isdir(lfolder):
-            print("Need a folder name")
+            logger.debug("Need a folder name")
             return False
         return self._download_files(fname, lfolder)
-        
+
 
     def download_files(self, flist, lfolder = "."):
         counter = { 'success' : 0, 'failed' : 0 }

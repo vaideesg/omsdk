@@ -1,8 +1,11 @@
 import os
 import imp
+import logging
 import sys, glob
-from omsdk.sdkprint import LogMan, eprint
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkcenum import EnumWrapper,TypeHelper
+
+logger = logging.getLogger(__name__)
 
 class sdkinfra:
     def __init__(self):
@@ -13,7 +16,7 @@ class sdkinfra:
     def load_from_file(self, filepath):
         mod_name = None
         mod_name,file_ext = os.path.splitext(os.path.split(filepath)[-1])
-        LogMan.debug("Loading " + filepath + "...")
+        logger.debug("Loading " + filepath + "...")
         if file_ext.lower() == '.py':
             py_mod = imp.load_source(mod_name, filepath)
         elif file_ext.lower() == '.pyc':
@@ -41,7 +44,7 @@ class sdkinfra:
                 if fl[i].endswith("__.py"):
                     continue
                 counter = counter + 1
-                LogMan.debug("Loading: " + str(counter) + "::" + fl[i])
+                logger.debug("Loading: " + str(counter) + "::" + fl[i])
                 module_loaded = self.load_from_file(fl[i])
                 self.drivers[module_loaded["name"]] = module_loaded["module"]
                 self.driver_names[module_loaded["name"]] = module_loaded["name"]
@@ -70,36 +73,36 @@ class sdkinfra:
     #    instance of iBaseEntity  - if device of the proper type
     def get_driver(self, driver_en, ipaddr, creds, protopref = None, pOptions = None):
         mod = TypeHelper.resolve(driver_en)
-        LogMan.debug("get_driver(): Asking for " + mod)
+        logger.debug("get_driver(): Asking for " + mod)
         return self._create_driver(mod, ipaddr, creds, protopref, pOptions)
 
     def _create_driver(self, mod, ipaddr, creds, protopref, pOptions):
-        LogMan.debug("get_driver(): Asking for " + mod)
+        logger.debug("get_driver(): Asking for " + mod)
         if not mod in self.disc_modules:
             # TODO: Change this to exception
-            print(mod + " not found!")
+            logger.debug(mod + " not found!")
             return None
         try:
-            LogMan.debug(mod + " driver found!")
+            logger.debug(mod + " driver found!")
             drv = self.disc_modules[mod].is_entitytype(self, ipaddr, creds, protopref, mod, pOptions)
             return drv
         except AttributeError as attrerror:
-            print(mod + " is not device or console")
-            print(attrerror)
+            logger.debug(mod + " is not device or console")
+            logger.debug(attrerror)
             return None
 
     def _driver(self, driver_en):
         mod = TypeHelper.resolve(driver_en)
-        LogMan.debug("_driver(): Asking for " + mod)
+        logger.debug("_driver(): Asking for " + mod)
         if not mod in self.disc_modules:
             # TODO: Change this to exception
-            print(mod + " not found!")
+            logger.debug(mod + " not found!")
             return None
         try:
-            LogMan.debug(mod + " driver found!")
+            logger.debug(mod + " driver found!")
             drv = self.disc_modules[mod]._get(self)
             return drv
         except AttributeError as attrerror:
-            print(mod + " is not device or console")
-            print(attrerror)
+            logger.debug(mod + " is not device or console")
+            logger.debug(attrerror)
             return None

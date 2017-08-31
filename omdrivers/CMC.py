@@ -3,7 +3,7 @@ from omsdk.sdkdevice import iDeviceRegistry, iDeviceDriver, iDeviceDiscovery
 from omsdk.sdkdevice import iDeviceTopologyInfo
 from omsdk.sdkproto import PWSMAN
 from omsdk.sdkcenum import EnumWrapper
-from omsdk.sdkprint import pretty
+from omsdk.sdkprint import PrettyPrint
 import sys
 
 PY2 = sys.version_info[0] == 2

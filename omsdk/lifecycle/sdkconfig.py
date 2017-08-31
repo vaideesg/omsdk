@@ -8,6 +8,10 @@ from sys import stdout
 import sys
 from omsdk.sdkcenum import TypeHelper,EnumWrapper
 import threading
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 PY2UC = (sys.version_info < (3,0,0))
 
@@ -88,10 +92,10 @@ class Config:
     def print_default(self, fqdd):
         comp = self.get_comp_from_fqdd(fqdd)
         if comp == "invalid":
-            print("Invalid Component defined!")
+            logger.debug("Invalid Component defined!")
             return
         if not "registry" in self.complist[comp]:
-            print("Invalid Registry defined!")
+            logger.debug("Invalid Registry defined!")
             return
         grps = self.get_groups(self.complist[comp]["registry"])
         print("<Component FQDD=\"" + fqdd + "\">")
@@ -107,7 +111,7 @@ class Config:
                     mygrps.remove(g)
         for group in mygrps:
             if not group in grps:
-                #print("Invalid Group defined!")
+                #logger.debug("Invalid Group defined!")
                 continue
             for i in grps[group]:
                 defval = self.get_def_value(self.complist[comp]["registry"], i)
@@ -124,10 +128,10 @@ class Config:
         for fqdd in desiredcfg:
             _comp = self.get_comp_from_fqdd(fqdd)
             if _comp == "invalid":
-                print("Invalid Component defined!")
+                logger.debug("Invalid Component defined!")
                 continue
             if not "registry" in self.complist[_comp]:
-                print("Invalid Registry defined!")
+                logger.debug("Invalid Registry defined!")
                 continue
             comp = self.complist[_comp]["registry"]
             grps = self.get_groups(comp)
@@ -140,12 +144,12 @@ class Config:
                     self._spit_scp({ compen : desiredcfg[fqdd][compen] }, output, depth + "  ")
                     continue
                 if not TypeHelper.resolve(compen) in props:
-                    print(TypeHelper.resolve(compen) + " is not found in props")
+                    logger.debug(TypeHelper.resolve(compen) + " is not found in props")
                     continue
                 cvalue = TypeHelper.resolve(compen)
                 idx = 1
                 if not isinstance(desiredcfg[fqdd][compen], list):
-                    idx = self._attr_print(output, depth, _comp, cvalue, props, 
+                    idx = self._attr_print(output, depth, _comp, cvalue, props,
                                      desiredcfg[fqdd][compen], idx)
                 else:
                     for ent in desiredcfg[fqdd][compen]:

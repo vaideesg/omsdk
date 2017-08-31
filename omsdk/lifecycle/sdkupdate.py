@@ -5,11 +5,15 @@ import os
 from enum import Enum
 from sys import stdout
 from datetime import datetime
-from omsdk.sdkprint import pretty,LogMan
+from omsdk.sdkprint import PrettyPrint
 import sys
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 class Update(object):
 
@@ -25,10 +29,10 @@ class Update(object):
 
     def get_swidentity(self):
         if self.sw_inited:
-            print("Already present")
+            logger.debug("Already present")
             return self.firmware_json
         self.entity._get_entries(self.firmware_json, self.firmware_enum)
-        LogMan.debugjson(self.firmware_json)
+        logger.debug(PrettyPrint.prettify_json(self.firmware_json))
         return self.firmware_json
 
     def _get_swidentity_hash(self):
@@ -67,7 +71,7 @@ class Update(object):
     def _save_invcollector(self, output):
         #self.entity.get_entityjson()
         #if not "System" in self.entity.entityjson:
-        #    print("ERROR: Entityjson is empty")
+        #    logger.debug("ERROR: Entityjson is empty")
         #    return
         self._get_swidentity_hash()
         output.write('<SVMInventory>\n')

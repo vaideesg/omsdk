@@ -3,10 +3,14 @@ import re
 import json
 import threading
 
-from omsdk.sdkprint import pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkdelta import DiffFilter, DiffStyle, DiffScope, DiffScopeFilter
 from omsdk.sdkdelta import DeltaComputer
 from omsdk.sdkenum import CreateMonitorScopeFilter, MonitorScope
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -30,7 +34,7 @@ class BaseStore(object):
         if not os.path.exists(directory):
             os.makedirs(directory)
         if not os.path.isdir(directory):
-            print(directory + " is not a file! defaulting to .")
+            logger.debug(directory + " is not a file! defaulting to .")
             directory = "."
         return directory
 

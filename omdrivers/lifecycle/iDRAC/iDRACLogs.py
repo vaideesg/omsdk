@@ -4,12 +4,15 @@ import time
 import xml.etree.ElementTree as ET
 from enum import Enum
 from datetime import datetime
-from omsdk.sdkprint import LogMan, pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkfile import FileOnShare, Share
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 from omsdk.lifecycle.sdklogapi import iBaseLogApi
 import sys
+import logging
 
+
+logger = logging.getLogger(__name__)
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
@@ -47,7 +50,7 @@ class iDRACLogs(iBaseLogApi):
 
     def get_logs_for_last_job(self):
         if self.entity.cfactory == None:
-            print("Protocol not initialized!")
+            logger.debug("Protocol not initialized!")
             return {}
         if self._job_mgr.last_job is None:
             return [{ "Sequence" : "-1", "MessageID" : "None", "Message": "No jobid provided"} ]
@@ -66,10 +69,10 @@ class iDRACLogs(iBaseLogApi):
 
     def get_logs_for_job(self, jobid):
         if self.entity.cfactory == None:
-            print("Protocol not initialized!")
+            logger.debug("Protocol not initialized!")
             return {}
         if not self.liason_share:
-            print("Configuration Liason Share not registered!")
+            logger.debug("Configuration Liason Share not registered!")
             return { }
 
         tempshare = self.liason_share.mkstemp(prefix='logs', suffix='.xml')
@@ -78,11 +81,11 @@ class iDRACLogs(iBaseLogApi):
         rjson = self._job_mgr._job_wait(rjson['file'], rjson, False)
 
         if rjson['Status'] != 'Success':
-            print("ERROR: cannot get logs. Failed with message: " + rjson['Message'])
+            logger.debug("ERROR: cannot get logs. Failed with message: " + rjson['Message'])
             tempshare.dispose()
             return {}
 
-        print("Log file saved to " + rjson['file'])
+        logger.debug("Log file saved to " + rjson['file'])
 
         try :
             domtree = ET.ElementTree(file = tempshare.mount_point.full_path)
@@ -110,6 +113,6 @@ class iDRACLogs(iBaseLogApi):
                     else:
                         startlogging = False
         except Exception as ex:
-            print("ERROR: " + str(ex))
+            logger.debug("ERROR: " + str(ex))
         tempshare.dispose()
         return logs

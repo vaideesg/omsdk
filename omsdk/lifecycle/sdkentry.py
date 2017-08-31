@@ -2,7 +2,7 @@ import xml.etree.ElementTree as ET
 import re
 import os
 import sys
-from omsdk.sdkprint import pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkcenum import EnumWrapper
 
 RowStatus = EnumWrapper("MS", {

@@ -3,10 +3,14 @@ import re
 import json
 import threading
 
-from omsdk.sdkprint import pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkdelta import DiffFilter, DiffStyle, DiffScope
 from omsdk.sdkdelta import DeltaComputer
 from omsdk.sdkstore import EntityStore
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 class TopologyBuilder:
     def __init__(self, entity_store):
@@ -89,7 +93,7 @@ class TopologyBuilder:
             child_key = '-'.join(child)
             if parent:
                 parent_key = '-'.join(parent)
-                print('Deassoc(parent=' + parent_key + ", child=" + child_key + ")")
+                logger.debug('Deassoc(parent=' + parent_key + ", child=" + child_key + ")")
                 with self.builder_lock:
                     assoc = assoc[parent[0]][parent[1]]
 
@@ -108,7 +112,7 @@ class TopologyBuilder:
             child_key = '-'.join(child)
             if parent:
                 parent_key = '-'.join(parent)
-                print('Assoc(parent=' + parent_key + ", child=" + child_key + ")")
+                logger.debug('Assoc(parent=' + parent_key + ", child=" + child_key + ")")
                 with self.builder_lock:
                     if parent[0] not in assoc:
                         assoc[parent[0]] = {}
@@ -136,7 +140,7 @@ class TopologyBuilder:
                     "Assoc.json", DeltaComputer.tree_with_instances)
 
     def printx(self):
-        pretty().printx(self.ctree)
-        pretty().printx(self.ctree_flags)
-        pretty().printx(self.assoc)
+        logger.debug(PrettyPrint.prettify_json(self.ctree))
+        logger.debug(PrettyPrint.prettify_json(self.ctree_flags))
+        logger.debug(PrettyPrint.prettify_json(self.assoc))
 

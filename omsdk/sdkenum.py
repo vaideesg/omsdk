@@ -7,6 +7,10 @@ except:
 
 import re
 import sys
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -50,15 +54,15 @@ class Filter(object):
             for i in enumtype:
                 self.add(i)
         else:
-            print(str(enumtype) + " is not allowed for " + str(self))
+            logger.debug(str(enumtype) + " is not allowed for " + str(self))
         return self
 
     def test(self, enumtype):
         if self.allowedtype(enumtype):
             for i in enumtype:
-                print("  " + str(i) + "=" + str(self.isset(i)))
+                logger.debug("  " + str(i) + "=" + str(self.isset(i)))
         else:
-            print(str(enumtype) + " is not allowed for " + str(self))
+            logger.debug(str(enumtype) + " is not allowed for " + str(self))
 
 MonitorScopeMap = {
     "Key"            : 1 << 0,

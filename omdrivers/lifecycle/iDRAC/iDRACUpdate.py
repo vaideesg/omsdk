@@ -4,7 +4,7 @@ import time
 import xml.etree.ElementTree as ET
 from enum import Enum
 from datetime import datetime
-from omsdk.sdkprint import LogMan, pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 from omsdk.lifecycle.sdkupdate import Update
 from omsdk.catalog.sdkupdatemgr import UpdateManager

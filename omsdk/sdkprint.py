@@ -13,6 +13,10 @@ import xml.etree.ElementTree as ET
 import traceback
 
 import sys
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 try:
     from pysnmp.hlapi import *
@@ -28,15 +32,6 @@ except ImportError:
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
-LOG_LEVEL = EnumWrapper("logLevel", {
-        'FATAL' : 1,
-        'ERROR' : 2,
-        'WARN' : 3,
-        'INFO' : 4,
-        'DEBUG': 5
-    }).enum_type
-
-CurrentLogLevel = LOG_LEVEL.ERROR
 
 class MyEncoder(JSONEncoder):
     def default(self, o):
@@ -57,55 +52,10 @@ class MyEncoder(JSONEncoder):
             return str(datetime)
         return o.json_encode()
 
-class pretty:
-    def printx(self, json_object):
-        if json_object is None:
-            print("<empty json>")
-            return False
-        print(json.dumps(json_object, sort_keys=True, indent=4, \
-              separators=(',', ': '), cls=MyEncoder))
 
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+class Prettifyer:
+    def prettify_json(self, json_object):
+        return "<empty json>" if json_object is None else json.dumps(json_object, sort_keys=True, indent=4, \
+              separators=(',', ': '), cls=MyEncoder)
 
-class myprint:
-    def checklevel(self, lvl):
-        return TypeHelper.resolve(CurrentLogLevel) >= TypeHelper.resolve(lvl)
-
-    def debug(self, msg):
-        if self.checklevel(LOG_LEVEL.DEBUG):
-            print(msg)
-
-    def debugxml(self, obj):
-        pass
-
-    def debugdict(self, obj):
-        if self.checklevel(LOG_LEVEL.DEBUG):
-            pprint(obj)
-
-    def debugloc(self, msg = "test"):
-        if self.checklevel(LOG_LEVEL.DEBUG):
-            eprint("Start <<<<<<<<<<<" + msg)
-            traceback.print_stack()
-            eprint("End <<<<<<<<<<<" + msg)
-
-    def loc(self, msg = "test"):
-        if self.checklevel(LOG_LEVEL.INFO):
-            eprint("Start <<<<<<<<<<<" + msg)
-            traceback.print_stack()
-            eprint("End <<<<<<<<<<<" + msg)
-
-    def info(self, msg):
-        if self.checklevel(LOG_LEVEL.INFO):
-            print(msg)
-
-    def debugjson(self, json_object):
-        if self.checklevel(LOG_LEVEL.DEBUG):
-            if json_object is None:
-                print("<empty json>")
-                return False
-            print(json.dumps(json_object, sort_keys=True, indent=4, \
-              separators=(',', ': '), cls=MyEncoder))
-        return True
-
-LogMan = myprint()
+PrettyPrint = Prettifyer()

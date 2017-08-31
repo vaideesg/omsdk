@@ -3,14 +3,17 @@ import io
 from xml.dom.minidom import parse
 import xml.dom.minidom
 import json
+import logging
 
+
+logger = logging.getLogger(__name__)
 
 class PsShell:
 	def __init__(self):
 		pass
 
 	def execute(self, cmd):
-		print("Executing: " + cmd)
+		logger.debug("Executing: " + cmd)
 		proc = subprocess.Popen(["powershell", "-outputformat", "XML", "-command", ""+ cmd + ""], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		wrapper = io.TextIOWrapper(proc.stdout, encoding="utf-8")
 		t = wrapper.readline()
@@ -75,6 +78,6 @@ class PsShell:
 					tst[var] = k
 					#counter = counter - 1
 			else:
-				print(">>> not element>>" + str(objns.tagName))
+				logger.debug(">>> not element>>" + str(objns.tagName))
 		return tst
 	

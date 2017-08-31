@@ -10,6 +10,10 @@ from omsdk.sdkenum import ComponentScope
 from omsdk.sdkenum import CreateMonitorScopeFilter
 from omsdk.sdkenum import MonitorScopeFilter, MonitorScope
 from omsdk.sdkinfra import sdkinfra
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 class XMLFormatter:
     def __init__(self):
@@ -120,7 +124,7 @@ class HealthStateMachine:
         if instate not in self.algo[curstate]:
             self.algo[curstate][instate] = outstate
         else:
-            print("Duplicate State : " + curstate + "." + instate)
+            logger.debug("Duplicate State : " + curstate + "." + instate)
 
     def worstCase(self):
         self.add_transition('Unknown', 'Healthy', 'Healthy')
@@ -132,7 +136,7 @@ class HealthStateMachine:
         return self
 
     def transition(self, comp, curstate, instate):
-        #print("[{0}] curstate={1} instate={2}".format(comp,curstate,instate))
+        #logger.debug("[{0}] curstate={1} instate={2}".format(comp,curstate,instate))
         if curstate not in self.algo:
             return curstate
         if instate not in self.algo[curstate]:
@@ -190,5 +194,5 @@ class SDKHealthVisitor(SDKVisitor):
 
     def printx(self):
         for i in self.health:
-            print("    {0:20.20s} <> {1:20.20s}".format(i, self.health[i]))
+            logger.debug("    {0:20.20s} <> {1:20.20s}".format(i, self.health[i]))
         return self

@@ -75,7 +75,6 @@ setup(
         'omsdk.reflection',
         'omdrivers',
         'omdrivers.lifecycle',
-        'omdrivers.lifecycle.F10',
         'omdrivers.lifecycle.iDRAC',
     ],
 

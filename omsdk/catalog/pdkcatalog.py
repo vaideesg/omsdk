@@ -6,7 +6,11 @@ import xml.etree.ElementTree as ET
 from xml.dom.minidom import parse
 import xml.dom.minidom
 
-from omsdk.sdkprint import pretty
+from omsdk.sdkprint import PrettyPrint
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 class DellPDKCatalog:
 
@@ -17,7 +21,7 @@ class DellPDKCatalog:
     def __init__(self, source_file):
         self.source_file = source_file
         if not os.path.isfile(self.source_file):
-            print(self.source_file + " does not exist!")
+            logger.debug(self.source_file + " does not exist!")
             self.root = ET.Element("Manifest")
             self.tree = ET.ElementTree(self.root)
             self.valid = False
@@ -90,7 +94,7 @@ class DellPDKCatalog:
         compid_path = "/PCIInfo"
         for field in ['deviceID', 'subDeviceID', 'subVendorID', 'vendorID']:
             if field not in pcispec or not pcispec[field]:
-                print(field + " is not present or null")
+                logger.debug(field + " is not present or null")
                 continue
             compid_path += "[@" + field + "='" + pcispec[field] + "']"
         compid_path += "/..."

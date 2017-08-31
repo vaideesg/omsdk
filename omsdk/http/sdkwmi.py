@@ -2,8 +2,12 @@ import sys
 from omsdk.http.sdkwsmanbase import WsManProtocolBase,WsManOptions
 from winrm.transport import Transport
 from winrm.protocol import Protocol
-from omsdk.sdkprint import pretty
+from omsdk.sdkprint import PrettyPrint
 import traceback
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -44,14 +48,14 @@ class WmiProtocol(WsManProtocolBase):
                    username=self.creds.username, password=self.creds.password)
                 self.transport = self.protocol.transport
             except Exception as s:
-                print(str(s))
+                logger.debug(str(s))
                 traceback.print_exc(s)
 
     def _proto_ship_payload(self, payload):
         try:
             return self.transport.send_message(payload)
         except Exception as ex:
-            print(str(ex))
+            logger.debug(str(ex))
             traceback.print_exc(ex)
 
     def _proto_endpoint(self):

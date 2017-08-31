@@ -5,7 +5,7 @@ import xml.etree.ElementTree as ET
 from enum import Enum
 from datetime import datetime
 from omsdk.sdkdevice import iDeviceRegistry, iDeviceDriver, iDeviceDiscovery
-from omsdk.sdkprint import LogMan, pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkproto import PWSMAN,PREDFISH, PSNMP
 from omsdk.sdkfile import FileOnShare, Share
 from omsdk.sdkcreds import UserCredentials
@@ -14,8 +14,13 @@ from omsdk.lifecycle.sdkconfig import ConfigFactory
 from omsdk.lifecycle.sdkconfigapi import iBaseConfigApi
 from omsdk.lifecycle.sdkentry import ConfigEntries, RowStatus
 from omsdk.sdktime import SchTimer, TIME_NOW
+from omdrivers.lifecycle.iDRAC.iDRACSecurity import SSLCertTypeEnum
 import sys
+import logging
 import tempfile
+
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -1437,6 +1442,53 @@ iDRACWsManCmds = {
                 ("ExportFileName", "filename", None, str, None),
         ]
     },
+    ###########
+    # SSL Certificate Import and Export
+    ###########
+
+    "_import_ssl_certificate": {
+        "ResourceURI" : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_iDRACCardService",
+        "Action" :  "ImportSSLCertificate",
+        "SelectorSet" : {
+            "w:Selector" : [
+                { '@Name': 'CreationClassName', '#text': 'DCIM_iDRACCardService' },
+                { '@Name': 'SystemCreationClassName', '#text': 'DCIM_ComputerSystem' },
+                { '@Name': 'Name', '#text': 'DCIM:iDRACCardService' },
+                { '@Name': 'SystemName', '#text': 'DCIM:ComputerSystem' }
+           ] },
+        "Args" : {
+            "ssl_cert_file" : str,
+            "ssl_cert_type"   :  SSLCertTypeEnum,
+            "pass_phrase"        :   str
+        },
+        "Return" : {
+        },
+        "Parameters" : [
+                ("SSLCertificateFile", "ssl_cert_file", None, str, None),
+                ("CertificateType", "ssl_cert_type", None, SSLCertTypeEnum, None),
+                ("Passphrase", "pass_phrase", None, str, None)
+        ]
+    },
+
+    "_export_ssl_certificate": {
+        "ResourceURI" : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_iDRACCardService",
+        "Action" :  "ExportSSLCertificate",
+        "SelectorSet" : {
+            "w:Selector" : [
+                { '@Name': 'CreationClassName', '#text': 'DCIM_iDRACCardService' },
+                { '@Name': 'SystemCreationClassName', '#text': 'DCIM_ComputerSystem' },
+                { '@Name': 'Name', '#text': 'DCIM:iDRACCardService' },
+                { '@Name': 'SystemName', '#text': 'DCIM:ComputerSystem' }
+           ] },
+        "Args" : {
+            "ssl_cert_type"   :  SSLCertTypeEnum,
+        },
+        "Return" : {
+        },
+        "Parameters" : [
+                ("SSLCertType", "ssl_cert_type", None, SSLCertTypeEnum, None)
+        ]
+    }
 }
 
 todo_cmds = [
@@ -1606,11 +1658,11 @@ class iDRACConfig(iBaseConfigApi):
 
     def set_liason_share(self, myshare):
         if not isinstance(myshare, FileOnShare):
-            print("should be an instance of FileOnShare")
+            logger.debug("should be an instance of FileOnShare")
             return False
         if not myshare.IsValid:
-            print("Share is not valid, please retry!!")
-            print("You can only perform readonly operations!")
+            logger.debug("Share is not valid, please retry!!")
+            logger.debug("You can only perform readonly operations!")
             #return False
         self.liason_share = myshare
         return True
@@ -1671,7 +1723,7 @@ class iDRACConfig(iBaseConfigApi):
 
         tempshare = self.liason_share.mkstemp(prefix='scp', suffix='.xml')
         msg = self.scp_export(tempshare)
-        LogMan.debugjson(msg)
+        logger.debug(PrettyPrint.prettify_json(msg))
         if msg['Status'] == 'Success':
             self._config_entries.process(tempshare.mount_point.full_path, False)
         tempshare.dispose()
@@ -2141,12 +2193,12 @@ class iDRACConfig(iBaseConfigApi):
 
     def create_raid(self, vd_name, span_depth, span_length, raid_type, n_disks):
         if not self.entity.get_entityjson():
-            print("Cannot talk to device!")
+            logger.debug("Cannot talk to device!")
             return False
         mytree = self.entity.ContainmentTree
         config = self.config
         if not "Storage" in mytree:
-            print("Storage not found in device")
+            logger.debug("Storage not found in device")
             return False
         rjson = mytree["Storage"]
         s_controller = None
@@ -2154,7 +2206,7 @@ class iDRACConfig(iBaseConfigApi):
         n_cntr = 0
         s_disks = []
         if not "Controller" in rjson:
-            print("No Controllers!")
+            logger.debug("No Controllers!")
             return None
 
         for controller in rjson['Controller']:
@@ -2164,7 +2216,7 @@ class iDRACConfig(iBaseConfigApi):
             if 'VirtualDisk' in rjson['Controller'][controller]:
                 n_cntr = len(rjson['Controller'][controller]['VirtualDisk'])
             if not 'Enclosure' in rjson['Controller'][controller]:
-                print("No enclosures in controller:" + controller)
+                logger.debug("No enclosures in controller:" + controller)
                 continue
             encl_list = rjson['Controller'][controller]['Enclosure']
             for encl in encl_list:

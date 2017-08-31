@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "disable_existing_loggers": false,
+  "formatters": {
+    "precise": {
+      "format": "%(asctime)s - %(levelname)-5s - %(name)s:%(lineno)d - %(message)s"
+    }
+  },
+  "handlers": {
+    "console": {
+      "class": "logging.StreamHandler",
+      "level": "DEBUG",
+      "formatter": "precise",
+      "stream": "ext://sys.stdout"
+    },
+    "file_handler": {
+      "class": "logging.handlers.TimedRotatingFileHandler",
+      "level": "DEBUG",
+      "formatter": "precise",
+      "filename": "../logs/omsdk-logs.log",
+      "when": "S",
+      "interval": 10,
+      "backupCount": 5,
+      "encoding": "utf8",
+      "delay": "False",
+      "utc": "False",
+      "atTime": "None"
+    }
+  },
+  "root": {
+    "level": "DEBUG",
+    "handlers": [
+      "console",
+      "file_handler"
+    ]
+  }
+}

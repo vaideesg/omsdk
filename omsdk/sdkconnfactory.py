@@ -1,15 +1,20 @@
 import sys
 import os
+import logging
 sys.path.append(os.getcwd())
 from omsdk.sdkproto import ProtocolEnum
 from omsdk.sdkprotopref import ProtoPreference, ProtoMethods
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
-from omsdk.sdkprint import pretty,LogMan
+from omsdk.sdkprint import PrettyPrint
+
 from enum import Enum
 import re
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
+
+logger = logging.getLogger(__name__)
+
 
 class ConnectionFactory(object):
 
@@ -22,9 +27,9 @@ class ConnectionFactory(object):
         self.sdkobj = sdkobj
 
     def printx(self):
-        print(str(len(self.work_connection)) + " connections in loop!")
+        logger.debug(str(len(self.work_connection)) + " connections in loop!")
         for i in range(0, len(self.work_connection)):
-            print(str(self.work_protocols[i]) + " ... "+ str(self.work_connection[i]))
+            logger.debug(str(self.work_protocols[i]) + " ... "+ str(self.work_connection[i]))
     
     def disconnect(self):
         for connection in self.work_connection:
@@ -47,13 +52,13 @@ class ConnectionFactory(object):
         for spec in pfactory:
             connected = False
             for i in range(0, self.CONN_RETRIES):
-                LogMan.debug("Connecting to " + name + "::" + str(spec) + " for " + str(i) + "th time...")
+                logger.debug("Connecting to " + name + "::" + str(spec) + " for " + str(i) + "th time...")
                 if spec.connect(ipaddr, creds, pOptions):
                     connected = True
-                    LogMan.debug(self.name + '::connect(' + self.ipaddr + ', ' + str(spec) + ")=True")
+                    logger.debug(self.name + '::connect(' + self.ipaddr + ', ' + str(spec) + ")=True")
                     break
                 else:
-                    LogMan.debug("Connection failed to " + self.ipaddr)
+                    logger.debug("Connection failed to " + self.ipaddr)
             if connected:
                 self.work_connection.append(spec)
                 self.work_protocols.append(spec.enumid)
@@ -65,7 +70,7 @@ class ConnectionFactory(object):
     def identify(self, ejson):
         status = False
         if len(self.work_connection) <= 0:
-            LogMan.error("No Connection present!!")
+            logger.error("No Connection present!!")
             return False
 
         if self.pfactory.classifier:
@@ -76,7 +81,7 @@ class ConnectionFactory(object):
                 if obj in ejson and len(ejson[obj])>0:
                     status = True
 
-        LogMan.debug(self.name + '::identify(' + self.ipaddr + ', ' + str(self.creds) + ")=" + str(status))
+        logger.debug(self.name + '::identify(' + self.ipaddr + ', ' + str(self.creds) + ")=" + str(status))
         return status
 
     def complete(self):
@@ -179,7 +184,7 @@ class ConnectionFactory(object):
         retdoc = {}
         for connection in self.work_connection:
             if connection.isOpSupported(fname, **kwargs):
-                LogMan.debug("Operation being done by " + str(connection))
+                logger.debug("Operation being done by " + str(connection))
                 retval = connection.operation(fname, **kwargs)
                 return retval
 

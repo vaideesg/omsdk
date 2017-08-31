@@ -2,16 +2,20 @@ import os
 import re
 import time
 import xml.etree.ElementTree as ET
+import logging
 from enum import Enum
 from datetime import datetime
-from omsdk.sdkprint import LogMan, pretty
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkproto import PWSMAN,PREDFISH, PSNMP
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 from omsdk.lifecycle.sdkjobs import iBaseJobApi
-import sys
 
+import sys
+import logging
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
+
+logger = logging.getLogger(__name__)
 
 try:
     from pysnmp.hlapi import *
@@ -65,15 +69,15 @@ class iDRACJobs(iBaseJobApi):
         jobs = {}
         jobret = { "Status" : TypeHelper.resolve(JobStatusEnum.InProgress) }
         jobs = self.get_job_details(jobid)
-        LogMan.debugjson(jobs)
+        logger.debug(PrettyPrint.prettify_json(jobs))
         if "Status" in jobs and jobs['Status'] != "Success":
-            print("ERROR: get_job_status failed: " + jobs['Status'])
-            print("ERROR: get_job_status failed: " + jobs['Message'])
+            logger.debug("ERROR: get_job_status failed: " + jobs['Status'])
+            logger.debug("ERROR: get_job_status failed: " + jobs['Message'])
             return jobs
 
         jb = jobs['Data']['Jobs']
         if jb['InstanceID'] != jobid:
-            print("ERROR: Job instance not found")
+            logger.debug("ERROR: Job instance not found")
             return jobs
         if 'JobStatus' in jb:
             jobstatus = jb['JobStatus']
@@ -106,14 +110,14 @@ class iDRACJobs(iBaseJobApi):
             return (False, 'Invalid', None)
         elif retval['Status'] != 'Success':
             return (False, retval['Status'], None)
-        LogMan.debugjson(retval)
+        logger.debug(PrettyPrint.prettify_json(retval))
         if retval['Return'] != "JobCreated":
             return (False, retval['Status'], None)
         if not 'Job' in retval or not 'JobId' in retval['Job']:
-            LogMan.debugjson("Error: Jobid is not found, even though return says jobid")
+            logger.debug("Error: Jobid is not found, even though return says jobid")
             return (True, retval['Status'], None)
         jobid = retval['Job']['JobId']
-        LogMan.debug("Job is " + jobid)
+        logger.debug("Job is " + jobid)
         if jobid is None:
             return (True, retval['Status'], None)
         return (True, retval['Status'], jobid)
@@ -142,9 +146,9 @@ class iDRACJobs(iBaseJobApi):
         while True:
             status = self.get_job_status(jobid)
             if not 'Status' in status:
-                print("Invalid Status")
+                logger.debug("Invalid Status")
             else:
-                LogMan.debugjson(status)
+                logger.debug(PrettyPrint.prettify_json(status))
 
                 pcc = "0"
                 msg = ""
@@ -153,21 +157,21 @@ class iDRACJobs(iBaseJobApi):
                 if 'Message' in status:
                     msg = status['Message']
                 if show_progress:
-                    print("{0} : {1} : Percent Complete: {2} | Message = {3}".format(jobid, status['Status'], pcc, msg))
+                    logger.debug("{0} : {1} : Percent Complete: {2} | Message = {3}".format(jobid, status['Status'], pcc, msg))
                 if status['Status'] == TypeHelper.resolve(JobStatusEnum.Success):
                     if show_progress:
-                        print("Message:" + status['Message'])
+                        logger.debug("Message:" + status['Message'])
                     job_ret = True
                     ret_json = status
                     break
                 elif status['Status'] != TypeHelper.resolve(JobStatusEnum.InProgress):
                     if show_progress:
-                        print("Message:" + status['Message'])
+                        logger.debug("Message:" + status['Message'])
                     job_ret = False
                     ret_json = status
                     break
                 else:
-                    LogMan.debug(str(status))
+                    logger.debug(str(status))
             time.sleep(2)
         ret_json['retval'] = job_ret
         return ret_json

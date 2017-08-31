@@ -3,10 +3,15 @@ from omsdk.catalog.updaterepo import UpdateRepo
 from omsdk.sdkfile import FileOnShare
 from omsdk.sdkcreds import UserCredentials
 from omsdk.sdkftp import FtpHelper, FtpCredentials
-from omsdk.sdkprint import LogMan
+from omsdk.sdkprint import PrettyPrint
+
 import json
 import threading
 import os
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class UpdateManager(object):
 
@@ -15,7 +20,7 @@ class UpdateManager(object):
     @staticmethod
     def configure(update_share):
         if not update_share.IsValid:
-            print("Update Share is not valid")
+            logger.debug("Update Share is not valid")
             return False
         if UpdateManager._update_store is None:
             with UpdateManager._update_store_lock:
@@ -99,11 +104,11 @@ class _UpdateCacheManager(object):
         ftp = FtpHelper('ftp.dell.com', FtpCredentials())
         c = 'Catalog.xml.gz'
         retval = ftp.download_newerfiles([c], folder)
-        LogMan.debug("Download Success = {0}, Failed = {1}".format(retval['success'], retval['failed']))
+        logger.debug("Download Success = {0}, Failed = {1}".format(retval['success'], retval['failed']))
         if retval['failed'] == 0 and ftp.unzip_file(os.path.join(folder, c)):
             retval['Status'] = 'Success'
         else:
-            print("Unable to download and extract " + c)
+            logger.debug("Unable to download and extract " + c)
             retval['Status'] = 'Failed'
         ftp.close()
         return retval
@@ -112,7 +117,7 @@ class _UpdateCacheManager(object):
         files_to_dld = self.cache.rcache.UpdateFilePaths
         ftp = FtpHelper('ftp.dell.com', FtpCredentials())
         retval = ftp.download_newerfiles(files_to_dld, self.update_share.mount_point.full_path)
-        LogMan.debug("Download Success = {0}, Failed = {1}".format(retval['success'], retval['failed']))
+        logger.debug("Download Success = {0}, Failed = {1}".format(retval['success'], retval['failed']))
         if retval['failed'] == 0:
             retval['Status'] = 'Success'
         else:
@@ -126,11 +131,11 @@ class CatalogScoper(object):
         self.master_share = master_share
         self.cache_share = cache_share
         self.cache_lock = threading.Lock()
-        LogMan.debug("master:" + self.master_share.mount_point.full_path)
+        logger.debug("master:" + self.master_share.mount_point.full_path)
         self.cmaster = DellPDKCatalog(self.master_share.mount_point.full_path)
 
-        LogMan.debug("cache:" + self.cache_share.mount_point.share_path)
-        LogMan.debug("cache:" + self.cache_share.mount_point.file_name)
+        logger.debug("cache:" + self.cache_share.mount_point.share_path)
+        logger.debug("cache:" + self.cache_share.mount_point.file_name)
         self.rcache = UpdateRepo(self.cache_share.mount_point.share_path,
                             catalog=self.cache_share.mount_point.file_name,
                             source=self.cmaster, mkdirs=True)
@@ -162,8 +167,8 @@ class CatalogScoper(object):
     def dispose(self):
         with self.cache_lock:
             if self.cache_share.IsTemp:
-                LogMan.debug("Temporary cache")
+                logger.debug("Temporary cache")
                 self.cache_share.dispose()
             else:
-                LogMan.debug("Not a temporary cache")
+                logger.debug("Not a temporary cache")
 

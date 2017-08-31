@@ -1,6 +1,10 @@
 import json
 from omsdk.sdkbase import iBaseRegistry, iBaseDiscovery, iBaseDriver
 import sys
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -43,13 +47,13 @@ class iConsoleDriver(iBaseDriver):
         # topoMap = True, deviceMap = False | empty topology
         # topoMap = True, deviceMap = True | good topology
         if not ("DeviceGroups" in self.entityjson["topology"]):
-            print("No topology found!")
+            logger.debug("No topology found!")
             topoMap = False
         if not ("Devices" in self.entityjson["devices"]):
-            print("No devices found!")
+            logger.debug("No devices found!")
             deviceMap = False
         if topoMap == False and deviceMap == False:
-            print("empty console")
+            logger.debug("empty console")
             return False
         if deviceMap == True:
             for device in self.entityjson["devices"]["Devices"]:
@@ -67,7 +71,7 @@ class iConsoleDriver(iBaseDriver):
                     if not (device in self.entityjson["devmap"]):
                         self.entityjson["unknown_svctag"].append(device)
             else:
-                print(str(group) + " is empty")
+                logger.debug(str(group) + " is empty")
 
     def print_details(self):
         print ("Unknown Tags in Topology:" +
@@ -88,11 +92,11 @@ class iConsoleDriver(iBaseDriver):
         self.reset()
         self.get_entityjson()
         if devmap is None or topology is None:
-            print("Error: either devmap or topology or both are none!")
+            logger.debug("Error: either devmap or topology or both are none!")
             return False
         for gname in topology["DeviceGroups"]:
             if gname in self.entityjson["topology"]["DeviceGroups"]:
-                print(gname + " already in nagios!")
+                logger.debug(gname + " already in nagios!")
             else:
                 self.my_add_or_update_group(gname)
                 self.entityjson["topology"]["DeviceGroups"][gname] = {}
@@ -100,20 +104,20 @@ class iConsoleDriver(iBaseDriver):
                 self.entityjson["topology"]["DeviceGroups"][gname]["Devices"] = []
             for device in topology["DeviceGroups"][gname]["Devices"]:
                 if not device in devmap:
-                    print("Cannot retrieve doc.prop for this device: " + device)
+                    logger.debug("Cannot retrieve doc.prop for this device: " + device)
                     continue
                 if device in self.entityjson["devmap"]:
-                    print(device + " is already in target.devmap")
+                    logger.debug(device + " is already in target.devmap")
                     self.update_device_group(device, devmap[device], gname)
                 elif device in self.entityjson["unknown_svctag"]:
-                    print(device + " in already in target.unknown_svctag")
+                    logger.debug(device + " in already in target.unknown_svctag")
                     self.update_device_group(device, devmap[device], gname)
                 else:
                     self.add_device(device, devmap[device], gname)
 
     def update_device_group(self, device, devmap, gname):
         if gname is None or not gname in self.entityjson["topology"]["DeviceGroups"]:
-            print(groupName +" is not found in topology")
+            logger.debug(groupName +" is not found in topology")
             return False
         dev = self.my_update_device_group(device, devmap, gname)
         self.entityjson["topology"]["DeviceGroups"][gname]["Devices"].append(dev)
@@ -121,20 +125,20 @@ class iConsoleDriver(iBaseDriver):
 
     def add_device(self, device, devmap, groupName = None):
         if devmap is None:
-            print("DevMap is not provided!")
+            logger.debug("DevMap is not provided!")
             return False
         if groupName is None:
             groupName = "Ungrouped"
-            print("no group given, changing to: " +groupName)
+            logger.debug("no group given, changing to: " +groupName)
         if not groupName in self.entityjson["topology"]["DeviceGroups"]:
-            print(groupName +" is not found in topology")
+            logger.debug(groupName +" is not found in topology")
             return False
         dev = self.my_add_or_update_device(device, devmap, groupName)
         if not dev is None:
             self.entityjson["topology"]["DeviceGroups"][groupName]["Devices"].append(dev)
             return True
         else:
-            print("adding device " + device + " to group " + groupName + " failed!")
+            logger.debug("adding device " + device + " to group " + groupName + " failed!")
         return False
 
     def check_group_exists(self, groupname):

@@ -1,13 +1,18 @@
 import re
 import json
 import sys
-from omsdk.sdkprint import pretty, LogMan
+import logging
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkprotobase import ProtocolBase
+
 import traceback
 import time
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
+
+logger = logging.getLogger(__name__)
+
 
 try:
     from pysnmp.hlapi import *
@@ -17,7 +22,7 @@ try:
     from pysnmp import debug
     PySnmpPresent = True
     #debug.setLogger(debug.Debug('dsp', 'msgproc'))
-    
+
 except ImportError:
     PySnmpPresent = False
 
@@ -54,8 +59,8 @@ class SNMPProtocol(ProtocolBase):
             newvar = []
             for i in var:
                 newvar.append( (i + "." + str(defaultIdx), var[i]) )
-            LogMan.debugjson(newvar)
-            LogMan.debug("host=" + self.host + ":community=" + self.rwstring)
+            logger.debug(PrettyPrint.prettify_json(newvar))
+            logger.debug("host=" + self.host + ":community=" + self.rwstring)
             errorIndication, errorStatus, errorIndex, varBinds = self.cmdGen.setCmd(
                 cmdgen.CommunityData(self.rwstring),
                 cmdgen.UdpTransportTarget((self.host, 161)),
@@ -80,7 +85,7 @@ class SNMPProtocol(ProtocolBase):
         if "SelectorSet" in protocmds[cmdname]:
             if "indexField" in protocmds[cmdname]["SelectorSet"]:
                 indexField = protocmds[cmdname]["SelectorSet"]["indexField"]
-   
+
         rjson = {}
         counter = 0
         if not indexField is None:
@@ -94,13 +99,13 @@ class SNMPProtocol(ProtocolBase):
                     *oids, lexicographicMode=False):
                     counter = counter + 1
                     if errorIndication:
-                        print(errorIndication)
+                        logger.debug(errorIndication)
                         return {
                             'Status' : 'Failed',
                             'Message' : str(errorIndication)
                         }
                     elif errorStatus:
-                        print('%s at %s' % (errorStatus.prettyPrint(),
+                        logger.debug('%s at %s' % (errorStatus.prettyPrint(),
                                 errorIndex and varBinds[int(errorIndex)-1][0] or '?'))
                         break
                     else:
@@ -109,15 +114,15 @@ class SNMPProtocol(ProtocolBase):
                                 ifield = str(varBind[0])
                                 indices.append(int(re.sub(indexField + ".", "", ifield)))
                         except Exception as exp2:
-                            print("Exception: " + str(exp2))
+                            logger.debug("Exception: " + str(exp2))
             except Exception as exp:
-                print("Exception: " + str(exp))
+                logger.debug("Exception: " + str(exp))
             for i in indices:
                 indexVars = { indexField : rfc1902.Integer(6) }
                 try:
                     rjson2 = self._snmpset(i, indexVars)
                 except Exception as exp2:
-                    print("here: " + str(exp2))
+                    logger.debug("here: " + str(exp2))
         return { 'Status': 'Success', 'Message' : 'Cleanedup' }
 
     def operation(self, protocmds, cmdname, *args):
@@ -140,7 +145,7 @@ class SNMPProtocol(ProtocolBase):
                 nextIdx = protocmds[cmdname]["SelectorSet"]["nextIdx"]
             if "cleanupAfterCreate" in protocmds[cmdname]["SelectorSet"]:
                 cleanupAfterCreate = protocmds[cmdname]["SelectorSet"]["cleanupAfterCreate"]
-   
+
         rjson = {}
         currentIdx = None
         counter = 0
@@ -159,13 +164,13 @@ class SNMPProtocol(ProtocolBase):
                     *oids, lexicographicMode=False):
                     counter = counter + 1
                     if errorIndication:
-                        print(errorIndication)
+                        logger.debug(errorIndication)
                         return {
                             'Status' : 'Failed',
                             'Message' : str(errorIndication)
                         }
                     elif errorStatus:
-                        print('%s at %s' % (errorStatus.prettyPrint(),
+                        logger.debug('%s at %s' % (errorStatus.prettyPrint(),
                                 errorIndex and varBinds[int(errorIndex)-1][0] or '?'))
                         break
                     else:
@@ -174,11 +179,11 @@ class SNMPProtocol(ProtocolBase):
                                 ifield = str(varBind[0])
                                 indices.append(int(re.sub(indexField + ".", "", ifield)))
                         except Exception as exp2:
-                            print("Exception: " + str(exp2))
+                            logger.debug("Exception: " + str(exp2))
                 # no entries found! so pick the first one!
                 currentIdx = startIdx
             except Exception as exp:
-                print("Exception: " + str(exp))
+                logger.debug("Exception: " + str(exp))
             if not indexField is None and len(indices) > 0:
                 for i in range(startIdx,endIdx):
                     if not i in indices:
@@ -186,13 +191,13 @@ class SNMPProtocol(ProtocolBase):
                         break
             elif not nextIdx is None and len(indices) > 0:
                 currentIdx = indices[0]
-        LogMan.debug("Found Index:" + str(currentIdx))
+        logger.debug("Found Index:" + str(currentIdx))
         try:
             rjson = self._build_ops(protocmds, cmdname, *args)
             if rjson['Status'] == 'Success':
                 rjson = self._snmpset(currentIdx, rjson['retval'])
         except Exception as exp:
-            print(str(exp))
+            logger.debug(str(exp))
             rjson = { 'Status' : 'Failed', 'Message' : str(exp) }
         if rjson['Status'] == 'Success':
             time.sleep(2)
@@ -201,7 +206,7 @@ class SNMPProtocol(ProtocolBase):
             try:
                 rjson2 = self._snmpset(currentIdx, indexVars)
             except Exception as exp2:
-                print("here: " + str(exp2))
+                logger.debug("here: " + str(exp2))
                 rjson2 = { 'Status' : 'Failed', 'Message' : str(exp2) }
             if rjson2['Status'] != 'Success':
                 rjson['Message'] = rjson['Message'] + ". Index Removal failed: "
@@ -217,7 +222,7 @@ class SNMPProtocol(ProtocolBase):
         for attr in snmpview:
             oids.append(ObjectType(snmpview[attr]))
         if len(oids) <= 0:
-            print("::" + clsName + " is empty")
+            logger.debug("::" + clsName + " is empty")
             return entity_raw
         try:
             for (errorIndication,
@@ -234,10 +239,10 @@ class SNMPProtocol(ProtocolBase):
                     ifMibRevVars[str(snmpview[attr]) + "."] = attr
                     ifMibRevVars[snmpview[attr].prettyPrint()] = attr
                 if errorIndication:
-                    print(errorIndication)
+                    logger.debug(errorIndication)
                     continue
                 elif errorStatus:
-                    print('%s at %s' % (errorStatus.prettyPrint(),
+                    logger.debug('%s at %s' % (errorStatus.prettyPrint(),
                                 errorIndex and varBinds[int(errorIndex)-1][0] or '?'))
                     continue
                 else:
@@ -259,8 +264,8 @@ class SNMPProtocol(ProtocolBase):
                             vn.resolveWithMib(mibViewC)
                             myvar = vn.prettyPrint()
                             if not myvar in ifMibRevVars:
-                                print("WARN: " + str(myvar) + " not found in ifMibRevVars")
-                                print("WARN: " + varBind[0].prettyPrint())
+                                logger.debug("WARN: " + str(myvar) + " not found in ifMibRevVars")
+                                logger.debug("WARN: " + varBind[0].prettyPrint())
                                 vname = str(myvar)
                             else:
                                 vname = ifMibRevVars[myvar]
@@ -273,8 +278,8 @@ class SNMPProtocol(ProtocolBase):
                             entry["_SNMPIndex"] = idx
                     entity_raw[clsName].append(entry)
         except Exception as exp:
-            print(clsName + " is not present!!")
-            print(str(exp))
+            logger.debug(clsName + " is not present!!")
+            logger.debug(str(exp))
             traceback.print_exc()
         if (len(entity_raw[clsName]) <= 0):
             return { }
@@ -294,7 +299,7 @@ class EntityMibConvertor(object):
             if not node is None:
                 return node
         return None
-    
+
     def _named_entity_tree(self, entity_tree, new_entity_tree):
         for i in entity_tree:
             field = i
@@ -304,16 +309,16 @@ class EntityMibConvertor(object):
             if not "children" in entity_tree[i]:
                 continue
             new_entity_tree[field]["child"] = {}
-            self._named_entity_tree(entity_tree[i]["children"], 
+            self._named_entity_tree(entity_tree[i]["children"],
                 new_entity_tree[field]["child"])
             del new_entity_tree[field]["children"]
         return new_entity_tree
-    
+
     def build_entity_tree(self, entity_raw):
         if not "Entity" in entity_raw:
             return entity_raw
         if len(entity_raw["Entity"]) == 0:
-            print("no entity present")
+            logger.debug("no entity present")
             return entity_raw
         entity_tree = {}
         entity_tree['1'] = entity_raw["Entity"][0]
@@ -335,13 +340,13 @@ class EntityMibConvertor(object):
         if not "Entity" in entity_raw:
             return entity_raw
         if len(entity_raw["Entity"]) == 0:
-            print("no entity present")
+            logger.debug("no entity present")
             return entity_raw
         counter = 0
         for entry in entity_raw["Entity"]:
             counter = counter + 1
             if not "Class"in entry:
-                print("Class is not populated for :" + str(entry))
+                logger.debug("Class is not populated for :" + str(entry))
                 continue
             cls = entry["Class"]
             entry["MyPos"] = counter

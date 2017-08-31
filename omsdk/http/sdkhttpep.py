@@ -14,8 +14,8 @@ import requests.packages.urllib3
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from requests.packages.urllib3.exceptions import SNIMissingWarning
 from requests.packages.urllib3.exceptions import InsecurePlatformWarning
-
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
+import logging
 
 
 AuthenticationTypeMap = {

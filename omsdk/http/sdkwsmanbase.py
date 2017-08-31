@@ -119,9 +119,9 @@ class WsManProtocolBase(ProtocolBase):
 
     def printx(self, json_object):
         if json_object is None:
-            print("<empty json>")
+            logger.debug("<empty json>")
             return False
-        print(json.dumps(json_object, sort_keys=True, indent=4, \
+        logger.debug(json.dumps(json_object, sort_keys=True, indent=4, \
               separators=(',', ': ')))
 
     # retVal['Status'] = Success, Failed, Invalid JSON,

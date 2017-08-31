@@ -1,13 +1,17 @@
 from enum import Enum
 from omsdk.sdkcreds import ProtocolCredentialsFactory, CredentialsEnum
 from datetime import datetime
-from omsdk.sdkprint import pretty, LogMan
+from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkcenum import TypeHelper
 
 import sys
+import logging
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
+
+logger = logging.getLogger(__name__)
+
 
 class ProtocolBase(object):
     def operation(self, protocmds, cmdname, *args):
@@ -17,9 +21,9 @@ class ProtocolBase(object):
     def _build_ops(self, protocmds, cmdname, *args):
         toargs = {}
         if not "Parameters" in protocmds[cmdname]:
-            print("no parameters")
+            logger.debug("no parameters")
         elif len(protocmds[cmdname]["Parameters"]) != len(args):
-            print("Too many args")
+            logger.debug("Too many args")
             return { 'Status' : 'Failed', 'Message' : 'Client Side: Too many arguments' }
         else:
             counter = 0
@@ -41,6 +45,6 @@ class ProtocolBase(object):
                 toargs[var] = myval
                 if dest != None:
                     toargs[var] = dest(toargs[var])
-                LogMan.debug(var + "<=>" + str(toargs[var]))
+                logger.debug(var + "<=>" + str(toargs[var]))
                 counter = counter + 1
         return { 'Status' : 'Success', 'retval' : toargs }
