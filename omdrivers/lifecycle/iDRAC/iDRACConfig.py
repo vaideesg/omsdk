@@ -194,6 +194,12 @@ iDRACConfigCompSpec = {
         "groups" : [  ],
         "nogroup" : True
     },
+    "PowerSupply" : {
+        "firmware_pattern" : "(PSU)\..*",
+        "registry" : None,
+        "groups" : [  ],
+        "nogroup" : True
+    },
     "Diags" : {
         "firmware_pattern" : "(Diagnostics)\..*",
         "registry" : None,
@@ -1300,6 +1306,110 @@ iDRACWsManCmds = {
     },
 
     ###### Drive Functions
+    "_create_raid_config_job" : {
+        "ResourceURI" : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_RAIDService",
+        "Action" :  "CreateTargetedConfigJob",
+        "SelectorSet" : {
+            "w:Selector" : [
+                { '@Name': 'CreationClassName', '#text': 'DCIM_RAIDService' },
+                { '@Name': 'SystemCreationClassName', '#text': 'DCIM_ComputerSystem' },
+                { '@Name': 'Name', '#text': 'DCIM:RAIDService' },
+                { '@Name': 'SystemName', '#text': 'DCIM:ComputerSystem' }
+           ] },
+        "Args" : {
+            "virtual_disk" : str,
+            "reboot" : RebootJobType
+        },
+        "Return" : {
+        },
+        "Parameters" : [
+            ('Target', "virtual_disk", None, str, None),
+            ('RebootJobType', "reboot", None, RebootJobType, None),
+            # out RebootRequired 
+            # out - 0 -NoError, 1-NotSupported, 2-Error
+        ]
+    },
+    "_delete_raid" : {
+        "ResourceURI" : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_RAIDService",
+        "Action" :  "DeleteVirtualDisk",
+        "SelectorSet" : {
+            "w:Selector" : [
+                { '@Name': 'CreationClassName', '#text': 'DCIM_RAIDService' },
+                { '@Name': 'SystemCreationClassName', '#text': 'DCIM_ComputerSystem' },
+                { '@Name': 'Name', '#text': 'DCIM:RAIDService' },
+                { '@Name': 'SystemName', '#text': 'DCIM:ComputerSystem' }
+           ] },
+        "Args" : {
+            "virtual_disk" : str
+        },
+        "Return" : {
+        },
+        "Parameters" : [
+            ('Target', "virtual_disk", None, str, None),
+            # out RebootRequired 
+            # out - 0 -NoError, 1-NotSupported, 2-Error
+        ]
+    },
+    "_lock_raid" : {
+        "ResourceURI" : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_RAIDService",
+        "Action" :  "LockVirtualDisk",
+        "SelectorSet" : {
+            "w:Selector" : [
+                { '@Name': 'CreationClassName', '#text': 'DCIM_RAIDService' },
+                { '@Name': 'SystemCreationClassName', '#text': 'DCIM_ComputerSystem' },
+                { '@Name': 'Name', '#text': 'DCIM:RAIDService' },
+                { '@Name': 'SystemName', '#text': 'DCIM:ComputerSystem' }
+           ] },
+        "Args" : {
+            "virtual_disk" : str
+        },
+        "Return" : {
+        },
+        "Parameters" : [
+            ('Target', "virtual_disk", None, str, None),
+            # out RebootRequired [0=No, 1=Yes]
+        ]
+    },
+    "_remove_all_raids" : {
+        "ResourceURI" : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_RAIDService",
+        "Action" :  "ResetConfig",
+        "SelectorSet" : {
+            "w:Selector" : [
+                { '@Name': 'CreationClassName', '#text': 'DCIM_RAIDService' },
+                { '@Name': 'SystemCreationClassName', '#text': 'DCIM_ComputerSystem' },
+                { '@Name': 'Name', '#text': 'DCIM:RAIDService' },
+                { '@Name': 'SystemName', '#text': 'DCIM:ComputerSystem' }
+           ] },
+        "Args" : {
+            "controller" : str
+        },
+        "Return" : {
+        },
+        "Parameters" : [
+            ('Target', "controller", None, str, None),
+            # out RebootRequired [0=No, 1=Yes]
+        ]
+    },
+    "_secure_erase_raid" : {
+        "ResourceURI" : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_RAIDService",
+        "Action" :  "SecureErase",
+        "SelectorSet" : {
+            "w:Selector" : [
+                { '@Name': 'CreationClassName', '#text': 'DCIM_RAIDService' },
+                { '@Name': 'SystemCreationClassName', '#text': 'DCIM_ComputerSystem' },
+                { '@Name': 'Name', '#text': 'DCIM:RAIDService' },
+                { '@Name': 'SystemName', '#text': 'DCIM:ComputerSystem' }
+           ] },
+        "Args" : {
+            "virtual_disk" : str
+        },
+        "Return" : {
+        },
+        "Parameters" : [
+            ('Target', "virtual_disk", None, str, None),
+            # out RebootRequired [0=No, 1=Yes]
+        ]
+    },
     "_blink_drive" : {
         "ResourceURI" : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_RAIDService",
         "Action" :  "BlinkTarget",
@@ -1490,28 +1600,6 @@ iDRACWsManCmds = {
         ]
     }
 }
-
-todo_cmds = [
-    "BootConfigSettings",
-    "BootSourceSettings",
-    "ChangeBootOrder",
-    "ChangeBootSourceState",  # instanceid, enabledstate
-    "CSIOR", # Enable, Disable
-    "ChangeiDRACCredentials", # Enable, Disable
-    "GetNetworkIsoConnectionInfo",
-    "SetPowerCapCmd",
-    "UnpackAndAttach",
-    "DCIM_iDRACCardService.SSLResetCfg" #SSL to factory defaults
-    "DCIM_iDRACCardService.ExportSSLCertificate" #SSL to factory defaults
-    "DCIM_iDRACCardService.ImportSSLCertificate" #
-    "DCIM_iDRACCardService.RemoveSelf" #GroupName=group
-    "DCIM_iDRACCardService.DeleteGroup" #GroupName=group
-    "DCIM_iDRACCardService.JoinGroup" #GroupName=group,GroupPasscode
-
-# Get:CIM_ComputerSystem
-  
-
-]
 
 iDRACRedfishCmds = {
     "_scp_export": {
@@ -2234,7 +2322,7 @@ class iDRACConfig(iBaseConfigApi):
         vdfqdd = "Disk.Virtual." + str(n_cntr) + ":" + s_controller
         scp = {}
         scp[s_controller] = {
-                config.arspec.RAID.RAIDresetConfig : "True",
+                config.arspec.RAID.RAIDresetConfig : "False",
                 config.arspec.RAID.RAIDforeignConfig : "Clear",
                 config.arspec.RAID.RAIDprMode : "Automatic",
                 config.arspec.RAID.RAIDccMode : "Normal",
@@ -2265,6 +2353,19 @@ class iDRACConfig(iBaseConfigApi):
             }
         return self._commit_scp(scp)
 
+    def delete_raid(self, vd_name):
+        rjson = self.entity._delete_raid(virtual_disk = vd_name)
+        if rjson['Status'] in [ 'Error', "Failed"]: return rjson
+        rjson = self.entity._create_raid_config_job(virtual_disk = vd_name, reboot=RebootJobType.GracefulRebootWithForcedShutdown)
+        rjson['file'] = 'delete_raid'
+        return self._job_mgr._job_wait(rjson['file'], rjson)
+
+    def lock_raid(self, vd_name):
+        rjson = self.entity._lock_raid(virtual_disk = vd_name)
+        if rjson['Status'] in [ 'Error', "Failed"]: return rjson
+        rjson = self.entity._create_raid_config_job(virtual_disk = vd_name, reboot=RebootJobType.GracefulRebootWithForcedShutdown)
+        rjson['file'] = 'lock_raid'
+        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     # Tech Service Report Export
     def export_tsr_async(self, tsr_store_path):
@@ -2368,27 +2469,25 @@ class iDRACConfig(iBaseConfigApi):
         rjson['file'] = 'delete_iso_from_vflash'
         return rjson
 
-
     def boot_to_network_iso(self, network_iso_image):
-        share = network_iso_image.format(ip = self.entity.ipaddr)
-        rjson = self.entity._boot_to_network_iso(share = share, creds = network_iso_image.creds)
+        rjson = self.entity._boot_to_network_iso(share = network_iso_image, creds = network_iso_image.creds)
         rjson['file'] = str(share)
-        return rjson
+        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def boot_to_disk(self):
         rjson = self.entity._boot_to_disk()
         rjson['file'] = 'boot_to_disk'
-        return rjson
+        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def boot_to_iso(self):
         rjson = self.entity._boot_to_iso()
         rjson['file'] = 'boot_to_iso'
-        return rjson
+        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def boot_to_pxe(self):
         rjson = self.entity._boot_to_pxe()
         rjson['file'] = 'boot_to_pxe'
-        return rjson
+        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     @property
     def DriverPackInfo(self):
@@ -2399,22 +2498,21 @@ class iDRACConfig(iBaseConfigApi):
         return self.entity._get_host_mac_info()
 
     def connect_network_iso(self, network_iso_image):
-        share = network_iso_image.format(ip = self.entity.ipaddr)
-        rjson = self.entity._connect_network_iso(share = share, creds = network_iso_image.creds)
+        rjson = self.entity._connect_network_iso(share = network_iso_image, creds = network_iso_image.creds)
         rjson['file'] = str(share)
-        return rjson
+        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def download_iso(self, network_iso_image):
         share = network_iso_image.format(ip = self.entity.ipaddr)
-        rjson = self.entity._download_iso(share = share, creds = network_iso_image.creds)
+        rjson = self.entity._download_iso(share = network_iso_image, creds = network_iso_image.creds)
         rjson['file'] = str(share)
-        return rjson
+        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def download_iso_flash(self, network_iso_image):
         share = network_iso_image.format(ip = self.entity.ipaddr)
-        rjson = self.entity._download_iso_flash(share = share, creds = network_iso_image.creds)
+        rjson = self.entity._download_iso_flash(share = network_iso_image, creds = network_iso_image.creds)
         rjson['file'] = str(share)
-        return rjson
+        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def disconnect_network_iso(self):
         return self.entity._disconnect_network_iso()

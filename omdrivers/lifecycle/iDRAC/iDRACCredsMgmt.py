@@ -36,7 +36,14 @@ class iDRACCredsMgmt(iBaseCredentialsApi):
     def Users(self):
         return self._config_mgr._get_scp_component('Users')
 
+    def get_user(self, username):
+        (uid, retobj, msg) = self._config_mgr._find_existing_slot('Users', username)
+        return retobj
+
     def create_user(self, username, password, user_privilege, others=None):
+        (uid, retobj, msg) = self._config_mgr._find_existing_slot('Users', username)
+        if retobj is not None: return { 'Status' : 'Failed', 'Message' : username + " already exists!" }
+
         (uid, retobj, msg) = self._config_mgr._find_empty_slot('Users', username)
         if retobj is None: return msg
 

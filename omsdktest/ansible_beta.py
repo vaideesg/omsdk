@@ -1,6 +1,4 @@
-import sys
-import os
-import io
+import sys, os
 import platform
 import json
 import time
@@ -11,20 +9,11 @@ from sys import stdout, path
 from omsdk.sdkcreds import UserCredentials,ProtocolCredentialsFactory
 from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkfile import FileOnShare
-from omsdk.sdkenum import ComponentScope
 from omsdk.sdkenum import MonitorScopeFilter, MonitorScope
 from omsdk.sdkproto import ProtocolEnum
 from omsdk.sdkinfra import sdkinfra
 from omsdk.sdkprotopref import ProtoPreference, ProtocolEnum, ProtoMethods
-from omsdk.sdkproto import PWSMAN
-from omsdk.lifecycle.sdkconfig import ConfigFactory
-from omsdk.lifecycle.sdkentry import ConfigEntries
-from omdrivers.lifecycle.iDRAC.iDRACConfig import iDRACConfigCompSpec
-from omdrivers.lifecycle.iDRAC.iDRACConfig import iDRACConfigKeyFields
-from omsdk.catalog.pdkcatalog import DellPDKCatalog
-from omsdk.catalog.updaterepo import UpdateRepo
 from omsdk.catalog.sdkupdatemgr import UpdateManager
-from omsdk.sdkftp import FtpHelper, FtpCredentials
 import logging
 from omsdk.logging.Logger import LogManager, LoggerConfigTypeEnum
 
@@ -82,6 +71,9 @@ driver = get_optional(argsinfo, 'driver')
 uname = get_optional(argsinfo, 'user.name')
 upass = get_optional(argsinfo, 'user.password', '')
 pref = get_optional(argsinfo, 'protocol', 'WSMAN')
+nshare = get_optional(argsinfo, 'share')
+nsharename = get_optional(argsinfo, 'share.user.name')
+nsharepass = get_optional(argsinfo, 'share.user.password', '')
 creds = ProtocolCredentialsFactory()
 if uname :
     creds.add(UserCredentials(uname, upass))
@@ -97,25 +89,25 @@ import logging
 #logging.basicConfig(level=logging.DEBUG)
 
 if platform.system() == "Windows":
-    updshare = FileOnShare(remote ='\\\\<windows_host>\\Share',
+    myshare = FileOnShare(remote =nshare,
         mount_point='Z:\\', isFolder=True,
         common_path='',
-        creds = UserCredentials("user@domain", "password"))
+        creds = UserCredentials(nsharename, nsharepass))
+    updshare = myshare
 else:
-    myshare = FileOnShare(remote ='host:/nfs/share',
+    myshare = FileOnShare(remote =nshare,
         mount_point='/tst', isFolder=True,
-        creds = UserCredentials("user@domain", "password"))
+        creds = UserCredentials(nsharename, nsharepass))
 
 sd = sdkinfra()
 sd.importPath()
 
 UpdateManager.configure(updshare)
-updshare.IsValid
+#updshare.IsValid
 #print(UpdateManager.update_catalog())
 #idrac = sd.get_driver(sd.driver_enum.iDRAC, ipaddr, creds, protopref)
 #UpdateManager.add_devices(idrac)
-UpdateManager.update_cache()
-exit()
+#UpdateManager.update_cache()
 
 t1 = time.time()
 
