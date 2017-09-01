@@ -101,9 +101,9 @@ setup(
     package_dir= {'omdrivers' : 'omdrivers' },
     package_data={
         'omdrivers': [
-                'iDRAC\\*.Monitor',
-                'iDRAC\\Config\\*',
-                'CMC\\*.Monitor',
+                'iDRAC/*.Monitor',
+                'iDRAC/Config/*',
+                'CMC/*.Monitor',
         ],
     },
 
