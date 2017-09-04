@@ -1938,7 +1938,7 @@ class iDRACConfig(iBaseConfigApi):
         #Bios,Uefi
         if self.BiosMode:
             return self.BiosMode
-        vals = self._config_mgr._get_scp_component('BIOS', 'BootSettings', 'BootMode')
+        vals = self._config_mgr._get_scp_component('BIOS.Setup.1-1')
         if not vals:
             return self.BiosMode
         self.BiosMode = vals.toupper()

@@ -25,7 +25,10 @@ class ConfigEntries(object):
         domtree = ET.parse(fname)
         system = domtree.getroot()
         for component in system.findall("./Component"):
+            fqdd = component.get("FQDD")
+            valuemap[fqdd] = {}
             for attribute in component.findall("./Attribute"):
+                valuemap[fqdd][attribute.get("Name")]= attribute.text
                 for comp in self.keyfield:
                     pattern = self.keyfield[comp]['Pattern']
                     result = re.search(pattern, attribute.get("Name"))
