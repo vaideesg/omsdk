@@ -14,6 +14,9 @@ import logging
 
 PY2UC = (sys.version_info < (3,0,0))
 
+if PY2UC:
+    import codecs
+
 logger = logging.getLogger(__name__)
 
 class Update(object):
@@ -66,8 +69,12 @@ class Update(object):
         return self._swidentity
 
     def save_invcollector_file(self, invcol_output_file):
-        with open(invcol_output_file, "w") as output:
-            self._save_invcollector(output)
+        if PY2UC:
+            with open(invcol_output_file, "w") as output:
+                self._save_invcollector(output)
+        else:
+            with codecs.open(invcol_output_file, encoding='utf-8', mode='w') as output:
+                self._save_invcollector(output)
 
     def _save_invcollector(self, output):
         #self.entity.get_entityjson()

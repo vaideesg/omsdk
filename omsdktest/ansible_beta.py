@@ -15,11 +15,12 @@ from omsdk.sdkinfra import sdkinfra
 from omsdk.sdkprotopref import ProtoPreference, ProtocolEnum, ProtoMethods
 from omsdk.catalog.sdkupdatemgr import UpdateManager
 import logging
-from omsdk.logging.Logger import LogManager, LoggerConfigTypeEnum
+from omsdk.omlog.Logger import LogManager, LoggerConfigTypeEnum
 
 LogManager.setup_logging()
 
 logger = logging.getLogger(__name__)
+#logging.basicConfig(level=logging.DEBUG)
 
 # Bugs: not element>>#cdata-section
 
@@ -85,8 +86,6 @@ if pref == "WSMAN":
 def not_implemented():
     print("===== not implemented ====")
 
-import logging
-#logging.basicConfig(level=logging.DEBUG)
 
 if platform.system() == "Windows":
     myshare = FileOnShare(remote =nshare,

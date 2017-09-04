@@ -73,7 +73,7 @@ setup(
         'omsdk.listener',
         'omsdk.profiling',
         'omsdk.reflection',
-        'omsdk.logging',
+        'omsdk.omlog',
         'omdrivers',
         'omdrivers.lifecycle',
         'omdrivers.lifecycle.iDRAC',
@@ -110,7 +110,7 @@ setup(
                 'CMC/*.Monitor',
         ],
         'omsdk': [
-                'logging/config/*',
+                'omlog/config/*',
         ],
     },
 

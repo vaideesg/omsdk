@@ -11,9 +11,13 @@ import threading
 import logging
 
 
+
 logger = logging.getLogger(__name__)
 
 PY2UC = (sys.version_info < (3,0,0))
+
+if PY2UC:
+    import codecs
 
 class ConfigFactory(object):
     configmap = {}
@@ -192,5 +196,9 @@ class Config:
         return output.getvalue()
 
     def save_scp(self, desiredcfg, outputfile):
-        with open(outputfile, "w") as output:
-            self._spit_scp(desiredcfg, output)
+        if PY2UC:
+            with open(outputfile, "w") as output:
+                self._spit_scp(desiredcfg, output)
+        else:
+            with codecs.open(outputfile, encoding='utf-8', mode='w') as output:
+                self._spit_scp(desiredcfg, output)
