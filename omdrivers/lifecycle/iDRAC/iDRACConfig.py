@@ -15,10 +15,10 @@ from omsdk.lifecycle.sdkconfigapi import iBaseConfigApi
 from omsdk.lifecycle.sdkentry import ConfigEntries, RowStatus
 from omsdk.sdktime import SchTimer, TIME_NOW
 from omdrivers.lifecycle.iDRAC.iDRACSecurity import SSLCertTypeEnum
+from omdrivers.lifecycle.iDRAC.rebootOptions import RebootOptions,HostEndPowerStateEnum,ShutdownTypeEnum
 import sys
 import logging
 import tempfile
-
 
 logger = logging.getLogger(__name__)
 
@@ -457,9 +457,40 @@ iDRACWsManCmds = {
                 ("Password",  "creds", 'password', type("password"), None),
                 #("ScheduledStartTime", datetime),
                 #("UntilTime", datetime)
-                #RackHD:("TimeToWait", "wait", None, type(300), None)
-                #RackHD:("EndHostPowerState", "end", None, type(1), None)
-                #RackHD:("ShutdownType", "shutdown", None, type(0), None)
+        ]
+     },
+    "_scp_import_with_reboot": {
+        "ResourceURI" : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/root/dcim/DCIM_LCService",
+        "Action" :  "ImportSystemConfiguration",
+        "SelectorSet" : {
+            "w:Selector" : [
+                { '@Name': 'CreationClassName', '#text': 'DCIM_LCService' },
+                { '@Name': 'SystemCreationClassName', '#text': 'DCIM_ComputerSystem' },
+                { '@Name': 'Name', '#text': 'DCIM:LCService' },
+                { '@Name': 'SystemName', '#text': 'DCIM:ComputerSystem' }
+           ] },
+        "Args" : {
+            "share" : FileOnShare,
+            "creds" : UserCredentials,
+            "target" : SCPTargetEnum,
+            "format_file" : ExportFormatEnum,
+            "reboot_options" : RebootOptions
+        },
+        "Return" : {
+            "File" : "file"
+        },
+        "Parameters" : [
+                ('IPAddress', "share", 'remote_ipaddr', type("10.20.40.50"), None),
+                ('ShareName', "share", 'remote_share_name', type("\\test"), None),
+                ('ShareType', "share", 'remote_share_type', Share.ShareType, None),
+                ('FileName',  "share", 'remote_file_name', type("filename"), None),
+                ("Username",  "creds", 'username', type("user"), None),
+                ("Password",  "creds", 'password', type("password"), None),
+                ("TimeToWait", "reboot_options", "time_to_wait", type(300), None),
+                ("EndHostPowerState", "reboot_options", HostEndPowerStateEnum, None),
+                ("ShutdownType", "reboot_options", "shutdown_type", ShutdownTypeEnum, None)
+                #("ScheduledStartTime", datetime),
+                #("UntilTime", datetime)
         ]
      },
 
@@ -1787,7 +1818,7 @@ class iDRACConfig(iBaseConfigApi):
         return states[status]
 
     # Enabling APIs
-    def _commit_scp(self, record):
+    def _commit_scp(self, record, reboot=False):
         if not self.liason_share:
             return { 'Status' : 'Failed',
                      'Message' : 'Configuration Liason Share not registered.' }
@@ -1796,7 +1827,7 @@ class iDRACConfig(iBaseConfigApi):
 
         with open(tempshare.mount_point.full_path, "w") as f:
             f.write(self.config.format_scp(record))
-        msg = self.scp_import(tempshare)
+        msg = self.scp_import(tempshare, reboot)
         if msg['Status'] == 'Success':
             self._config_entries.process(tempshare.mount_point.full_path, True)
         tempshare.dispose()
@@ -1901,6 +1932,17 @@ class iDRACConfig(iBaseConfigApi):
     def change_bios_password(self, passtype, old_password, new_password):
         return self.entity._change_bios_password(target="BIOS.Setup.1-1", 
                  passtype=passtype, old_password=old_password, new_password=new_password)
+
+    @property
+    def BiosMode(self):
+        #Bios,Uefi
+        if self.BiosMode:
+            return self.BiosMode
+        vals = self._config_mgr._get_scp_component('BIOS', 'BootSettings', 'BootMode')
+        if not vals:
+            return self.BiosMode
+        self.BiosMode = vals.toupper()
+        return self.BiosMode
 
     # Power Management and Reboot
     def change_power(self, penum):
@@ -2379,13 +2421,16 @@ class iDRACConfig(iBaseConfigApi):
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
     # Server Configuration Profile Export/Import
-    def scp_import(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML):
-        rjson = self.scp_import_async(scp_share_path, components=components, format_file=format_file)
+    def scp_import(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML, reboot=False):
+        rjson = self.scp_import_async(scp_share_path, components=components, format_file=format_file, reboot = reboot)
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
-    def scp_import_async(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML):
+    def scp_import_async(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML, reboot = False):
         share = scp_share_path.format(ip = self.entity.ipaddr)
-        rjson = self.entity._scp_import(share = share, creds = scp_share_path.creds, target=components, format_file=format_file)
+        if reboot:
+            rjson = self.entity._scp_import_with_reboot(share = share, creds = scp_share_path.creds, target=components, format_file=format_file, reboot_options = RebootOptions())
+        else:
+            rjson = self.entity._scp_import(share = share, creds = scp_share_path.creds, target=components, format_file=format_file)
         rjson['file'] = str(share)
         return rjson
 

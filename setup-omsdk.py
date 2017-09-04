@@ -73,6 +73,7 @@ setup(
         'omsdk.listener',
         'omsdk.profiling',
         'omsdk.reflection',
+        'omsdk.logging',
         'omdrivers',
         'omdrivers.lifecycle',
         'omdrivers.lifecycle.iDRAC',
@@ -98,12 +99,18 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
-    package_dir= {'omdrivers' : 'omdrivers' },
+    package_dir= {
+        'omdrivers' : 'omdrivers',
+        'omsdk' : 'omsdk'
+    },
     package_data={
         'omdrivers': [
                 'iDRAC/*.Monitor',
                 'iDRAC/Config/*',
                 'CMC/*.Monitor',
+        ],
+        'omsdk': [
+                'logging/config/*',
         ],
     },
 

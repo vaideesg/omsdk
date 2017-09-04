@@ -98,7 +98,7 @@ class Config:
             logger.debug("Invalid Registry defined!")
             return
         grps = self.get_groups(self.complist[comp]["registry"])
-        print("<Component FQDD=\"" + fqdd + "\">")
+        self._write_output(stdout, "<Component FQDD=\"" + fqdd + "\">")
         mygrps = []
         srcgroups = grps
         if "groups" in self.complist[comp]:
@@ -116,15 +116,15 @@ class Config:
             for i in grps[group]:
                 defval = self.get_def_value(self.complist[comp]["registry"], i)
                 if 'nogroup' in self.complist[comp] and self.complist[comp]['nogroup']:
-                    print("    <Attribute Name=\"" + i + "\">" + defval + "</Attribute>")
+                    self._write_output(stdout, "    <Attribute Name=\"" + i + "\">" + defval + "</Attribute>")
                 else:
-                    print("    <Attribute Name=\"" + group + ".1#" + i + "\">" + defval + "</Attribute>")
-        print("</Component>")
+                    self._write_output(stdout, "    <Attribute Name=\"" + group + ".1#" + i + "\">" + defval + "</Attribute>")
+        self._write_output(stdout, "</Component>")
 
 
     def _spit_scp(self, desiredcfg, output, depth = ""):
         if depth == "":
-            output.write("<SystemConfiguration>\n")
+            self._write_output(output, "<SystemConfiguration>\n")
         for fqdd in desiredcfg:
             _comp = self.get_comp_from_fqdd(fqdd)
             if _comp == "invalid":
@@ -135,7 +135,7 @@ class Config:
                 continue
             comp = self.complist[_comp]["registry"]
             grps = self.get_groups(comp)
-            output.write(depth + "  <Component FQDD=\"" + fqdd + "\">\n")
+            self._write_output(output, depth + "  <Component FQDD=\"" + fqdd + "\">\n")
             for compen in desiredcfg[fqdd]:
                 props = self.defs[comp]["definitions"][comp]["properties"]
                 if PY2UC and isinstance(compen, unicode):
@@ -154,9 +154,9 @@ class Config:
                 else:
                     for ent in desiredcfg[fqdd][compen]:
                         idx = self._attr_print(output, depth, _comp, cvalue, props, ent, idx)
-            output.write(depth + "  </Component>\n")
+            self._write_output(output, depth + "  </Component>\n")
         if depth == "":
-            output.write("</SystemConfiguration>\n")
+            self._write_output(output, "</SystemConfiguration>\n")
 
     def _attr_print(self, output, depth, _comp, cvalue, props, desired, idx):
         if desired is None:
@@ -175,10 +175,16 @@ class Config:
         else:
             atname = props[cvalue]["qualifier"] + "." + str(idx) + "#"
         atname = atname + atname_postfix
-        output.write(depth + "    <Attribute Name=\""+atname+"\">")
-        output.write(str(desired))
-        output.write("</Attribute>\n")
+        self._write_output(output, depth + "    <Attribute Name=\""+atname+"\">")
+        self._write_output(output, str(desired))
+        self._write_output(output, "</Attribute>\n")
         return (idx+1)
+
+    def _write_output(self, output, line):
+        if PY2UC:
+            output.write(unicode(line))
+        else:
+            output.write(line)
 
     def format_scp(self, desiredcfg):
         output = io.StringIO()

@@ -404,10 +404,6 @@ class FileOnShare(Share):
         try:
             (fd, fname) = tempfile.mkstemp(prefix=prefix, suffix=suffix,
                         dir=self.mount_point.share_path, text=text)
-        except FileNotFoundError as ex:
-            logger.debug(str(ex))
-            logger.debug("Share is not proper configured!")
-            return None
         except Exception as ex:
             logger.debug("Failed to create temp file: " +str(ex))
             return None

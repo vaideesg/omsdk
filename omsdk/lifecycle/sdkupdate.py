@@ -12,6 +12,7 @@ PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 import logging
 
+PY2UC = (sys.version_info < (3,0,0))
 
 logger = logging.getLogger(__name__)
 
@@ -74,24 +75,30 @@ class Update(object):
         #    logger.debug("ERROR: Entityjson is empty")
         #    return
         self._get_swidentity_hash()
-        output.write('<SVMInventory>\n')
-        output.write('    <System')
+        self._write_output(output, '<SVMInventory>\n')
+        self._write_output(output, '    <System')
         if "System" in self.entity.entityjson:
             for (invstr, field) in [ ("Model", "Model"), ("systemID", "SystemID"), ("Name", "HostName") ]:
                 if field in self.entity.entityjson["System"]:
-                    output.write(" " + invstr + "=\"" + self.entity.entityjson["System"][field] + "\"")
-        output.write(' InventoryTime="{0}">\n'.format(str(datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S"))))
+                    self._write_output(output, " " + invstr + "=\"" + self.entity.entityjson["System"][field] + "\"")
+        self._write_output(output, ' InventoryTime="{0}">\n'.format(str(datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S"))))
         for ent in self._swidentity:
-            output.write('        <Device')
+            self._write_output(output, '        <Device')
             for (invstr, field) in [ ("componentID", "ComponentID"),
                 ("vendorID", "VendorID"),
                 ("deviceID", "DeviceID"),
                 ("subVendorID", "SubVendorID"),
                 ("subDeviceID", "SubDeviceID") ]:
                 if field in self._swidentity[ent]:
-                    output.write(" " + invstr + "=\"" + self._swidentity[ent][field] + "\"")
-            output.write(' bus="" display="">\n')
-            output.write('            <Application componentType="{0}" version="{1}" display="" />\n'.format(self._swidentity[ent]["ComponentType"], self._swidentity[ent]["VersionString"]))
-            output.write('        </Device>\n')
-        output.write('    </System>\n')
-        output.write('</SVMInventory>\n')
+                    self._write_output(output, " " + invstr + "=\"" + self._swidentity[ent][field] + "\"")
+            self._write_output(output, ' bus="" display="">\n')
+            self._write_output(output, '            <Application componentType="{0}" version="{1}" display="" />\n'.format(self._swidentity[ent]["ComponentType"], self._swidentity[ent]["VersionString"]))
+            self._write_output(output, '        </Device>\n')
+        self._write_output(output, '    </System>\n')
+        self._write_output(output, '</SVMInventory>\n')
+
+    def _write_output(self, output, line):
+        if PY2UC:
+            output.write(unicode(line))
+        else:
+            output.write(line)
