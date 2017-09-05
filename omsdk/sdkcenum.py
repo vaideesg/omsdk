@@ -1,20 +1,19 @@
 from omsdk.version.sdkversion import OverrideCompatibleEnumPyVersion
-OverrideCompatibleEnumPyVersion = (3, 0, 0)
 
 from enum import Enum
 import sys
 
 if OverrideCompatibleEnumPyVersion:
-    PY2 = (sys.version_info < OverrideCompatibleEnumPyVersion)
-    PY3 = (sys.version_info >= OverrideCompatibleEnumPyVersion)
+    PY2Enum = (sys.version_info < OverrideCompatibleEnumPyVersion)
+    PY3Enum = (sys.version_info >= OverrideCompatibleEnumPyVersion)
 
-if PY2:
+if PY2Enum:
     from enum import EnumValue
 
 class TypeHelper:
     @staticmethod
     def belongs_to(entype, value):
-        if PY2:
+        if PY2Enum:
             if  (type(entype) is Enum):
                 return (isinstance(value, EnumValue) and \
                         value.enumtype == entype)
@@ -29,20 +28,20 @@ class TypeHelper:
 
     @staticmethod
     def resolve(enval):
-        if PY2 and isinstance(enval, EnumValue):
+        if PY2Enum and isinstance(enval, EnumValue):
             return (enval.key)
-        elif PY3 and isinstance(enval, Enum):
+        elif PY3Enum and isinstance(enval, Enum):
             return (enval.value)
         else:
             return enval
 
     @staticmethod
     def get_name(enval, mymap):
-        if PY2 or not isinstance(enval, Enum) :
+        if PY2Enum or not isinstance(enval, Enum) :
             for i in mymap:
                 if mymap[i] == TypeHelper.resolve(enval):
                     return i
-        elif PY3 and isinstance(enval, Enum):
+        elif PY3Enum and isinstance(enval, Enum):
             return (enval.name)
         else:
             return enval
@@ -52,7 +51,7 @@ class EnumWrapper(object):
     enum_name = None
     def __init__(self, name, entries):
         EnumWrapper.enum_entries[name] = entries
-        if PY2:
+        if PY2Enum:
             EnumWrapper.enum_name = name
             ent = EnumWrapper.enum_entries[name].keys()
             self.enum_type = Enum(*ent, value_type = EnumWrapper.mapvalue)
@@ -62,14 +61,14 @@ class EnumWrapper(object):
 
     @staticmethod
     def mapvalue(self, i, value):
-        if PY2:
+        if PY2Enum:
             return EnumValue(self, i, EnumWrapper.enum_entries[EnumWrapper.enum_name][value])
         else:
             pass
 
     @staticmethod
     def resolve(enval):
-        if PY2:
+        if PY2Enum:
             return (enval.key)
         else:
             return (enval.value)

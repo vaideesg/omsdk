@@ -1,6 +1,9 @@
 import sys
 
-OMSDKVersion = (0, 5, 0)
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
+
+OMSDKVersion = (0, 9, 1002)
 
 APIVersions = {
     'ConfigFactory' : (1, 0, 0),
@@ -24,3 +27,18 @@ class CompatibilityFactory:
        return CompatibilityFactory.compat
 
 cc = CompatibilityFactory()
+
+if PY3:
+    _EnumStyle = 'V3'
+else:
+    _EnumStyle = 'NotPresent'
+    try :
+        import enum
+        if hasattr(enum, 'version'):
+            _EnumStyle = 'V2'
+        elif hasattr(enum, '__version__'):
+            _EnumStyle = 'V3'
+    except ImportError:
+        pass
+if _EnumStyle == 'V3':
+    OverrideCompatibleEnumPyVersion = sys.version_info

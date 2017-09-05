@@ -6,7 +6,7 @@ import time
 import json
 from enum import Enum
 from json import JSONEncoder
-from omsdk.sdkcenum import EnumWrapper,TypeHelper
+from omsdk.sdkcenum import EnumWrapper,TypeHelper,PY2Enum
 from pprint import pprint
 from datetime import datetime
 import xml.etree.ElementTree as ET
@@ -32,7 +32,7 @@ except ImportError:
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
-if PY2:
+if PY2Enum:
     from enum import EnumValue
 
 
@@ -49,7 +49,7 @@ class MyEncoder(JSONEncoder):
                 return str(o)
         if isinstance(o, type):
             return str(type)
-        if PY2 and isinstance(o, EnumValue):
+        if PY2Enum and isinstance(o, EnumValue):
             return o.key
         if isinstance(o, datetime):
             return str(datetime)

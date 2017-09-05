@@ -1,9 +1,8 @@
 from enum import Enum
-from omsdk.sdkcenum import EnumWrapper, TypeHelper
-try:
+from omsdk.sdkcenum import EnumWrapper, TypeHelper, PY2Enum
+
+if PY2Enum
     from enum import EnumValue
-except:
-    pass
 
 import re
 import sys
@@ -111,7 +110,7 @@ class ComponentScope:
         self.comps = {}
         for comp in args:
             try:
-                if PY2 and isinstance(comp, EnumValue):
+                if PY2Enum and isinstance(comp, EnumValue):
                     self.comps[comp.key] = True
                     continue
             except:
