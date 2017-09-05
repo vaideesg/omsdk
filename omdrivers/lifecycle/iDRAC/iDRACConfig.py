@@ -46,6 +46,12 @@ PowerBootEnum = EnumWrapper("PSE",  { "Enabled" : 2,
     "Reset" : 11,
     }).enum_type
 
+ConfigStateEnum = EnumWrapper("CSE",  {
+    "Enabled" : 'Enabled',
+    "Disabled" : 'Disabled',
+    "Unknown" : 'Unknown',
+    }).enum_type
+
 RebootJobType = EnumWrapper("RJT", {
     'PowerCycle' : 1, # 30 s
     'GracefulRebootWithoutShutdown' : 2, # 5 min
@@ -2001,6 +2007,17 @@ class iDRACConfig(iBaseConfigApi):
     # End Auto Discovery APIs
 
     # Configure APIs
+    @property
+    def CSIOR(self):
+        csior = self._get_scp_comp_field("LifecycleController.Embedded.1",
+                    "LCAttributes.1#CollectSystemInventoryOnRestart")
+        if csior and csior.lower() == "enabled":
+            return ConfigStateEnum.Enabled
+        elif csior and csior.lower() == "disabled":
+            return ConfigStateEnum.Disabled
+        else:
+            return ConfigStateEnum.Unknown
+
     def enable_csior(self):
         return self._configure_field_using_scp(
                     component = "LifecycleController.Embedded.1",
