@@ -30,6 +30,7 @@ class Update(object):
         self.sw_inited = False
         self._swidentity = {}
         self.firmware_json = {}
+        self.installed_firmware = {}
 
     def get_swidentity(self):
         if self.sw_inited:
@@ -37,7 +38,17 @@ class Update(object):
             return self.firmware_json
         self.entity._get_entries(self.firmware_json, self.firmware_enum)
         logger.debug(PrettyPrint.prettify_json(self.firmware_json))
+        for obj in self.firmware_json:
+            self.installed_firmware[obj] = []
+            for entry in self.firmware_json[obj]:
+                if 'Status' in entry and entry['Status'] == 'Installed':
+                    self.installed_firmware[obj].append(entry)
         return self.firmware_json
+
+    @property
+    def InstalledFirmware(self):
+        self.get_swidentity()
+        return self.installed_firmware
 
     def _get_swidentity_hash(self):
         self.get_swidentity()
