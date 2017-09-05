@@ -31,17 +31,20 @@ class ProtocolBase(object):
                 if (args[counter] is None):
                     myval = ""
                 else:
-                    if not TypeHelper.belongs_to(val, args[counter]):
-                            return { 'Status' : 'Failed', 'Message' : 'Client Side: Argument ' + str(counter) + " got " + str(type(args[counter]))+ "! Must be: " + val.__name__ }
+                    args_fixed = args[counter]
+                    if PY2 and (val == str and type(args_fixed) == unicode):
+                        args_fixed = args_fixed.encode('ascii', 'ignore')
+                    if not TypeHelper.belongs_to(val, args_fixed):
+                            return { 'Status' : 'Failed', 'Message' : 'Client Side: Argument ' + str(counter) + " got " + str(type(args_fixed))+ "! Must be: " + val.__name__ }
                     try :
-                        if (val == datetime) and args[counter].year == 1970:
+                        if (val == datetime) and args_fixed.year == 1970:
                             myval = "TIME_NOW"
                         elif (val == datetime):
-                            myval = datetime.strftime(args[counter], "%Y%m%d%H%M%S")
+                            myval = datetime.strftime(args_fixed, "%Y%m%d%H%M%S")
                         else:
-                            myval = TypeHelper.resolve(args[counter].value)
+                            myval = TypeHelper.resolve(args_fixed.value)
                     except Exception as ex:
-                        myval = args[counter]
+                        myval = args_fixed
                 toargs[var] = myval
                 if dest != None:
                     toargs[var] = dest(toargs[var])

@@ -15,6 +15,7 @@ import platform
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
+PY2UC = (sys.version_info < (3,0,0))
 
 logger = logging.getLogger(__name__)
 # idrac.get_share_type_mapped():
@@ -176,15 +177,15 @@ class _PathObject(object):
         return self._get_full_path(self.paths + npaths)
 
     def printx(self, sname):
-        logger.debug("Share (" + str(self.share_type) + "): " + str(self.share_name))
+        print("Share (" + str(self.share_type) + "): " + str(self.share_name))
         if self.ipaddr and len(self.ipaddr) > 0:
-            logger.debug("  " + sname + " IPAddress " + str(self.ipaddr))
-            logger.debug("  " + sname + " IPType " + str(self.iptype))
+            print("  " + sname + " IPAddress " + str(self.ipaddr))
+            print("  " + sname + " IPType " + str(self.iptype))
         if self.file_name and len(self.file_name) > 0:
-            logger.debug("  " + sname + " Filename " + str(self.file_name))
-        logger.debug("  " + sname + " Full Path " + str(self.full_path))
-        logger.debug("  " + sname + " Mountable Path " + str(self.mountable_path))
-        logger.debug("  " + sname + " Share Path " + str(self.share_path))
+            print("  " + sname + " Filename " + str(self.file_name))
+        print("  " + sname + " Full Path " + str(self.full_path))
+        print("  " + sname + " Mountable Path " + str(self.mountable_path))
+        print("  " + sname + " Share Path " + str(self.share_path))
 
 class RemotePath(_PathObject):
     def __init__(self, share_type, isFolder, ipaddr, *args):
@@ -266,6 +267,15 @@ class FileOnShare(Share):
 
         self.creds = creds
         self.isFolder = isFolder
+
+        if PY2UC:
+            if type(remote) == unicode:
+                remote = remote.encode('ascii', 'ignore')
+            if type(mount_point) == unicode:
+                mount_point = mount_point.encode('ascii', 'ignore')
+            if type(common_path) == unicode:
+                common_path = common_path.encode('ascii', 'ignore')
+
         if remote == "vFlash":
             self.remote = vFlash()
         else:
@@ -574,9 +584,9 @@ class FileOnShare(Share):
         if self.mount_point:
             self.mount_point.printx("Mount")
         if self.creds:
-            logger.debug("   Username " + self.creds.username)
-            logger.debug("   Password " + self.creds.password)
-        logger.debug("   Template " + str(self.is_template))
+            print("   Username " + self.creds.username)
+            print("   Password " + self.creds.password)
+        print("   Template " + str(self.is_template))
 
 class cfgprocessor:
 	UNGROUPED = "<ungrouped>"

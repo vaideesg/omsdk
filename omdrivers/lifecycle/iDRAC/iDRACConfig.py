@@ -1851,13 +1851,7 @@ class iDRACConfig(iBaseConfigApi):
     def _configure_field_using_scp(self, component, fmap, reboot_needed = False):
         config = self.config
         lc_config = { component : fmap }
-        rjson = self._commit_scp(lc_config)
-        #retVal = False
-        #if rjson['Status'] == 'Success':
-        #    retVal = True
-        #    if reboot_needed:
-        #        retVal = reboot_after_config()
-        #return retVal
+        rjson = self._commit_scp(lc_config, reboot_needed)
         return rjson
 
     def _comp_to_fqdd(self, fqdd_list, comp, default=None):
@@ -1934,15 +1928,22 @@ class iDRACConfig(iBaseConfigApi):
                  passtype=passtype, old_password=old_password, new_password=new_password)
 
     @property
-    def BiosMode(self):
+    def BootMode(self):
         #Bios,Uefi
-        if self.BiosMode:
-            return self.BiosMode
         vals = self._config_mgr._get_scp_component('BIOS.Setup.1-1')
         if not vals:
             return self.BiosMode
-        self.BiosMode = vals.toupper()
-        return self.BiosMode
+        return vals
+
+    def change_boot_mode(self, mode):
+        if TypeHelper.resolve(mode) == TypeHelper.resolve(self.BiosMode):
+            return { 'Status' : 'Success',
+                     'Message' : 'System already in ' + mode + " mode" }
+        mode = TypeHelper.resolve(mode)
+        return self._configure_field_using_scp(
+                    component = "BIOS.Setup.1-1",
+                    fmap = { self.config.arspec.BIOS.BiosMode : mode },
+                    reboot_needed = True)
 
     # Power Management and Reboot
     def change_power(self, penum):
