@@ -52,6 +52,12 @@ RebootJobType = EnumWrapper("RJT", {
     'GracefulRebootWithForcedShutdown' :  3 # 5 min
 }).enum_type
 
+BootModeEnum = EnumWrapper('BME', {
+    'Bios' : 'Bios',
+    'Uefi' : 'Uefi',
+    'Unknown' : 'Unknown'
+}).enum_type
+
 BlinkLEDEnum = EnumWrapper('BL', {
     # Off and Disable are same
     'Off'     : 0,
@@ -1899,7 +1905,10 @@ class iDRACConfig(iBaseConfigApi):
     def _get_scp_component(self, comp):
         self._load_scp()
         return self._config_entries.get_component(comp)
-        
+
+    def _get_scp_comp_field(self, comp, field):
+        self._load_scp()
+        return self._config_entries.get_comp_field(comp, field)
 
     # LC Status
     def lc_status(self):
@@ -1929,14 +1938,16 @@ class iDRACConfig(iBaseConfigApi):
 
     @property
     def BootMode(self):
-        #Bios,Uefi
-        vals = self._config_mgr._get_scp_component('BIOS.Setup.1-1')
-        if not vals:
-            return self.BiosMode
-        return vals
+        bmode = self._get_scp_comp_field('BIOS.Setup.1-1','BootMode')
+        if bmode and bmode.lower() == 'bios':
+            return BootModeEnum.Bios
+        elif bmode and bmode.lower() == 'uefi':
+            return BootModeEnum.Uefi
+        else:
+            return BootModeEnum.Unknown
 
     def change_boot_mode(self, mode):
-        if TypeHelper.resolve(mode) == TypeHelper.resolve(self.BiosMode):
+        if TypeHelper.resolve(mode) == TypeHelper.resolve(self.BootMode):
             return { 'Status' : 'Success',
                      'Message' : 'System already in ' + mode + " mode" }
         mode = TypeHelper.resolve(mode)

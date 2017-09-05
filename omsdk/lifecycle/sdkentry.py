@@ -16,6 +16,7 @@ RowStatus = EnumWrapper("MS", {
 class ConfigEntries(object):
     def __init__(self, keyfield):
         self.valuemap = {}
+        self.compmap = {}
         self.slotmap = { }
         self.keyfield = keyfield
         self.loaded = False
@@ -24,11 +25,18 @@ class ConfigEntries(object):
         valuemap = {}
         domtree = ET.parse(fname)
         system = domtree.getroot()
+
         for component in system.findall("./Component"):
             fqdd = component.get("FQDD")
-            valuemap[fqdd] = {}
+            if not incremental and fqdd in self.compmap:
+                del self.compmap[fqdd]
+            if fqdd not in self.compmap:
+                self.compmap[fqdd] = {}
             for attribute in component.findall("./Attribute"):
-                valuemap[fqdd][attribute.get("Name")]= attribute.text
+                self.compmap[fqdd][attribute.get("Name")]= attribute.text
+
+        for component in system.findall("./Component"):
+            for attribute in component.findall("./Attribute"):
                 for comp in self.keyfield:
                     pattern = self.keyfield[comp]['Pattern']
                     result = re.search(pattern, attribute.get("Name"))
@@ -147,4 +155,15 @@ class ConfigEntries(object):
     def get_component(self, comp):
         if comp in self.valuemap:
             return self.valuemap[comp]
+        if comp in self.compmap:
+            return self.compmap[comp]
+        return None
+
+    def get_comp_field(self, comp, field):
+        if comp in self.valuemap:
+            if field in self.valuemap[comp]:
+                return self.valuemap[comp][field]
+        if comp in self.compmap:
+            if field in self.compmap[comp]:
+                return self.compmap[comp][field]
         return None
