@@ -1799,6 +1799,7 @@ class iDRACConfig(iBaseConfigApi):
         self.entity.eRAIDLevelsEnum = RAIDLevelsEnum
         self.liason_share = None
         self._config_entries = ConfigEntries(iDRACConfigKeyFields)
+        self._raid_tree = None
 
     def set_liason_share(self, myshare):
         if not isinstance(myshare, FileOnShare):
@@ -2363,24 +2364,97 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.PartConfigurationUpdate_LCAttributes : part_config_update,
             })
 
-    def create_raid(self, vd_name, span_depth, span_length, raid_type, n_disks):
-        raid_type = TypeHelper.resolve(raid_type)
-        # Replace below with Controller, Enclosure, PhysicalDisk, VirtualDisk
-        if not self.entity.get_entityjson():
-            logger.debug("Cannot talk to device!")
+    def _replicate_ctree(self, obj):
+        if isinstance(obj, list):
+            return [self._replicate_ctree(i) for i in obj]
+        elif isinstance(obj, dict):
+            return dict([ (x, self._replicate_ctree(obj[x])) for x in obj])
+        else:
+            return obj
+
+    def _init_raid_tree(self):
+        if self._raid_tree:
+            return self._raid_tree
+
+        self.entity.get_partial_entityjson(
+              self.entity.ComponentEnum.Controller,
+              self.entity.ComponentEnum.Enclosure,
+              self.entity.ComponentEnum.VirtualDisk,
+              self.entity.ComponentEnum.PhysicalDisk
+        )
+        raid_tree = self.entity.ContainmentTree
+        self._raid_tree = self._replicate_ctree(raid_tree)
+        rjson = self._raid_tree["Storage"]
+        if not "Controller" in rjson:
+            logger.debug("No Controllers!")
             return False
-        mytree = self.entity.ContainmentTree
+
+        logger.debug("Containment Tree from device:")
+        logger.debug(PrettyPrint.prettify_json(raid_tree['Storage']))
+
+        healthy_cntl_list = {}
+        if 'Controller' in self.entity.entityjson:
+            for cnt in self.entity.entityjson['Controller']:
+                if cnt['PrimaryStatus'] in ['1', '0']:
+                    healthy_cntl_list[cnt['FQDD']] = cnt['PrimaryStatus']
+
+        healthy_enc_list = {}
+        if 'Enclosure' in self.entity.entityjson:
+            for enc in self.entity.entityjson['Enclosure']:
+                if enc['PrimaryStatus'] in ['1', '0']:
+                    healthy_enc_list[cnt['FQDD']] = enc['PrimaryStatus']
+
+        available_pd_list = {}
+        if 'PhysicalDisk' in self.entity.entityjson:
+            for pd in self.entity.entityjson['PhysicalDisk']:
+                if pd['RaidStatus'] in ['1']:
+                    available_pd_list[pd['FQDD']] = pd['RaidStatus']
+
+        for controller in rjson['Controller']:
+            if isinstance(rjson['Controller'][controller], list):
+                continue
+            if controller not in healthy_cntl_list:
+                rjson['Controller'][controller] = {}
+            if 'Enclosure' in rjson['Controller'][controller]:
+                encl_list = rjson['Controller'][controller]['Enclosure']
+                for encl in encl_list:
+                    if encl not in healthy_enc_list:
+                        encl_list[encl] = {}
+                    if not 'PhysicalDisk' in encl_list[encl]:
+                        continue
+                    my_list = []
+                    for pd in encl_list[encl]['PhysicalDisk']:
+                        if pd in available_pd_list:
+                            my_list.append(encl_list[encl]['PhysicalDisk'])
+                    encl_list[encl]['PhysicalDisk'] = my_list
+
+            if 'PhysicalDisk' in rjson['Controller'][controller]:
+                my_list = []
+                for pd in rjson['Controller'][controller]['PhysicalDisk']:
+                    if pd in available_pd_list:
+                        my_list.append(pd)
+                rjson['Controller'][controller]['PhysicalDisk'] = my_list
+        # Controller and Enclosure should be Healthy
+        # convert non-raid to raid
+        logger.debug("Containment Tree containing healthy/available entries:")
+        logger.debug(PrettyPrint.prettify_json(self._raid_tree['Storage']))
+
+    def create_raid(self, vd_name, span_depth, span_length, raid_type, n_dhs = 0):
+        raid_type = TypeHelper.resolve(raid_type)
+        self._init_raid_tree()
         config = self.config
-        if not "Storage" in mytree:
+        if not "Storage" in self._raid_tree:
             logger.debug("Storage not found in device")
             return False
-        rjson = mytree["Storage"]
+        rjson = self._raid_tree["Storage"]
         s_controller = None
         s_enclosure = None
+        n_disks = span_length * span_depth
+        t_disks = n_disks + n_dhs
         n_cntr = 0
         s_disks = []
         if not "Controller" in rjson:
-            logger.debug("No Controllers!")
+            logger.debug("No disks left in any Controllers!")
             return None
 
         for controller in rjson['Controller']:
@@ -2389,21 +2463,33 @@ class iDRACConfig(iBaseConfigApi):
             n_cntr = 0
             if 'VirtualDisk' in rjson['Controller'][controller]:
                 n_cntr = len(rjson['Controller'][controller]['VirtualDisk'])
-            if not 'Enclosure' in rjson['Controller'][controller]:
-                logger.debug("No enclosures in controller:" + controller)
-                continue
-            encl_list = rjson['Controller'][controller]['Enclosure']
-            for encl in encl_list:
-                if not 'PhysicalDisk' in encl_list[encl]:
-                    continue
-                if len(encl_list[encl]['PhysicalDisk']) >= n_disks:
-                    s_disks = encl_list[encl]['PhysicalDisk'][0:n_disks]
-                    s_enclosure = encl
+                logger.debug("No vds in controller:" + controller)
+            if 'PhysicalDisk' in rjson['Controller'][controller]:
+                # Direct Attached Disks
+                cntrl = rjson['Controller'][controller]
+                if len(cntrl['PhysicalDisk']) >= t_disks:
+                    s_disks = cntrl['PhysicalDisk'][0:t_disks]
+                    s_enclosure = None
                     s_controller = controller
                     break
+                else:
+                    logger.debug(controller+" no "+str(t_disks)+" disks")
+            if 'Enclosure' in rjson['Controller'][controller]:
+                encl_list = rjson['Controller'][controller]['Enclosure']
+                for encl in encl_list:
+                    if not 'PhysicalDisk' in encl_list[encl]:
+                        continue
+                    if len(encl_list[encl]['PhysicalDisk']) >= t_disks:
+                        s_disks = encl_list[encl]['PhysicalDisk'][0:t_disks]
+                        s_enclosure = encl
+                        s_controller = controller
+                        break
+                    else:
+                        logger.debug(controller+" no "+str(t_disks)+" disks")
             if s_controller:
                 break
         if s_controller is None:
+            logger.debug("No sufficient disks found!")
             return False
         vdfqdd = "Disk.Virtual." + str(n_cntr) + ":" + s_controller
         scp = {}
@@ -2430,19 +2516,51 @@ class iDRACConfig(iBaseConfigApi):
                     config.arspec.RAID.RAIDTypes : raid_type,
                     config.arspec.RAID.IncludedPhysicalDiskID : s_disks
                 },
-                s_enclosure:  {}
         }
+        counter = 0
         for disk in s_disks:
-            scp[s_controller][s_enclosure][disk] = {
-                config.arspec.RAID.RAIDHotSpareStatus : 'No',
-                #config.arspec.RAID.RAIDPDState : 'Online'
-            }
-        return self._commit_scp(scp)
+            counter += 1
+            if counter >= (n_disks + n_dhs): state = "Global"
+            elif counter >= n_disks: state = "Dedicated"
+            else: state = "No"
+            disk_state = { config.arspec.RAID.RAIDHotSpareStatus : state }
+            if s_enclosure:
+                scp[s_controller][s_enclosure][disk] = disk_state
+            else:
+                scp[s_controller][disk] = disk_state
+
+        rjson = self._commit_scp(scp, reboot=True)
+
+        if rjson['Status'] == 'Success':
+            # if SCP is successful -> update _raid_tree
+            updtree = self._raid_tree['Storage']['Controller'][s_controller]
+            if 'VirtualDisk' not in updtree:
+                updtree['VirtualDisk'] = []
+            updtree['VirtualDisk'].append(vdfqdd)
+            for disk in s_disks:
+                if s_enclosure:
+                  updtree['Enclosure'][s_enclosure]['PhysicalDisk'].remove(disk)
+                else:
+                  updtree['PhysicalDisk'].remove(disk)
+            logger.debug("VD Created Successfully. State after creation:")
+            logger.debug(PrettyPrint.prettify_json(self._raid_tree['Storage']))
+        return rjson
 
     def delete_raid(self, vd_name):
-        rjson = self.entity._delete_raid(virtual_disk = vd_name)
+        self._init_raid_tree()
+        if 'VirtualDisk' not in self.entity.entityjson:
+            return { 'Status' : 'Success', 'Message' : 'No VDs in Server' }
+        vdfqdd = None
+        for vd in self.entity.entityjson['VirtualDisk']:
+            if vd['Name'] == vd_name:
+                vdfqdd = vd['FQDD']
+                break
+        if not vdfqdd:
+            return { 'Status' : 'Failed', 'Message' : 'No VD found with name "' + vd_name + '"' }
+        rjson = self.entity._delete_raid(virtual_disk = vdfqdd)
         if rjson['Status'] in [ 'Error', "Failed"]: return rjson
-        rjson = self.entity._create_raid_config_job(virtual_disk = vd_name, reboot=RebootJobType.GracefulRebootWithForcedShutdown)
+        rjson = self.entity._create_raid_config_job(virtual_disk = vdfqdd,
+                reboot=RebootJobType.GracefulRebootWithForcedShutdown)
         rjson['file'] = 'delete_raid'
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
