@@ -2561,6 +2561,19 @@ class iDRACConfig(iBaseConfigApi):
         if rjson['Status'] in [ 'Error', "Failed"]: return rjson
         rjson = self.entity._create_raid_config_job(virtual_disk = vdfqdd,
                 reboot=RebootJobType.GracefulRebootWithForcedShutdown)
+        if rjson['Status'] == 'Success':
+            updtree = self._raid_tree['Storage']['Controller']
+            for controller in updtree:
+                if isinstance(updtree[controller], list):
+                    continue
+                if 'VirtualDisk' not in updtree[controller]:
+                    continue
+                if vdfqdd in updtree[controller]['VirtualDisk']:
+                    updtree[controller]['VirtualDisk'].remove(vdfqdd)
+                logger.debug("VD Deleted Successfully. State after deletion:")
+                logger.debug(PrettyPrint.prettify_json(self._raid_tree['Storage']))
+                # TODO: Restore the Physical Disks to _raid_tree
+
         rjson['file'] = 'delete_raid'
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
