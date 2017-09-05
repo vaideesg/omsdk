@@ -1,6 +1,6 @@
 {
     "$ref": "#/definitions/EventFilters",
-    "$schema": "s\\iDRAC.Config\\EventFilters.xml",
+    "$schema": "omdrivers\\iDRAC\\xml\\EventFilters.xml",
     "definitions": {
         "Alert#EmailTypes": {
             "enum": [
@@ -87,52 +87,60 @@
                 "Action": {
                     "description": "action",
                     "longDescription": "Action enablement",
+                    "name": "Action",
                     "qualifier": "Action"
                 },
                 "Alert#Email": {
                     "description": "Email enablement",
                     "longDescription": "Email enablement",
+                    "name": "Alert#Email",
                     "qualifier": "SystemHealth",
                     "type": "Alert#EmailTypes"
                 },
                 "Alert#IPMI": {
                     "description": "IPMI enablement",
                     "longDescription": "IPMI enablement",
+                    "name": "Alert#IPMI",
                     "qualifier": "SystemHealth",
                     "type": "Alert#IPMITypes"
                 },
                 "Alert#OSLog": {
                     "description": "OSLog enablement",
                     "longDescription": "OSLog enablement",
+                    "name": "Alert#OSLog",
                     "qualifier": "SystemHealth",
                     "type": "Alert#OSLogTypes"
                 },
                 "Alert#SNMP": {
                     "description": "SNMP enablement",
                     "longDescription": "SNMP enablement",
+                    "name": "Alert#SNMP",
                     "qualifier": "SystemHealth",
                     "type": "Alert#SNMPTypes"
                 },
                 "Alert#Syslog": {
                     "description": "Syslog enablement",
                     "longDescription": "Syslog enablement",
+                    "name": "Alert#Syslog",
                     "qualifier": "SystemHealth",
                     "type": "Alert#SyslogTypes"
                 },
                 "Alert#WSEventing": {
                     "description": "WSEventing enablement",
                     "longDescription": "WSEventing enablement",
+                    "name": "Alert#WSEventing",
                     "qualifier": "SystemHealth",
                     "type": "Alert#WSEventingTypes"
                 },
                 "DisplayName": {
                     "description": "Display Name",
                     "longDescription": "This field displays the name of the filter",
+                    "name": "DisplayName",
                     "qualifier": "SystemHealth"
                 }
             },
             "type": "object"
         }
     },
-    "title": "s\\iDRAC.Config\\EventFilters.xml"
+    "title": "omdrivers\\iDRAC\\xml\\EventFilters.xml"
 }

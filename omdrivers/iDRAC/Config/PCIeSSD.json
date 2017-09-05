@@ -1,6 +1,6 @@
 {
     "$ref": "#/definitions/PCIeSSD",
-    "$schema": "s\\iDRAC.Config\\PCIeSSD.xml",
+    "$schema": "omdrivers\\iDRAC\\xml\\PCIeSSD.xml",
     "definitions": {
         "BusProtocolTypes": {
             "enum": [
@@ -115,6 +115,7 @@
                 "BusProtocol": {
                     "description": "Bus Protocol",
                     "longDescription": "Displays the type of the physical device, such as PCIe.",
+                    "name": "BusProtocol",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true",
                     "type": "BusProtocolTypes"
@@ -122,6 +123,7 @@
                 "BusProtocolVersion": {
                     "description": "Bus Protocol Version",
                     "longDescription": "Displays the revision of the PCI Express Base Specification to which this device complies.",
+                    "name": "BusProtocolVersion",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true",
                     "type": "BusProtocolVersionTypes"
@@ -129,6 +131,7 @@
                 "CapableSpeed": {
                     "description": "PCIe Maximum Link Speed",
                     "longDescription": "Displays the capable transfer speed of the physical device in GT/s.",
+                    "name": "CapableSpeed",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true",
                     "type": "CapableSpeedTypes"
@@ -136,6 +139,7 @@
                 "CryptographicErase": {
                     "description": "Cryptographic Erase",
                     "longDescription": "Performs a secure Cryptographic Erase on the physical device. This operation erases all user data by deleting the encryption key with which the user data was previously encrypted.",
+                    "name": "CryptographicErase",
                     "qualifier": "PcieSsdOps",
                     "readonly": "false",
                     "type": "CryptographicEraseTypes"
@@ -143,6 +147,7 @@
                 "DeviceProtocol": {
                     "description": "Device Protocol",
                     "longDescription": "Displays the device protocol of the physical device, such as NVMe.",
+                    "name": "DeviceProtocol",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true",
                     "type": "DeviceProtocolTypes"
@@ -150,6 +155,7 @@
                 "FailurePredicted": {
                     "description": "Failure Predicted",
                     "longDescription": "Indicates whether the physical device has detected a condition that may lead to a device failure.",
+                    "name": "FailurePredicted",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true",
                     "type": "FailurePredictedTypes"
@@ -157,18 +163,21 @@
                 "ModelNumber": {
                     "description": "Model Number",
                     "longDescription": "Displays the model number of the physical device.",
+                    "name": "ModelNumber",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true"
                 },
                 "Name": {
                     "description": "Physical Device ID",
                     "longDescription": "Displays the ID of the physical device representing the slot ID and bay ID.",
+                    "name": "Name",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true"
                 },
                 "PcieMaxLinkWidth": {
                     "description": "PCIe Maximum Link Width",
                     "longDescription": "Displays the capable link width of the physical device",
+                    "name": "PcieMaxLinkWidth",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true",
                     "type": "PcieMaxLinkWidthTypes"
@@ -176,6 +185,7 @@
                 "PcieNegotiatedLinkSpeed": {
                     "description": "PCIe Negotiated Link Speed",
                     "longDescription": "Displays the current negotiated transfer speed of the physical device in GT/s.",
+                    "name": "PcieNegotiatedLinkSpeed",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true",
                     "type": "PcieNegotiatedLinkSpeedTypes"
@@ -183,6 +193,7 @@
                 "PcieNegotiatedLinkWidth": {
                     "description": "PCIe Negotiated Link Width",
                     "longDescription": "Displays the current negotiated link width of the physical device.",
+                    "name": "PcieNegotiatedLinkWidth",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true",
                     "type": "PcieNegotiatedLinkWidthTypes"
@@ -190,36 +201,42 @@
                 "PcieSsd": {
                     "description": "Dell PCIe Solid State Devices",
                     "longDescription": "Lists the Dell PCIe Solid State Devices and allows it to be configured",
+                    "name": "PcieSsd",
                     "qualifier": "DeviceSettings",
                     "readonly": "true"
                 },
                 "PcieSsdLog": {
                     "description": "Export Log",
                     "longDescription": "Exports a log containing debug information of the device used for troubleshooting.",
+                    "name": "PcieSsdLog",
                     "qualifier": "PcieSsdLog",
                     "readonly": "true"
                 },
                 "PcieSsdOps": {
                     "description": "Select Physical Device Operations",
                     "longDescription": "Executes Physical Device Operations such as full initialization and blink/unblink.",
+                    "name": "PcieSsdOps",
                     "qualifier": "PcieSsdOps",
                     "readonly": "true"
                 },
                 "PcieSsdProps": {
                     "description": "View Physical Device Properties",
                     "longDescription": "Displays the physical device properties.",
+                    "name": "PcieSsdProps",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true"
                 },
                 "RemainingRatedWriteEndurance": {
                     "description": "Remaining Rated Write Endurance",
                     "longDescription": "Displays the warranted wearout level of the PCIe SSD (in percentage).",
+                    "name": "RemainingRatedWriteEndurance",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true"
                 },
                 "SecureErase": {
                     "description": "Full Initialization",
                     "longDescription": "Performs full initialization on the selected physical device. This operation deletes all data on the device.",
+                    "name": "SecureErase",
                     "qualifier": "PcieSsdOps",
                     "readonly": "false",
                     "type": "SecureEraseTypes"
@@ -227,18 +244,21 @@
                 "SerialNumber": {
                     "description": "Serial Number",
                     "longDescription": "Displays the serial number of the physical device.",
+                    "name": "SerialNumber",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true"
                 },
                 "Size": {
                     "description": "Capacity (GB)",
                     "longDescription": "Displays the size of the physical device in bytes.",
+                    "name": "Size",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true"
                 },
                 "SmartStatus": {
                     "description": "SMART Status",
                     "longDescription": "Displays the SMART status of a physical device.",
+                    "name": "SmartStatus",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true",
                     "type": "SmartStatusTypes"
@@ -246,6 +266,7 @@
                 "State": {
                     "description": "State",
                     "longDescription": "Displays the status of the physical device.",
+                    "name": "State",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true",
                     "type": "StateTypes"
@@ -253,6 +274,7 @@
                 "Version": {
                     "description": "Firmware Revision",
                     "longDescription": "Displays the firmware revision of the physical device.",
+                    "name": "Version",
                     "qualifier": "PcieSsdProps",
                     "readonly": "true"
                 }
@@ -350,5 +372,5 @@
             "type": "string"
         }
     },
-    "title": "s\\iDRAC.Config\\PCIeSSD.xml"
+    "title": "omdrivers\\iDRAC\\xml\\PCIeSSD.xml"
 }

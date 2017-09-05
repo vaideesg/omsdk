@@ -1,6 +1,6 @@
 {
     "$ref": "#/definitions/NIC",
-    "$schema": "s\\iDRAC.Config\\NIC.xml",
+    "$schema": "omdrivers\\iDRAC\\xml\\NIC.xml",
     "definitions": {
         "AddressingModeTypes": {
             "enum": [
@@ -147,6 +147,17 @@
             "enumDescriptions": [
                 "Available",
                 "Unavailable"
+            ],
+            "type": "string"
+        },
+        "EEEControlTypes": {
+            "enum": [
+                "Enabled",
+                "Disabled"
+            ],
+            "enumDescriptions": [
+                "Maximum Power Savings",
+                "Disabled"
             ],
             "type": "string"
         },
@@ -323,13 +334,15 @@
                 "Auto",
                 "TXFlowControl",
                 "RXFlowControl",
-                "TXRXFlowControl"
+                "TXRXFlowControl",
+                "None"
             ],
             "enumDescriptions": [
                 "Auto",
                 "TX:Send Pause on RX Overflow",
                 "RX:Throttle TX on Pause Received",
-                "TX / RX Flow Control"
+                "TX / RX Flow Control",
+                "None"
             ],
             "type": "string"
         },
@@ -453,7 +466,10 @@
                 "100MbpsFull",
                 "1Gbps",
                 "10Gbps",
-                "40Gbps"
+                "40Gbps",
+                "25Gbps",
+                "50Gbps",
+                "100Gbps"
             ],
             "enumDescriptions": [
                 "Auto Negotiated",
@@ -463,7 +479,10 @@
                 "100 Mbps Full",
                 "1 Gbps",
                 "10 Gbps",
-                "40 Gbps"
+                "40 Gbps",
+                "25 Gbps",
+                "50 Gbps",
+                "100 Gbps"
             ],
             "type": "string"
         },
@@ -598,13 +617,106 @@
                     "BootOrderFourthFCoETarget",
                     "BootOrderSecondFCoETarget",
                     "BootOrderThirdFCoETarget",
+                    "ConnectEighteenthFCoETarget",
+                    "ConnectEighthFCoETarget",
+                    "ConnectEleventhFCoETarget",
+                    "ConnectFifteenthFCoETarget",
+                    "ConnectFifthFCoETarget",
                     "ConnectFirstFCoETarget",
+                    "ConnectFourteenthFCoETarget",
+                    "ConnectFourthFCoETarget",
+                    "ConnectNineteenthFCoETarget",
+                    "ConnectNinthFCoETarget",
+                    "ConnectSecondFCoETarget",
+                    "ConnectSeventeenthFCoETarget",
+                    "ConnectSeventhFCoETarget",
+                    "ConnectSixteenthFCoETarget",
+                    "ConnectSixthFCoETarget",
+                    "ConnectTenthFCoETarget",
+                    "ConnectThirdFCoETarget",
+                    "ConnectThirteenthFCoETarget",
+                    "ConnectThirtyFCoETarget",
+                    "ConnectThirtyFirstFCoETarget",
+                    "ConnectThirtySecondFCoETarget",
+                    "ConnectTwelfthFCoETarget",
+                    "ConnectTwentiethFCoETarget",
+                    "ConnectTwentyEighthFCoETarget",
+                    "ConnectTwentyFifthFCoETarget",
+                    "ConnectTwentyFirstFCoETarget",
+                    "ConnectTwentyFourthFCoETarget",
+                    "ConnectTwentyNinthFCoETarget",
+                    "ConnectTwentySecondFCoETarget",
+                    "ConnectTwentySeventhFCoETarget",
+                    "ConnectTwentySixthFCoETarget",
+                    "ConnectTwentyThirdFCoETarget",
+                    "EighteenthFCoEBootTargetLUN",
+                    "EighteenthFCoEWWPNTarget",
+                    "EighthFCoEBootTargetLUN",
+                    "EighthFCoEWWPNTarget",
+                    "EleventhFCoEBootTargetLUN",
+                    "EleventhFCoEWWPNTarget",
                     "FCoEGenParams",
                     "FCoEGenParamsRef",
+                    "FifteenthFCoEBootTargetLUN",
+                    "FifteenthFCoEWWPNTarget",
+                    "FifthFCoEBootTargetLUN",
+                    "FifthFCoEWWPNTarget",
                     "FirstFCoEBootTargetLUN",
                     "FirstFCoEFCFVLANID",
                     "FirstFCoEWWPNTarget",
-                    "MTUParams"
+                    "FourteenthFCoEBootTargetLUN",
+                    "FourteenthFCoEWWPNTarget",
+                    "FourthFCoEBootTargetLUN",
+                    "FourthFCoEWWPNTarget",
+                    "MTUParams",
+                    "NineteenthFCoEBootTargetLUN",
+                    "NineteenthFCoEWWPNTarget",
+                    "NinthFCoEBootTargetLUN",
+                    "NinthFCoEWWPNTarget",
+                    "SecondFCoEBootTargetLUN",
+                    "SecondFCoEWWPNTarget",
+                    "SeventeenthFCoEBootTargetLUN",
+                    "SeventeenthFCoEWWPNTarget",
+                    "SeventhFCoEBootTargetLUN",
+                    "SeventhFCoEWWPNTarget",
+                    "SixteenthFCoEBootTargetLUN",
+                    "SixteenthFCoEWWPNTarget",
+                    "SixthFCoEBootTargetLUN",
+                    "SixthFCoEWWPNTarget",
+                    "TenthFCoEBootTargetLUN",
+                    "TenthFCoEWWPNTarget",
+                    "ThirdFCoEBootTargetLUN",
+                    "ThirdFCoEWWPNTarget",
+                    "ThirteenthFCoEBootTargetLUN",
+                    "ThirteenthFCoEWWPNTarget",
+                    "ThirtyFCoEBootTargetLUN",
+                    "ThirtyFCoEWWPNTarget",
+                    "ThirtyFirstFCoEBootTargetLUN",
+                    "ThirtyFirstFCoEWWPNTarget",
+                    "ThirtySecondFCoEBootTargetLUN",
+                    "ThirtySecondFCoEWWPNTarget",
+                    "TwelfthFCoEBootTargetLUN",
+                    "TwelfthFCoEWWPNTarget",
+                    "TwentiethFCoEBootTargetLUN",
+                    "TwentiethFCoEWWPNTarget",
+                    "TwentyEighthFCoEBootTargetLUN",
+                    "TwentyEighthFCoEWWPNTarget",
+                    "TwentyFifthFCoEBootTargetLUN",
+                    "TwentyFifthFCoEWWPNTarget",
+                    "TwentyFirstFCoEBootTargetLUN",
+                    "TwentyFirstFCoEWWPNTarget",
+                    "TwentyFourthFCoEBootTargetLUN",
+                    "TwentyFourthFCoEWWPNTarget",
+                    "TwentyNinthFCoEBootTargetLUN",
+                    "TwentyNinthFCoEWWPNTarget",
+                    "TwentySecondFCoEBootTargetLUN",
+                    "TwentySecondFCoEWWPNTarget",
+                    "TwentySeventhFCoEBootTargetLUN",
+                    "TwentySeventhFCoEWWPNTarget",
+                    "TwentySixthFCoEBootTargetLUN",
+                    "TwentySixthFCoEWWPNTarget",
+                    "TwentyThirdFCoEBootTargetLUN",
+                    "TwentyThirdFCoEWWPNTarget"
                 ],
                 "FCoEGenParams": [
                     "FCoEBootScanSelection",
@@ -620,8 +732,8 @@
                     "FamilyVersion"
                 ],
                 "GlobalBandwidthAllocation": [
-                    "MaxBandwidth[Partition:n]",
-                    "MinBandwidth[Partition:n]"
+                    "MaxBandwidth",
+                    "MinBandwidth"
                 ],
                 "IscsiFirstTgtParams": [
                     "ConnectFirstTgt",
@@ -709,7 +821,7 @@
                     "NumberPCIFunctionsEnabled",
                     "NumberPCIFunctionsSupported",
                     "PartitionState[Partition:n]",
-                    "RDMANICModeOnPartition"
+                    "RDMANICModeOnPartition[Partition:n]"
                 ],
                 "PortLevelConfig": [
                     "VFDistribution"
@@ -724,6 +836,7 @@
                     "DeviceLevelConfig",
                     "DeviceLevelConfigurationRef",
                     "DeviceName",
+                    "EEEControl",
                     "EnergyEfficientEthernet",
                     "FCoEBootSupport",
                     "FCOECapabilities",
@@ -793,1612 +906,2474 @@
                 "AddressingMode": {
                     "description": "FCoE Addressing Mode",
                     "longDescription": "Specify whether SPMA or FPMA addressing will be used for FCoE transactions.",
+                    "name": "AddressingMode",
                     "qualifier": "FCOECapabilities",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "AddressingModeTypes"
                 },
                 "BannerMessageTimeout": {
-                    "default": "5",
                     "description": "Banner Message Timeout",
                     "longDescription": "Specify the number of seconds that the OptionROM banner is displayed during POST.",
+                    "name": "BannerMessageTimeout",
                     "qualifier": "NICConfig",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "BlnkLeds": {
-                    "default": "0",
+                    "default": "15",
                     "description": "Blink LEDs",
-                    "longDescription": "Specify the number of seconds the LEDs on physical network port should blink to assist with port identification.",
+                    "longDescription": "Specify the number of seconds the LEDs on the physical network port should blink to assist with port identification.",
+                    "name": "BlnkLeds",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "BootOptionROM": {
                     "description": "Option ROM",
                     "longDescription": "Controls the enablement of legacy Boot Protocols in the Option ROM.",
+                    "name": "BootOptionROM",
                     "qualifier": "NICConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "BootOptionROMTypes"
                 },
                 "BootOrderFirstFCoETarget": {
+                    "default": "0",
                     "description": "Boot Order",
                     "longDescription": "Specify this port's place in the FCoE boot order 1-4 or 0=disabled.",
+                    "name": "BootOrderFirstFCoETarget",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "BootOrderFourthFCoETarget": {
+                    "default": "0",
                     "description": "Boot Order",
                     "longDescription": "Specify this port's place in the FCoE boot order 1-4 or 0=disabled.",
+                    "name": "BootOrderFourthFCoETarget",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "BootOrderSecondFCoETarget": {
+                    "default": "0",
                     "description": "Boot Order",
                     "longDescription": "Specify this port's place in the FCoE boot order 1-4 or 0=disabled.",
+                    "name": "BootOrderSecondFCoETarget",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "BootOrderThirdFCoETarget": {
+                    "default": "0",
                     "description": "Boot Order",
                     "longDescription": "Specify this port's place in the FCoE boot order 1-4 or 0=disabled.",
+                    "name": "BootOrderThirdFCoETarget",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "BootRetryCnt": {
+                    "default": "NoRetry",
                     "description": "Boot Retry Count",
                     "longDescription": "Specify the number of retries to attempt in case of a boot failure.",
+                    "name": "BootRetryCnt",
                     "qualifier": "NICConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "BootRetryCntTypes"
                 },
                 "BootStrapType": {
+                    "default": "AutoDetect",
                     "description": "Boot Strap Type",
                     "longDescription": "Specify the boot strap method used to boot to the operating system.",
+                    "name": "BootStrapType",
                     "qualifier": "NICConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "BootStrapTypeTypes"
                 },
                 "BusDeviceFunction": {
                     "description": "PCI Address",
                     "longDescription": "Specify the PCI Address of the card.",
-                    "pattern": "^([0-9a-fA-F]{1,2})(:([0-9a-fA-F]{1,2})){1,2}$",
+                    "name": "BusDeviceFunction",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "BusDeviceFunction[Partition:n]": {
                     "description": "PCI Address",
                     "longDescription": "Specify the PCI Address of the card.",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{1,2})(:([0-9a-fA-F]{1,2})){1,2}$",
+                    "name": "BusDeviceFunction[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "ChapAuthEnable": {
                     "default": "Disabled",
                     "description": "CHAP Authentication",
                     "longDescription": "Enable the ability of the initiator to use CHAP authentication when connecting to the iSCSI target.",
+                    "name": "ChapAuthEnable",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "ChapAuthEnableTypes"
                 },
                 "ChapMutualAuth": {
+                    "default": "Disabled",
                     "description": "CHAP Mutual Authentication",
                     "longDescription": "To use mutual CHAP authentication, specify an initiator secret on the Initiator Parameters page and configure that secret on the target.",
+                    "name": "ChapMutualAuth",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "ChapMutualAuthTypes"
                 },
                 "ChipMdl": {
                     "description": "Chip Type",
                     "longDescription": "Specifies the Chip Type.",
+                    "name": "ChipMdl",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "ConfigureFormRef[Partition:n]": {
                     "description": "Partition n Configuration",
                     "longDescription": "Configure partition functionality (e.g., NIC, iSCSI Offload, FCoE), and view assigned addresses.  (Vendor modify as appropriate).",
-                    "partition": "Yes",
+                    "name": "ConfigureFormRef[Partition:n]",
                     "qualifier": "NICPartitioningConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "ConfigureFormn": {
                     "description": "Partition n Configuration",
                     "longDescription": "Configure partition functionality (e.g., NIC, iSCSI Offload, FCoE), and view assigned addresses. (Vendor modify as appropriate).",
+                    "name": "ConfigureFormn",
                     "qualifier": "NICPartitioningConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "ConfigureLogicalPortsSupport": {
+                    "default": "Unavailable",
                     "description": "Configure Logical Ports Support",
                     "longDescription": "Indicates the support for configuring the number of ports on the device.",
+                    "name": "ConfigureLogicalPortsSupport",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "ConfigureLogicalPortsSupportTypes"
                 },
                 "CongestionNotification": {
                     "description": "Congestion Notification",
                     "longDescription": "Indicates whether Congestion Notification capability is supported.",
+                    "name": "CongestionNotification",
                     "qualifier": "DCBSettings",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "CongestionNotificationTypes"
                 },
+                "ConnectEighteenthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the eighteenth FCoE storage target.",
+                    "name": "ConnectEighteenthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectEighthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the eighth FCoE storage target.",
+                    "name": "ConnectEighthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectEleventhFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the eleventh FCoE storage target.",
+                    "name": "ConnectEleventhFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectFifteenthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the fifteenth FCoE storage target.",
+                    "name": "ConnectFifteenthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectFifthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the fifth FCoE storage target.",
+                    "name": "ConnectFifthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
                 "ConnectFirstFCoETarget": {
+                    "default": "Disabled",
                     "description": "Connect",
                     "longDescription": "Specify whether the FCoE initiator is to connect to the first FCoE storage target.",
+                    "name": "ConnectFirstFCoETarget",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "ConnectFirstFCoETargetTypes"
                 },
                 "ConnectFirstTgt": {
                     "default": "Disabled",
                     "description": "Connect",
                     "longDescription": "Enable connecting to the first iSCSI target.",
+                    "name": "ConnectFirstTgt",
                     "qualifier": "IscsiFirstTgtParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "ConnectFirstTgtTypes"
+                },
+                "ConnectFourteenthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the fourteenth FCoE storage target.",
+                    "name": "ConnectFourteenthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectFourthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the fourth FCoE storage target.",
+                    "name": "ConnectFourthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectNineteenthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the nineteenth FCoE storage target.",
+                    "name": "ConnectNineteenthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectNinthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the ninth FCoE storage target.",
+                    "name": "ConnectNinthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectSecondFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the second FCoE storage target.",
+                    "name": "ConnectSecondFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
                 },
                 "ConnectSecondTgt": {
                     "default": "Disabled",
                     "description": "Connect",
                     "longDescription": "Enable connecting to the second iSCSI target.",
+                    "name": "ConnectSecondTgt",
                     "qualifier": "IscsiSecondTgtParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "ConnectSecondTgtTypes"
+                },
+                "ConnectSeventeenthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the seventeenth FCoE storage target.",
+                    "name": "ConnectSeventeenthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectSeventhFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the seventh FCoE storage target.",
+                    "name": "ConnectSeventhFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectSixteenthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the sixteenth FCoE storage target.",
+                    "name": "ConnectSixteenthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectSixthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the sixth FCoE storage target.",
+                    "name": "ConnectSixthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTenthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the tenth FCoE storage target.",
+                    "name": "ConnectTenthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectThirdFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the third FCoE storage target.",
+                    "name": "ConnectThirdFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectThirteenthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the thirteenth FCoE storage target.",
+                    "name": "ConnectThirteenthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectThirtyFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the thirty FCoE storage target.",
+                    "name": "ConnectThirtyFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectThirtyFirstFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the thirty first FCoE storage target.",
+                    "name": "ConnectThirtyFirstFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectThirtySecondFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the thirty second FCoE storage target.",
+                    "name": "ConnectThirtySecondFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwelfthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twelfth FCoE storage target.",
+                    "name": "ConnectTwelfthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwentiethFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twentieth FCoE storage target.",
+                    "name": "ConnectTwentiethFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwentyEighthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twenty eighth FCoE storage target.",
+                    "name": "ConnectTwentyEighthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwentyFifthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twenty fifth FCoE storage target.",
+                    "name": "ConnectTwentyFifthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwentyFirstFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twenty first FCoE storage target.",
+                    "name": "ConnectTwentyFirstFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwentyFourthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twenty fourth FCoE storage target.",
+                    "name": "ConnectTwentyFourthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwentyNinthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twenty ninth FCoE storage target.",
+                    "name": "ConnectTwentyNinthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwentySecondFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twenty second FCoE storage target.",
+                    "name": "ConnectTwentySecondFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwentySeventhFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twenty seventh FCoE storage target.",
+                    "name": "ConnectTwentySeventhFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwentySixthFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twenty sixth FCoE storage target.",
+                    "name": "ConnectTwentySixthFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ConnectTwentyThirdFCoETarget": {
+                    "description": "Connect",
+                    "longDescription": "Specify whether the FCoE initiator is to connect to the twenty third FCoE storage target.",
+                    "name": "ConnectTwentyThirdFCoETarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
                 },
                 "ControllerBIOSVersion": {
                     "description": "Controller BIOS Version",
                     "longDescription": "Installed device BIOS version information.",
+                    "name": "ControllerBIOSVersion",
                     "qualifier": "FrmwImgMenu",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "DCBSettings": {
                     "description": "Data Center Bridging (DCB) Settings",
                     "longDescription": "View available Data Center Bridging (DCB) settings for the controller and configure available controller settings, such as PFC, ETS and CN.  [VENDOR Modify as appropriate for the current implementation.]",
+                    "name": "DCBSettings",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "DCBSettingsRef": {
                     "description": "Data Center Bridging (DCB) Settings",
                     "longDescription": "View available Data Center Bridging (DCB) settings for the controller and configure available controller settings, such as PFC, ETS and CN Settings.",
+                    "name": "DCBSettingsRef",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "DCBXSupport": {
                     "description": "DCBX Support",
                     "longDescription": "Specify whether Data Center Bridging eXchange Protocol (DCBX) is supported.",
+                    "name": "DCBXSupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "DCBXSupportTypes"
                 },
                 "DeviceLevelConfig": {
                     "description": "Device Level Configuration",
                     "longDescription": "View and configure global device level parameters such as SR-IOV and Virtualization Mode.",
+                    "name": "DeviceLevelConfig",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "DeviceLevelConfigurationRef": {
                     "description": "Device Level Configuration",
-                    "longDescription": "View and configure global device level parameters such as Virtualization Mode.",
+                    "longDescription": "View and configure global device level parameters such as Virtualization Mode.\n",
+                    "name": "DeviceLevelConfigurationRef",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "DeviceName": {
                     "description": "Device Name",
                     "longDescription": "Official product name of the device.",
+                    "name": "DeviceName",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "DhcpVendId": {
                     "description": "DHCP Vendor ID",
                     "longDescription": "Control what Vendor ID is presented to the DHCP service.",
-                    "pattern": "^.{0,255}$",
+                    "name": "DhcpVendId",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
+                },
+                "EEEControl": {
+                    "default": "varies",
+                    "description": "Energy Efficient Ethernet",
+                    "longDescription": "Enables or Disables the Energy Efficient Ethernet feature on the [VENDOR: specify the scope of control, (e.g., port, controller, adapter)]",
+                    "name": "EEEControl",
+                    "qualifier": "VndrConfigPage",
+                    "readonly": "FALSE",
+                    "type": "EEEControlTypes"
                 },
                 "EFIVersion": {
                     "description": "EFI Version",
                     "longDescription": "Installed device EFI driver version information.",
+                    "name": "EFIVersion",
                     "qualifier": "FrmwImgMenu",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "EVBModesSupport": {
                     "description": "EVB Modes Support",
                     "longDescription": "Indicates the type of EVB Modes supported.",
+                    "name": "EVBModesSupport",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "EVBModesSupportTypes"
+                },
+                "EighteenthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the eighteenth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "EighteenthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "EighteenthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the eighteenth FCoE storage target.",
+                    "name": "EighteenthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "EighthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the eighth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "EighthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "EighthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the eighth FCoE storage target.",
+                    "name": "EighthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "EleventhFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the eleventh FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "EleventhFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "EleventhFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the eleventh FCoE storage target.",
+                    "name": "EleventhFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
                 },
                 "EnergyEfficientEthernet": {
                     "description": "Energy Efficient Ethernet (EEE)",
                     "longDescription": "Indicates whether Energy Efficient Ethernet capability is supported.",
+                    "name": "EnergyEfficientEthernet",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "EnergyEfficientEthernetTypes"
                 },
                 "EnhancedTransmissionSelection": {
                     "description": "Enhanced Transmission Selection",
                     "longDescription": "Indicates whether Enhanced Transmission Selection capability is supported.",
+                    "name": "EnhancedTransmissionSelection",
                     "qualifier": "DCBSettings",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "EnhancedTransmissionSelectionTypes"
                 },
                 "FCOECapabilities": {
                     "description": "FCoE Capabilities",
                     "longDescription": "Describes all FCoE capabilities.",
+                    "name": "FCOECapabilities",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "FCoEBootScanSelection": {
+                    "default": "Disabled",
                     "description": "Boot Scan Selection",
                     "longDescription": "Specify the FCoE initiator behavior for booting the system from specified Fibre Channel boot target(s) or fabric discovered target(s).",
+                    "name": "FCoEBootScanSelection",
                     "qualifier": "FCoEGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "FCoEBootScanSelectionTypes"
                 },
                 "FCoEBootSupport": {
                     "description": "FCoE Boot Support",
-                    "longDescription": "Indicates whether Fibre Channel over Ethernet Boot capability is supported.",
+                    "longDescription": "Indicates whether Fibre Channel over Ethernet Boot capability is supported.\n",
+                    "name": "FCoEBootSupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "FCoEBootSupportTypes"
                 },
                 "FCoECapabilitiesRef": {
                     "description": "Fibre Channel Over Ethernet (FCoE) Capabilities",
                     "longDescription": "Describes all FCoE capabilities.",
+                    "name": "FCoECapabilitiesRef",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "FCoEConfigRef": {
                     "description": "FCoE Configuration",
                     "longDescription": "Configure MTU and FCoE Boot parameters.",
+                    "name": "FCoEConfigRef",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "FCoEConfiguration": {
                     "description": "FCoE Configuration",
                     "longDescription": "Configure FCoE MTU and  other Boot parameters.",
+                    "name": "FCoEConfiguration",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "FCoEFabricDiscoveryRetryCnt": {
                     "description": "Fabric Discovery Retry Count",
                     "longDescription": "Specify the retry count for FCoE fabric discovery.",
+                    "name": "FCoEFabricDiscoveryRetryCnt",
                     "qualifier": "FCoEGenParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FCoEFirstHddTarget": {
+                    "default": "Disabled",
                     "description": "Target as First HDD",
                     "longDescription": "Specify whether the FCoE target is represented as the first HDD to the system.",
+                    "name": "FCoEFirstHddTarget",
                     "qualifier": "FCoEGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "FCoEFirstHddTargetTypes"
                 },
                 "FCoEGenParams": {
                     "description": "FCoE General Parameters",
                     "longDescription": "Configure general parameters that apply to all FCoE functionality.",
+                    "name": "FCoEGenParams",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "FCoEGenParamsRef": {
                     "description": "FCoE General Parameters",
                     "longDescription": "Configure general parameters that apply to all FCoE functionality.",
+                    "name": "FCoEGenParamsRef",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "FCoELnkUpDelayTime": {
                     "description": "Link Up Delay Time",
                     "longDescription": "Specify how long the FCoE Initiator waits after an Ethernet link is established before sending any data over the network.  Units are in seconds.",
+                    "name": "FCoELnkUpDelayTime",
                     "qualifier": "FCoEGenParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FCoELunBusyRetryCnt": {
                     "description": "LUN Busy Retry Count",
                     "longDescription": "Specify the number of connection retries the FCoE boot initiator will attempt if the FCoE target LUN is busy.",
+                    "name": "FCoELunBusyRetryCnt",
                     "qualifier": "FCoEGenParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FCoEOffloadMode": {
+                    "default": "Disabled",
                     "description": "FCoE Mode",
                     "longDescription": "Enables the port for FCoE storage traffic.",
+                    "name": "FCoEOffloadMode",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "FCoEOffloadModeTypes"
                 },
                 "FCoEOffloadMode[Partition:n]": {
+                    "default": "Disabled",
                     "description": "FCoE Mode",
                     "longDescription": "Enables the partition for FCoE storage traffic.",
-                    "partition": "Yes",
+                    "name": "FCoEOffloadMode[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "FCoEOffloadMode[Partition:n]Types"
                 },
                 "FCoEOffloadSupport": {
                     "description": "FCoE Offload Support",
                     "longDescription": "Indicates whether FCoE is supported.",
+                    "name": "FCoEOffloadSupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "FCoEOffloadSupportTypes"
                 },
                 "FCoETgtBoot": {
+                    "default": "Disabled",
                     "description": "Boot to FCoE Target",
                     "longDescription": "Enables the FCoE initiator to boot the system to the FCoE target. One Time Disabled disables FCoE boot for the next (current) boot, after which it is enabled.",
+                    "name": "FCoETgtBoot",
                     "qualifier": "FCoEGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "FCoETgtBootTypes"
                 },
                 "FIPMacAddr": {
                     "description": "FIP MAC Address",
                     "longDescription": "Permanent FIP-MAC address for FCoE assigned during manufacturing.",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "FIPMacAddr",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "FIPMacAddr[Partition:n]": {
                     "description": "FIP MAC Address",
                     "longDescription": "Permanent FIP-MAC address for FCoE assigned during manufacturing. ",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "FIPMacAddr[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "FamilyVersion": {
                     "description": "Family Firmware Version",
                     "longDescription": "Installed device firmware family version information.",
-                    "pattern": "^([0-9a-fA-F]{1,2}[.]){2,3}([0-9a-fA-F]{1,2})$",
+                    "name": "FamilyVersion",
                     "qualifier": "FrmwImgMenu",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "FeatureLicensingSupport": {
                     "description": "Feature Licensing Support",
                     "longDescription": "Indicates whether Dell Feature Licensing capability is supported.",
+                    "name": "FeatureLicensingSupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "FeatureLicensingSupportTypes"
+                },
+                "FifteenthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the fifteenth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "FifteenthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "FifteenthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the fifteenth FCoE storage target.",
+                    "name": "FifteenthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "FifthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the fifth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "FifthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "FifthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the fifth FCoE storage target.",
+                    "name": "FifthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
                 },
                 "FirstFCoEBootTargetLUN": {
                     "description": "Boot LUN",
                     "longDescription": "Specify the boot Logical Unit Number (LUN) of the first FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "FirstFCoEBootTargetLUN",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FirstFCoEFCFVLANID": {
                     "description": "Virtual LAN ID",
                     "longDescription": "Specify the VLAN ID to be used in connecting to the first FC storage target.",
+                    "name": "FirstFCoEFCFVLANID",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FirstFCoEWWPNTarget": {
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the first FCoE storage target.",
-                    "pattern": "^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$",
+                    "name": "FirstFCoEWWPNTarget",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FirstHddTarget": {
                     "default": "Disabled",
                     "description": "Target as First HDD",
                     "longDescription": "Specify whether the iSCSI target appears as the first hard disk drive (HDD) in the system.",
+                    "name": "FirstHddTarget",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "FirstHddTargetTypes"
                 },
                 "FirstTgtBootLun": {
-                    "default": "0",
                     "description": "Boot LUN",
                     "longDescription": "Specify the boot Logical Unit Number (LUN) on the first iSCSI storage target.",
+                    "name": "FirstTgtBootLun",
                     "qualifier": "IscsiFirstTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FirstTgtChapId": {
                     "description": "CHAP ID",
                     "longDescription": "Specify the first iSCSI storage target Challenge-Handshake Authentication Protocol (CHAP) ID. [vendor to specify what is allowed].",
-                    "pattern": "^.{0,128}$",
+                    "name": "FirstTgtChapId",
                     "qualifier": "IscsiFirstTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FirstTgtChapPwd": {
                     "description": "CHAP Secret",
                     "longDescription": "Specify the Challenge-Handshake Authentication Protocol secret (CHAP password) of the first iSCSI storage target.  [Vendor to specify what is allowed].",
-                    "pattern": "^$|^.{12,16}$",
+                    "name": "FirstTgtChapPwd",
                     "qualifier": "IscsiFirstTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FirstTgtIpAddress": {
-                    "default": "0.0.0.0",
                     "description": "IP Address",
                     "longDescription": "Specify the IP address of the first iSCSI target.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}|[0-9a-fA-F:]{2,39}$",
+                    "name": "FirstTgtIpAddress",
                     "qualifier": "IscsiFirstTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FirstTgtIpVer": {
+                    "default": "IPv4",
                     "description": "IP Version",
                     "longDescription": "Specify whether IPv4 or IPv4 network addressing will be used for first iSCSI target.",
+                    "name": "FirstTgtIpVer",
                     "qualifier": "IscsiFirstTgtParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "FirstTgtIpVerTypes"
                 },
                 "FirstTgtIscsiName": {
                     "description": "iSCSI Name",
                     "longDescription": "Specify the iSCSI Qualified Name (IQN) of the first iSCSI storage target.",
-                    "pattern": "^[-0-9a-zA-Z.:_]{0,223}$",
+                    "name": "FirstTgtIscsiName",
                     "qualifier": "IscsiFirstTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FirstTgtTcpPort": {
-                    "default": "3260",
                     "description": "TCP Port",
                     "longDescription": "Specify the TCP Port number of the first iSCSI target.",
+                    "name": "FirstTgtTcpPort",
                     "qualifier": "IscsiFirstTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "FlexAddressing": {
                     "description": "FlexAddressing",
-                    "longDescription": "Indicates whether Dell FlexAddressing feature is supported.",
+                    "longDescription": "Indicates whether the Dell FlexAddressing feature is supported.",
+                    "name": "FlexAddressing",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "FlexAddressingTypes"
                 },
                 "FlowControlSetting": {
+                    "default": "Auto",
                     "description": "Flow Control Setting",
-                    "longDescription": "Specify the type of Flow Control to be used by the port when operating in NPar mode.",
+                    "longDescription": "Specify the type of Ethernet Flow Control to be used by the port when operating in NPar mode.",
+                    "name": "FlowControlSetting",
                     "qualifier": "NICPartitioningConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "FlowControlSettingTypes"
+                },
+                "FourteenthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the fourteenth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "FourteenthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "FourteenthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the fourteenth FCoE storage target.",
+                    "name": "FourteenthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "FourthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the fourth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "FourthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "FourthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the fourth FCoE storage target.",
+                    "name": "FourthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
                 },
                 "FrmwImgMenu": {
                     "description": "Firmware Image Properties",
                     "longDescription": "View device firmware version information.",
+                    "name": "FrmwImgMenu",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "FrmwImgMenuRef": {
                     "description": "Firmware Image Properties",
                     "longDescription": "View device firmware version information.",
+                    "name": "FrmwImgMenuRef",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "GlobalBandwidthAllocation": {
                     "description": "Global Bandwidth Allocation",
                     "longDescription": "Controls for TX bandwidth allocation across enabled partitions on the port.",
+                    "name": "GlobalBandwidthAllocation",
                     "qualifier": "NICPartitioningConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "GlobalBandwidthAllocationRef": {
                     "description": "Global Bandwidth Allocation",
                     "longDescription": "Controls for TX bandwidth allocation across enabled partitions on the port.",
+                    "name": "GlobalBandwidthAllocationRef",
                     "qualifier": "NICPartitioningConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "HairpinMode": {
+                    "default": "Disabled",
                     "description": "Hairpin Mode",
                     "longDescription": "Indicates Hairpin Mode settings per partition for Switch Dependent Partitioning modes.",
+                    "name": "HairpinMode",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "HairpinModeTypes"
                 },
                 "HideSetupPrompt": {
                     "default": "Disabled",
                     "description": "Hide Setup Prompt",
                     "longDescription": "Specify whether to display or hide the legacy Option ROM setup prompt during system Power On Self Test (POST).",
+                    "name": "HideSetupPrompt",
                     "qualifier": "NICConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "HideSetupPromptTypes"
                 },
                 "InstanceNumber[Partition:n]": {
                     "description": "Instance Number",
                     "longDescription": "Instance Number of the partition.",
-                    "partition": "Yes",
+                    "name": "InstanceNumber[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IpAutoConfig": {
+                    "default": "Disabled",
                     "description": "IP Auto-Configuration",
                     "longDescription": "This option is specific to IPv6. Controls the source of the initiator IP address, DHCP or static assignment.",
+                    "name": "IpAutoConfig",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "IpAutoConfigTypes"
                 },
                 "IpVer": {
+                    "default": "IPv4",
                     "description": "IP Version",
                     "longDescription": "Specify whether IPv4 or IPv6 network addressing will be used for iSCSI initiator and targets (Applies to the Initiator only when a seperate target IP Version is implemented).  [Vendor to provide implementation-specific language].",
+                    "name": "IpVer",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "IpVerTypes"
                 },
                 "IscsiFirstTgtParams": {
                     "description": "iSCSI First Target Parameters",
                     "longDescription": "Enables connection and configure communication parameters for the first iSCSI target.",
+                    "name": "IscsiFirstTgtParams",
                     "qualifier": "iSCSIConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiFirstTgtParamsRef": {
                     "description": "iSCSI First Target Parameters",
                     "longDescription": "Enable connection and configure communication parameters for the first iSCSI target.",
+                    "name": "IscsiFirstTgtParamsRef",
                     "qualifier": "iSCSIConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiGenParams": {
                     "description": "iSCSI General Parameters",
                     "longDescription": "Configure general iSCSI parameters.",
+                    "name": "IscsiGenParams",
                     "qualifier": "iSCSIConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiGenParamsRef": {
                     "description": "iSCSI General Parameters",
                     "longDescription": "Configure general iSCSI parameters.",
+                    "name": "IscsiGenParamsRef",
                     "qualifier": "iSCSIConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiInitiatorChapId": {
                     "description": "CHAP ID",
                     "longDescription": "Specify the iSCSI initiator Challenge-Handshake Authentication Protocol (CHAP) ID.  [Vendor to describe what is allowed].",
-                    "pattern": "^.{0,128}$",
+                    "name": "IscsiInitiatorChapId",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorChapPwd": {
                     "description": "CHAP Secret",
-                    "longDescription": "Specify the iSCSI initiator Challenge-Handshake Authentication Protocol (CHAP) secret (password).   [Vendor to describe what is allowed].",
-                    "pattern": "^$|^.{12,16}$",
+                    "longDescription": "Specify the iSCSI initiator Challenge-Handshake Authentication Protocol (CHAP) secret (password).   [Vendor to describe what is allowed].\n",
+                    "name": "IscsiInitiatorChapPwd",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorGateway": {
-                    "default": "0.0.0.0",
                     "description": "Default Gateway",
                     "longDescription": "Specify the IP address of the default Gateway used by the iSCSI initiator.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}|[0-9a-fA-F:]{2,39}$",
+                    "name": "IscsiInitiatorGateway",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorIpAddr": {
-                    "default": "0.0.0.0",
                     "description": "IP Address",
                     "longDescription": "Specify the IP address of the iSCSI initiator.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}|[0-9a-fA-F:]{2,39}$",
+                    "name": "IscsiInitiatorIpAddr",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorIpv4Addr": {
                     "description": "IPv4 Address",
                     "longDescription": "Specify the IPv4 address of the iSCSI initiator.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}$",
+                    "name": "IscsiInitiatorIpv4Addr",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorIpv4Gateway": {
                     "description": "IPv4 Default Gateway",
                     "longDescription": "Specify the IPv4 IP address of the default Gateway used by the iSCSI initiator.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}$",
+                    "name": "IscsiInitiatorIpv4Gateway",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorIpv4PrimDns": {
                     "description": "IPv4 Primary DNS",
                     "longDescription": "Specify the IPv4 IP address of the Primary DNS used by the iSCSI initiator.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}$",
+                    "name": "IscsiInitiatorIpv4PrimDns",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorIpv4SecDns": {
                     "description": "IPv4 Secondary DNS",
                     "longDescription": "Specify the IPv4  IP address of the Secondary DNS used by the iSCSI initiator.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}$",
+                    "name": "IscsiInitiatorIpv4SecDns",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorIpv6Addr": {
                     "description": "IPv6 Address",
                     "longDescription": "Specify the IPv6 IP address of the iSCSI initiator.",
-                    "pattern": "^[0-9a-fA-F:]{2,39}$",
+                    "name": "IscsiInitiatorIpv6Addr",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorIpv6Gateway": {
                     "description": "IPv6 Default Gateway",
                     "longDescription": "Specify the IPv6 IP address of the default Gateway used by the iSCSI initiator.",
-                    "pattern": "^[0-9a-fA-F:]{2,39}$",
+                    "name": "IscsiInitiatorIpv6Gateway",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorIpv6PrimDns": {
                     "description": "IPv6 Primary DNS",
                     "longDescription": "Specify the IPv6 IP address of the Primary DNS used by the  iSCSI initiator.",
-                    "pattern": "^[0-9a-fA-F:]{2,39}$",
+                    "name": "IscsiInitiatorIpv6PrimDns",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorIpv6SecDns": {
                     "description": "IPv6 Secondary DNS",
                     "longDescription": "Specify the IPv6 IP address of the Secondary DNS used by the  iSCSI initiator.",
-                    "pattern": "^[0-9a-fA-F:]{2,39}$",
+                    "name": "IscsiInitiatorIpv6SecDns",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorName": {
                     "description": "iSCSI Name",
                     "longDescription": "Specify the initiator's iSCSI Qualified Name (IQN).",
-                    "pattern": "^[-0-9a-zA-Z.:_]{0,223}$",
+                    "name": "IscsiInitiatorName",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorParams": {
                     "description": "iSCSI Initiator Parameters",
                     "longDescription": "Configuration of  iSCSI initiator parameters (e.g., IP Address, Subnet Mask).",
+                    "name": "IscsiInitiatorParams",
                     "qualifier": "iSCSIConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiInitiatorParamsRef": {
                     "description": "iSCSI Initiator Parameters",
                     "longDescription": "Configuration of iSCSI initiator parameters (e.g., IP Address, Subnet Mask).",
+                    "name": "IscsiInitiatorParamsRef",
                     "qualifier": "iSCSIConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiInitiatorPrimDns": {
-                    "default": "0.0.0.0",
                     "description": "Primary DNS",
                     "longDescription": "Specify the Primary DNS IP address used by the iSCSI initiator.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}|[0-9a-fA-F:]{2,39}$",
+                    "name": "IscsiInitiatorPrimDns",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorSecDns": {
-                    "default": "0.0.0.0",
                     "description": "Secondary DNS",
                     "longDescription": "Specify the Secondary DNS IP address used by the iSCSI initiator.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}|[0-9a-fA-F:]{2,39}$",
+                    "name": "IscsiInitiatorSecDns",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorSubnet": {
-                    "default": "0.0.0.0",
                     "description": "Subnet Mask",
                     "longDescription": "Specify the IPv4 Subnet Mask of the iSCSI initiator.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}$",
+                    "name": "IscsiInitiatorSubnet",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiInitiatorSubnetPrefix": {
                     "description": "Subnet Mask Prefix",
                     "longDescription": "Specify the IPv6 Subnet Mask Prefix of the iSCSI initiator.",
-                    "pattern": "^[0-9a-fA-F:]{2,39}$",
+                    "name": "IscsiInitiatorSubnetPrefix",
                     "qualifier": "IscsiInitiatorParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiMacAddr": {
                     "description": "iSCSI Offload MAC Address",
                     "longDescription": "Permanent MAC address for iSCSI offload assigned during manufacturing. ",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "IscsiMacAddr",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiMacAddr[Partition:n]": {
                     "description": "iSCSI Offload MAC Address",
                     "longDescription": "Permanent MAC address for iSCSI offload assigned during manufacturing. ",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "IscsiMacAddr[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiSecondTgtParams": {
                     "description": "iSCSI Second Target Parameters",
                     "longDescription": "Enable connection and configure communication parameters for the second iSCSI target.",
+                    "name": "IscsiSecondTgtParams",
                     "qualifier": "iSCSIConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiSecondTgtParamsRef": {
                     "description": "iSCSI Second Target Parameters",
                     "longDescription": "Enable connection and configure communication parameters for the second iSCSI target.",
+                    "name": "IscsiSecondTgtParamsRef",
                     "qualifier": "iSCSIConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiSecondaryDeviceParams": {
                     "description": "iSCSI Secondary Device Parameters",
                     "longDescription": "Configures a second iSCSI boot adapter for redundancy in case the primary adapter fails to boot.",
+                    "name": "IscsiSecondaryDeviceParams",
                     "qualifier": "iSCSIConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiSecondaryDeviceParamsRef": {
                     "description": "iSCSI Secondary Device Parameters",
                     "longDescription": "Configures a second iSCSI boot adapter for redundancy in the event the primary adapter fails to boot.",
+                    "name": "IscsiSecondaryDeviceParamsRef",
                     "qualifier": "iSCSIConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "IscsiTgtBoot": {
+                    "default": "Disabled",
                     "description": "Boot to Target",
                     "longDescription": "Specify whether the iSCSI initiator will boot to the specified iSCSI target after connection. One Time Disabled disables iSCSI boot for the next (current) boot, after which it is enabled.",
+                    "name": "IscsiTgtBoot",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "IscsiTgtBootTypes"
                 },
                 "IscsiVLanId": {
                     "description": "Virtual LAN ID",
                     "longDescription": "Specify the VLAN ID to be used for iSCSI boot mode. The VLAN ID must be in the range from 1 to 4094.  [Vendor confirm support for this range].",
+                    "name": "IscsiVLanId",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "IscsiVLanMode": {
+                    "default": "Disabled",
                     "description": "Virtual LAN Mode",
                     "longDescription": "Specify use of a VLAN tag to be used by iSCSI boot.",
+                    "name": "IscsiVLanMode",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "IscsiVLanModeTypes"
                 },
                 "IscsiViaDHCP": {
+                    "default": "Disabled",
                     "description": "iSCSI Parameters via DHCP",
                     "longDescription": "Enables the acquisition of iSCSI target parameters from DHCP.",
+                    "name": "IscsiViaDHCP",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "IscsiViaDHCPTypes"
                 },
                 "LegacyBootProto": {
-                    "default": "NONE",
+                    "default": "varies",
                     "description": "Legacy Boot Protocol",
-                    "longDescription": "Select a non-UEFI network boot protocol to be used.",
+                    "longDescription": "Select a boot protocol to be used in legacy BIOS (non-UEFI) boot mode.",
+                    "name": "LegacyBootProto",
                     "qualifier": "NICConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "LegacyBootProtoTypes"
                 },
                 "LinkStatus": {
                     "description": "Link Status",
                     "longDescription": "Physical link status of the network port  as reported by the controller.",
+                    "name": "LinkStatus",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "LinkStatusTypes"
                 },
                 "LnkSpeed": {
                     "description": "Link Speed",
                     "longDescription": "Specifies the port link speed to be used when booting the selected protocol.",
+                    "name": "LnkSpeed",
                     "qualifier": "NICConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "LnkSpeedTypes"
                 },
                 "LnkUpDelayTime": {
                     "default": "0",
                     "description": "Link Up Delay Time",
                     "longDescription": "Specifies how long the iSCSI boot host software should wait, in seconds, after an Ethernet link is established before sending any data over the network.",
+                    "name": "LnkUpDelayTime",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "LocalDCBXWillingMode": {
+                    "default": "Enabled",
                     "description": "Local DCBX Willing Mode",
+                    "longDescription": "[VENDOR: Specify text based on the implementation.]",
+                    "name": "LocalDCBXWillingMode",
                     "qualifier": "DCBSettings",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "LocalDCBXWillingModeTypes"
                 },
                 "LogicalPortEnable": {
+                    "default": "Disabled",
                     "description": "Logical Port Enable",
                     "longDescription": "Enables or disables the port from appearing as a physical function to the system",
+                    "name": "LogicalPortEnable",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "LogicalPortEnableTypes"
                 },
                 "LunBusyRetryCnt": {
-                    "default": "0",
                     "description": "LUN Busy Retry Count",
                     "longDescription": "Specify the number of connection attempts the iSCSI boot initiator will attempt if the iSCSI target LUN is busy.",
+                    "name": "LunBusyRetryCnt",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "MTUParams": {
                     "description": "MTU Parameters",
                     "longDescription": "Specify the scope of the MTU (Maximum Transmission Unit) parameter.",
+                    "name": "MTUParams",
                     "qualifier": "FCoEConfiguration",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "MTUParamsTypes"
                 },
                 "MTUReconfigurationSupport": {
                     "description": "MTU Reconfiguration Support",
                     "longDescription": "Indicates whether the MTU Reconfiguration capability is supported.",
+                    "name": "MTUReconfigurationSupport",
                     "qualifier": "FCOECapabilities",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "MTUReconfigurationSupportTypes"
                 },
                 "MacAddr": {
                     "description": "MAC Address",
                     "longDescription": "Permanent MAC address assigned during manufacturing.  ",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "MacAddr",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "MacAddr[Partition:n]": {
                     "description": "MAC Address",
                     "longDescription": "Permanent MAC address assigned during manufacturing. ",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "MacAddr[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
-                "MaxBandwidth[Partition:n]": {
+                "MaxBandwidth": {
+                    "default": "100",
                     "description": "Partition n Maximum TX Bandwidth",
                     "longDescription": "Maximum Bandwidth represents the maximum transmit bandwidth of the partition as a percentage of the full physical port link speed.  The Maximum Bandwidth range is 0-100 percent for each enabled partition.",
-                    "partition": "Yes",
+                    "name": "MaxBandwidth",
                     "qualifier": "GlobalBandwidthAllocation",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "MaxFrameSize": {
                     "description": "Maximum Frame Size",
-                    "longDescription": "Maximum frame size for each FCoE frame.",
+                    "longDescription": "Maximum frame size of each FCoE frame.",
+                    "name": "MaxFrameSize",
                     "qualifier": "FCOECapabilities",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "MaxIOsPerSession": {
                     "description": "Maximum IOs per Session Supported",
                     "longDescription": "Maximum number of IOs supported per session.",
+                    "name": "MaxIOsPerSession",
                     "qualifier": "FCOECapabilities",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "MaxNPIVPerPort": {
                     "description": "Maximum NPIV WWN per Port",
-                    "longDescription": "Maximum number of NPIV WWN per port.",
+                    "longDescription": "Maximum number of NPIV WWNs per port.",
+                    "name": "MaxNPIVPerPort",
                     "qualifier": "FCOECapabilities",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "MaxNumberExchanges": {
                     "description": "Maximum Number of Exchanges",
                     "longDescription": "Maximum number of exchanges supported.",
+                    "name": "MaxNumberExchanges",
                     "qualifier": "FCOECapabilities",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "MaxNumberLogins": {
                     "description": "Maximum Number of LOGINs per Port",
                     "longDescription": "Maximum number of logins supported per port.",
+                    "name": "MaxNumberLogins",
                     "qualifier": "FCOECapabilities",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "MaxNumberOfFCTargets": {
                     "description": "Maximum Number of FC Targets Supported",
                     "longDescription": "Maximum number of FC targets supported.",
+                    "name": "MaxNumberOfFCTargets",
                     "qualifier": "FCOECapabilities",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "MaxNumberOutStandingCommands": {
                     "description": "Maximum Number of Outstanding Commands",
                     "longDescription": "Maximum number of outstanding commands supported across all sessions.",
+                    "name": "MaxNumberOutStandingCommands",
                     "qualifier": "FCOECapabilities",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "MaxNumberVFSupportedByDevice": {
+                    "default": "0",
                     "description": "Number of PCI Virtual Functions Supported",
+                    "name": "MaxNumberVFSupportedByDevice",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "MgmtSVID": {
+                    "default": "1000",
                     "description": "Management SVID",
                     "longDescription": "Represents and enables configuration or the switch VLAN ID (SVID) for the iDRAC service processor.",
+                    "name": "MgmtSVID",
                     "qualifier": "NICPartitioningConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
-                "MinBandwidth[Partition:n]": {
+                "MinBandwidth": {
+                    "default": "0",
                     "description": "Partition n Minimum TX Bandwidth",
                     "longDescription": "[Vendor: modify as appropriate.] Minimum Bandwidth represents the minimum transmit bandwidth of the partition as a percentage of the full physical port link speed.  The Minimum Bandwidth range is 0-100 percent for each enabled partition.",
-                    "partition": "Yes",
+                    "name": "MinBandwidth",
                     "qualifier": "GlobalBandwidthAllocation",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "NICConfig": {
                     "description": "NIC Configuration",
                     "longDescription": "Configure Boot Protocol, Wake on LAN, Link Speed, and VLAN.",
+                    "name": "NICConfig",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "NICConfigRef": {
                     "description": "NIC Configuration",
                     "longDescription": "Configuration of Boot Protocol, Wake on LAN, Link Speed, and VLAN.",
+                    "name": "NICConfigRef",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "NICPartitioningConfig": {
                     "description": "NIC Partitioning Configuration",
                     "longDescription": "Configure functionality of NIC partitions (e.g., NIC, iSCSI Offload, FCoE), and view assigned addresses.",
+                    "name": "NICPartitioningConfig",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "NICPartitioningConfigRef": {
                     "description": "NIC Partitioning Configuration",
                     "longDescription": "Configure functionality of NIC partitions (e.g., NIC, iSCSI Offload, FCoE), and view assigned addresses.",
+                    "name": "NICPartitioningConfigRef",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "NPCP": {
+                    "default": "Enabled",
                     "description": "Network Partitioning Control Protocol",
                     "longDescription": "Controls whether Network Partition Control Protocol is enabled or disabled. The NPCP setting on the adapter must match the setting on the link partner.",
+                    "name": "NPCP",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "NPCPTypes"
                 },
                 "NParEP": {
+                    "default": "Disabled",
                     "description": "NParEP Mode",
                     "longDescription": "NParEP mode enables more than 8 partitions on the device. It must not be enabled if the system and OS do not support devices with more than 8 PCI Physical Functions.  ",
+                    "name": "NParEP",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "NParEPTypes"
                 },
                 "NWManagementPassThrough": {
                     "description": "Network Management Pass Through",
                     "longDescription": "Indicates whether the Network Management Pass Through capability is supported.",
+                    "name": "NWManagementPassThrough",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "NWManagementPassThroughTypes"
                 },
                 "NetworkPartitioningMode": {
+                    "default": "SIP",
                     "description": "Partitioning Mode",
                     "longDescription": "Specify the NPar mode of operation for all ports of the adapter. Switch Independent Partitioning mode places no special requirements on the link partner. Switch Dependent Partitioning mode requires that the link partner is a switch that supports Switch Dependent Partitioning.",
+                    "name": "NetworkPartitioningMode",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "NetworkPartitioningModeTypes"
                 },
                 "NicMode": {
+                    "default": "Varies",
                     "description": "NIC Mode",
                     "longDescription": "Specify use of the port for L2-Ethernet traffic.",
+                    "name": "NicMode",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "NicModeTypes"
                 },
                 "NicMode[Partition:n]": {
+                    "default": "Varies",
                     "description": "NIC Mode",
                     "longDescription": "Specify use of the partition for L2-Ethernet traffic.",
-                    "partition": "Yes",
+                    "name": "NicMode[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "NicMode[Partition:n]Types"
                 },
                 "NicPartitioning": {
+                    "default": "Disabled",
                     "description": "NIC Partitioning",
                     "longDescription": "Enables or disables NIC partitioning for all device ports.",
+                    "name": "NicPartitioning",
                     "qualifier": "NICPartitioningConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "NicPartitioningTypes"
                 },
                 "NicPartitioningSupport": {
                     "description": "NIC Partitioning Support",
                     "longDescription": "Indicates whether NIC Partitioning capability is supported.",
+                    "name": "NicPartitioningSupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "NicPartitioningSupportTypes"
+                },
+                "NineteenthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the nineteenth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "NineteenthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "NineteenthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the nineteenth FCoE storage target.",
+                    "name": "NineteenthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "NinthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the ninth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "NinthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "NinthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the ninth FCoE storage target.",
+                    "name": "NinthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
                 },
                 "NumberPCIFunctionsEnabled": {
                     "description": "Number of PCI Physical Functions Currently Enabled per Port",
                     "longDescription": "The number of PCI Physical Functions currently enabled on this port.",
+                    "name": "NumberPCIFunctionsEnabled",
                     "qualifier": "NICPartitioningConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "NumberPCIFunctionsSupported": {
                     "description": "Number of Physical Functions Supported",
                     "longDescription": "Defines the maximum number of PFs that can be enabled within the domain specified by VFAllocBasis. ",
+                    "name": "NumberPCIFunctionsSupported",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "NumberVFAdvertised": {
+                    "default": "0",
                     "description": "PCI Virtual Functions Advertised",
                     "longDescription": "Specify the number of PCI Virtual Functions (VFs) to be advertised on this port in non-NPAR mode.",
+                    "name": "NumberVFAdvertised",
                     "qualifier": "NICConfig",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "NumberVFAdvertised[Partition:n]": {
+                    "default": "0",
                     "description": "PCI Virtual Functions Advertised",
-                    "longDescription": "Specify the number of PCI Virtual Functions (VFs) to be advertised on this partition (PF) in PCI config space. The number of advertised VFs on each partition must add up to be less than or equal to the number of PCI Virtual Functions supported by the device or port.  [VENDOR modify appropriately for the implementation].",
-                    "partition": "Yes",
+                    "longDescription": "Specify the number of PCI Virtual Functions (VFs) to be advertised on this partition (PF) in PCI config space. The number of advertised VFs on each partition must add up to be less than or equal to the number of PCI Virtual Functions supported by the device or port.  [VENDOR modify appropriately for the implementation].\n",
+                    "name": "NumberVFAdvertised[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "NumberVFSupported": {
+                    "default": "0",
                     "description": "Number of Virtual Functions Supported",
                     "longDescription": "The number of virtual functions supported on this port (or device) [VENDOR modify appropriately for the implementation]. ",
+                    "name": "NumberVFSupported",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "NumberVFSupported[Partition:n]": {
                     "description": "Number of Virtual Functions Supported per partition",
-                    "partition": "Yes",
+                    "name": "NumberVFSupported[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "OSBMCManagementPassThrough": {
                     "description": "OS BMC Management Pass Through",
                     "longDescription": "Indicates whether OS-BMC Management Pass Through capability is supported.",
+                    "name": "OSBMCManagementPassThrough",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "OSBMCManagementPassThroughTypes"
                 },
                 "OnChipThermalSensor": {
                     "description": "On-Chip Thermal Sensor",
                     "longDescription": "Indicates whether an on-chip thermal sensor is available.",
+                    "name": "OnChipThermalSensor",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "OnChipThermalSensorTypes"
                 },
                 "PCIDeviceID": {
                     "description": "PCI Device ID",
                     "longDescription": "PCI Device ID of the controller. ",
-                    "pattern": "^[0-9a-fA-F]{4}$",
+                    "name": "PCIDeviceID",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "PCIDeviceID[Partition:n]": {
                     "description": "PCI Device ID",
                     "longDescription": "PCI Device ID of the partition. ",
-                    "partition": "Yes",
-                    "pattern": "^[0-9a-fA-F]{4}$",
+                    "name": "PCIDeviceID[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "PXEBootSupport": {
                     "description": "PXE Boot Support",
                     "longDescription": "Indicates whether PXE Boot capability is supported.",
+                    "name": "PXEBootSupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "PXEBootSupportTypes"
                 },
                 "PartitionStateInterpretation": {
                     "description": "Partition State Interpretation",
                     "longDescription": "Describes how partitioning is implemented and how the PartitionState attribute is used in the controller.  ",
+                    "name": "PartitionStateInterpretation",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "PartitionStateInterpretationTypes"
                 },
                 "PartitionState[Partition:n]": {
+                    "default": "Enabled",
                     "description": "Partition n",
                     "longDescription": "Representation of the current enablement state of the partition.",
-                    "partition": "Yes",
+                    "name": "PartitionState[Partition:n]",
                     "qualifier": "NICPartitioningConfig",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "PartitionState[Partition:n]Types"
                 },
                 "PortNumber[Partition:n]": {
                     "description": "Port Number",
                     "longDescription": "Port that the partition belongs to.  Replace n with the number of the partition.",
-                    "partition": "Yes",
+                    "name": "PortNumber[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "PriorityFlowControl": {
                     "description": "Priority Flow Control",
+                    "name": "PriorityFlowControl",
                     "qualifier": "DCBSettings",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "PriorityFlowControlTypes"
                 },
                 "PriorityGroup0BandwidthAllocation": {
                     "description": "Priority Group 0 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 0 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "name": "PriorityGroup0BandwidthAllocation",
                     "qualifier": "DCBSettings",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "PriorityGroup0ProtocolAssignment": {
                     "description": "Priority Group 0 Protocol Assignment",
                     "longDescription": "Specify what protocol (traffic type) is assigned to Priority Group 0.",
+                    "name": "PriorityGroup0ProtocolAssignment",
                     "qualifier": "DCBSettings",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "PriorityGroup0ProtocolAssignmentTypes"
                 },
                 "PriorityGroup15BandwidthAllocation": {
                     "description": "Priority Group 15 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 15 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "name": "PriorityGroup15BandwidthAllocation",
                     "qualifier": "DCBSettings",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "PriorityGroup15ProtocolAssignment": {
                     "description": "Priority Group 15 Protocol Assignment",
                     "longDescription": "Specify what protocol (traffic type) is assigned to Priority Group 15.",
+                    "name": "PriorityGroup15ProtocolAssignment",
                     "qualifier": "DCBSettings",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "PriorityGroup15ProtocolAssignmentTypes"
                 },
                 "PriorityGroup1BandwidthAllocation": {
                     "description": "Priority Group 1 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 1 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "name": "PriorityGroup1BandwidthAllocation",
                     "qualifier": "DCBSettings",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "PriorityGroup1ProtocolAssignment": {
                     "description": "Priority Group 1 Protocol Assignment",
                     "longDescription": "Specify what protocol (traffic type) is assigned to Priority Group 1.",
+                    "name": "PriorityGroup1ProtocolAssignment",
                     "qualifier": "DCBSettings",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "PriorityGroup1ProtocolAssignmentTypes"
                 },
                 "PriorityGroup2BandwidthAllocation": {
                     "description": "Priority Group 2 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 2 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "name": "PriorityGroup2BandwidthAllocation",
                     "qualifier": "DCBSettings",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "PriorityGroup2ProtocolAssignment": {
                     "description": "Priority Group 2 Protocol Assignment",
                     "longDescription": "Specify what protocol (traffic type) is assigned to Priority Group 2.",
+                    "name": "PriorityGroup2ProtocolAssignment",
                     "qualifier": "DCBSettings",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "PriorityGroup2ProtocolAssignmentTypes"
                 },
                 "PriorityGroup3BandwidthAllocation": {
                     "description": "Priority Group 3 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 3 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "name": "PriorityGroup3BandwidthAllocation",
                     "qualifier": "DCBSettings",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "PriorityGroup3ProtocolAssignment": {
                     "description": "Priority Group 3 Protocol Assignment",
                     "longDescription": "Specify what protocol (traffic type) is assigned to Priority Group 3.",
+                    "name": "PriorityGroup3ProtocolAssignment",
                     "qualifier": "DCBSettings",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "PriorityGroup3ProtocolAssignmentTypes"
                 },
                 "PriorityGroup4BandwidthAllocation": {
                     "description": "Priority Group 4 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 4 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "name": "PriorityGroup4BandwidthAllocation",
                     "qualifier": "DCBSettings",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "PriorityGroup4ProtocolAssignment": {
                     "description": "Priority Group 4 Protocol Assignment",
                     "longDescription": "Specify what protocol (traffic type) is assigned to Priority Group 4.",
+                    "name": "PriorityGroup4ProtocolAssignment",
                     "qualifier": "DCBSettings",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "PriorityGroup4ProtocolAssignmentTypes"
                 },
                 "PriorityGroup5BandwidthAllocation": {
                     "description": "Priority Group 5 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 5 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "name": "PriorityGroup5BandwidthAllocation",
                     "qualifier": "DCBSettings",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "PriorityGroup5ProtocolAssignment": {
                     "description": "Priority Group 5 Protocol Assignment",
                     "longDescription": "Specify what protocol (traffic type) is assigned to Priority Group 5.",
+                    "name": "PriorityGroup5ProtocolAssignment",
                     "qualifier": "DCBSettings",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "PriorityGroup5ProtocolAssignmentTypes"
                 },
                 "PriorityGroup6BandwidthAllocation": {
                     "description": "Priority Group 6 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 6 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "name": "PriorityGroup6BandwidthAllocation",
                     "qualifier": "DCBSettings",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "PriorityGroup6ProtocolAssignment": {
                     "description": "Priority Group 6 Protocol Assignment",
                     "longDescription": "Specify what protocol (traffic type) is assigned to Priority Group 6.",
+                    "name": "PriorityGroup6ProtocolAssignment",
                     "qualifier": "DCBSettings",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "PriorityGroup6ProtocolAssignmentTypes"
                 },
                 "PriorityGroup7BandwidthAllocation": {
                     "description": "Priority Group 7 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 7 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "name": "PriorityGroup7BandwidthAllocation",
                     "qualifier": "DCBSettings",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "PriorityGroup7ProtocolAssignment": {
                     "description": "Priority Group 7 Protocol Assignment",
                     "longDescription": "Specify what protocol (traffic type) is assigned to Priority Group 7.",
+                    "name": "PriorityGroup7ProtocolAssignment",
                     "qualifier": "DCBSettings",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "PriorityGroup7ProtocolAssignmentTypes"
                 },
                 "PriorityGroupBandwidthAllocation": {
                     "description": "Priority Group Bandwidth Allocation",
                     "longDescription": "Specify the allocation of network port bandwidth by Priority Group.  Format in a colon-separated list for all Priority Groups without omission.  Values in the list from left to right apply to PG0-7 and PG15 inclusively (e.g. PG0BW:PG1BW:PG2BW:PG3BW:PG4BW:PG5BW:PG6BW:PG7BW:PG15BW).  The sum of all Priority Group allocations must equal 100.",
-                    "pattern": "^([0-9]{1,3}:){8}[0-9]{1,3}$",
+                    "name": "PriorityGroupBandwidthAllocation",
                     "qualifier": "DCBSettings",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "RDMAApplicationProfile": {
                     "description": "RDMA Application Profile",
                     "longDescription": "Specify the RDMA application profile setting to use in operation.  [Vendor to clarify availability and usage].",
+                    "name": "RDMAApplicationProfile",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "RDMAApplicationProfileTypes"
                 },
-                "RDMANICModeOnPartition": {
+                "RDMANICModeOnPartition[Partition:n]": {
+                    "default": "Varies",
                     "description": "NIC + RDMA Mode",
                     "longDescription": "Specify use of the partition for both L2-Ethernet and RDMA traffic. [Vendor may want to customize type of RDMA supported].",
+                    "name": "RDMANICModeOnPartition[Partition:n]",
                     "qualifier": "NICPartitioningConfig",
-                    "readonly": "false",
-                    "type": "RDMANICModeOnPartitionTypes"
+                    "readonly": "FALSE",
+                    "type": "RDMANICModeOnPartition[Partition:n]Types"
                 },
                 "RDMANICModeOnPort": {
+                    "default": "Varies",
                     "description": "NIC + RDMA Mode",
                     "longDescription": "Specify use of the port for both L2-Ethernet and RDMA traffic.  [Vendor may want to customize type of RDMA supported].",
+                    "name": "RDMANICModeOnPort",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "RDMANICModeOnPortTypes"
                 },
                 "RDMAProtocolSupport": {
                     "description": "RDMA Protocol Support",
                     "longDescription": "Specify what RDMA Protocol is to be used in operation. [Vendor modify as appropriate].",
+                    "name": "RDMAProtocolSupport",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "RDMAProtocolSupportTypes"
                 },
                 "RDMASupport": {
                     "description": "RDMA Support",
                     "longDescription": "Indicates whether any RDMA protocol is supported by the controller.",
+                    "name": "RDMASupport",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "RDMASupportTypes"
                 },
                 "RXFlowControl": {
                     "description": "RX Flow Control",
                     "longDescription": "Indicates whether Receive (RX) Flow control capability is supported.",
+                    "name": "RXFlowControl",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "RXFlowControlTypes"
                 },
                 "RemotePHY": {
                     "description": "RemotePHY",
                     "longDescription": "Indicates whether RemotePHY capability is supported.",
+                    "name": "RemotePHY",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "RemotePHYTypes"
                 },
                 "SRIOVSupport": {
                     "description": "SR-IOV Support",
                     "longDescription": "Indicates whether SR-IOV capability is supported.",
+                    "name": "SRIOVSupport",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "SRIOVSupportTypes"
                 },
                 "SVID[Partition:n]": {
+                    "default": "1001,1002,1003,1004",
                     "description": "SVID",
                     "longDescription": "The Switch VLAN Identifier (SVID) of the partition. ",
-                    "partition": "Yes",
+                    "name": "SVID[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "false"
+                    "readonly": "FALSE"
+                },
+                "SecondFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the second FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "SecondFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "SecondFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the second FCoE storage target.",
+                    "name": "SecondFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
                 },
                 "SecondTgtBootLun": {
-                    "default": "0",
                     "description": "Boot LUN",
                     "longDescription": "Specify the boot Logical Unit Number (LUN) on the second iSCSI storage target.",
+                    "name": "SecondTgtBootLun",
                     "qualifier": "IscsiSecondTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "SecondTgtChapId": {
                     "description": "CHAP ID",
                     "longDescription": "Specify the Challenge-Handshake Authentication Protocol (CHAP) ID of the second iSCSI storage target.  [Vendor to specify what is allowed].",
-                    "pattern": "^.{0,128}$",
+                    "name": "SecondTgtChapId",
                     "qualifier": "IscsiSecondTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "SecondTgtChapPwd": {
                     "description": "CHAP Secret",
                     "longDescription": "Specify the Challenge-Handshake Authentication Protocol (CHAP) secret (target CHAP password) of the second iSCSI storage target.  [Vendor to specify what is allowed].",
-                    "pattern": "^$|^.{12,16}$",
+                    "name": "SecondTgtChapPwd",
                     "qualifier": "IscsiSecondTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "SecondTgtIpAddress": {
-                    "default": "0.0.0.0",
                     "description": "IP Address",
                     "longDescription": "Specify the IP address of the second iSCSI target.",
-                    "pattern": "^([0-9]{1,3}\\.){3}[0-9]{1,3}|[0-9a-fA-F:]{2,39}$",
+                    "name": "SecondTgtIpAddress",
                     "qualifier": "IscsiSecondTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "SecondTgtIpVer": {
+                    "default": "IPv4",
                     "description": "IP Version",
                     "longDescription": "Specify whether IPv4 or IPv4 network addressing will be used for the second iSCSI target.",
+                    "name": "SecondTgtIpVer",
                     "qualifier": "IscsiSecondTgtParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "SecondTgtIpVerTypes"
                 },
                 "SecondTgtIscsiName": {
                     "description": "iSCSI Name",
                     "longDescription": "Specify the iSCSI Qualified Name (IQN) of the second iSCSI storage target.",
-                    "pattern": "^[-0-9a-zA-Z.:_]{0,223}$",
+                    "name": "SecondTgtIscsiName",
                     "qualifier": "IscsiSecondTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "SecondTgtTcpPort": {
-                    "default": "3260",
                     "description": "TCP Port",
                     "longDescription": "Specify the TCP Port number of the second iSCSI target.",
+                    "name": "SecondTgtTcpPort",
                     "qualifier": "IscsiSecondTgtParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "SecondaryDeviceMacAddr": {
-                    "default": "00:00:00:00:00:00",
                     "description": "Secondary Device MAC Address",
                     "longDescription": "Specify the MAC address of a secondary iSCSI boot adapter for redundancy in case of a boot failure.",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "SecondaryDeviceMacAddr",
                     "qualifier": "IscsiSecondaryDeviceParams",
-                    "readonly": "false"
+                    "readonly": "FALSE"
+                },
+                "SeventeenthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the seventeenth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "SeventeenthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "SeventeenthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the seventeenth FCoE storage target.",
+                    "name": "SeventeenthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "SeventhFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the seventh FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "SeventhFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "SeventhFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the seventh FCoE storage target.",
+                    "name": "SeventhFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "SixteenthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the sixteenth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "SixteenthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "SixteenthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the sixteenth FCoE storage target.",
+                    "name": "SixteenthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "SixthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the sixth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "SixthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "SixthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the sixth FCoE storage target.",
+                    "name": "SixthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
                 },
                 "SwitchDepPartitioningSupport": {
                     "description": "Switch Dependent Partitioning Support",
                     "longDescription": "Indicates whether Switch Dependent Partitioning capability is supported.",
+                    "name": "SwitchDepPartitioningSupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "SwitchDepPartitioningSupportTypes"
                 },
                 "TOESupport": {
                     "description": "TOE Support",
                     "longDescription": "Indicates whether TCP/IP Offload Engine capability is supported.",
+                    "name": "TOESupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "TOESupportTypes"
                 },
                 "TXBandwidthControlMaximum": {
                     "description": "TX Bandwidth Control Maximum",
                     "longDescription": "Indicates whether Transmit(TX) Bandwidth Control Maximum capability is supported.",
+                    "name": "TXBandwidthControlMaximum",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "TXBandwidthControlMaximumTypes"
                 },
                 "TXBandwidthControlMinimum": {
                     "description": "TX Bandwidth Control Minimum",
                     "longDescription": "Indicates whether Transmit (TX) Bandwidth Control Minimum capability is supported.",
+                    "name": "TXBandwidthControlMinimum",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "TXBandwidthControlMinimumTypes"
                 },
                 "TXFlowControl": {
                     "description": "TX Flow Control",
                     "longDescription": "Indicates whether Transmit (TX) Flow Control capability is supported.",
+                    "name": "TXFlowControl",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "TXFlowControlTypes"
                 },
                 "TcpIpViaDHCP": {
+                    "default": "Disabled",
                     "description": "TCP/IP Parameters via DHCP",
                     "longDescription": "This option is specific to IPv4.  Controls the source of the initiator IP address, DHCP or static assignment.",
+                    "name": "TcpIpViaDHCP",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "TcpIpViaDHCPTypes"
                 },
                 "TcpTimestmp": {
                     "default": "Disabled",
                     "description": "TCP Timestamp",
                     "longDescription": "Specify use of TCP timestamps in network packets, as defined in RFC 1323.",
+                    "name": "TcpTimestmp",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "TcpTimestmpTypes"
                 },
+                "TenthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the tenth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TenthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TenthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the tenth FCoE storage target.",
+                    "name": "TenthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ThirdFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the third FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "ThirdFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ThirdFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the third FCoE storage target.",
+                    "name": "ThirdFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ThirteenthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the thirteenth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "ThirteenthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ThirteenthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the thirteenth FCoE storage target.",
+                    "name": "ThirteenthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ThirtyFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the thirty FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "ThirtyFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ThirtyFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the thirty FCoE storage target.",
+                    "name": "ThirtyFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ThirtyFirstFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the thirty first FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "ThirtyFirstFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ThirtyFirstFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the thirty first FCoE storage target.",
+                    "name": "ThirtyFirstFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ThirtySecondFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the thirty second FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "ThirtySecondFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "ThirtySecondFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the thirty second FCoE storage target.",
+                    "name": "ThirtySecondFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
                 "TotalNumberLogicalPorts": {
+                    "default": "2",
                     "description": "Total Number of Logical Ports",
                     "longDescription": "Indicates the total number of logical ports on the device",
+                    "name": "TotalNumberLogicalPorts",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "TotalNumberLogicalPortsTypes"
+                },
+                "TwelfthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twelfth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwelfthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwelfthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twelfth FCoE storage target.",
+                    "name": "TwelfthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentiethFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twentieth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwentiethFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentiethFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twentieth FCoE storage target.",
+                    "name": "TwentiethFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyEighthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twenty eighth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwentyEighthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyEighthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty eighth FCoE storage target.",
+                    "name": "TwentyEighthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyFifthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twenty fifth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwentyFifthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyFifthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty fifth FCoE storage target.",
+                    "name": "TwentyFifthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyFirstFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twenty first FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwentyFirstFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyFirstFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty first FCoE storage target.",
+                    "name": "TwentyFirstFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyFourthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twenty fourth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwentyFourthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyFourthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty fourth FCoE storage target.",
+                    "name": "TwentyFourthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyNinthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twenty ninth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwentyNinthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyNinthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty ninth FCoE storage target.",
+                    "name": "TwentyNinthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentySecondFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twenty second FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwentySecondFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentySecondFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty second FCoE storage target.",
+                    "name": "TwentySecondFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentySeventhFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twenty seventh FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwentySeventhFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentySeventhFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty seventh FCoE storage target.",
+                    "name": "TwentySeventhFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentySixthFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twenty sixth FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwentySixthFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentySixthFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty sixth FCoE storage target.",
+                    "name": "TwentySixthFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyThirdFCoEBootTargetLUN": {
+                    "description": "Boot LUN",
+                    "longDescription": "Specify the boot Logical Unit Number (LUN) of the twenty third FCoE storage target that will be used by the FCoE initiator.",
+                    "name": "TwentyThirdFCoEBootTargetLUN",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
+                },
+                "TwentyThirdFCoEWWPNTarget": {
+                    "description": "World Wide Port Name Target",
+                    "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty third FCoE storage target.",
+                    "name": "TwentyThirdFCoEWWPNTarget",
+                    "qualifier": "FCoEConfiguration",
+                    "readonly": "TRUE"
                 },
                 "UseIndTgtName": {
                     "default": "Disabled",
                     "description": "Use Independent Target Name",
                     "longDescription": "Specify whether to use Independent Target Name when MPIO is enabled.",
+                    "name": "UseIndTgtName",
                     "qualifier": "IscsiSecondaryDeviceParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "UseIndTgtNameTypes"
                 },
                 "UseIndTgtPortal": {
                     "default": "Disabled",
                     "description": "Use Independent Target Portal",
                     "longDescription": "Specify whether to use Independent Target Portal (Enable when using MPIO mode).",
+                    "name": "UseIndTgtPortal",
                     "qualifier": "IscsiSecondaryDeviceParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "UseIndTgtPortalTypes"
                 },
                 "VFAllocBasis": {
                     "description": "VF Allocation Basis",
                     "longDescription": "Defines the domain in which Virtual Functions are allocated.",
+                    "name": "VFAllocBasis",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "VFAllocBasisTypes"
                 },
                 "VFAllocMult": {
                     "description": "VF Allocation Multiple",
                     "longDescription": "[VENDOR provide appropriate help text for the implementation - what is allowed, etc].",
+                    "name": "VFAllocMult",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "VFDistribution": {
                     "description": "VF Distribution",
                     "longDescription": "Defines the distribution of VFs to PFs within the domain specified by VFAllocBasis. A value appears in the colon separated list for each Physical Function that can potentially be present within the allocation domain. Values in the list from left to right apply to function numbers in the domain from least to greatest.  [VENDOR modify appropriately]",
-                    "pattern": "^[0-9]{1,3}(:[0-9]{1,3})*$",
+                    "name": "VFDistribution",
                     "qualifier": "PortLevelConfig",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VLanId": {
-                    "default": "1",
                     "description": "Virtual LAN ID",
                     "longDescription": "Specify the VLAN tag to be used with the selected boot protocol. The VLAN ID must be in the range from 1 to 4094.  [Vendor to provide implementation-specific language].",
+                    "name": "VLanId",
                     "qualifier": "NICConfig",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VLanMode": {
                     "default": "Disabled",
                     "description": "Virtual LAN Mode",
                     "longDescription": "Virtual LAN mode enables use of a VLAN tag to be used by [vendor specify boot protocols that support VLAN].",
+                    "name": "VLanMode",
                     "qualifier": "NICConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "VLanModeTypes"
                 },
                 "VirtFIPMacAddr": {
+                    "default": "00:00:00:00:00:00",
                     "description": "Virtual FIP MAC Address",
                     "longDescription": "Programmatically assignable FIP-MAC address for FCoE.",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "VirtFIPMacAddr",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VirtFIPMacAddr[Partition:n]": {
+                    "default": "00:00:00:00:00:00",
                     "description": "Virtual FIP MAC Address",
                     "longDescription": "Programmatically assignable FIP-MAC address for partition FCoE.",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "VirtFIPMacAddr[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VirtIscsiMacAddr": {
+                    "default": "00:00:00:00:00:00",
                     "description": "Virtual iSCSI Offload MAC Address",
                     "longDescription": "Programmatically assignable MAC address for iSCSI offload.",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "VirtIscsiMacAddr",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VirtIscsiMacAddr[Partition:n]": {
+                    "default": "00:00:00:00:00:00",
                     "description": "Virtual iSCSI Offload MAC Address",
                     "longDescription": "Programmatically assignable MAC address for partition iSCSI offload.",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "VirtIscsiMacAddr[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VirtMacAddr": {
+                    "default": "00:00:00:00:00:00",
                     "description": "Virtual MAC Address",
                     "longDescription": "Programmatically assignable MAC address for port.",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "VirtMacAddr",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VirtMacAddr[Partition:n]": {
+                    "default": "00:00:00:00:00:00",
                     "description": "Virtual MAC Address",
                     "longDescription": "Programmatically assignable MAC address for partition.",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{2}:){5}([0-9a-fA-F]{2})$",
+                    "name": "VirtMacAddr[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VirtWWN": {
+                    "default": "00:00:00:00:00:00:00:00",
                     "description": "Virtual World Wide Node Name",
                     "longDescription": "Programmatically assignable Fibre Channel World Wide Node Name identifier for FCoE.",
-                    "pattern": "^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$",
+                    "name": "VirtWWN",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VirtWWN[Partition:n]": {
+                    "default": "00:00:00:00:00:00:00:00",
                     "description": "Virtual World Wide Node Name",
                     "longDescription": "Programmatically assignable Fibre Channel World Wide Node Name identifier for partition FCoE.",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$",
+                    "name": "VirtWWN[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VirtWWPN": {
+                    "default": "00:00:00:00:00:00:00:00",
                     "description": "Virtual World Wide Port Name",
                     "longDescription": "Programmatically assignable Fibre Channel World Wide Port Name identifier for FCoE.",
-                    "pattern": "^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$",
+                    "name": "VirtWWPN",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VirtWWPN[Partition:n]": {
+                    "default": "00:00:00:00:00:00:00:00",
                     "description": "Virtual World Wide Port Name",
                     "longDescription": "Programmatically assignable Fibre Channel World Wide Port Name identifier for partition FCoE.",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$",
+                    "name": "VirtWWPN[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "false"
+                    "readonly": "FALSE"
                 },
                 "VirtualizationMode": {
+                    "default": "NONE",
                     "description": "Virtualization Mode",
                     "longDescription": "Specify the type of virtualization used by the controller on all ports.",
+                    "name": "VirtualizationMode",
                     "qualifier": "DeviceLevelConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "VirtualizationModeTypes"
                 },
                 "VndrConfigPage": {
                     "description": "Main Configuration Page",
                     "longDescription": "View device information and edit device configuration parameters.",
+                    "name": "VndrConfigPage",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "VndrFormSet": {
                     "description": "<Device Name> - <Current active MAC address of port or 1st partition>",
+                    "name": "VndrFormSet",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "WWN": {
                     "description": "World Wide Node Name",
-                    "longDescription": "Fibre Channel World Wide Node Name identifier for FCoE",
-                    "pattern": "^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$",
+                    "longDescription": "Fibre Channel World Wide Node Name identifier for FCoE\n",
+                    "name": "WWN",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "WWN[Partition:n]": {
                     "description": "World Wide Node Name",
                     "longDescription": "Fibre Channel World Wide Node Name identifier for FCoE. Replace n with the number of the partition.",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$",
+                    "name": "WWN[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "WWPN": {
                     "description": "World Wide Port Name",
                     "longDescription": "Fibre Channel World Wide Port Name identifier for FCoE.",
-                    "pattern": "^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$",
+                    "name": "WWPN",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "WWPN[Partition:n]": {
                     "description": "World Wide Port Name",
                     "longDescription": "Fibre Channel World Wide Port Name identifier for FCoE assigned during manufacturing.  Replace n with the number of the partition.",
-                    "partition": "Yes",
-                    "pattern": "^([0-9a-fA-F]{2}:){7}([0-9a-fA-F]{2})$",
+                    "name": "WWPN[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "WakeOnLan": {
                     "description": "Wake On LAN",
                     "longDescription": "Enables the server to be powered on using an in-band magic packet.",
+                    "name": "WakeOnLan",
                     "qualifier": "NICConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "WakeOnLanTypes"
                 },
                 "WakeOnLanLnkSpeed": {
+                    "default": "AutoNeg",
                     "description": "Wake On LAN Link Speed",
                     "longDescription": "Select the port speed used for Wake on LAN mode.",
+                    "name": "WakeOnLanLnkSpeed",
                     "qualifier": "NICConfig",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "WakeOnLanLnkSpeedTypes"
                 },
                 "WinHbaBootMode": {
+                    "default": "Disabled",
                     "description": "HBA Boot Mode",
                     "longDescription": "Enable iSCSI Offload HBA boot mode and disables iSCSI software initiator boot mode.",
+                    "name": "WinHbaBootMode",
                     "qualifier": "IscsiGenParams",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "WinHbaBootModeTypes"
                 },
                 "iSCSIBootSupport": {
                     "description": "iSCSI Boot Support",
-                    "longDescription": "Indicates whether iSCSI Boot capability is supported.",
+                    "longDescription": "Indicates whether iSCSI Boot is supported.",
+                    "name": "iSCSIBootSupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "iSCSIBootSupportTypes"
                 },
                 "iSCSIConfig": {
                     "description": "iSCSI Configuration",
                     "longDescription": "Configure general, initiator and target parameters for iSCSI boot.",
+                    "name": "iSCSIConfig",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "iSCSIConfigRef": {
                     "description": "iSCSI Configuration",
                     "longDescription": "Configure general, initiator and target parameters for iSCSI boot.",
+                    "name": "iSCSIConfigRef",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true"
+                    "readonly": "TRUE"
                 },
                 "iSCSIDualIPVersionSupport": {
                     "description": "iSCSI Dual IP Version Support",
                     "longDescription": "Indicates support for simultaneous IPv4 and IPv6 configurations of iSCSI initiator and iSCSI primary and secondary targets.",
+                    "name": "iSCSIDualIPVersionSupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "iSCSIDualIPVersionSupportTypes"
                 },
                 "iSCSIOffloadSupport": {
                     "description": "iSCSI Offload Support",
-                    "longDescription": "Indicates whether iSCSI Offload capability is supported.",
+                    "longDescription": "Indicates whether the iSCSI Offload capability is supported.",
+                    "name": "iSCSIOffloadSupport",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "true",
+                    "readonly": "TRUE",
                     "type": "iSCSIOffloadSupportTypes"
                 },
                 "iScsiOffloadMode": {
+                    "default": "Disabled",
                     "description": "iSCSI Offload Mode",
                     "longDescription": "Specify use of the port for iSCSI offload storage traffic.",
+                    "name": "iScsiOffloadMode",
                     "qualifier": "VndrConfigPage",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "iScsiOffloadModeTypes"
                 },
                 "iScsiOffloadMode[Partition:n]": {
+                    "default": "Disabled",
                     "description": "iSCSI Offload Mode",
                     "longDescription": "Specify use of the partition for iSCSI offload storage traffic.",
-                    "partition": "Yes",
+                    "name": "iScsiOffloadMode[Partition:n]",
                     "qualifier": "ConfigureFormn",
-                    "readonly": "false",
+                    "readonly": "FALSE",
                     "type": "iScsiOffloadMode[Partition:n]Types"
                 }
             },
@@ -2528,7 +3503,7 @@
         "PartitionStateInterpretationTypes": {
             "enum": [
                 "Fixed",
-                "Variable"
+                " Variable"
             ],
             "enumDescriptions": [
                 "Fixed",
@@ -2726,7 +3701,7 @@
             ],
             "type": "string"
         },
-        "RDMANICModeOnPartitionTypes": {
+        "RDMANICModeOnPartition[Partition:n]Types": {
             "enum": [
                 "Enabled",
                 "Disabled"
@@ -2972,7 +3947,10 @@
                 "100MbpsFull",
                 "1Gbps",
                 "10Gbps",
-                "40Gbps"
+                "40Gbps",
+                "25Gbps",
+                "50Gbps",
+                "100Gbps"
             ],
             "enumDescriptions": [
                 "Auto Negotiated",
@@ -2982,7 +3960,10 @@
                 "100 Mbps Full",
                 "1 Gbps",
                 "10 Gbps",
-                "40 Gbps"
+                "40 Gbps",
+                "25 Gbps",
+                "50 Gbps",
+                "100 Gbps"
             ],
             "type": "string"
         },
@@ -3064,5 +4045,5 @@
             "type": "string"
         }
     },
-    "title": "s\\iDRAC.Config\\NIC.xml"
+    "title": "omdrivers\\iDRAC\\xml\\NIC.xml"
 }
