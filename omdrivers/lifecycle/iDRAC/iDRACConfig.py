@@ -1784,6 +1784,7 @@ class iDRACConfig(iBaseConfigApi):
         self.entity.eResetToFactoryPreserveEnum = ResetToFactoryPreserveEnum
         self.entity.eResetForceEnum = ResetForceEnum
         self.entity.eBIOSPasswordTypeEnum = BIOSPasswordTypeEnum
+        self.entity.eConfigStateEnum = ConfigStateEnum
         self.liason_share = None
         self._config_entries = ConfigEntries(iDRACConfigKeyFields)
 
