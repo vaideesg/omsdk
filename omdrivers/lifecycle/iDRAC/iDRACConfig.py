@@ -499,7 +499,7 @@ iDRACWsManCmds = {
                 ("Username",  "creds", 'username', type("user"), None),
                 ("Password",  "creds", 'password', type("password"), None),
                 ("TimeToWait", "reboot_options", "time_to_wait", type(300), None),
-                ("EndHostPowerState", "reboot_options", HostEndPowerStateEnum, None),
+                ("EndHostPowerState", "reboot_options", "host_state", HostEndPowerStateEnum, None),
                 ("ShutdownType", "reboot_options", "shutdown_type", ShutdownTypeEnum, None)
                 #("ScheduledStartTime", datetime),
                 #("UntilTime", datetime)
@@ -1785,6 +1785,7 @@ class iDRACConfig(iBaseConfigApi):
         self.entity.eResetForceEnum = ResetForceEnum
         self.entity.eBIOSPasswordTypeEnum = BIOSPasswordTypeEnum
         self.entity.eConfigStateEnum = ConfigStateEnum
+        self.entity.eBootModeEnum = BootModeEnum
         self.liason_share = None
         self._config_entries = ConfigEntries(iDRACConfigKeyFields)
 
@@ -1840,7 +1841,7 @@ class iDRACConfig(iBaseConfigApi):
 
         with open(tempshare.mount_point.full_path, "w") as f:
             f.write(self.config.format_scp(record))
-        msg = self.scp_import(tempshare, reboot)
+        msg = self.scp_import(tempshare, reboot=reboot)
         if msg['Status'] == 'Success':
             self._config_entries.process(tempshare.mount_point.full_path, True)
         tempshare.dispose()
@@ -1960,7 +1961,7 @@ class iDRACConfig(iBaseConfigApi):
         mode = TypeHelper.resolve(mode)
         return self._configure_field_using_scp(
                     component = "BIOS.Setup.1-1",
-                    fmap = { self.config.arspec.BIOS.BiosMode : mode },
+                    fmap = { self.config.arspec.BIOS.BootMode : mode },
                     reboot_needed = True)
 
     # Power Management and Reboot
