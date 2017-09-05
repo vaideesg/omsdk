@@ -104,6 +104,16 @@ SCPTargetEnum = EnumWrapper("SCPTargetEnum", {
     'RAID' : 'RAID',
     }).enum_type
 
+RAIDLevelsEnum = EnumWrapper("RLE", {
+    'RAID_0' : 'RAID 0',
+    'RAID_1' : 'RAID 1',
+    'RAID_5' : 'RAID 5',
+    'RAID_6' : 'RAID 6',
+    'RAID_10' : 'RAID 10',
+    'RAID_50' : 'RAID 50',
+    'RAID_60' : 'RAID 60',
+    }).enum_type
+
 LicenseApiOptionsEnum = EnumWrapper("LAO", {
     'NoOptions' : 0,
     'Force' : 1,
@@ -1786,6 +1796,7 @@ class iDRACConfig(iBaseConfigApi):
         self.entity.eBIOSPasswordTypeEnum = BIOSPasswordTypeEnum
         self.entity.eConfigStateEnum = ConfigStateEnum
         self.entity.eBootModeEnum = BootModeEnum
+        self.entity.eRAIDLevelsEnum = RAIDLevelsEnum
         self.liason_share = None
         self._config_entries = ConfigEntries(iDRACConfigKeyFields)
 
@@ -2353,6 +2364,8 @@ class iDRACConfig(iBaseConfigApi):
             })
 
     def create_raid(self, vd_name, span_depth, span_length, raid_type, n_disks):
+        raid_type = TypeHelper.resolve(raid_type)
+        # Replace below with Controller, Enclosure, PhysicalDisk, VirtualDisk
         if not self.entity.get_entityjson():
             logger.debug("Cannot talk to device!")
             return False
