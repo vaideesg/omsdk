@@ -43,7 +43,6 @@ class Simulation:
         return self.simulate
 
 Simulator = Simulation()
-#Simulator.start_simulating()
 
 class ProtocolOptions(object):
     def __init__(self, enid):

@@ -35,10 +35,12 @@ else:
     try :
         import enum
         if hasattr(enum, 'version'):
-            _EnumStyle = 'V2'
-        elif hasattr(enum, '__version__'):
             _EnumStyle = 'V3'
+        elif hasattr(enum, '__version__'):
+            _EnumStyle = 'V2'
     except ImportError:
         pass
 if _EnumStyle == 'V3':
     OverrideCompatibleEnumPyVersion = sys.version_info
+else:
+    OverrideCompatibleEnumPyVersion = (3, 0, 0)

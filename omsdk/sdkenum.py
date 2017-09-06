@@ -1,7 +1,7 @@
 from enum import Enum
 from omsdk.sdkcenum import EnumWrapper, TypeHelper, PY2Enum
 
-if PY2Enum
+if PY2Enum:
     from enum import EnumValue
 
 import re
