@@ -102,10 +102,13 @@ class _UpdateCacheManager(object):
     def update_catalog(self):
         folder = self.cache.master_share.mount_point.share_path
         ftp = FtpHelper('ftp.dell.com', FtpCredentials())
-        c = 'Catalog.xml.gz'
+        c = 'catalog/Catalog.gz'
         retval = ftp.download_newerfiles([c], folder)
-        logger.debug("Download Success = {0}, Failed = {1}".format(retval['success'], retval['failed']))
-        if retval['failed'] == 0 and ftp.unzip_file(os.path.join(folder, c)):
+        logger.debug("Download Success = {0}, Failed = {1}"
+                .format(retval['success'], retval['failed']))
+        if retval['failed'] == 0 and \
+           ftp.unzip_file(os.path.join(folder, c),
+                          os.path.join(folder, 'Catalog.xml')):
             retval['Status'] = 'Success'
         else:
             logger.debug("Unable to download and extract " + c)

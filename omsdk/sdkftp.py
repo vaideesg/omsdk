@@ -1,7 +1,6 @@
 import os
 import sys
 import glob
-sys.path.append(os.getcwd())
 from ftplib import FTP, error_perm
 import socket
 from omsdk.sdkprint import PrettyPrint
@@ -154,15 +153,13 @@ class FtpHelper:
         flist = self.list_files_to_download(flist, lfolder)
         return self.download_files(flist, lfolder)
 
-    def download_catalog(self, folder = "."):
-        c = 'Catalog.xml.gz'
-        self.download_file_to_folder(c, folder)
-        self.unzip_file(os.path.join(c, folder))
-
     def unzip_file(self, lfname, tfname=None):
         if not tfname:
             tfname = lfname.rsplit('.gz',1)[0]
-        with gzip.open(lfname, 'rb') as f_in:
+        f_in = gzip.open(lfname, 'rb')
+        try:
             with open(tfname, 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
+        finally:
+            f_in.close()
         return True
