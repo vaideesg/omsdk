@@ -36,6 +36,8 @@ class UpdateManager(object):
 
     @staticmethod
     def add_models(ids):
+        if not isinstance(ids,list):
+            ids = [ids]
         if UpdateManager._update_store:
             catscope = UpdateManager._update_store.cache
             for model in ids:
