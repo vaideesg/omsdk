@@ -2,6 +2,7 @@ import sys
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
+PY2UC = (sys.version_info < (3,0,0))
 
 OMSDKVersion = (0, 9, 1002)
 
