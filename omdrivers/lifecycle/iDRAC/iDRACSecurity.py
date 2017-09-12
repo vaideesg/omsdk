@@ -17,6 +17,7 @@ from omsdk.lifecycle.sdkconfig import ConfigFactory
 from omsdk.lifecycle.sdksecurityapi import iBaseSecurityApi
 from omsdk.lifecycle.sdkentry import ConfigEntries, RowStatus
 from omsdk.sdktime import SchTimer, TIME_NOW
+from omdrivers.enums.iDRAC.iDRACEnums import *
 
 import sys
 import tempfile
@@ -34,14 +35,6 @@ try:
     PySnmpPresent = True
 except ImportError:
     PySnmpPresent = False
-
-SSLCertTypeEnum = EnumWrapper("SSLCertTypeEnum", {
-    'Web_Server_Cert': 1,
-    'CA_Cert': 2,
-    'Custom_Signing_Cert': 3,
-    'Client_Trust_Cert': 4
-}).enum_type
-
 
 class iDRACSecurity(iBaseSecurityApi):
     def __init__(self, entity):

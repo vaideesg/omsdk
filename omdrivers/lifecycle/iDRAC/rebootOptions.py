@@ -1,16 +1,4 @@
-
-from omsdk.sdkcenum import EnumWrapper, TypeHelper
-
-ShutdownTypeEnum = EnumWrapper('STE', {
-    'Graceful' : 0,
-    'Forced' : 1,
-    'NoReboot' : 2,
-}).enum_type
-
-HostEndPowerStateEnum = EnumWrapper('EPSE', {
-    'On' : 1,
-    'Off' : 2,
-}).enum_type
+from omdrivers.enums.iDRAC.iDRACEnums import *
 
 class RebootOptions(object):
     # time_to_wait is in seconds

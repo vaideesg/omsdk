@@ -4,6 +4,7 @@ import sys
 from omsdk.sdkcreds import UserCredentials
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 from omsdk.lifecycle.sdkcredentials import iBaseCredentialsApi
+from omdrivers.enums.iDRAC.iDRACEnums import *
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -15,12 +16,6 @@ try:
 except ImportError:
     PySnmpPresent = False
 
-UserPrivilegeEnum = EnumWrapper("UserPrivilegeEnum", {
-    "Administrator" : 511,
-    "Operator" : 499,
-    "ReadOnly" : 1,
-    "NoPrivilege" : 0,
-    }).enum_type
 
 class iDRACCredsMgmt(iBaseCredentialsApi):
     def __init__(self, entity):

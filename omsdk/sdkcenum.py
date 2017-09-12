@@ -10,6 +10,23 @@ if OverrideCompatibleEnumPyVersion:
 if PY2Enum:
     from enum import EnumValue
 
+# 
+#  If you create a enumeration as:
+#      TestOptions_Map = { 'VAL_1' : 'Value 1', 'VAL_2' : 'Value 2' }
+#      TestOptionsEnum = EnumWrapper("Test",  TestOptions_Map).enum_type
+#
+#  TypeHelper.resolve('VAL_1') ==> 'Value 1'
+#  TypeHelper.resolve(TestOptionsEnum.VAL_1) ==> 'Value 1'
+#
+#  TypeHelper.belongs_to(TestOptionsEnum, TestOptionsEnum.VAL_1) ==> True
+#  TypeHelper.belongs_to(TestOptionsEnum, OtherEnum.VAL_1) ==> False
+#  TypeHelper.belongs_to(TestOptionsEnum, 'VAL_1') ==> False
+#
+#  TypeHelper.get_name('Value 1', TestOptions_Map) ==> 'VAL_1'
+#  TypeHelper.get_name('Value N', TestOptions_Map) ==> None
+#
+#
+
 class TypeHelper:
     @staticmethod
     def belongs_to(entype, value):
@@ -45,6 +62,13 @@ class TypeHelper:
             return (enval.name)
         else:
             return enval
+
+    @staticmethod
+    def convert_to_enum(enval, entype, mymap):
+        for i in entype:
+            if enval == TypeHelper.resolve(i):
+                return i
+        return None
 
 class EnumWrapper(object):
     enum_entries = {}

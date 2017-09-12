@@ -77,6 +77,8 @@ setup(
         'omdrivers',
         'omdrivers.lifecycle',
         'omdrivers.lifecycle.iDRAC',
+        'omdrivers.enums',
+        'omdrivers.enums.iDRAC',
     ],
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment

@@ -240,28 +240,32 @@ class FileOnShare(Share):
                     continue
                 tomatch = remote_path
                 if common_path:
-                    tomatch += Share._ShareSpec[pspec]['path_sep'] + common_path
+                    if not tomatch.endswith(Share._ShareSpec[pspec]['path_sep']):
+                        tomatch += Share._ShareSpec[pspec]['path_sep']
+                    tomatch += common_path
                 cfgtype = Share._ShareSpec[pspec]['share_file'].match(tomatch)
                 if not cfgtype: continue
                 share_type = pspec
                 if len(cfgtype.groups()) > 1:
                     (ipaddr, rshare, filename) = [i for i in cfgtype.groups()]
                     return RemotePath(share_type, isFolder, ipaddr, rshare, filename)
-                return LocalPath(share_type, isFolder, remote_path, filename)
+                return LocalPath(share_type, isFolder, tomatch, filename)
         
         for pspec in stype_enum:
             if pspec not in Share._ShareSpec:
                 continue
             tomatch = remote_path
             if common_path:
-                tomatch += Share._ShareSpec[pspec]['path_sep'] + common_path
+                if not tomatch.endswith(Share._ShareSpec[pspec]['path_sep']):
+                    tomatch += Share._ShareSpec[pspec]['path_sep']
+                tomatch += common_path
             cfgtype = Share._ShareSpec[pspec]['share'].match(tomatch)
             if not cfgtype: continue
             share_type = pspec
             if len(cfgtype.groups()) > 1:
                 (ipaddr, rshare) = [i for i in cfgtype.groups()]
                 return RemotePath(share_type, isFolder, ipaddr, rshare)
-            return LocalPath(share_type, isFolder, remote_path)
+            return LocalPath(share_type, isFolder, tomatch)
 
         return InvalidPath()
 

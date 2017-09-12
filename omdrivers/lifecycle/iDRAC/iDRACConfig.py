@@ -14,8 +14,8 @@ from omsdk.lifecycle.sdkconfig import ConfigFactory
 from omsdk.lifecycle.sdkconfigapi import iBaseConfigApi
 from omsdk.lifecycle.sdkentry import ConfigEntries, RowStatus
 from omsdk.sdktime import SchTimer, TIME_NOW
-from omdrivers.lifecycle.iDRAC.iDRACSecurity import SSLCertTypeEnum
-from omdrivers.lifecycle.iDRAC.rebootOptions import RebootOptions,HostEndPowerStateEnum,ShutdownTypeEnum
+from omdrivers.lifecycle.iDRAC.rebootOptions import RebootOptions
+from omdrivers.enums.iDRAC.iDRACEnums import *
 import sys
 import logging
 import tempfile
@@ -31,107 +31,6 @@ try:
     PySnmpPresent = True
 except ImportError:
     PySnmpPresent = False
-
-PowerStateEnum = EnumWrapper("PSE",  { "PowerOn" : 2,
-    "SoftPowerCycle" : 5,
-    "SoftPowerOff" : 8,
-    "PowerCycle" : 9,
-    "HardReset" : 10,
-    "DiagnosticInterrupt" : 11,
-    "GracefulPowerOff" : 12
-    }).enum_type
-
-PowerBootEnum = EnumWrapper("PSE",  { "Enabled" : 2,
-    "Disabled" : 3,
-    "Reset" : 11,
-    }).enum_type
-
-ConfigStateEnum = EnumWrapper("CSE",  {
-    "Enabled" : 'Enabled',
-    "Disabled" : 'Disabled',
-    "Unknown" : 'Unknown',
-    }).enum_type
-
-RebootJobType = EnumWrapper("RJT", {
-    'PowerCycle' : 1, # 30 s
-    'GracefulRebootWithoutShutdown' : 2, # 5 min
-    'GracefulRebootWithForcedShutdown' :  3 # 5 min
-}).enum_type
-
-BootModeEnum = EnumWrapper('BME', {
-    'Bios' : 'Bios',
-    'Uefi' : 'Uefi',
-    'Unknown' : 'Unknown'
-}).enum_type
-
-BlinkLEDEnum = EnumWrapper('BL', {
-    # Off and Disable are same
-    'Off'     : 0,
-    'Disable' : 0,
-    # On and Enable are same
-    'On'      : 1,
-    'Enable'  : 1,
-    # OnForDuration and EnableForDuration are same
-    'OnForDuration'     : 2,
-    'EnableForDuration' : 2
-}).enum_type
-
-BIOSPasswordTypeEnum = EnumWrapper("BIOSPasswordType", {
-    'System' : 1,
-    'Setup' : 2
-}).enum_type
-
-ExportFormatEnum = EnumWrapper("ExportFormatEnum", {
-    'XML' : 'XML',
-}).enum_type
-
-ResetToFactoryPreserveEnum = EnumWrapper('RFD', {
-    'ResetExceptNICAndUsers' : 0,
-    'ResetAll' : 1,
-    'ResetAllExceptDefaultUser' : 2
-}).enum_type
-
-ResetForceEnum = EnumWrapper('RFD', {
-    'Graceful' : 0,
-    'Force' : 1,
-}).enum_type
-
-SCPTargetEnum = EnumWrapper("SCPTargetEnum", {
-    'ALL' :'ALL',
-    'IDRAC' : 'IDRAC',
-    'BIOS' : 'BIOS',
-    'NIC' : 'NIC',
-    'RAID' : 'RAID',
-    }).enum_type
-
-RAIDLevelsEnum = EnumWrapper("RLE", {
-    'RAID_0' : 'RAID 0',
-    'RAID_1' : 'RAID 1',
-    'RAID_5' : 'RAID 5',
-    'RAID_6' : 'RAID 6',
-    'RAID_10' : 'RAID 10',
-    'RAID_50' : 'RAID 50',
-    'RAID_60' : 'RAID 60',
-    }).enum_type
-
-LicenseApiOptionsEnum = EnumWrapper("LAO", {
-    'NoOptions' : 0,
-    'Force' : 1,
-    'All' : 2
-}).enum_type
-
-TLSOptions = EnumWrapper("TLS", {
-    'TLS_1_0' : 'TLS 1.0 and Higher',
-    'TLS_1_1' : 'TLS 1.1 and Higher',
-    'TLS_2_0' : 'TLS 2.0 Only'
-}).enum_type
-
-SSLBits = EnumWrapper("SSL", {
-    'S128' : '128-Bit or higher',
-    'S168' : '168-Bit or higher',
-    'S256' : '256-Bit or higher',
-    'Auto' : 'Auto Negotiate'
-}).enum_type
 
 iDRACConfigCompSpec = {
     "LifecycleController" : {
@@ -1930,6 +1829,16 @@ class iDRACConfig(iBaseConfigApi):
         self._load_scp()
         return self._config_entries.get_comp_field(comp, field)
 
+    def _get_scp_comp_field_as_array(self, comp, group, fields):
+        self._load_scp()
+        array = []
+        if not isinstance(fields, list):
+            fields = [fields]
+        for i in fields:
+            entry = self._get_scp_comp_field(comp, group + i)
+            if entry: array.append(entry)
+        return array
+
     # LC Status
     def lc_status(self):
         return self.entity._lc_status()
@@ -2068,15 +1977,27 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.DHCPEnable_IPv4 : m[dhcp_enabled],
             })
 
-    def configure_tls(self, tls_protocol = TLSOptions.TLS_1_1, ssl_bits = SSLBits.S128):
+    @property
+    def TLSProtocol(self):
+        tls = self._get_scp_comp_field('iDRAC.Embedded.1', 'WebServer.1#TLSProtocol')
+        return TypeHelper.convert_to_enum(tls, TLSOptions, TLSOptions_Map)
+
+    @property
+    def SSLEncryptionBits(self):
+        ssl = self._get_scp_comp_field('iDRAC.Embedded.1', 'WebServer.1#SSLEncryptionBitLength')
+        return TypeHelper.convert_to_enum(ssl, SSLBits, SSLBits_Map)
+
+    def configure_tls(self, tls_protocol = TLSOptions.TLS_1_1, ssl_bits = None):
+        fmap = {}
         tls_protocol = TypeHelper.resolve(tls_protocol)
+        if tls_protocol != TypeHelper.resolve(self.TLSProtocol):
+            fmap[ self.config.arspec.iDRAC.TLSProtocol_WebServer ] = tls_protocol
         ssl_bits = TypeHelper.resolve(ssl_bits)
-        return self._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap = {
-                self.config.arspec.iDRAC.TLSProtocol_WebServer : tls_protocol,
-                self.config.arspec.iDRAC.SSLEncryptionBitLength_WebServer : ssl_bits,
-            })
+        if ssl_bits and ssl_bits != TypeHelper.resolve(self.SSLEncryptionBits):
+            fmap[ self.config.arspec.iDRAC.SSLEncryptionBitLength_WebServer ] = ssl_bits
+        if len(fmap) <= 0:
+            return { 'Status' : 'Success', 'Message' : 'No changes required!' }
+        return self._configure_field_using_scp(component = "iDRAC.Embedded.1", fmap = fmap)
 
     def _clean_dnsarray(self, dnsarray, defdns):
         if not dnsarray:
@@ -2183,9 +2104,14 @@ class iDRACConfig(iBaseConfigApi):
     def SNMPTrapDestination(self):
         return self._get_scp_component('SNMPAlert')
 
+    def get_trap_destination(self, trap_dest_host):
+        (uid, retobj, msg) = self._find_existing_slot('SNMPAlert', trap_dest_host)
+        return retobj
+
     def add_trap_destination(self, trap_dest_host, username = None):
         (uid, retobj, msg) = self._find_empty_slot('SNMPAlert', trap_dest_host)
         if retobj is None: return msg
+        if username is None: username = ""
 
         return self._configure_field_using_scp(
             component = "iDRAC.Embedded.1",
@@ -2245,6 +2171,22 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.AgentEnable_SNMP : 'Disabled',
             })
 
+    @property
+    def SyslogServers(self):
+        return self._get_scp_comp_field_as_array('iDRAC.Embedded.1',
+                  'SysLog.1#', ['Server1', 'Server2', 'Server3'])
+
+    @property
+    def SyslogConfig(self):
+        syslog = {
+            'SyslogEnable' : self._get_scp_comp_field('iDRAC.Embedded.1', 'SysLog.1#SysLogEnable'),
+            'SyslogPort' : self._get_scp_comp_field('iDRAC.Embedded.1', 'SysLog.1#Port'),
+            'Servers' : self.SyslogServers,
+            'PowerLogEnable' : self._get_scp_comp_field('iDRAC.Embedded.1', 'SysLog.1#PowerLogEnable'),
+            'PowerLogInterval' : self._get_scp_comp_field('iDRAC.Embedded.1', 'SysLog.1#PowerLogInterval')
+        }
+        return syslog
+
     def enable_syslog(self, syslog_port = 514, powerlog_interval = 0, server1="", server2="", server3=""):
         powerlog_enable = 'Enabled'
         if powerlog_interval <= 0:
@@ -2260,6 +2202,23 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.PowerLogEnable_SysLog : powerlog_enable,
                 self.config.arspec.iDRAC.PowerLogInterval_SysLog : powerlog_interval,
             })
+
+    @property
+    def TimeZone(self):
+        return self._get_scp_comp_field('iDRAC.Embedded.1', 'Time.1#TimeZone')
+
+    @property
+    def NTPServers(self):
+        return self._get_scp_comp_field_as_array('iDRAC.Embedded.1',
+                  'NTPConfigGroup.1#', ['NTP1', 'NTP2', 'NTP3'])
+
+    @property
+    def NTPEnabled(self):
+        ntp = self._get_scp_comp_field('iDRAC.Embedded.1', 'NTPConfigGroup.1#NTPEnable')
+        if ntp and ntp.lower() == 'enabled':
+            return True
+        return False
+
     def configure_time_zone(self, tz="CST6CDT", dst_offset = 0, tz_offset = 0):
         return self._configure_field_using_scp(
             component = "iDRAC.Embedded.1",
@@ -2439,7 +2398,7 @@ class iDRACConfig(iBaseConfigApi):
         logger.debug("Containment Tree containing healthy/available entries:")
         logger.debug(PrettyPrint.prettify_json(self._raid_tree['Storage']))
 
-    def create_raid(self, vd_name, span_depth, span_length, raid_type, n_dhs = 0):
+    def create_virtual_disk(self, vd_name, span_depth, span_length, raid_type, n_dhs = 0):
         raid_type = TypeHelper.resolve(raid_type)
         self._init_raid_tree()
         config = self.config
@@ -2546,17 +2505,21 @@ class iDRACConfig(iBaseConfigApi):
             logger.debug(PrettyPrint.prettify_json(self._raid_tree['Storage']))
         return rjson
 
-    def delete_raid(self, vd_name):
+    def get_virtual_disk(self, vd_name):
         self._init_raid_tree()
         if 'VirtualDisk' not in self.entity.entityjson:
             return { 'Status' : 'Success', 'Message' : 'No VDs in Server' }
         vdfqdd = None
         for vd in self.entity.entityjson['VirtualDisk']:
             if vd['Name'] == vd_name:
-                vdfqdd = vd['FQDD']
-                break
-        if not vdfqdd:
-            return { 'Status' : 'Failed', 'Message' : 'No VD found with name "' + vd_name + '"' }
+                return vd
+        return None
+
+    def delete_virtual_disk(self, vd_name):
+        vdselect = self.get_virtual_disk(vd_name)
+        if not vdselect:
+            return { 'Status' : 'Success', 'Message' : 'No VD found with name "' + vd_name + '"' }
+        vdfqdd = vdselect['FQDD']
         rjson = self.entity._delete_raid(virtual_disk = vdfqdd)
         if rjson['Status'] in [ 'Error', "Failed"]: return rjson
         rjson = self.entity._create_raid_config_job(virtual_disk = vdfqdd,
@@ -2577,8 +2540,12 @@ class iDRACConfig(iBaseConfigApi):
         rjson['file'] = 'delete_raid'
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
-    def lock_raid(self, vd_name):
-        rjson = self.entity._lock_raid(virtual_disk = vd_name)
+    def lock_virtual_disk(self, vd_name):
+        vdselect = self.get_virtual_disk(vd_name)
+        if not vdselect:
+            return { 'Status' : 'Failed', 'Message' : 'No VD found with name "' + vd_name + '"' }
+        vdfqdd = vdselect['FQDD']
+        rjson = self.entity._lock_raid(virtual_disk = vdfqdd)
         if rjson['Status'] in [ 'Error', "Failed"]: return rjson
         rjson = self.entity._create_raid_config_job(virtual_disk = vd_name, reboot=RebootJobType.GracefulRebootWithForcedShutdown)
         rjson['file'] = 'lock_raid'

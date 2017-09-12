@@ -6,16 +6,12 @@ from enum import Enum
 from sys import stdout
 from datetime import datetime
 from omsdk.sdkprint import PrettyPrint
+from omsdk.sdkcunicode import UnicodeWriter
 import sys
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 import logging
-
-PY2UC = (sys.version_info < (3,0,0))
-
-if PY2UC:
-    import codecs
 
 logger = logging.getLogger(__name__)
 
@@ -80,12 +76,8 @@ class Update(object):
         return self._swidentity
 
     def save_invcollector_file(self, invcol_output_file):
-        if PY2UC:
-            with open(invcol_output_file, "w") as output:
-                self._save_invcollector(output)
-        else:
-            with codecs.open(invcol_output_file, encoding='utf-8', mode='w') as output:
-                self._save_invcollector(output)
+        with UnicodeWriter(invcol_output_file) as output:
+            self._save_invcollector(output)
 
     def _save_invcollector(self, output):
         #self.entity.get_entityjson()
@@ -93,30 +85,24 @@ class Update(object):
         #    logger.debug("ERROR: Entityjson is empty")
         #    return
         self._get_swidentity_hash()
-        self._write_output(output, '<SVMInventory>\n')
-        self._write_output(output, '    <System')
+        output._write_output( '<SVMInventory>\n')
+        output._write_output( '    <System')
         if "System" in self.entity.entityjson:
             for (invstr, field) in [ ("Model", "Model"), ("systemID", "SystemID"), ("Name", "HostName") ]:
                 if field in self.entity.entityjson["System"]:
-                    self._write_output(output, " " + invstr + "=\"" + self.entity.entityjson["System"][field] + "\"")
-        self._write_output(output, ' InventoryTime="{0}">\n'.format(str(datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S"))))
+                    output._write_output( " " + invstr + "=\"" + self.entity.entityjson["System"][field] + "\"")
+        output._write_output( ' InventoryTime="{0}">\n'.format(str(datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S"))))
         for ent in self._swidentity:
-            self._write_output(output, '        <Device')
+            output._write_output( '        <Device')
             for (invstr, field) in [ ("componentID", "ComponentID"),
                 ("vendorID", "VendorID"),
                 ("deviceID", "DeviceID"),
                 ("subVendorID", "SubVendorID"),
                 ("subDeviceID", "SubDeviceID") ]:
                 if field in self._swidentity[ent]:
-                    self._write_output(output, " " + invstr + "=\"" + self._swidentity[ent][field] + "\"")
-            self._write_output(output, ' bus="" display="">\n')
-            self._write_output(output, '            <Application componentType="{0}" version="{1}" display="" />\n'.format(self._swidentity[ent]["ComponentType"], self._swidentity[ent]["VersionString"]))
-            self._write_output(output, '        </Device>\n')
-        self._write_output(output, '    </System>\n')
-        self._write_output(output, '</SVMInventory>\n')
-
-    def _write_output(self, output, line):
-        if PY2UC:
-            output.write(unicode(line))
-        else:
-            output.write(line)
+                    output._write_output( " " + invstr + "=\"" + self._swidentity[ent][field] + "\"")
+            output._write_output( ' bus="" display="">\n')
+            output._write_output( '            <Application componentType="{0}" version="{1}" display="" />\n'.format(self._swidentity[ent]["ComponentType"], self._swidentity[ent]["VersionString"]))
+            output._write_output( '        </Device>\n')
+        output._write_output( '    </System>\n')
+        output._write_output( '</SVMInventory>\n')

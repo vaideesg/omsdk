@@ -24,23 +24,7 @@ try:
 except ImportError:
     PySnmpPresent = False
 
-JobStatusEnum = EnumWrapper("iDRACJSE",  {
-    'Success' : 'Success',
-    'InProgress' : 'InProgress',
-    'Failed' : 'Failed',
-    'Invalid' : 'Invalid',
-    }).enum_type
-
-ReturnValue = EnumWrapper("RV", {
-    "Success" : 0,
-    "Error" : 2,
-    "JobCreated" : 4096,
-    "Invalid" : -1,
-    }).enum_type
-
-iDRACJobsEnum = EnumWrapper("iDRACJobEnum", {
-    "Jobs" : "Jobs",
-    }).enum_type
+from omdrivers.enums.iDRAC.iDRACEnums import *
 
 class iDRACJobs(iBaseJobApi):
     def __init__(self, entity):

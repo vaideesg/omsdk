@@ -7,6 +7,7 @@ from enum import Enum
 from sys import stdout
 import sys
 from omsdk.sdkcenum import TypeHelper,EnumWrapper
+from omsdk.sdkcunicode import UnicodeWriter, UnicodeStringWriter, UnicodeHelper
 import threading
 import logging
 
@@ -14,10 +15,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-PY2UC = (sys.version_info < (3,0,0))
-
-if PY2UC:
-    import codecs
 
 class ConfigFactory(object):
     configmap = {}
@@ -128,7 +125,7 @@ class Config:
 
     def _spit_scp(self, desiredcfg, output, depth = ""):
         if depth == "":
-            self._write_output(output, "<SystemConfiguration>\n")
+            output._write_output("<SystemConfiguration>\n")
         for fqdd in desiredcfg:
             _comp = self.get_comp_from_fqdd(fqdd)
             if _comp == "invalid":
@@ -139,11 +136,10 @@ class Config:
                 continue
             comp = self.complist[_comp]["registry"]
             grps = self.get_groups(comp)
-            self._write_output(output, depth + "  <Component FQDD=\"" + fqdd + "\">\n")
+            output._write_output(depth + "  <Component FQDD=\"" + fqdd + "\">\n")
             for compen in desiredcfg[fqdd]:
                 props = self.defs[comp]["definitions"][comp]["properties"]
-                if PY2UC and isinstance(compen, unicode):
-                    compen = str(compen)
+                compen = UnicodeHelper.stringize(compen)
                 if isinstance(compen, str):
                     self._spit_scp({ compen : desiredcfg[fqdd][compen] }, output, depth + "  ")
                     continue
@@ -158,9 +154,9 @@ class Config:
                 else:
                     for ent in desiredcfg[fqdd][compen]:
                         idx = self._attr_print(output, depth, _comp, cvalue, props, ent, idx)
-            self._write_output(output, depth + "  </Component>\n")
+            output._write_output(depth + "  </Component>\n")
         if depth == "":
-            self._write_output(output, "</SystemConfiguration>\n")
+            output._write_output("</SystemConfiguration>\n")
 
     def _attr_print(self, output, depth, _comp, cvalue, props, desired, idx):
         if desired is None:
@@ -179,26 +175,16 @@ class Config:
         else:
             atname = props[cvalue]["qualifier"] + "." + str(idx) + "#"
         atname = atname + atname_postfix
-        self._write_output(output, depth + "    <Attribute Name=\""+atname+"\">")
-        self._write_output(output, str(desired))
-        self._write_output(output, "</Attribute>\n")
+        output._write_output(depth + "    <Attribute Name=\""+atname+"\">")
+        output._write_output(str(desired))
+        output._write_output("</Attribute>\n")
         return (idx+1)
 
-    def _write_output(self, output, line):
-        if PY2UC:
-            output.write(unicode(line))
-        else:
-            output.write(line)
-
     def format_scp(self, desiredcfg):
-        output = io.StringIO()
-        self._spit_scp(desiredcfg, output)
+        with UnicodeStringWriter() as output:
+            self._spit_scp(desiredcfg, output)
         return output.getvalue()
 
     def save_scp(self, desiredcfg, outputfile):
-        if PY2UC:
-            with open(outputfile, "w") as output:
-                self._spit_scp(desiredcfg, output)
-        else:
-            with codecs.open(outputfile, encoding='utf-8', mode='w') as output:
-                self._spit_scp(desiredcfg, output)
+        with UnicodeWriter(outputfile) as output:
+            self._spit_scp(desiredcfg, output)

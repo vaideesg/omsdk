@@ -1,4 +1,5 @@
 from omsdk.version.sdkversion import PY2UC
+import io
 
 if PY2UC:
     import codecs
@@ -21,7 +22,7 @@ class UnicodeWriter(object):
             self.output = open(self.name, "w")
         else:
             self.output = codecs.open(self.name, encoding='utf-8', mode='w')
-        return self.output
+        return self
 
     def _write_output(self, line):
         if PY2UC:
@@ -32,4 +33,20 @@ class UnicodeWriter(object):
     def __exit__(self, type, value, traceback):
         if self.output:
             self.output.close()
+        return isinstance(value, TypeError)
+
+class UnicodeStringWriter(object):
+    def __init__(self):
+        self.output = io.StringIO()
+        
+    def __enter__(self):
+        return self
+
+    def _write_output(self, line):
+        self.output.write(line)
+
+    def getvalue(self):
+        return self.output.getvalue()
+
+    def __exit__(self, type, value, traceback):
         return isinstance(value, TypeError)

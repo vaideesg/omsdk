@@ -8,6 +8,7 @@ from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 from omsdk.lifecycle.sdkupdate import Update
 from omsdk.catalog.sdkupdatemgr import UpdateManager
+from omdrivers.enums.iDRAC.iDRACEnums import *
 import sys
 
 PY2 = sys.version_info[0] == 2
@@ -20,13 +21,6 @@ try:
 except ImportError:
     PySnmpPresent = False
 
-iDRACFirmEnum = EnumWrapper("iDRACFirmEnum", {
-    "Firmware" : "Firmware",
-    }).enum_type
-
-iDRACFirmwareWsManViews = {
-    iDRACFirmEnum.Firmware : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_SoftwareIdentity",
-}
 
 class iDRACUpdate(Update):
     def __init__(self, entity):

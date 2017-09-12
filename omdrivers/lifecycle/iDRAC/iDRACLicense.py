@@ -23,11 +23,7 @@ try:
     PySnmpPresent = True
 except ImportError:
     PySnmpPresent = False
-
-iDRACLicenseEnum = EnumWrapper("iDRACLicenseEnum", {
-    "License" : "License",
-    "LicensableDevice" : "LicensableDevice",
-    }).enum_type
+from omdrivers.enums.iDRAC.iDRACEnums import *
 
 class iDRACLicense(iBaseLicenseApi):
     def __init__(self, entity):

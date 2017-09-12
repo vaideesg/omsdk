@@ -23,11 +23,7 @@ try:
 except ImportError:
     PySnmpPresent = False
 
-iDRACLogsEnum = EnumWrapper("iDRACLogEnum", {
-    "Logs" : "Logs",
-    "SELLog" : "SELLog"
-    }).enum_type
-
+from omdrivers.enums.iDRAC.iDRACEnums import *
 
 class iDRACLogs(iBaseLogApi):
     def __init__(self, entity):
