@@ -10,12 +10,12 @@ from datetime import datetime
 from omsdk.sdkprint import MyEncoder, PrettyPrint
 from omsdk.sdkenum import DeviceGroupFilter
 from omsdk.sdkcenum import EnumWrapper,TypeHelper
+from omsdk.sdkcunicode import UnicodeHelper
 
 import platform
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
-PY2UC = (sys.version_info < (3,0,0))
 
 logger = logging.getLogger(__name__)
 # idrac.get_share_type_mapped():
@@ -238,24 +238,30 @@ class FileOnShare(Share):
                     continue
                 if 'share_file' not in Share._ShareSpec[pspec]:
                     continue
-                cfgtype = Share._ShareSpec[pspec]['share_file'].match(remote_path)
+                tomatch = remote_path
+                if common_path:
+                    tomatch += Share._ShareSpec[pspec]['path_sep'] + common_path
+                cfgtype = Share._ShareSpec[pspec]['share_file'].match(tomatch)
                 if not cfgtype: continue
                 share_type = pspec
                 if len(cfgtype.groups()) > 1:
                     (ipaddr, rshare, filename) = [i for i in cfgtype.groups()]
-                    return RemotePath(share_type, isFolder, ipaddr, rshare, common_path, filename)
-                return LocalPath(share_type, isFolder, remote_path, common_path, filename)
+                    return RemotePath(share_type, isFolder, ipaddr, rshare, filename)
+                return LocalPath(share_type, isFolder, remote_path, filename)
         
         for pspec in stype_enum:
             if pspec not in Share._ShareSpec:
                 continue
-            cfgtype = Share._ShareSpec[pspec]['share'].match(remote_path)
+            tomatch = remote_path
+            if common_path:
+                tomatch += Share._ShareSpec[pspec]['path_sep'] + common_path
+            cfgtype = Share._ShareSpec[pspec]['share'].match(tomatch)
             if not cfgtype: continue
             share_type = pspec
             if len(cfgtype.groups()) > 1:
                 (ipaddr, rshare) = [i for i in cfgtype.groups()]
-                return RemotePath(share_type, isFolder, ipaddr, rshare, common_path)
-            return LocalPath(share_type, isFolder, remote_path, common_path)
+                return RemotePath(share_type, isFolder, ipaddr, rshare)
+            return LocalPath(share_type, isFolder, remote_path)
 
         return InvalidPath()
 
@@ -268,13 +274,9 @@ class FileOnShare(Share):
         self.creds = creds
         self.isFolder = isFolder
 
-        if PY2UC:
-            if type(remote) == unicode:
-                remote = remote.encode('ascii', 'ignore')
-            if type(mount_point) == unicode:
-                mount_point = mount_point.encode('ascii', 'ignore')
-            if type(common_path) == unicode:
-                common_path = common_path.encode('ascii', 'ignore')
+        remote = UnicodeHelper.stringize(remote)
+        mount_point = UnicodeHelper.stringize(mount_point)
+        common_path = UnicodeHelper.stringize(common_path)
 
         if remote == "vFlash":
             self.remote = vFlash()
@@ -470,6 +472,10 @@ class FileOnShare(Share):
         if not self.isFolder:
             return None
 
+        # at least provide one path
+        if len(args) == 0:
+            return None
+
         if self.mount_point is None and self.remote is None:
             return self
         mp_mountable_path = None
@@ -489,10 +495,15 @@ class FileOnShare(Share):
             psep = Share._ShareSpec[folder.share_type]['path_sep']
             for arg in args:
                 fname = fname + psep + arg
-        common_path = fname.replace(folder.mountable_path + psep, '')
+        common_path = None
+        if fname != folder.mountable_path:
+            common_path = fname.replace(folder.mountable_path + psep, '')
 
         if mp_mountable_path:
             mp_mountable_path += psep
+        logger.debug("new_file().remote: " + str(r_mountable_path))
+        logger.debug("new_file().mount_point: " + str(mp_mountable_path))
+        logger.debug("new_file().common_path: " + str(common_path))
 
         return FileOnShare(remote = r_mountable_path,
             mount_point = mp_mountable_path,
