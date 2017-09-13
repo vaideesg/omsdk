@@ -183,7 +183,7 @@ class Config:
     def format_scp(self, desiredcfg):
         with UnicodeStringWriter() as output:
             self._spit_scp(desiredcfg, output)
-        return output.getvalue()
+            return output.getvalue()
 
     def save_scp(self, desiredcfg, outputfile):
         with UnicodeWriter(outputfile) as output:

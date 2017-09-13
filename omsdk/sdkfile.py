@@ -649,7 +649,7 @@ class LocalFile(Share):
             print("WARN: Changing isFolder to false, as it is directory")
             self.isFolder = False
         elif not self.isFolder and os.path.isdir(self.local.full_path):
-            print("WARN: Changing isFolder to false, as it is directory")
+            print("WARN: Changing isFolder to false, as it is not directory")
             self.isFolder = True
         self.valid = False
         self.fd = fd

@@ -43,7 +43,10 @@ class UnicodeStringWriter(object):
         return self
 
     def _write_output(self, line):
-        self.output.write(line)
+        if PY2UC:
+            self.output.write(unicode(line))
+        else:
+            self.output.write(line)
 
     def getvalue(self):
         return self.output.getvalue()
