@@ -54,10 +54,10 @@ class UserCredentials(iCredentials):
         self.password = password
 
     def __str__(self):
-        return (TypeHelper.resolve(self.enid) + "(username=" + self.username + ")")
+        return (TypeHelper.resolve(self.enid) + "(username=" + str(self.username) + ")")
 
     def __repr__(self):
-        return (TypeHelper.resolve(self.enid) + "(username=" + self.username + ")")
+        return (TypeHelper.resolve(self.enid) + "(username=" + str(self.username) + ")")
 
     def json_encode(self):
         return { 'type' : 'UserCredentials', 'username' : self.username }

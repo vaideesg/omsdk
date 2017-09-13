@@ -37,18 +37,13 @@ except ImportError:
 
 try:
     from omdrivers.lifecycle.iDRAC.iDRACJobs import iDRACJobs
-    from omdrivers.lifecycle.iDRAC.iDRACJobs import iDRACJobsEnum
     from omdrivers.lifecycle.iDRAC.iDRACConfig import iDRACConfig
-    from omdrivers.lifecycle.iDRAC.iDRACConfig import PowerStateEnum
     from omdrivers.lifecycle.iDRAC.iDRACConfig import iDRACRedfishCmds
     from omdrivers.lifecycle.iDRAC.iDRACConfig import iDRACWsManCmds
     from omdrivers.lifecycle.iDRAC.iDRACLogs import iDRACLogs
-    from omdrivers.lifecycle.iDRAC.iDRACLogs import iDRACLogsEnum
     from omdrivers.lifecycle.iDRAC.iDRACUpdate import iDRACUpdate
-    from omdrivers.lifecycle.iDRAC.iDRACUpdate import iDRACFirmEnum
     from omdrivers.lifecycle.iDRAC.iDRACLicense import iDRACLicense
     from omdrivers.lifecycle.iDRAC.iDRACSecurity import iDRACSecurity
-    from omdrivers.lifecycle.iDRAC.iDRACLicense import iDRACLicenseEnum
     from omdrivers.lifecycle.iDRAC.iDRACCredsMgmt import iDRACCredsMgmt
 except ImportError as ex:
     logger.debug(str(ex))
@@ -193,6 +188,7 @@ iDRACWsManViews = {
     iDRACSensorEnum.PSNumericSensor : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_PSNumericSensor",
     iDRACFirmEnum.Firmware : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_SoftwareIdentity",
     iDRACJobsEnum.Jobs : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_LifecycleJob",
+    iDRACOSDJobsEnum.OSDJobs : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_OSDConcreteJob",
     iDRACMiscEnum.SystemString : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_SystemString",
     iDRACMiscEnum.NICString : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_NICString",
     iDRACMiscEnum.NICEnumeration : "http://schemas.dell.com/wbem/wscim/1/cim-schema/2/DCIM_NICEnumeration",

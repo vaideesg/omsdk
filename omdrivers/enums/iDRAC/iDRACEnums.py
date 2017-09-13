@@ -12,6 +12,7 @@ iDRACFirmEnum = EnumWrapper("iDRACFirmEnum", {
     "Firmware" : "Firmware",
     }).enum_type
 
+
 iDRACLogsEnum = EnumWrapper("iDRACLogEnum", {
     "Logs" : "Logs",
     "SELLog" : "SELLog"
@@ -33,6 +34,10 @@ ReturnValue = EnumWrapper("RV", {
 
 iDRACJobsEnum = EnumWrapper("iDRACJobEnum", {
     "Jobs" : "Jobs",
+    }).enum_type
+
+iDRACOSDJobsEnum = EnumWrapper("iDRACOSDJobEnum", {
+    "OSDJobs" : "OSDJobs",
     }).enum_type
 
 PowerStateEnum = EnumWrapper("PSE",  { "PowerOn" : 2,

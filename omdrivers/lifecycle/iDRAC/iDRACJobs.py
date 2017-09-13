@@ -45,6 +45,21 @@ class iDRACJobs(iBaseJobApi):
     def delete_all_jobs(self):
         return self.entity._jobq_delete(jobid ="JID_CLEARALL")
 
+    def _get_osd_job_details(self):
+        self.osd_job_json = {}
+        self.entity._get_entries(self.osd_job_json, iDRACOSDJobsEnum)
+        if 'OSDJobs' not in self.osd_job_json:
+            return { 'Status' : 'Failed',
+                     'Message' : 'Cannot fetch OSD Job status' }
+        osdjobs = self.osd_job_json['OSDJobs']
+        job = { 'InstanceID' : None }
+        if len(osdjobs) >= 1:
+            job = osdjobs[len(osdjobs) - 1]
+        return {
+            'Data' : { 'Jobs' : job },
+            'Status' : 'Success'
+        }
+
     def get_job_details(self, jobid):
         selector = { "InstanceID" : jobid }
         return self.entity.cfactory.opget(iDRACJobsEnum.Jobs, selector)
@@ -52,7 +67,11 @@ class iDRACJobs(iBaseJobApi):
     def get_job_status(self, jobid):
         jobs = {}
         jobret = { "Status" : TypeHelper.resolve(JobStatusEnum.InProgress) }
-        jobs = self.get_job_details(jobid)
+        if jobid.startswith('DCIM_OSD'):
+            # Poll for OSD Concrete Job
+            jobs = self._get_osd_job_details()
+        else:
+            jobs = self.get_job_details(jobid)
         logger.debug(PrettyPrint.prettify_json(jobs))
         if "Status" in jobs and jobs['Status'] != "Success":
             logger.debug("ERROR: get_job_status failed: " + jobs['Status'])
@@ -67,7 +86,7 @@ class iDRACJobs(iBaseJobApi):
             jobstatus = jb['JobStatus']
             if jobstatus == 'Completed':
                 jobstaten = JobStatusEnum.Success
-            elif 'Message' in jb and 'completed' in jb['Message']:
+            elif 'Message' in jb and jb['Message'] and 'completed' in jb['Message']:
                 jobstaten = JobStatusEnum.Success
             elif jobstatus == 'Failed':
                 jobstaten = JobStatusEnum.Failed
