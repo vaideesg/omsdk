@@ -14,6 +14,7 @@ from omsdk.sdkproto import PWSMAN,PREDFISH, PSNMP
 from omsdk.sdkfile import FileOnShare, Share
 from omsdk.sdkcreds import UserCredentials
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
+from omdrivers.enums.iDRAC.iDRACEnums import *
 
 
 logger = logging.getLogger(__name__)
@@ -1526,7 +1527,8 @@ class iDRACEntity(iDeviceDriver):
 
     @property
     def PowerState(self):
-        return self._get_field_device(self.ComponentEnum.System, "PowerState")
+        pstate = self._get_field_device(self.ComponentEnum.System, "PowerState")
+        return TypeHelper.convert_to_enum(pstate, PowerStateEnum)
 
     @property
     def IDRACDNSName(self):

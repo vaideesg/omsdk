@@ -215,6 +215,7 @@ class InvalidPath(_PathObject):
         else:
             super().__init__(None, False, None, "<invalid>")
 
+
 class FileOnShare(Share):
 
     def json_encode(self):
@@ -300,10 +301,10 @@ class FileOnShare(Share):
             self.is_template = True
 
 
-    def isConnected(self, drive, remote = None):
+    def _isConnected(self, drive, remote = None):
         if platform.system() != "Windows":
             return True
-        maps = self.mapdetails(drive)
+        maps = self._mapdetails(drive)
         status = False
         if 'Status' in maps:
             status = (maps['Status'] == 'OK')
@@ -314,10 +315,10 @@ class FileOnShare(Share):
                 return status
         return False
 
-    def isMapped(self, drive, remote = None):
+    def _isMapped(self, drive, remote = None):
         if platform.system() != "Windows":
             return True
-        maps = self.mapdetails(drive)
+        maps = self._mapdetails(drive)
         if 'Remote name' in maps:
             if not remote:
                 return True
@@ -325,7 +326,7 @@ class FileOnShare(Share):
                 return True
         return False
 
-    def mapdetails(self, drive):
+    def _mapdetails(self, drive):
         if platform.system() != "Windows":
             return {}
         if len(drive) == 1:
@@ -364,12 +365,12 @@ class FileOnShare(Share):
 
         return mapinfo
 
-    def mount(self):
+    def _mount(self):
         if self.mounted:
             return True
         if self.mount_point is None or self.remote is None:
             return False
-        if self.isConnected(self.mount_point.mountable_path,
+        if self._isConnected(self.mount_point.mountable_path,
                             self.remote.mountable_path):
             self.mounted = True
             return self.mounted
@@ -398,7 +399,7 @@ class FileOnShare(Share):
     def IsValid(self):
         if self.valid:
             return True
-        if not self.mount():
+        if not self._mount():
             return False
         fonshare = self.mkstemp(prefix='scp', suffix='.xml')
         if not fonshare:
@@ -419,7 +420,7 @@ class FileOnShare(Share):
             psep = Share._ShareSpec[self.mount_point.share_type]['path_sep']
         try:
             (fd, fname) = tempfile.mkstemp(prefix=prefix, suffix=suffix,
-                        dir=self.mount_point.share_path, text=text)
+                        dir=self.mount_point.full_path, text=text)
         except Exception as ex:
             logger.debug("Failed to create temp file: " +str(ex))
             return None
@@ -589,6 +590,18 @@ class FileOnShare(Share):
     def remote_file_name(self):
        return self.remote.file_name
 
+    @property
+    def local_full_path(self):
+       return self.mount_point.full_path
+
+    @property
+    def local_folder_path(self):
+       return self.mount_point.share_path
+
+    @property
+    def local_file_name(self):
+       return self.mount_point.file_name
+
     def addcreds(self, creds):
         self.creds = creds
         return self
@@ -601,6 +614,187 @@ class FileOnShare(Share):
         if self.creds:
             print("   Username " + self.creds.username)
             print("   Password " + self.creds.password)
+        print("   Template " + str(self.is_template))
+
+class LocalFile(Share):
+
+    def json_encode(self):
+        return {
+            'full_path': str(self.full_path),
+        }
+
+    def _get_local_path_object(self, stype_enum, local_path, isFolder):
+        if local_path.endswith('/') or local_path.endswith('\\'):
+            isFolder = True
+        if platform.system() == "Windows":
+            share_type = Share.LocalFolderType.Windows
+        else:
+            share_type = Share.LocalFolderType.Linux
+        if isFolder:
+            return LocalPath(share_type, isFolder, local_path)
+        else:
+            return LocalPath(share_type, isFolder, 
+                    os.path.dirname(local_path), os.path.basename(local_path))
+
+    def __init__(self, local, isFolder = False, fd = None):
+        if PY2:
+            super(LocalFile, self).__init__()
+        else:
+            super().__init__()
+        self.local = local
+        local = UnicodeHelper.stringize(local)
+        self.local = self._get_local_path_object(Share.LocalFolderType, local, isFolder)
+        self.isFolder = isFolder
+        if self.isFolder and not os.path.isdir(self.local.full_path):
+            print("WARN: Changing isFolder to false, as it is directory")
+            self.isFolder = False
+        elif not self.isFolder and os.path.isdir(self.local.full_path):
+            print("WARN: Changing isFolder to false, as it is directory")
+            self.isFolder = True
+        self.valid = False
+        self.fd = fd
+        self.is_template = False
+        if Share.TemplateSpec.match(self.local_full_path) is not None:
+            self.is_template = True
+
+    # Checks whether the folder is writable!
+    @property
+    def IsValid(self):
+        if self.valid:
+            return True
+        fonshare = self.mkstemp(prefix='scp', suffix='.xml')
+        if not fonshare:
+            return False
+        fonshare.dispose()
+        self.valid = True
+        return True
+
+    def mkstemp(self, suffix, prefix, text=True):
+        if not self.local:
+            return None
+
+        if not self.isFolder:
+            return None
+
+        psep = ''
+        if 'path_sep' in Share._ShareSpec[self.local.share_type]:
+            psep = Share._ShareSpec[self.local.share_type]['path_sep']
+        try:
+            (fd, fname) = tempfile.mkstemp(prefix=prefix, suffix=suffix,
+                        dir=self.local.full_path, text=text)
+        except Exception as ex:
+            logger.debug("Failed to create temp file: " +str(ex))
+            return None
+
+        #Kludge: Windows associates the fonshare with the fd
+        # and keeps the file in open state.
+        # As a result, os.system() fails to write to this openfile
+        # so we attach a suffix "1" to file and create it.
+        return LocalFile(local = fname + "1", fd = fd, isFolder = False)
+
+    def format(self, **kwargs):
+
+        if not self.is_template:
+            return self
+        if self.local is None:
+            return self
+        fname = self.local.full_path
+        for arg in kwargs:
+            fname = re.sub("%"+arg, kwargs[arg], fname)
+        try:
+            fname = datetime.strftime(datetime.now(), fname)
+        except Exception as ex:
+            logger.debug(str(ex))
+
+        return LocalFile(local = fname, fd = None, isFolder = self.isFolder)
+
+    def new_file(self, *args):
+
+        if not self.isFolder:
+            return None
+
+        # at least provide one path
+        if len(args) == 0:
+            return None
+
+        if self.local is None:
+            return self
+
+        fname = self.local.full_path
+        psep = ''
+        if 'path_sep' in Share._ShareSpec[self.local.share_type]:
+            psep = Share._ShareSpec[self.local.share_type]['path_sep']
+            for arg in args:
+                fname = fname + psep + arg
+
+        return LocalFile(local = fname, fd = None, isFolder = False)
+
+    def makedirs(self, *args):
+
+        if not self.isFolder:
+            return False
+        if self.local is None:
+            return False
+        if not 'path_sep' in Share._ShareSpec[self.local.share_type]:
+            return False
+        if not self.IsValid:
+            return False
+
+        fname = self.local.full_path
+        psep = Share._ShareSpec[self.local.share_type]['path_sep']
+        for t in args:
+            fname += psep + t
+        try :
+            if os.path.exists(fname) and os.path.isdir(fname):
+                return True
+
+            os.makedirs(fname)
+            return True
+        except Exception as ex:
+            logger.debug("makedirs(): Failed to create folder: " +str(ex))
+            return False
+
+    @property
+    def IsTemp(self):
+        return (self.fd is not None)
+
+    def dispose(self):
+        try :
+            os.close(self.fd)
+        except Exception as ex:
+            logger.debug(str(ex))
+
+        try :
+            if os.path.exists(self.mount_point.full_path):
+                os.remove(self.mount_point.full_path)
+        except Exception as ex:
+            logger.debug(str(ex))
+
+        # Windows Kludge: Remove the file without 1 suffix
+        try :
+            if os.path.exists(self.mount_point.full_path[0:-1]):
+                os.remove(self.mount_point.full_path[0:-1])
+        except Exception as ex:
+            logger.debug(str(ex))
+
+    def __str__(self):
+       return self.local.full_path
+
+    @property
+    def local_full_path(self):
+       return self.local.full_path
+
+    @property
+    def local_folder_path(self):
+       return self.local.share_path
+
+    @property
+    def local_file_name(self):
+       return self.local.file_name
+
+    def printx(self):
+        if self.local:
+            self.local.printx("local")
         print("   Template " + str(self.is_template))
 
 class cfgprocessor:

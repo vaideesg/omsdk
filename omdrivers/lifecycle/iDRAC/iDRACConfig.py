@@ -1711,37 +1711,6 @@ class iDRACConfig(iBaseConfigApi):
         self.liason_share = myshare
         return True
 
-    @property
-    def LCReady(self):
-        rjson = self.entity._lc_status()
-        status = self.entity._get_field_from_action(rjson, "Data", "GetRemoteServicesAPIStatus_OUTPUT", "Status")
-        return (status and status in ["0"])
-
-
-    @property
-    def ServerStatus(self):
-        rjson = self.entity._lc_status()
-        status = self.entity._get_field_from_action(rjson, "Data", "GetRemoteServicesAPIStatus_OUTPUT", "ServerStatus")
-        return (status and status not in ["6","7","8", "9"])
-   
-    @property
-    def LCStatus(self):
-        rjson = self.entity._lc_status()
-        states = {
-            "0" : "Ready",
-            "1" : "Not Initialized",
-            "2" : "Reloading Data",
-            "3" : "Disabled",
-            "4" : "In Recovery",
-            "5" : "In Use",
-            "U" : "Unknown",
-        }
-        status = self.entity._get_field_from_action(rjson, "Data", "GetRemoteServicesAPIStatus_OUTPUT", "LCStatus")
-
-        if not status or (status not in states):
-            status = "U"
-        return states[status]
-
     # Enabling APIs
     def _commit_scp(self, record, reboot=False):
         if not self.liason_share:
@@ -1750,11 +1719,11 @@ class iDRACConfig(iBaseConfigApi):
 
         tempshare = self.liason_share.mkstemp(prefix='scp', suffix='.xml')
 
-        with open(tempshare.mount_point.full_path, "w") as f:
+        with open(tempshare.local_full_path, "w") as f:
             f.write(self.config.format_scp(record))
         msg = self.scp_import(tempshare, reboot=reboot)
         if msg['Status'] == 'Success':
-            self._config_entries.process(tempshare.mount_point.full_path, True)
+            self._config_entries.process(tempshare.local_full_path, True)
         tempshare.dispose()
         return msg
 
@@ -1769,7 +1738,7 @@ class iDRACConfig(iBaseConfigApi):
         msg = self.scp_export(tempshare)
         logger.debug(PrettyPrint.prettify_json(msg))
         if msg['Status'] == 'Success':
-            self._config_entries.process(tempshare.mount_point.full_path, False)
+            self._config_entries.process(tempshare.local_full_path, False)
         tempshare.dispose()
         return msg
 
@@ -1778,6 +1747,18 @@ class iDRACConfig(iBaseConfigApi):
         lc_config = { component : fmap }
         rjson = self._commit_scp(lc_config, reboot_needed)
         return rjson
+
+    def _modify_field_using_scp(self, component, modify_map, reboot_needed = False):
+        fmap = {}
+        if not isinstance(modify_map, list):
+            modify_map = [ modify_map ]
+        for (fname, new_value, current) in modify_map:
+            new_value = TypeHelper.resolve(new_value)
+            if new_value and new_value != TypeHelper.resolve(current):
+                fmap[ fname ] = new_value
+        if len(fmap) <= 0:
+            return { 'Status' : 'Success', 'Message' : 'No changes required!' }
+        return self._configure_field_using_scp(component, fmap, reboot_needed)
 
     def _comp_to_fqdd(self, fqdd_list, comp, default=None):
         retVal = []
@@ -1839,6 +1820,37 @@ class iDRACConfig(iBaseConfigApi):
             if entry: array.append(entry)
         return array
 
+    @property
+    def LCReady(self):
+        rjson = self.entity._lc_status()
+        status = self.entity._get_field_from_action(rjson, "Data", "GetRemoteServicesAPIStatus_OUTPUT", "Status")
+        return (status and status in ["0"])
+
+
+    @property
+    def ServerStatus(self):
+        rjson = self.entity._lc_status()
+        status = self.entity._get_field_from_action(rjson, "Data", "GetRemoteServicesAPIStatus_OUTPUT", "ServerStatus")
+        return (status and status not in ["6","7","8", "9"])
+   
+    @property
+    def LCStatus(self):
+        rjson = self.entity._lc_status()
+        states = {
+            "0" : "Ready",
+            "1" : "Not Initialized",
+            "2" : "Reloading Data",
+            "3" : "Disabled",
+            "4" : "In Recovery",
+            "5" : "In Use",
+            "U" : "Unknown",
+        }
+        status = self.entity._get_field_from_action(rjson, "Data", "GetRemoteServicesAPIStatus_OUTPUT", "LCStatus")
+
+        if not status or (status not in states):
+            status = "U"
+        return states[status]
+
     # LC Status
     def lc_status(self):
         return self.entity._lc_status()
@@ -1876,13 +1888,9 @@ class iDRACConfig(iBaseConfigApi):
             return BootModeEnum.Unknown
 
     def change_boot_mode(self, mode):
-        if TypeHelper.resolve(mode) == TypeHelper.resolve(self.BootMode):
-            return { 'Status' : 'Success',
-                     'Message' : 'System already in ' + mode + " mode" }
-        mode = TypeHelper.resolve(mode)
-        return self._configure_field_using_scp(
+        return self._modify_field_using_scp(
                     component = "BIOS.Setup.1-1",
-                    fmap = { self.config.arspec.BIOS.BootMode : mode },
+                    modify_map = (self.config.arspec.BIOS.BootMode, mode, self.BootMode),
                     reboot_needed = True)
 
     # Power Management and Reboot
@@ -1891,21 +1899,6 @@ class iDRACConfig(iBaseConfigApi):
 
     def power_boot(self, power_boot_enum):
         return self.entity._power_boot(state = power_boot_enum)
-
-    def reboot_after_config(self, reboot_type=RebootJobType.GracefulRebootWithForcedShutdown):
-        rjson = { 'Status':'Success', 'Message' : 'None' }
-        if not self.LCReady:
-            rjson = { 'Status' : 'Failed', 'Message' : 'Lifecycle Controller is not in ready state!!' }
-            return rjson
-        rjson = self.entity._reboot_job(reboot = reboot_type)
-        if not 'Job' in rjson or not 'JobId' in rjson['Job']:
-            rjson['Status'] = 'Failed'
-            rjson['Reboot_Message'] = 'Reboot job is not scheduled!'
-            return rjson
-        self._job_mgr.queue_jobs(job_list=rjson['Job']['JobId'], schtime=TIME_NOW)
-        rjson['file'] = '<reboot>'
-        rjson = self._job_mgr._job_wait(rjson['file'], rjson)
-        return rjson
 
     # Reset to Factory Defaults
     def reset_to_factory(self, preserve_config = ResetToFactoryPreserveEnum.ResetExceptNICAndUsers, force=ResetForceEnum.Graceful):
@@ -1934,34 +1927,32 @@ class iDRACConfig(iBaseConfigApi):
     def CSIOR(self):
         csior = self._get_scp_comp_field("LifecycleController.Embedded.1",
                     "LCAttributes.1#CollectSystemInventoryOnRestart")
-        if csior and csior.lower() == "enabled":
-            return ConfigStateEnum.Enabled
-        elif csior and csior.lower() == "disabled":
-            return ConfigStateEnum.Disabled
-        else:
-            return ConfigStateEnum.Unknown
+        return TypeHelper.convert_to_enum(csior, ConfigStateEnum,
+                    ConfigStateEnum.Unknown)
 
     def enable_csior(self):
-        return self._configure_field_using_scp(
+        csior_fname = self.config.arspec.iDRAC.CollectSystemInventoryOnRestart_LCAttributes
+        return self._modify_field_using_scp(
                     component = "LifecycleController.Embedded.1",
-                    fmap = { self.config.arspec.iDRAC.CollectSystemInventoryOnRestart_LCAttributes : 'Enabled' })
+                    modify_map = (csior_fname, 'Enabled', self.CSIOR))
 
     def disable_csior(self):
-        return self._configure_field_using_scp(
+        csior_fname = self.config.arspec.iDRAC.CollectSystemInventoryOnRestart_LCAttributes
+        return self._modify_field_using_scp(
                     component = "LifecycleController.Embedded.1",
-                    fmap = { self.config.arspec.iDRAC.CollectSystemInventoryOnRestart_LCAttributes : 'Disabled' })
+                    modify_map = (csior_fname, 'Disabled', self.CSIOR))
 
     def configure_location(self, datacenter = '', loc_room='', loc_aisle='', loc_rack='', loc_rack_slot ='', loc_chassis=''):
-        return self._configure_field_using_scp(
+        return self._modify_field_using_scp(
             component = "System.Embedded.1",
-            fmap= {
-                self.config.arspec.iDRAC.DataCenterName_ServerTopology : loc_datacenter,
-                self.config.arspec.iDRAC.RoomName_ServerTopology: loc_room,
-                self.config.arspec.iDRAC.AisleName_ServerTopology: loc_aisle,
-                self.config.arspec.iDRAC.RackName_ServerTopology: loc_rack,
-                self.config.arspec.iDRAC.RackSlot_ServerTopology: loc_rack_slot,
-                self.config.arspec.iDRAC.ChassisName_ServerTopology: loc_chassis,
-            })
+            modify_map = [
+                (self.config.arspec.iDRAC.DataCenterName_ServerTopology, loc_datacenter, None)
+                (self.config.arspec.iDRAC.RoomName_ServerTopology, loc_room, None)
+                (self.config.arspec.iDRAC.AisleName_ServerTopology, loc_aisle, None)
+                (self.config.arspec.iDRAC.RackName_ServerTopology, loc_rack, None)
+                (self.config.arspec.iDRAC.RackSlot_ServerTopology, loc_rack_slot, None)
+                (self.config.arspec.iDRAC.ChassisName_ServerTopology, loc_chassis, None)
+            ])
 
     def configure_idrac_dnsname(self, dnsname):
         return self._configure_field_using_scp(
@@ -1980,24 +1971,18 @@ class iDRACConfig(iBaseConfigApi):
     @property
     def TLSProtocol(self):
         tls = self._get_scp_comp_field('iDRAC.Embedded.1', 'WebServer.1#TLSProtocol')
-        return TypeHelper.convert_to_enum(tls, TLSOptions, TLSOptions_Map)
+        return TypeHelper.convert_to_enum(tls, TLSOptions)
 
     @property
     def SSLEncryptionBits(self):
         ssl = self._get_scp_comp_field('iDRAC.Embedded.1', 'WebServer.1#SSLEncryptionBitLength')
-        return TypeHelper.convert_to_enum(ssl, SSLBits, SSLBits_Map)
+        return TypeHelper.convert_to_enum(ssl, SSLBits)
 
     def configure_tls(self, tls_protocol = TLSOptions.TLS_1_1, ssl_bits = None):
-        fmap = {}
-        tls_protocol = TypeHelper.resolve(tls_protocol)
-        if tls_protocol != TypeHelper.resolve(self.TLSProtocol):
-            fmap[ self.config.arspec.iDRAC.TLSProtocol_WebServer ] = tls_protocol
-        ssl_bits = TypeHelper.resolve(ssl_bits)
-        if ssl_bits and ssl_bits != TypeHelper.resolve(self.SSLEncryptionBits):
-            fmap[ self.config.arspec.iDRAC.SSLEncryptionBitLength_WebServer ] = ssl_bits
-        if len(fmap) <= 0:
-            return { 'Status' : 'Success', 'Message' : 'No changes required!' }
-        return self._configure_field_using_scp(component = "iDRAC.Embedded.1", fmap = fmap)
+        return self._modify_field_using_scp(component = "iDRAC.Embedded.1", 
+            modify_map = [
+                (self.config.arspec.iDRAC.TLSProtocol_WebServer, tls_protocol, self.TLSProtocol),
+                (self.config.arspec.iDRAC.SSLEncryptionBitLength_WebServer, ssl_bits, self.SSLEncryptionBits) ])
 
     def _clean_dnsarray(self, dnsarray, defdns):
         if not dnsarray:
@@ -2525,17 +2510,13 @@ class iDRACConfig(iBaseConfigApi):
         rjson = self.entity._create_raid_config_job(virtual_disk = vdfqdd,
                 reboot=RebootJobType.GracefulRebootWithForcedShutdown)
         if rjson['Status'] == 'Success':
-            updtree = self._raid_tree['Storage']['Controller']
-            for controller in updtree:
-                if isinstance(updtree[controller], list):
-                    continue
-                if 'VirtualDisk' not in updtree[controller]:
-                    continue
-                if vdfqdd in updtree[controller]['VirtualDisk']:
-                    updtree[controller]['VirtualDisk'].remove(vdfqdd)
-                logger.debug("VD Deleted Successfully. State after deletion:")
-                logger.debug(PrettyPrint.prettify_json(self._raid_tree['Storage']))
-                # TODO: Restore the Physical Disks to _raid_tree
+            logger.debug("VD Deleted Successfully. State after deletion:")
+            # rebuild the raid tree
+            del self.entity.entityjson['PhysicalDisk']
+            del self.entity.entityjson['VirtualDisk']
+            self._raid_tree = None
+            self._init_raid_tree()
+            logger.debug(PrettyPrint.prettify_json(self._raid_tree['Storage']))
 
         rjson['file'] = 'delete_raid'
         return self._job_mgr._job_wait(rjson['file'], rjson)
@@ -2656,9 +2637,13 @@ class iDRACConfig(iBaseConfigApi):
         rjson['file'] = 'delete_iso_from_vflash'
         return rjson
 
-    def boot_to_network_iso(self, network_iso_image):
+    def boot_to_network_iso_async(self, network_iso_image):
         rjson = self.entity._boot_to_network_iso(share = network_iso_image, creds = network_iso_image.creds)
-        rjson['file'] = str(share)
+        rjson['file'] = str(network_iso_image)
+        return rjson
+
+    def boot_to_network_iso(self, network_iso_image):
+        rjson = self.boot_to_network_iso_async(network_iso_image)
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def boot_to_disk(self):
@@ -2686,19 +2671,18 @@ class iDRACConfig(iBaseConfigApi):
 
     def connect_network_iso(self, network_iso_image):
         rjson = self.entity._connect_network_iso(share = network_iso_image, creds = network_iso_image.creds)
-        rjson['file'] = str(share)
+        rjson['file'] = str(network_iso_image)
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def download_iso(self, network_iso_image):
-        share = network_iso_image.format(ip = self.entity.ipaddr)
         rjson = self.entity._download_iso(share = network_iso_image, creds = network_iso_image.creds)
-        rjson['file'] = str(share)
+        rjson['file'] = str(network_iso_image)
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def download_iso_flash(self, network_iso_image):
         share = network_iso_image.format(ip = self.entity.ipaddr)
         rjson = self.entity._download_iso_flash(share = network_iso_image, creds = network_iso_image.creds)
-        rjson['file'] = str(share)
+        rjson['file'] = str(network_iso_image)
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def disconnect_network_iso(self):

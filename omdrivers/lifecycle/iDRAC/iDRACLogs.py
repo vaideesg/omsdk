@@ -84,7 +84,7 @@ class iDRACLogs(iBaseLogApi):
         logger.debug("Log file saved to " + rjson['file'])
 
         try :
-            domtree = ET.ElementTree(file = tempshare.mount_point.full_path)
+            domtree = ET.ElementTree(file = tempshare.local_full_path)
             logs = []
             startlogging = False
             for logent in domtree.getroot().getchildren():

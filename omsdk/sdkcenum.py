@@ -25,6 +25,9 @@ if PY2Enum:
 #  TypeHelper.get_name('Value 1', TestOptions_Map) ==> 'VAL_1'
 #  TypeHelper.get_name('Value N', TestOptions_Map) ==> None
 #
+#  TypeHelper.convert_to_enum('Value 1', TestOptions) => TestOptionsEnum.VAL_1
+#  TypeHelper.convert_to_enum('Value 2', TestOptions) => TestOptionsEnum.VAL_2
+#  TypeHelper.convert_to_enum('Value N', TestOptions) => None
 #
 
 class TypeHelper:
@@ -64,11 +67,11 @@ class TypeHelper:
             return enval
 
     @staticmethod
-    def convert_to_enum(enval, entype, mymap):
+    def convert_to_enum(enval, entype, defval = None):
         for i in entype:
             if enval == TypeHelper.resolve(i):
                 return i
-        return None
+        return defval
 
 class EnumWrapper(object):
     enum_entries = {}

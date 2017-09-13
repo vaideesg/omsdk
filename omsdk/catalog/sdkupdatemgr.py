@@ -102,7 +102,7 @@ class _UpdateCacheManager(object):
         return catscope
 
     def update_catalog(self):
-        folder = self.cache.master_share.mount_point.share_path
+        folder = self.cache.master_share.local_folder_path
         ftp = FtpHelper('ftp.dell.com', FtpCredentials())
         c = 'catalog/Catalog.gz'
         retval = ftp.download_newerfiles([c], folder)
@@ -121,7 +121,7 @@ class _UpdateCacheManager(object):
     def update_cache(self):
         files_to_dld = self.cache.rcache.UpdateFilePaths
         ftp = FtpHelper('ftp.dell.com', FtpCredentials())
-        retval = ftp.download_newerfiles(files_to_dld, self.update_share.mount_point.full_path)
+        retval = ftp.download_newerfiles(files_to_dld, self.update_share.local_full_path)
         logger.debug("Download Success = {0}, Failed = {1}".format(retval['success'], retval['failed']))
         if retval['failed'] == 0:
             retval['Status'] = 'Success'
@@ -136,13 +136,13 @@ class CatalogScoper(object):
         self.master_share = master_share
         self.cache_share = cache_share
         self.cache_lock = threading.Lock()
-        logger.debug("master:" + self.master_share.mount_point.full_path)
-        self.cmaster = DellPDKCatalog(self.master_share.mount_point.full_path)
+        logger.debug("master:" + self.master_share.local_full_path)
+        self.cmaster = DellPDKCatalog(self.master_share.local_full_path)
 
-        logger.debug("cache:" + self.cache_share.mount_point.share_path)
-        logger.debug("cache:" + self.cache_share.mount_point.file_name)
-        self.rcache = UpdateRepo(self.cache_share.mount_point.share_path,
-                            catalog=self.cache_share.mount_point.file_name,
+        logger.debug("cache:" + self.cache_share.local_folder_path)
+        logger.debug("cache:" + self.cache_share.local_file_name)
+        self.rcache = UpdateRepo(self.cache_share.local_folder_path,
+                            catalog=self.cache_share.local_file_name,
                             source=self.cmaster, mkdirs=True)
 
 
