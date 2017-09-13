@@ -1,5 +1,7 @@
+import sys
 import os
 import re
+import json
 import time
 import xml.etree.ElementTree as ET
 from enum import Enum
@@ -9,7 +11,7 @@ from omsdk.sdkcenum import EnumWrapper, TypeHelper
 from omsdk.lifecycle.sdkupdate import Update
 from omsdk.catalog.sdkupdatemgr import UpdateManager
 from omdrivers.enums.iDRAC.iDRACEnums import *
-import sys
+from omsdk.sdkcunicode import UnicodeWriter
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -52,6 +54,17 @@ class iDRACUpdate(Update):
     def _update_from_uri(self, firm_image_path, componentFQDD):
         rjson = self.update_from_uri(uri = firm_image_path, target = componentFQDD)
         return self._job_mgr._job_wait(rjson['file'], rjson)
+
+    def serialize_inventory(self, myshare):
+        share = myshare.format(ip = self.entity.ipaddr)
+        with UnicodeWriter(share.local_full_path) as f:
+            f._write_output(json.dumps({
+                'Model_Hex' : self.entity.SystemIDInHex,
+                'Model' : self.entity.Model,
+                'IPAddress' : self.entity.ipaddr,
+                'ServiceTag' : self.entity.ServiceTag,
+                'Firmware' :  self.InstalledFirmware['Firmware']},
+                sort_keys=True, indent=4, separators=(',', ': ')))
 
     def update_from_repo_async(self, myshare, catalog="Catalog.xml", apply_update = True, reboot_needed = False):
         appUpdateLookup = { True : 1, False : 0 }

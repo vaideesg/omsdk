@@ -2190,7 +2190,7 @@ class iDRACConfig(iBaseConfigApi):
 
     @property
     def TimeZone(self):
-        return self._get_scp_comp_field('iDRAC.Embedded.1', 'Time.1#TimeZone')
+        return self._get_scp_comp_field('iDRAC.Embedded.1', 'Time.1#Timezone')
 
     @property
     def NTPServers(self):
@@ -2205,13 +2205,13 @@ class iDRACConfig(iBaseConfigApi):
         return False
 
     def configure_time_zone(self, tz="CST6CDT", dst_offset = 0, tz_offset = 0):
-        return self._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap= {
-                self.config.arspec.iDRAC.TimeZone_Time : tz,
-                self.config.arspec.iDRAC.DaylightOffset_Time : 0,
-                self.config.arspec.iDRAC.TimeZoneOffset_Time : 0,
-            })
+        return self._modify_field_using_scp(
+                    component = "iDRAC.Embedded.1",
+                    modify_map = [
+                        (self.config.arspec.iDRAC.Timezone_Time, tz, self.TimeZone),
+                        (self.config.arspec.iDRAC.DayLightOffset_Time, 0, 0),
+                        (self.config.arspec.iDRAC.TimeZoneOffset_Time, 0, 0) ])
+
     def enable_ntp(self, ntp_server1 = "", ntp_server2= "", ntp_server3 = ""):
         return self._configure_field_using_scp(
             component = "iDRAC.Embedded.1",
