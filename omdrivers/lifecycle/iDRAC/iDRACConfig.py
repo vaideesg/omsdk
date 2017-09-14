@@ -141,6 +141,24 @@ iDRACConfigCompSpec = {
     },
 }
 
+iDRACEnumMaps = {
+        ExportFormatEnum.JSON : 1,
+        ExportFormatEnum.XML : 0,
+        ExportMethodEnum.Default: 0,
+        ExportMethodEnum.Clone:   1,
+        ExportMethodEnum.Replace: 2,
+}
+
+def initialize_enum_maps():
+    myenums = list(iDRACEnumMaps.keys())
+    for i in myenums:
+        iDRACEnumMaps[TypeHelper.resolve(i)] = iDRACEnumMaps[i]
+
+def format_enum_wsman(enval):
+    initialize_enum_maps()
+    if enval in iDRACEnumMaps:
+        return iDRACEnumMaps[enval]
+    return 0
 
 iDRACWsManCmds = {
     ###### LC Services
@@ -331,7 +349,8 @@ iDRACWsManCmds = {
             "share" : FileOnShare,
             "creds" : UserCredentials,
             "target" : SCPTargetEnum,
-            "format_file" : ExportFormatEnum
+            "format_file" : ExportFormatEnum,
+            "method" : ExportMethodEnum
         },
         "Return" : {
             "File" : "file"
@@ -343,6 +362,8 @@ iDRACWsManCmds = {
                 ('FileName',  "share", 'remote_file_name', type("filename"), None),
                 ("Username",  "creds", 'username', type("user"), None),
                 ("Password",  "creds", 'password', type("password"), None),
+                ("ExportFormat", "format_file", None, ExportFormatEnum, format_enum_wsman),
+                ("ExportUse", "method", None, ExportMethodEnum, format_enum_wsman),
                 #RackHD("TimeToWait", "wait", None, type(300), None),
                 #RackHD("EndHostPowerState", "power", None, type(1), None), #1
                 #RackHD("Target", "target", None, type(1), None), #1
@@ -1561,7 +1582,8 @@ iDRACRedfishCmds = {
             "share" : FileOnShare,
             "creds" : UserCredentials,
             "target" : SCPTargetEnum,
-            "format_file" : ExportFormatEnum
+            "format_file" : ExportFormatEnum,
+            "method" : ExportMethodEnum
         },
         "Return" : {
             "File" : "file"
@@ -1953,23 +1975,23 @@ class iDRACConfig(iBaseConfigApi):
             'ChassisName': self._get_scp_comp_field('System.Embedded.1', 'ServerTopology.1#ChassisName')
         }
 
-    def configure_location(self, datacenter = None, loc_room=None, loc_aisle=None, loc_rack=None, loc_rack_slot =None, loc_chassis=None):
+    def configure_location(self, loc_datacenter = None, loc_room=None, loc_aisle=None, loc_rack=None, loc_rack_slot =None, loc_chassis=None):
         loc = self.Location
-        if not datacenter:  datacenter = loc['DataCenter']
+        if not loc_datacenter:  loc_datacenter = loc['DataCenter']
         if not loc_room:  loc_room = loc['Room']
         if not loc_aisle:  loc_aisle = loc['Aisle']
         if not loc_rack:  loc_rack = loc['Rack']
-        if not loc_rackslot:  loc_rackslot = loc['RackSlot']
+        if not loc_rack_slot:  loc_rack_slot = loc['RackSlot']
         if not loc_chassis:  loc_chassis = loc['ChassisName']
         return self._modify_field_using_scp(
             component = "System.Embedded.1",
             modify_map = [
-                (self.config.arspec.iDRAC.DataCenterName_ServerTopology, loc_datacenter, loc['DataCenter'])
-                (self.config.arspec.iDRAC.RoomName_ServerTopology, loc_room, loc['Room'])
-                (self.config.arspec.iDRAC.AisleName_ServerTopology, loc_aisle, loc['Aisle'])
-                (self.config.arspec.iDRAC.RackName_ServerTopology, loc_rack, loc['Rack'])
-                (self.config.arspec.iDRAC.RackSlot_ServerTopology, loc_rack_slot, loc['RackSlot'])
-                (self.config.arspec.iDRAC.ChassisName_ServerTopology, loc_chassis, loc['ChassisName'])
+                (self.config.arspec.iDRAC.DataCenterName_ServerTopology, loc_datacenter, loc['DataCenter']),
+                (self.config.arspec.iDRAC.RoomName_ServerTopology, loc_room, loc['Room']),
+                (self.config.arspec.iDRAC.AisleName_ServerTopology, loc_aisle, loc['Aisle']),
+                (self.config.arspec.iDRAC.RackName_ServerTopology, loc_rack, loc['Rack']),
+                (self.config.arspec.iDRAC.RackSlot_ServerTopology, loc_rack_slot, loc['RackSlot']),
+                (self.config.arspec.iDRAC.ChassisName_ServerTopology, loc_chassis, loc['ChassisName']),
             ])
 
     def configure_idrac_dnsname(self, dnsname):
@@ -2550,11 +2572,26 @@ class iDRACConfig(iBaseConfigApi):
         vdselect = self.get_virtual_disk(vd_name)
         if not vdselect:
             return { 'Status' : 'Success', 'Message' : 'No VD found with name "' + vd_name + '"' }
+        rjson = self._raid_tree["Storage"]
+        if not "Controller" in rjson:
+            return { 'Status' : 'Failed', 'Message' : 'Unable to get controller information' }
+
+        scp = {}
         vdfqdd = vdselect['FQDD']
-        rjson = self.entity._delete_raid(virtual_disk = vdfqdd)
-        if rjson['Status'] in [ 'Error', "Failed"]: return rjson
-        rjson = self.entity._create_raid_config_job(virtual_disk = vdfqdd,
-                reboot=RebootJobType.GracefulRebootWithForcedShutdown)
+        for controller in rjson['Controller']:
+            if isinstance(rjson['Controller'][controller], list):
+                continue
+            n_cntr = 0
+            if not 'VirtualDisk' in rjson['Controller'][controller]:
+                continue
+            if vdfqdd in rjson['Controller'][controller]['VirtualDisk']:
+                scp[controller] = { vdfqdd : { config.arspec.RAID.RAIDaction : "Delete" } }
+
+        if len(scp) <= 0:
+            return { 'Status' : 'Failed', 'Message' : 'Unable to find the virtual disk information ' }
+
+        rjson = self._commit_scp(scp, reboot=True)
+
         if rjson['Status'] == 'Success':
             logger.debug("VD Deleted Successfully. State after deletion:")
             # rebuild the raid tree
@@ -2563,9 +2600,7 @@ class iDRACConfig(iBaseConfigApi):
             self._raid_tree = None
             self._init_raid_tree()
             logger.debug(PrettyPrint.prettify_json(self._raid_tree['Storage']))
-
-        rjson['file'] = 'delete_raid'
-        return self._job_mgr._job_wait(rjson['file'], rjson)
+        return rjson
 
     def lock_virtual_disk(self, vd_name):
         vdselect = self.get_virtual_disk(vd_name)
@@ -2604,9 +2639,10 @@ class iDRACConfig(iBaseConfigApi):
             rjson = self._job_mgr._job_wait(rjson['file'], rjson)
         return rjson
 
-    def scp_export(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML, job_wait = True):
+    def scp_export(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML, method = ExportMethodEnum.Default, job_wait = True):
         share = scp_share_path.format(ip = self.entity.ipaddr)
-        rjson = self.entity._scp_export(share = share, creds = scp_share_path.creds, target=components, format_file=format_file)
+        rjson = self.entity._scp_export(share = share, creds = scp_share_path.creds, target=components,
+                         format_file=format_file, method=method)
         rjson['file'] = str(share)
         if job_wait:
             rjson = self._job_mgr._job_wait(rjson['file'], rjson)

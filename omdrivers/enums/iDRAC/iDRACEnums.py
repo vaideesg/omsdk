@@ -91,6 +91,13 @@ BIOSPasswordTypeEnum = EnumWrapper("BIOSPasswordType", {
 
 ExportFormatEnum = EnumWrapper("ExportFormatEnum", {
     'XML' : 'XML',
+    'JSON' : 'JSON',
+}).enum_type
+
+ExportMethodEnum = EnumWrapper("ExportMethod", {
+    'Default' : 'Default',
+    'Clone' : 'Clone',
+    'Replace' : 'Replace',
 }).enum_type
 
 ResetToFactoryPreserveEnum = EnumWrapper('RFD', {
