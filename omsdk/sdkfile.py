@@ -249,7 +249,14 @@ class FileOnShare(Share):
                 share_type = pspec
                 if len(cfgtype.groups()) > 1:
                     (ipaddr, rshare, filename) = [i for i in cfgtype.groups()]
-                    return RemotePath(share_type, isFolder, ipaddr, rshare, filename)
+                    path_list = [ rshare, filename ]
+                    if common_path:
+                        psp = Share._ShareSpec[pspec]['path_sep']
+                        cpath = common_path.replace(psp + filename, '')
+                        rshare = rshare.replace(cpath, '')
+                        path_list = [ rshare, cpath, filename ]
+                    return RemotePath(share_type, isFolder, ipaddr, *path_list)
+                    #return RemotePath(share_type, isFolder, ipaddr, rshare, filename)
                 path_list =  [ remote_path ]
                 if common_path: path_list.append(common_path)
                 return LocalPath(share_type, isFolder, *path_list)
@@ -267,7 +274,11 @@ class FileOnShare(Share):
             share_type = pspec
             if len(cfgtype.groups()) > 1:
                 (ipaddr, rshare) = [i for i in cfgtype.groups()]
-                return RemotePath(share_type, isFolder, ipaddr, rshare)
+                path_list = [ rshare ]
+                if common_path:
+                    rshare = rshare.replace(common_path, '')
+                    path_list = [ rshare, common_path ]
+                return RemotePath(share_type, isFolder, ipaddr, *path_list)
             path_list =  [ remote_path ]
             if common_path: path_list.append(common_path)
             return LocalPath(share_type, isFolder, *path_list)
@@ -510,27 +521,39 @@ class FileOnShare(Share):
     def makedirs(self, *args):
 
         if not self.isFolder:
-            return False
+            return None
         if self.mount_point is None:
-            return False
+            return None
         if not 'path_sep' in Share._ShareSpec[self.mount_point.share_type]:
-            return False
+            return None
         if not self.IsValid:
-            return False
+            return None
 
         fname = self.mount_point.full_path
         psep = Share._ShareSpec[self.mount_point.share_type]['path_sep']
         for t in args:
             fname += psep + t
         try :
-            if os.path.exists(fname) and os.path.isdir(fname):
-                return True
+            if not os.path.exists(fname):
+                os.makedirs(fname)
+            
+            if not os.path.isdir(fname):
+                return None
+            mp_mount_path = self.mount_point.mountable_path
 
-            os.makedirs(fname)
-            return True
+            common_path = None
+            if fname != mp_mount_path:
+                common_path = fname.replace(mp_mount_path + psep, '')
+            print(common_path)
+
+            return FileOnShare(remote = self.remote.mountable_path,
+                mount_point = mp_mount_path,
+                common_path = common_path, fd = None,
+                isFolder = True, creds = self.creds)
+
         except Exception as ex:
             logger.debug("makedirs(): Failed to create folder: " +str(ex))
-            return False
+            return None
 
     @property
     def IsTemp(self):

@@ -20,8 +20,9 @@ class UnicodeWriter(object):
     def __enter__(self):
         if PY2UC:
             self.output = open(self.name, "w")
+            #self.output = codecs.open(self.name, encoding='utf-8', mode='w')
         else:
-            self.output = codecs.open(self.name, encoding='utf-8', mode='w')
+            self.output = open(self.name, "w")
         return self
 
     def _write_output(self, line):

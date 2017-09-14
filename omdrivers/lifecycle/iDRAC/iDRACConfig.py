@@ -1810,6 +1810,25 @@ class iDRACConfig(iBaseConfigApi):
                 retVal.append(i)
         return set(retVal)
 
+    def _fqdd_to_comp_map(self, fqdd_list):
+        retVal = {}
+        for i in fqdd_list:
+            found= False
+            for comp in self.entity.configCompSpec:
+                if 'firmware_pattern' in self.entity.configCompSpec[comp]:
+                    fpattern = self.entity.configCompSpec[comp]['firmware_pattern']
+                    if re.match(fpattern, i):
+                        if comp not in retVal:
+                            retVal[comp] = []
+                        retVal[comp].append(i)
+                        found = True
+                        break
+            if not found:
+                if comp not in retVal:
+                    retVal[i] = []
+                retVal[i].append(i)
+        return retVal
+
     def _find_empty_slot(self, component, field):
         self._load_scp()
         msg = self._config_entries.check_and_get_empty_slot(component, field)

@@ -43,11 +43,6 @@ class iDRACUpdate(Update):
                 ilist.append(firmware['InstanceID'])
         return ilist
 
-    def _get_swfqdd_list(self):
-        self.get_swidentity()
-        return [firmware['FQDD'] \
-                    for firmware in self.firmware_json["Firmware"] \
-                    if firmware['Status'] == "Installed"]
 
     def _update_from_uri(self, firm_image_path, componentFQDD, job_wait = True):
         rjson = self.entity._install_from_uri(uri = firm_image_path, target = componentFQDD)
@@ -116,13 +111,16 @@ class iDRACUpdate(Update):
 
     def serialize_inventory(self, myshare):
         share = myshare.format(ip = self.entity.ipaddr)
+        swfqdd_list = [firmware['FQDD'] for firmware in \
+                        self.InstalledFirmware["Firmware"]]
         with UnicodeWriter(share.local_full_path) as f:
             f._write_output(json.dumps({
                 'Model_Hex' : self.entity.SystemIDInHex,
                 'Model' : self.entity.Model,
                 'IPAddress' : self.entity.ipaddr,
                 'ServiceTag' : self.entity.ServiceTag,
-                'Firmware' :  self.InstalledFirmware['Firmware']},
+                'Firmware' :  self.InstalledFirmware['Firmware'],
+                'ComponentMap' : self.entity.config_mgr._fqdd_to_comp_map(swfqdd_list)},
                 sort_keys=True, indent=4, separators=(',', ': ')))
 
     def update_from_repo(self, myshare, catalog="Catalog.xml", apply_update = True, reboot_needed = False, job_wait = True):

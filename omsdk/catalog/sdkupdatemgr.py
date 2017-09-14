@@ -45,13 +45,17 @@ class _UpdateCacheManager(object):
 
     def __init__(self, update_share):
         self.update_share = update_share
-        self.update_share.makedirs("_master")
-        self.master_share = self.update_share.new_file("_master", ".\\Catalog.xml")
-        self.cache_share = self.update_share.new_file(".\\Catalog.xml")
+        self.master_share = self.update_share.makedirs("_master")\
+                                             .new_file('Catalog.xml')
+        self.inventory_share = self.update_share.makedirs("_inventory")
+        self.cache_share = self.update_share.new_file("Catalog.xml")
         self.cache = CatalogScoper(self.master_share, self.cache_share)
 
-    def getCatalogScoper():
+    def getCatalogScoper(self):
         return self.cache
+
+    def getInventoryShare(self):
+        return self.inventory_share
 
     # Creates a Temporary catalog scoper. how to Use it??
     def getTempScope(self):
