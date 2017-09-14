@@ -250,7 +250,9 @@ class FileOnShare(Share):
                 if len(cfgtype.groups()) > 1:
                     (ipaddr, rshare, filename) = [i for i in cfgtype.groups()]
                     return RemotePath(share_type, isFolder, ipaddr, rshare, filename)
-                return LocalPath(share_type, isFolder, tomatch, filename)
+                path_list =  [ remote_path ]
+                if common_path: path_list.append(common_path)
+                return LocalPath(share_type, isFolder, *path_list)
         
         for pspec in stype_enum:
             if pspec not in Share._ShareSpec:
@@ -266,7 +268,9 @@ class FileOnShare(Share):
             if len(cfgtype.groups()) > 1:
                 (ipaddr, rshare) = [i for i in cfgtype.groups()]
                 return RemotePath(share_type, isFolder, ipaddr, rshare)
-            return LocalPath(share_type, isFolder, tomatch)
+            path_list =  [ remote_path ]
+            if common_path: path_list.append(common_path)
+            return LocalPath(share_type, isFolder, *path_list)
 
         return InvalidPath()
 
@@ -439,20 +443,11 @@ class FileOnShare(Share):
 
         if not self.is_template:
             return self
-        if self.mount_point is None and self.remote is None:
-            return self
-        mp_mountable_path = None
-        folder = None
-        if self.mount_point:
-            mp_mountable_path = self.mount_point.mountable_path
-            folder = self.mount_point
-        r_mountable_path = None
-        if self.remote:
-            r_mountable_path = self.remote.mountable_path
-            if not folder:
-                folder = self.remote
 
-        fname = folder.full_path
+        if self.remote is None:
+            return self
+
+        fname = self.remote.full_path
         for arg in kwargs:
             fname = re.sub("%"+arg, kwargs[arg], fname)
         try:
@@ -460,15 +455,12 @@ class FileOnShare(Share):
         except Exception as ex:
             logger.debug(str(ex))
         psep = ''
-        if 'path_sep' in Share._ShareSpec[folder.share_type]:
-            psep = Share._ShareSpec[folder.share_type]['path_sep']
-        common_path = fname.replace(folder.mountable_path + psep, '')
+        if 'path_sep' in Share._ShareSpec[self.remote.share_type]:
+            psep = Share._ShareSpec[self.remote.share_type]['path_sep']
+        common_path = fname.replace(self.remote.mountable_path + psep, '')
 
-        if mp_mountable_path:
-            mp_mountable_path += psep
-
-        return FileOnShare(remote = r_mountable_path,
-            mount_point = mp_mountable_path,
+        return FileOnShare(remote = self.remote.mountable_path,
+            mount_point = self.mount_point.mountable_path,
             common_path = common_path, fd = None,
             isFolder = self.isFolder, creds = self.creds)
 

@@ -1,11 +1,8 @@
 from omsdk.catalog.pdkcatalog import DellPDKCatalog
 from omsdk.catalog.updaterepo import UpdateRepo
-from omsdk.sdkfile import FileOnShare
-from omsdk.sdkcreds import UserCredentials
 from omsdk.sdkftp import FtpHelper, FtpCredentials
 from omsdk.sdkprint import PrettyPrint
 
-import json
 import threading
 import os
 import logging
@@ -35,30 +32,6 @@ class UpdateManager(object):
         return { 'Status' : 'Failed', 'Message' : 'Update Manager is not initialized' }
 
     @staticmethod
-    def add_models(ids):
-        if not isinstance(ids,list):
-            ids = [ids]
-        if UpdateManager._update_store:
-            catscope = UpdateManager._update_store.cache
-            for model in ids:
-                catscope.add_model_to_scope(model)
-            catscope.save()
-            return { 'Status' : 'Success' }
-        return { 'Status' : 'Failed', 'Message' : 'Update Manager is not initialized' }
-
-    @staticmethod
-    def add_devices(devices):
-        if UpdateManager._update_store:
-            catscope = UpdateManager._update_store.cache
-            if not isinstance(devices, list):
-                devices = [devices]
-            for device in devices:
-                catscope.add_device_to_scope(device)
-            catscope.save()
-            return { 'Status' : 'Success' }
-        return { 'Status' : 'Failed', 'Message' : 'Update Manager is not initialized' }
-
-    @staticmethod
     def update_cache():
         if UpdateManager._update_store:
             return UpdateManager._update_store.update_cache()
@@ -74,32 +47,16 @@ class _UpdateCacheManager(object):
         self.update_share = update_share
         self.update_share.makedirs("_master")
         self.master_share = self.update_share.new_file("_master", ".\\Catalog.xml")
-        self.cache_share = self.update_share.new_file(".\\StoreCatalog.xml")
+        self.cache_share = self.update_share.new_file(".\\Catalog.xml")
         self.cache = CatalogScoper(self.master_share, self.cache_share)
 
-    def scoped_to_components(self, catscope, model, swidentity, compfqdd):
-        if catscope is None:
-            temp_share = self.update_share.mkstemp(prefix='upd', suffix='.xml')
-            catscope = CatalogScoper(self.cache_share, temp_share)
-        catscope.add_to_scope(model, swidentity, *compfqdd)
-        catscope.save()
-        return catscope
+    def getCatalogScoper():
+        return self.cache
 
-    def scoped_to_device(self, catscope, model, swidentity):
-        if catscope is None:
-            temp_share = self.update_share.mkstemp(prefix='upd', suffix='.xml')
-            catscope = CatalogScoper(self.cache_share, temp_share)
-        catscope.add_to_scope(model, swidentity)
-        catscope.save()
-        return catscope
-
-    def scoped_to_model(self, catscope, model):
-        if catscope is None:
-            temp_share = self.update_share.mkstemp(prefix='upd', suffix='.xml')
-            catscope = CatalogScoper(self.cache_share, temp_share)
-        catscope.add_model_to_scope(model)
-        catscope.save()
-        return catscope
+    # Creates a Temporary catalog scoper. how to Use it??
+    def getTempScope(self):
+        temp_share = self.update_share.mkstemp(prefix='upd', suffix='.xml')
+        return CatalogScoper(self.cache_share, temp_share)
 
     def update_catalog(self):
         folder = self.cache.master_share.local_folder_path
@@ -145,17 +102,11 @@ class CatalogScoper(object):
                             catalog=self.cache_share.local_file_name,
                             source=self.cmaster, mkdirs=True)
 
-
     def add_model_to_scope(self, model):
         count = 0
         with self.cache_lock:
             count = self.rcache.filter_by_model(model)
         return count
-
-    def add_device_to_scope(self, device):
-        if hasattr(device, 'update_mgr'):
-            if hasattr(device.update_mgr, 'catalog_scoped_to_device'):
-                device.update_mgr.catalog_scoped_to_device(self)
 
     def add_to_scope(self, model, swidentity, *components):
         count = 0
@@ -176,4 +127,3 @@ class CatalogScoper(object):
                 self.cache_share.dispose()
             else:
                 logger.debug("Not a temporary cache")
-

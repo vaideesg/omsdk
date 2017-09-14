@@ -53,14 +53,12 @@ class iDRACLogs(iBaseLogApi):
 
         return self.get_logs_for_job(self._job_mgr.last_job)
 
-    def lclog_export(self, myshare):
-        rjson = self.lclog_export_async(myshare)
-        return self._job_mgr._job_wait(rjson['file'], rjson, False)
-
-    def lclog_export_async(self, myshare):
+    def lclog_export(self, myshare, job_wait = True):
         share = myshare.format(ip = self.entity.ipaddr)
         rjson = self.entity._log_export(share = share, creds = myshare.creds)
         rjson['file'] = str(share)
+        if job_wait:
+            rjson = self._job_mgr._job_wait(rjson['file'], rjson, False)
         return rjson
 
     def get_logs_for_job(self, jobid):

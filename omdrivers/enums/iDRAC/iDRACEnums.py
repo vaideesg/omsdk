@@ -169,3 +169,14 @@ UserPrivilegeEnum = EnumWrapper("UserPrivilegeEnum", {
     "ReadOnly" : 1,
     "NoPrivilege" : 0,
     }).enum_type
+
+SNMPTrapFormatEnum = EnumWrapper("SNMPTrapFormatEnum", {
+    "SNMPv1" : 'SNMPv1',
+    "SNMPv2" : 'SNMPv2',
+    "SNMPv3" : 'SNMPv3',
+    }).enum_type
+
+SNMPProtocolEnum = EnumWrapper("SPE", {
+    "All" : 'All',
+    "SNMPv3" : 'SNMPv3',
+    }).enum_type

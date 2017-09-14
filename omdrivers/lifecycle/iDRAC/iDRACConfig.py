@@ -1942,16 +1942,34 @@ class iDRACConfig(iBaseConfigApi):
                     component = "LifecycleController.Embedded.1",
                     modify_map = (csior_fname, 'Disabled', self.CSIOR))
 
-    def configure_location(self, datacenter = '', loc_room='', loc_aisle='', loc_rack='', loc_rack_slot ='', loc_chassis=''):
+    @property
+    def Location(self):
+        return {
+            'DataCenter' : self._get_scp_comp_field('System.Embedded.1', 'ServerTopology.1#DataCenterName'),
+            'Room'       : self._get_scp_comp_field('System.Embedded.1', 'ServerTopology.1#RoomName'),
+            'Aisle'      : self._get_scp_comp_field('System.Embedded.1', 'ServerTopology.1#AisleName'),
+            'Rack'       : self._get_scp_comp_field('System.Embedded.1', 'ServerTopology.1#RackName'),
+            'RackSlot'   : self._get_scp_comp_field('System.Embedded.1', 'ServerTopology.1#RackSlot'),
+            'ChassisName': self._get_scp_comp_field('System.Embedded.1', 'ServerTopology.1#ChassisName')
+        }
+
+    def configure_location(self, datacenter = None, loc_room=None, loc_aisle=None, loc_rack=None, loc_rack_slot =None, loc_chassis=None):
+        loc = self.Location
+        if not datacenter:  datacenter = loc['DataCenter']
+        if not loc_room:  loc_room = loc['Room']
+        if not loc_aisle:  loc_aisle = loc['Aisle']
+        if not loc_rack:  loc_rack = loc['Rack']
+        if not loc_rackslot:  loc_rackslot = loc['RackSlot']
+        if not loc_chassis:  loc_chassis = loc['ChassisName']
         return self._modify_field_using_scp(
             component = "System.Embedded.1",
             modify_map = [
-                (self.config.arspec.iDRAC.DataCenterName_ServerTopology, loc_datacenter, None)
-                (self.config.arspec.iDRAC.RoomName_ServerTopology, loc_room, None)
-                (self.config.arspec.iDRAC.AisleName_ServerTopology, loc_aisle, None)
-                (self.config.arspec.iDRAC.RackName_ServerTopology, loc_rack, None)
-                (self.config.arspec.iDRAC.RackSlot_ServerTopology, loc_rack_slot, None)
-                (self.config.arspec.iDRAC.ChassisName_ServerTopology, loc_chassis, None)
+                (self.config.arspec.iDRAC.DataCenterName_ServerTopology, loc_datacenter, loc['DataCenter'])
+                (self.config.arspec.iDRAC.RoomName_ServerTopology, loc_room, loc['Room'])
+                (self.config.arspec.iDRAC.AisleName_ServerTopology, loc_aisle, loc['Aisle'])
+                (self.config.arspec.iDRAC.RackName_ServerTopology, loc_rack, loc['Rack'])
+                (self.config.arspec.iDRAC.RackSlot_ServerTopology, loc_rack_slot, loc['RackSlot'])
+                (self.config.arspec.iDRAC.ChassisName_ServerTopology, loc_chassis, loc['ChassisName'])
             ])
 
     def configure_idrac_dnsname(self, dnsname):
@@ -2136,25 +2154,41 @@ class iDRACConfig(iBaseConfigApi):
     ##  End SNMP Trap Destinations
     #############################################
 
+    @property
+    def SNMPConfiguration(self):
+        return {
+            'SNMPEnabled'    : self._get_scp_comp_field('iDRAC.Embedded.1', 'SNMP.1#AgentEnable'),
+            'SNMPCommunity'  : self._get_scp_comp_field('iDRAC.Embedded.1', 'SNMP.1#AgentCommunity'),
+            'SNMPPort'       : self._get_scp_comp_field('iDRAC.Embedded.1', 'SNMP.1#DiscoveryPort'),
+            'SNMPTrapFormat' : self._get_scp_comp_field('iDRAC.Embedded.1', 'SNMP.1#TrapFormat'),
+            'SNMPTrapPort'   : self._get_scp_comp_field('iDRAC.Embedded.1', 'SNMP.1#AlertPort'),
+            'SNMPVersions'   : self._get_scp_comp_field('iDRAC.Embedded.1', 'SNMP.1#SNMPProtocol')
+        }
 
-    def enable_snmp(self, community, snmp_port = 161, trap_port = 162, trap_format = "SNMPv1"):
-        return self._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap= {
-                self.config.arspec.iDRAC.AgentEnable_SNMP : 'Enabled',
-                self.config.arspec.iDRAC.AgentCommunity_SNMP : community,
-                self.config.arspec.iDRAC.TrapFormat_SNMP : trap_format,
-                self.config.arspec.iDRAC.SNMPProtocol_SNMP : 'All',
-                self.config.arspec.iDRAC.DiscoveryPort_SNMP : str(snmp_port),
-                self.config.arspec.iDRAC.AlertPort_SNMP : str(trap_port),
-            })
+    def enable_snmp(self, community, snmp_port = None, trap_port = None, trap_format = None, protocols = None):
+        snmpcfg = self.SNMPConfiguration
+        if not snmp_port: snmp_port = snmpcfg['SNMPPort']
+        if not community: community = snmpcfg['SNMPCommunity']
+        if not trap_port: community = snmpcfg['SNMPTrapPort']
+        if not trap_format: community = snmpcfg['SNMPTrapFormat']
+        if not protocols: community = snmpcfg['SNMPVersions']
+        trap_format = TypeHelper.resolve(trap_format)
+        protocols = TypeHelper.resolve(protocols)
+        return self._modify_field_using_scp(
+                    component = "iDRAC.Embedded.1",
+                    modify_map = [
+                        (self.config.arspec.iDRAC.AgentEnable_SNMP, 'Enabled', snmpcfg['SNMPEnabled']),
+                        (self.config.arspec.iDRAC.AgentCommunity_SNMP, community, snmpcfg['SNMPCommunity']),
+                        (self.config.arspec.iDRAC.TrapFormat_SNMP, trap_format, snmpcfg['SNMPTrapFormat']),
+                        (self.config.arspec.iDRAC.SNMPProtocol_SNMP, protocols, snmpcfg['SNMPVersions']),
+                        (self.config.arspec.iDRAC.DiscoveryPort_SNMP, str(snmp_port), snmpcfg['SNMPPort']),
+                        (self.config.arspec.iDRAC.AlertPort_SNMP, str(trap_port), snmpcfg['SNMPTrapPort'])])
 
     def disable_snmp(self):
-        return self._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap= {
-                self.config.arspec.iDRAC.AgentEnable_SNMP : 'Disabled',
-            })
+        snmpcfg = self.SNMPConfig
+        return self._modify_field_using_scp(
+                    component = "iDRAC.Embedded.1",
+                    modify_map = (self.config.arspec.iDRAC.AgentEnable_SNMP, 'Disabled', snmpcfg['SNMPEnabled']))
 
     @property
     def SyslogServers(self):
@@ -2163,30 +2197,39 @@ class iDRACConfig(iBaseConfigApi):
 
     @property
     def SyslogConfig(self):
-        syslog = {
+        return {
             'SyslogEnable' : self._get_scp_comp_field('iDRAC.Embedded.1', 'SysLog.1#SysLogEnable'),
             'SyslogPort' : self._get_scp_comp_field('iDRAC.Embedded.1', 'SysLog.1#Port'),
             'Servers' : self.SyslogServers,
             'PowerLogEnable' : self._get_scp_comp_field('iDRAC.Embedded.1', 'SysLog.1#PowerLogEnable'),
             'PowerLogInterval' : self._get_scp_comp_field('iDRAC.Embedded.1', 'SysLog.1#PowerLogInterval')
         }
-        return syslog
 
     def enable_syslog(self, syslog_port = 514, powerlog_interval = 0, server1="", server2="", server3=""):
+        syslog = self.SyslogConfig
         powerlog_enable = 'Enabled'
         if powerlog_interval <= 0:
+            powerlog_interval = 0
             powerlog_enable = 'Disabled'
-        return self._configure_field_using_scp(
+        syslog['Servers'].extend([' ', ' ', ' '])
+        return self._modify_field_using_scp(
+                    component = "iDRAC.Embedded.1",
+                    modify_map = [
+                        (self.config.arspec.iDRAC.SysLogEnable_SysLog, 'Enabled', syslog['SyslogEnable']),
+                        (self.config.arspec.iDRAC.Port_SysLog, syslog_port, syslog['SyslogPort']),
+                        (self.config.arspec.iDRAC.Server1_SysLog, server1, syslog['Servers'][0]),
+                        (self.config.arspec.iDRAC.Server2_SysLog, server2, syslog['Servers'][1]),
+                        (self.config.arspec.iDRAC.Server3_SysLog, server3, syslog['Servers'][2]),
+                        (self.config.arspec.iDRAC.PowerLogEnable_SysLog, powerlog_enable, syslog['PowerLogEnable']),
+                        (self.config.arspec.iDRAC.PowerLogInterval_SysLog, powerlog_interval, syslog['PowerLogInterval'])])
+
+    def disable_syslog(self):
+        syslog = self.SyslogConfig
+        return self._modify_field_using_scp(
             component = "iDRAC.Embedded.1",
-            fmap= {
-                self.config.arspec.iDRAC.SysLogEnable_SysLog : 'Enabled',
-                self.config.arspec.iDRAC.Port_SysLog : syslog_port,
-                self.config.arspec.iDRAC.Server1_SysLog : server1,
-                self.config.arspec.iDRAC.Server2_SysLog : server2,
-                self.config.arspec.iDRAC.Server3_SysLog : server3,
-                self.config.arspec.iDRAC.PowerLogEnable_SysLog : powerlog_enable,
-                self.config.arspec.iDRAC.PowerLogInterval_SysLog : powerlog_interval,
-            })
+            modify_map = [
+                (self.config.arspec.iDRAC.SysLogEnable_SysLog, 'Disabled', syslog['SyslogEnable']),
+                (self.config.arspec.iDRAC.PowerLogEnable_SysLog, 'Disabled', syslog['PowerLogEnable']) ])
 
     @property
     def TimeZone(self):
@@ -2204,6 +2247,12 @@ class iDRACConfig(iBaseConfigApi):
             return True
         return False
 
+    @property
+    def NTPMaxDist(self):
+        ntp = self._get_scp_comp_field('iDRAC.Embedded.1', 'NTPConfigGroup.1#NTPMaxDist')
+        if ntp: return int(ntp)
+        return 0
+
     def configure_time_zone(self, tz="CST6CDT", dst_offset = 0, tz_offset = 0):
         return self._modify_field_using_scp(
                     component = "iDRAC.Embedded.1",
@@ -2212,30 +2261,26 @@ class iDRACConfig(iBaseConfigApi):
                         (self.config.arspec.iDRAC.DayLightOffset_Time, 0, 0),
                         (self.config.arspec.iDRAC.TimeZoneOffset_Time, 0, 0) ])
 
-    def enable_ntp(self, ntp_server1 = "", ntp_server2= "", ntp_server3 = ""):
-        return self._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap= {
-                self.config.arspec.iDRAC.NTP1_NTPConfigGroup : ntp_server1,
-                self.config.arspec.iDRAC.NTP2_NTPConfigGroup : ntp_server2,
-                self.config.arspec.iDRAC.NTP3_NTPConfigGroup : ntp_server3,
-                self.config.arspec.iDRAC.NTPEnable_NTPConfigGroup : 'Enabled',
-                self.config.arspec.iDRAC.NTPMaxDist_NTPConfigGroup : 16,
-            })
-    def disbale_ntp(self):
-        return self._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap= {
-                self.config.arspec.iDRAC.NTPEnable_NTPConfigGroup : 'Disabled',
-            })
+    def enable_ntp(self, ntp_port = 514, powerlog_interval = 0, server1="", server2="", server3=""):
+        ntp_server = self.NTPServers
+        ntp_server.extend([' ', ' ', ' '])
+        return self._modify_field_using_scp(
+                    component = "iDRAC.Embedded.1",
+                    modify_map = [
+                        (self.config.arspec.iDRAC.NTPEnable_NTPConfigGroup, 'Enabled', self.NTPEnabled),
+                        (self.config.arspec.iDRAC.NTPMaxDist_NTPConfigGroup, ntp_port, self.NTPMaxDist),
+                        (self.config.arspec.iDRAC.NTP1_NTPConfigGroup, server1, ntp_server[0]),
+                        (self.config.arspec.iDRAC.NTP2_NTPConfigGroup, server2, ntp_server[1]),
+                        (self.config.arspec.iDRAC.NTP3_NTPConfigGroup, server3, ntp_server[2]) ])
 
-    def disable_syslog(self):
-        return self._configure_field_using_scp(
+    def disable_ntp(self):
+        syslog = self.SyslogConfig
+        return self._modify_field_using_scp(
             component = "iDRAC.Embedded.1",
-            fmap= {
-                self.config.arspec.iDRAC.SysLogEnable_SysLog : 'Disabled',
-                self.config.arspec.iDRAC.PowerLogEnable_SysLog : 'Disabled',
-            })
+            modify_map = [
+                (self.config.arspec.iDRAC.SysLogEnable_NTPConfigGroup, 'Disabled', self.NTPEnabled)
+            ])
+
 
     #############################################
     ##  Email Alerts
@@ -2286,6 +2331,7 @@ class iDRACConfig(iBaseConfigApi):
             fmap= {
                 self.config.arspec.iDRAC.Enable_EmailAlert : (uid, 'Enabled'),
             })
+
     def change_email_alert(self, email_id, custom_msg = ""):
         (uid, retobj, msg) = self._find_existing_slot('EmailAlert', email_id)
         if retobj is None: return msg
@@ -2534,81 +2580,72 @@ class iDRACConfig(iBaseConfigApi):
 
     # Tech Service Report Export
     def export_tsr_async(self, tsr_store_path):
+        return self.export_tsr(tsr_store_path, job_wait = False)
+
+    def export_tsr(self, tsr_store_path, job_wait = True):
         share = tsr_store_path.format(ip = self.entity.ipaddr)
         rjson = self.entity._export_tsr(share = share, creds = tsr_store_path.creds)
         rjson['file'] = str(share)
+        if job_wait:
+            rjson = self._job_mgr._job_wait(rjson['file'], rjson)
         return rjson
-
-    def export_tsr(self, tsr_store_path):
-        rjson = self.export_tsr_async(tsr_store_path)
-        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     # Server Configuration Profile Export/Import
-    def scp_import(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML, reboot=False):
-        rjson = self.scp_import_async(scp_share_path, components=components, format_file=format_file, reboot = reboot)
-        return self._job_mgr._job_wait(rjson['file'], rjson)
-
-    def scp_import_async(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML, reboot = False):
+    def scp_import(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML, reboot=False, job_wait = True):
         share = scp_share_path.format(ip = self.entity.ipaddr)
         if reboot:
-            rjson = self.entity._scp_import_with_reboot(share = share, creds = scp_share_path.creds, target=components, format_file=format_file, reboot_options = RebootOptions())
+            rjson = self.entity._scp_import_with_reboot(share = share, creds = scp_share_path.creds,
+                      target=components, format_file=format_file, reboot_options = RebootOptions())
         else:
-            rjson = self.entity._scp_import(share = share, creds = scp_share_path.creds, target=components, format_file=format_file)
+            rjson = self.entity._scp_import(share = share, creds = scp_share_path.creds,
+                      target=components, format_file=format_file)
         rjson['file'] = str(share)
+        if job_wait:
+            rjson = self._job_mgr._job_wait(rjson['file'], rjson)
         return rjson
 
-    def scp_export_async(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML):
+    def scp_export(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML, job_wait = True):
         share = scp_share_path.format(ip = self.entity.ipaddr)
         rjson = self.entity._scp_export(share = share, creds = scp_share_path.creds, target=components, format_file=format_file)
         rjson['file'] = str(share)
+        if job_wait:
+            rjson = self._job_mgr._job_wait(rjson['file'], rjson)
         return rjson
 
-    def scp_export(self, scp_share_path, components=SCPTargetEnum.ALL, format_file=ExportFormatEnum.XML):
-        rjson = self.scp_export_async(scp_share_path, components=components, format_file=format_file)
-        return self._job_mgr._job_wait(rjson['file'], rjson)
-
     # Server Profile Backup/Restore
-    def sp_backup(self, sp_share_path, passphrase, sp_image_name):
-        rjson = self.sp_backup_async(sp_share_path, passphrase, sp_image_name)
-        return self._job_mgr._job_wait(rjson['file'], rjson)
-
-    def sp_backup_async(self, sp_share_path, passphrase, sp_image_name):
+    def sp_backup(self, sp_share_path, passphrase, sp_image_name, job_wait = True):
         share = sp_share_path.format(ip = self.entity.ipaddr)
         rjson = self.entity._sp_backup(share = share, creds = sp_share_path.creds, passphrase = passphrase, image=sp_image_name)
         rjson['file'] = str(share)
+        if job_wait:
+            rjson = self._job_mgr._job_wait(rjson['file'], rjson)
         return rjson
 
-    def sp_restore(self, sp_share_path, passphrase, sp_image_name):
-        rjson = self.sp_restore_async(sp_share_path, passphrase, sp_image_name)
-        return self._job_mgr._job_wait(rjson['file'], rjson)
-
-    def sp_restore_async(self, sp_share_path, passphrase, sp_image_name):
+    def sp_restore(self, sp_share_path, passphrase, sp_image_name, job_wait = True):
         share = sp_share_path.format(ip = self.entity.ipaddr)
         rjson = self.entity._sp_restore(share = share, creds = sp_share_path.creds, passphrase = passphrase, image=sp_image_name)
         rjson['file'] = str(share)
+        if job_wait:
+            rjson = self._job_mgr._job_wait(rjson['file'], rjson)
         return rjson
 
     # Factory Details Export
-    def factory_export_async(self, factory_details_path):
+    def factory_export(self, factory_details_path, job_wait = True):
         share = factory_details_path.format(ip = self.entity.ipaddr)
         rjson = self.entity._factory_export(share = share, creds = factory_details_path.creds)
         rjson['file'] = str(share)
+        if job_wait:
+            rjson = self._job_mgr._job_wait(rjson['file'], rjson)
         return rjson
 
-    def factory_export(self, factory_details_path):
-        rjson = self.factory_export_async(factory_details_path)
-        return self._job_mgr._job_wait(rjson['file'], rjson)
-
     # Hardware Inventory Export
-    def inventory_export_async(self, inventory_details_path):
+    def inventory_export(self, inventory_details_path, job_wait = True):
         share = inventory_details_path.format(ip = self.entity.ipaddr)
         rjson = self.entity._inventory_export(share = share, creds = inventory_details_path.creds)
         rjson['file'] = str(share)
+        if job_wait:
+            rjson = self._job_mgr._job_wait(rjson['file'], rjson)
         return rjson
-
-    def inventory_export(self, inventory_details_path):
-        rjson = self.inventory_export_async(inventory_details_path)
-        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     # Drive APIs
     # target is FQDD of the drive
@@ -2637,14 +2674,13 @@ class iDRACConfig(iBaseConfigApi):
         rjson['file'] = 'delete_iso_from_vflash'
         return rjson
 
-    def boot_to_network_iso_async(self, network_iso_image):
-        rjson = self.entity._boot_to_network_iso(share = network_iso_image, creds = network_iso_image.creds)
+    def boot_to_network_iso(self, network_iso_image, job_wait = True):
+        rjson = self.entity._boot_to_network_iso(share = network_iso_image,
+                      creds = network_iso_image.creds)
         rjson['file'] = str(network_iso_image)
+        if job_wait:
+            rjson = self._job_mgr._job_wait(rjson['file'], rjson)
         return rjson
-
-    def boot_to_network_iso(self, network_iso_image):
-        rjson = self.boot_to_network_iso_async(network_iso_image)
-        return self._job_mgr._job_wait(rjson['file'], rjson)
 
     def boot_to_disk(self):
         rjson = self.entity._boot_to_disk()
