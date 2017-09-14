@@ -2191,9 +2191,11 @@ class iDRACConfig(iBaseConfigApi):
         snmpcfg = self.SNMPConfiguration
         if not snmp_port: snmp_port = snmpcfg['SNMPPort']
         if not community: community = snmpcfg['SNMPCommunity']
-        if not trap_port: community = snmpcfg['SNMPTrapPort']
-        if not trap_format: community = snmpcfg['SNMPTrapFormat']
-        if not protocols: community = snmpcfg['SNMPVersions']
+        if not trap_port: trap_port = snmpcfg['SNMPTrapPort']
+        if not trap_format: trap_format = snmpcfg['SNMPTrapFormat']
+        if not protocols: protocols = snmpcfg['SNMPVersions']
+        if not trap_port: trap_port = 162
+        if not snmp_port: snmp_port = 161
         trap_format = TypeHelper.resolve(trap_format)
         protocols = TypeHelper.resolve(protocols)
         return self._modify_field_using_scp(
@@ -2283,14 +2285,14 @@ class iDRACConfig(iBaseConfigApi):
                         (self.config.arspec.iDRAC.DayLightOffset_Time, 0, 0),
                         (self.config.arspec.iDRAC.TimeZoneOffset_Time, 0, 0) ])
 
-    def enable_ntp(self, ntp_port = 514, powerlog_interval = 0, server1="", server2="", server3=""):
+    def enable_ntp(self, ntp_max_dist = 16, powerlog_interval = 0, server1="", server2="", server3=""):
         ntp_server = self.NTPServers
         ntp_server.extend([' ', ' ', ' '])
         return self._modify_field_using_scp(
                     component = "iDRAC.Embedded.1",
                     modify_map = [
                         (self.config.arspec.iDRAC.NTPEnable_NTPConfigGroup, 'Enabled', self.NTPEnabled),
-                        (self.config.arspec.iDRAC.NTPMaxDist_NTPConfigGroup, ntp_port, self.NTPMaxDist),
+                        (self.config.arspec.iDRAC.NTPMaxDist_NTPConfigGroup, ntp_max_dist, self.NTPMaxDist),
                         (self.config.arspec.iDRAC.NTP1_NTPConfigGroup, server1, ntp_server[0]),
                         (self.config.arspec.iDRAC.NTP2_NTPConfigGroup, server2, ntp_server[1]),
                         (self.config.arspec.iDRAC.NTP3_NTPConfigGroup, server3, ntp_server[2]) ])
