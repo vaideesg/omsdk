@@ -542,7 +542,8 @@ class FileOnShare(Share):
             fname += psep + t
         try :
             if not os.path.exists(fname):
-                print(os.makedirs(fname))
+                msg = os.makedirs(fname)
+                logger.debug('makedirs(): ' + str(msg))
             
             if not os.path.isdir(fname):
                 logger.debug('makedirs(): did not get created!!')
@@ -552,7 +553,6 @@ class FileOnShare(Share):
             common_path = None
             if fname != mp_mount_path:
                 common_path = fname.replace(mp_mount_path + psep, '')
-            print(common_path)
 
             return FileOnShare(remote = self.remote.mountable_path,
                 mount_point = mp_mount_path,
