@@ -252,11 +252,14 @@ class FileOnShare(Share):
                     path_list = [ rshare, filename ]
                     if common_path:
                         psp = Share._ShareSpec[pspec]['path_sep']
-                        cpath = common_path.replace(psp + filename, '')
-                        rshare = rshare.replace(cpath, '')
-                        path_list = [ rshare, cpath, filename ]
+                        if psp in common_path:
+                            cpath = common_path.replace(psp + filename, '')
+                            rshare = rshare.replace(cpath, '')
+                            path_list = [ rshare, cpath, filename ]
+                        else:
+                            rshare = rshare.replace(common_path, '')
+                            path_list = [ rshare, filename ]
                     return RemotePath(share_type, isFolder, ipaddr, *path_list)
-                    #return RemotePath(share_type, isFolder, ipaddr, rshare, filename)
                 path_list =  [ remote_path ]
                 if common_path: path_list.append(common_path)
                 return LocalPath(share_type, isFolder, *path_list)
@@ -521,12 +524,16 @@ class FileOnShare(Share):
     def makedirs(self, *args):
 
         if not self.isFolder:
+            logger.debug('makedirs(): not a folder')
             return None
         if self.mount_point is None:
+            logger.debug('makedirs(): no mount point')
             return None
         if not 'path_sep' in Share._ShareSpec[self.mount_point.share_type]:
+            logger.debug('makedirs(): no path_sep found')
             return None
         if not self.IsValid:
+            logger.debug('makedirs(): not valid')
             return None
 
         fname = self.mount_point.full_path
@@ -535,9 +542,10 @@ class FileOnShare(Share):
             fname += psep + t
         try :
             if not os.path.exists(fname):
-                os.makedirs(fname)
+                print(os.makedirs(fname))
             
             if not os.path.isdir(fname):
+                logger.debug('makedirs(): did not get created!!')
                 return None
             mp_mount_path = self.mount_point.mountable_path
 
