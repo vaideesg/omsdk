@@ -70,7 +70,10 @@ class UpdateRepo:
     def _load_catalog(self):
         if not os.path.isfile(os.path.join(self.folder, self.catalog)):
             return self
-        self.tree = ET.parse(os.path.join(self.folder, self.catalog))
+        try:
+            self.tree = ET.parse(os.path.join(self.folder, self.catalog))
+        except Exception as ex:
+            return self
         self.root = self.tree.getroot()
         cnodes = self.root.findall("./SoftwareBundle")
         for node in cnodes:
@@ -103,6 +106,21 @@ class UpdateRepo:
             return self
         self.source = source
         return self
+
+    def _copybundle(self, rnode, node):
+        cnt_index = 0
+        for i in rnode:
+            if i.tag == 'SoftwareBundle':
+                cnt_index += 1
+        if cnt_index > 0:
+            mynode = ET.Element(node.tag)
+            rnode.insert(cnt_index, mynode)
+        else:
+            mynode = ET.SubElement(rnode, node.tag)
+        for (k,v) in node.items():
+            mynode.set(k, v)
+        for subnode in node:
+            self._copynode(mynode, subnode)
 
     def _copynode(self, rnode, node):
         if node.tag == "Package":
@@ -146,8 +164,9 @@ class UpdateRepo:
         if len(compfqdd) <= 0: compfqdd = None
         logger.debug('filter_by_component::compfqdd=' + str(compfqdd))
         logger.debug(PrettyPrint.prettify_json(swidentity))
+        count = self.filter_bundle(model, "WIN")
+        logger.debug('filtered bundle ' + str(count))
         count = 0
-        self.filter_bundle(model, "WIN")
         for firm in swidentity["Firmware"]:
             if compfqdd and firm['FQDD'] not in compfqdd:
                 continue
@@ -167,6 +186,7 @@ class UpdateRepo:
             if len(pcispec) > 0:
                 count += self.filter_by_pci(model, pcispec, ostype)
                 continue
+        logger.debug('Filtered ' + str(count) + ' entries!')
         return count
 
     def addBundle(self, model, node, newNode=True):
@@ -206,7 +226,7 @@ class UpdateRepo:
         # insert new bundles
         for model in self.bundles:
             self.bundles[model].sort(key = lambda x: x.get("vendorVersion"))
-            self._copynode(self.root, self.bundles[model][version])
+            self._copybundle(self.root, self.bundles[model][version])
         # Insert new components into existing bundles
         for model in self.exist_bundles:
             for bundle in self.exist_bundles[model]:

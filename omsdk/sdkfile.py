@@ -790,15 +790,15 @@ class LocalFile(Share):
             logger.debug(str(ex))
 
         try :
-            if os.path.exists(self.mount_point.full_path):
-                os.remove(self.mount_point.full_path)
+            if os.path.exists(self.local.full_path):
+                os.remove(self.local.full_path)
         except Exception as ex:
             logger.debug(str(ex))
 
         # Windows Kludge: Remove the file without 1 suffix
         try :
-            if os.path.exists(self.mount_point.full_path[0:-1]):
-                os.remove(self.mount_point.full_path[0:-1])
+            if os.path.exists(self.local.full_path[0:-1]):
+                os.remove(self.local.full_path[0:-1])
         except Exception as ex:
             logger.debug(str(ex))
 

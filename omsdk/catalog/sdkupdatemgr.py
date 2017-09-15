@@ -1,6 +1,7 @@
 from omsdk.catalog.pdkcatalog import DellPDKCatalog
 from omsdk.catalog.updaterepo import UpdateRepo
 from omsdk.sdkftp import FtpHelper, FtpCredentials
+from omsdk.catalog.sdkhttpsrc import HttpHelper
 from omsdk.sdkprint import PrettyPrint
 
 import threading
@@ -56,10 +57,17 @@ class _UpdateCacheManager(object):
         for fname in glob.glob(catalogs_path):
             self._initCatalogScoper(fname)
 
-        (self.cache_share, self.cache) = self.getCatalogScoper()
+        self._initialize()
+        self.UseFtp = False
 
-    def _initCatalogScoper(self, fname):
-        self.getCatalogScoper(os.path.basename(fname).replace('.xml', ''))
+    def _initCatalogScoper(self, name):
+        if name not in self.cache_catalogs:
+            self.cache_catalogs[name] = None
+        return self.cache_catalogs[name]
+
+    def _initialize(self):
+        self.cache_catalogs['Catalog'] = None
+        (self.cache_share, self.cache) = self.getCatalogScoper()
 
     def _randomCatalogScoper(self):
         fname= self.update_share.mkstemp(prefix='upd', suffix='.xml').local_full_path
@@ -67,41 +75,54 @@ class _UpdateCacheManager(object):
 
     def getCatalogScoper(self, name = 'Catalog'):
         if name not in self.cache_catalogs:
+            self.cache_catalogs[name] = None
+
+        if not self.cache_catalogs[name]:
             cache_share = self.update_share.new_file(name + '.xml')
             self.cache_catalogs[name] = (cache_share,
                  CatalogScoper(self.master, cache_share))
+
         return self.cache_catalogs[name]
 
     def getInventoryShare(self):
         return self.inventory_share
 
+    def _get_helper(self):
+        if self.UseFtp:
+            conn = FtpHelper('ftp.dell.com', FtpCredentials())
+        else:
+            conn = HttpHelper('downloads.dell.com')
+        return conn
+
     def update_catalog(self):
-        folder = self.cache.master_share.local_folder_path
-        ftp = FtpHelper('ftp.dell.com', FtpCredentials())
+        folder = self.master_share.local_folder_path
         c = 'catalog/Catalog.gz'
-        retval = ftp.download_newerfiles([c], folder)
+        conn = self._get_helper()
+        retval = conn.download_newerfiles([c], folder)
         logger.debug("Download Success = {0}, Failed = {1}"
                 .format(retval['success'], retval['failed']))
         if retval['failed'] == 0 and \
-           ftp.unzip_file(os.path.join(folder, c),
+           conn.unzip_file(os.path.join(folder, c),
                           os.path.join(folder, 'Catalog.xml')):
             retval['Status'] = 'Success'
         else:
             logger.debug("Unable to download and extract " + c)
             retval['Status'] = 'Failed'
-        ftp.close()
+        conn.close()
+        self.master.update()
+        self._initialize()
         return retval
 
     def update_cache(self):
         files_to_dld = self.cache.rcache.UpdateFilePaths
-        ftp = FtpHelper('ftp.dell.com', FtpCredentials())
-        retval = ftp.download_newerfiles(files_to_dld, self.update_share.local_full_path)
+        conn = self._get_helper()
+        retval = conn.download_newerfiles(files_to_dld, self.update_share.local_full_path)
         logger.debug("Download Success = {0}, Failed = {1}".format(retval['success'], retval['failed']))
         if retval['failed'] == 0:
             retval['Status'] = 'Success'
         else:
             retval['Status'] = 'Failed'
-        ftp.close()
+        conn.close()
         return retval
 
 class MasterCatalog(object):
@@ -109,6 +130,9 @@ class MasterCatalog(object):
         self.master_share = master_share
         self.cache_lock = threading.Lock()
         logger.debug("master:" + self.master_share.local_full_path)
+        self.update()
+
+    def update(self):
         self.cmaster = DellPDKCatalog(self.master_share.local_full_path)
 
 class CatalogScoper(object):
