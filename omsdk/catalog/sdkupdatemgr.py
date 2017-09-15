@@ -5,6 +5,7 @@ from omsdk.sdkprint import PrettyPrint
 
 import threading
 import os
+import glob
 import logging
 
 logger = logging.getLogger(__name__)
@@ -47,20 +48,32 @@ class _UpdateCacheManager(object):
         self.update_share = update_share
         self.master_share = self.update_share.makedirs("_master")\
                                              .new_file('Catalog.xml')
-        self.inventory_share = self.update_share.makedirs("_inventory")
-        self.cache_share = self.update_share.new_file("Catalog.xml")
-        self.cache = CatalogScoper(self.master_share, self.cache_share)
+        self.master= MasterCatalog(self.master_share)
 
-    def getCatalogScoper(self):
-        return self.cache
+        self.inventory_share = self.update_share.makedirs("_inventory")
+        self.cache_catalogs = {}
+        catalogs_path = os.path.join(self.update_share.local_full_path, '*.xml')
+        for fname in glob.glob(catalogs_path):
+            self._initCatalogScoper(fname)
+
+        (self.cache_share, self.cache) = self.getCatalogScoper()
+
+    def _initCatalogScoper(self, fname):
+        self.getCatalogScoper(os.path.basename(fname).replace('.xml', ''))
+
+    def _randomCatalogScoper(self):
+        fname= self.update_share.mkstemp(prefix='upd', suffix='.xml').local_full_path
+        self.getCatalogScoper(os.path.basename(fname).replace('.xml', ''))
+
+    def getCatalogScoper(self, name = 'Catalog'):
+        if name not in self.cache_catalogs:
+            cache_share = self.update_share.new_file(name + '.xml')
+            self.cache_catalogs[name] = (cache_share,
+                 CatalogScoper(self.master, cache_share))
+        return self.cache_catalogs[name]
 
     def getInventoryShare(self):
         return self.inventory_share
-
-    # Creates a Temporary catalog scoper. how to Use it??
-    def getTempScope(self):
-        temp_share = self.update_share.mkstemp(prefix='upd', suffix='.xml')
-        return CatalogScoper(self.cache_share, temp_share)
 
     def update_catalog(self):
         folder = self.cache.master_share.local_folder_path
@@ -91,33 +104,36 @@ class _UpdateCacheManager(object):
         ftp.close()
         return retval
 
-class CatalogScoper(object):
-
-    def __init__(self, master_share, cache_share):
+class MasterCatalog(object):
+    def __init__(self, master_share):
         self.master_share = master_share
-        self.cache_share = cache_share
         self.cache_lock = threading.Lock()
         logger.debug("master:" + self.master_share.local_full_path)
         self.cmaster = DellPDKCatalog(self.master_share.local_full_path)
 
+class CatalogScoper(object):
+
+    def __init__(self, master_catalog, cache_share):
+        self.cache_share = cache_share
+        self.cache_lock = threading.Lock()
+        self.master_catalog = master_catalog
         logger.debug("cache:" + self.cache_share.local_folder_path)
         logger.debug("cache:" + self.cache_share.local_file_name)
         self.rcache = UpdateRepo(self.cache_share.local_folder_path,
                             catalog=self.cache_share.local_file_name,
-                            source=self.cmaster, mkdirs=True)
+                            source=self.master_catalog.cmaster, mkdirs=True)
 
-    def add_model_to_scope(self, model):
-        count = 0
-        with self.cache_lock:
-            count = self.rcache.filter_by_model(model)
-        return count
-
-    def add_to_scope(self, model, swidentity, *components):
+    def add_to_scope(self, model, swidentity = None, *components):
         count = 0
         with self.cache_lock:
             comps = [i for i in components]
-            count = self.rcache.filter_by_component(model,
+            if len(comps) > 0 and swidentity is None:
+                logger.error('Software Identity must be given when scoping updates to components')
+            if swidentity:
+                count = self.rcache.filter_by_component(model,
                             swidentity, compfqdd=comps)
+            else:
+                count = self.rcache.filter_by_model(model)
         return count
 
     def save(self):

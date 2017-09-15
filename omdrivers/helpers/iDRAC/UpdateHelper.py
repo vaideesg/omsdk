@@ -30,14 +30,18 @@ class UpdateHelper(object):
         return { 'Status' : 'Success' }
 
     # Download the catalog and scope to selected inventory
+    # update_repo(catscope.update_share.folder_path, 
+    #             catscope.update_share.file_name)
     @staticmethod
-    def build_repo(*components):
-        if not UpdateManager.get_instance():
+    def build_repo(*components, catalog = 'Catalog', scoped=True):
+        updmgr = UpdateManager.get_instance()
+        if not updmgr:
             return { 'Status' : 'Failed',
                      'Message' : 'Update Manager is not initialized' }
-        myshare = UpdateManager.get_instance().getInventoryShare()
-        catscope = UpdateManager.get_instance().getCatalogScoper()
-        for fname in glob.glob(os.path.join(myshare.local_full_path, '*_firmware.json')):
+        myshare = updmgr.getInventoryShare()
+        (catshare, catscope) = updmgr.getCatalogScoper(catalog)
+        fwfiles_path = os.path.join(myshare.local_full_path, '*_firmware.json')
+        for fname in glob.glob(fwfiles_path):
             fwinventory = None
             with open(fname) as firmware_data:
                 fwinventory = json.load(firmware_data)
@@ -48,7 +52,33 @@ class UpdateHelper(object):
             for comp in components:
                 if comp in fwinventory['ComponentMap']:
                     flist.extend(fwinventory['ComponentMap'][comp])
+            fwinventory['Model_Hex'] = '063D'
 
-            catscope.add_to_scope(fwinventory['Model_Hex'], fwinventory, *flist)
+            swidentity = fwinventory
+            if not scoped: swidentity = None
+            catscope.add_to_scope(fwinventory['Model_Hex'], swidentity, *flist)
+
+        catscope.save()
+        return { 'Status' : 'Success' }
+
+    @staticmethod
+    def build_repo_for_model(catalog = 'Catalog'):
+        updmgr = UpdateManager.get_instance()
+        if not updmgr:
+            return { 'Status' : 'Failed',
+                     'Message' : 'Update Manager is not initialized' }
+        myshare = updmgr.getInventoryShare()
+        (catshare, catscope) = updmgr.getCatalogScoper(catalog)
+        fwfiles_path = os.path.join(myshare.local_full_path, '*_firmware.json')
+        for fname in glob.glob(fwfiles_path):
+            fwinventory = None
+            with open(fname) as firmware_data:
+                fwinventory = json.load(firmware_data)
+            if not fwinventory:
+                logger.debug(' no data found in '+ fname)
+                continue
+            fwinventory['Model_Hex'] = '063D'
+
+            catscope.add_to_scope(fwinventory['Model_Hex'])
         catscope.save()
         return { 'Status' : 'Success' }

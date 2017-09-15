@@ -202,6 +202,7 @@ class UpdateRepo:
     def store(self, version = -1, target=None):
         if not target:
             target = self.catalog
+        self.root.set('baseLocation', '')
         # insert new bundles
         for model in self.bundles:
             self.bundles[model].sort(key = lambda x: x.get("vendorVersion"))

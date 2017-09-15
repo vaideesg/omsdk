@@ -23,7 +23,7 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.9.1002',
+    version='0.9.1003',
 
     description='Dell OpenManage SDK',
     long_description='Dell OpenManage SDK for devices, consoles',
@@ -60,7 +60,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='dellomsdk, dellsdk, dell, idrac, force10',
+    keywords='dellemc, dellemcsdk, idrac, cmc',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().

@@ -747,24 +747,26 @@ class LocalFile(Share):
     def makedirs(self, *args):
 
         if not self.isFolder:
-            return False
+            return None
         if self.local is None:
-            return False
+            return None
         if not 'path_sep' in Share._ShareSpec[self.local.share_type]:
-            return False
+            return None
         if not self.IsValid:
-            return False
+            return None
 
         fname = self.local.full_path
         psep = Share._ShareSpec[self.local.share_type]['path_sep']
         for t in args:
             fname += psep + t
         try :
-            if os.path.exists(fname) and os.path.isdir(fname):
-                return True
+            if not os.path.exists(fname):
+                os.makedirs(fname)
 
-            os.makedirs(fname)
-            return True
+            if not os.path.isdir(fname):
+                return None
+
+            return LocalFile(local = fname, fd = None, isFolder = True)
         except Exception as ex:
             logger.debug("makedirs(): Failed to create folder: " +str(ex))
             return False
