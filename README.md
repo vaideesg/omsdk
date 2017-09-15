@@ -34,5 +34,4 @@ Unless required by applicable law or agreed to in writing, software distributed 
 Currently Dell does not support this product. However, file bugs and issues on the GitHub Issues page. Reach out to Anupam Aloke (anupam_aloke@dell.com) or the authors for queries.
 
 # Authors
-Vaideeswaran Ganesan (vaideeswaran_ganesan@dell.com)
-Anupam Aloke (anupam_aloke@dell.com)
+Vaideeswaran Ganesan (vaideeswaran_ganesan@dell.com, vaidees@gmail.com)
