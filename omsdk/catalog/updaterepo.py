@@ -8,7 +8,6 @@ import xml.etree.ElementTree as ET
 from xml.dom.minidom import parse
 import xml.dom.minidom
 from omsdk.sdkprint import PrettyPrint
-from omsdk.sdkftp import FtpHelper
 
 
 logger = logging.getLogger(__name__)
