@@ -158,6 +158,9 @@ class CatalogScoper(object):
                 count = self._rcache.filter_by_model(model)
         return count
 
+    def compare(self, model, swidentity):
+        return self._rcache.filter_by_component(model, swidentity, compare=True)
+
     def save(self):
         with self.cache_lock:
             self._rcache.store()

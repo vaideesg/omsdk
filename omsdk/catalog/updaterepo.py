@@ -150,38 +150,28 @@ class UpdateRepo:
                node.get("path") in self.entries:
                 self._copynode(insertnode, node)
 
-    def filter_bundle(self, model, ostype="WIN"):
-        if self.source:
-            return self.source.filter_bundle(model, ostype, tosource=self)
-        return 0
-
-    def filter_by_compid(self, model, cid, ostype="WIN"):
-        if self.source:
-            return self.source.filter_by_compid(model, cid, ostype, tosource=self)
-        return 0
-
-    def filter_by_pci(self, model, pcispec, ostype="WIN"):
-        if self.source:
-            return self.source.filter_by_pci(model, pcispec, ostype, tosource=self)
-        return 0
-
     def filter_by_model(self, model, ostype="WIN"):
-        self.filter_bundle(model, "WIN")
+        if self.source:
+            count = self.source.filter_bundle(model, ostype, tosource=self)
+            logger.debug('filtered bundle ' + str(count))
         return self.source.filter_by_model(model, ostype, tosource=self)
 
-    def filter_by_component(self, model,swidentity, compfqdd=None,ostype="WIN"):
+    def filter_by_component(self, model,swidentity, compfqdd=None,ostype="WIN", compare=False):
         if len(compfqdd) <= 0: compfqdd = None
         logger.debug('filter_by_component::compfqdd=' + str(compfqdd))
         logger.debug(PrettyPrint.prettify_json(swidentity))
-        count = self.filter_bundle(model, "WIN")
-        logger.debug('filtered bundle ' + str(count))
+        if self.source:
+            count = self.source.filter_bundle(model, ostype, tosource=self)
+            logger.debug('filtered bundle ' + str(count))
         count = 0
         for firm in swidentity["Firmware"]:
             if compfqdd and firm['FQDD'] not in compfqdd:
                 continue
             logger.debug(firm['FQDD'])
             if 'ComponentID' in firm and firm['ComponentID']:
-                count += self.filter_by_compid(model, firm['ComponentID'], ostype)
+                if self.source:
+                    count += self.source.filter_by_compid(model,
+                                firm['ComponentID'], ostype, tosource=self)
                 continue
             pcispec = {}
             if 'VendorID' in firm and firm['VendorID']:
@@ -193,7 +183,9 @@ class UpdateRepo:
             if 'SubDeviceID' in firm and firm['SubDeviceID']:
                 pcispec['subDeviceID'] = firm['SubDeviceID']
             if len(pcispec) > 0:
-                count += self.filter_by_pci(model, pcispec, ostype)
+                if self.source:
+                    count += self.source.filter_by_pci(model, pcispec,
+                                    ostype, tosource=self)
                 continue
         logger.debug('Filtered ' + str(count) + ' entries!')
         return count
