@@ -141,6 +141,10 @@ class CatalogScoper(object):
     def UpdateFilePaths(self):
         return self._rcache.UpdateFilePaths
 
+    @property
+    def UpdateFileDetails(self):
+        return self._rcache.UpdateFileDetails
+
     def add_to_scope(self, model, swidentity = None, *components):
         count = 0
         with self.cache_lock:

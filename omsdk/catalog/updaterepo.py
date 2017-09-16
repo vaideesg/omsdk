@@ -55,6 +55,16 @@ class UpdateRepo:
         return list(self.path_entries.keys())
 
     @property
+    def UpdateFileDetails(self):
+        upd_details = []
+        for path in self.path_entries:
+            upd = {}
+            for (k,v) in self.path_entries[path].items():
+                upd[k] = v
+            upd_details.append(upd)
+        return upd_details
+
+    @property
     def Models(self):
         lmodels = list(self.exist_bundles.keys())
         lmodels.extend(list(self.bundles.keys()))

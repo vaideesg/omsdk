@@ -14,7 +14,7 @@ def RepoBuilder(arglist):
         help="Name of the Catalog file that contains the info about needed DUPs")
     parser.add_argument('-f', '--folder', 
         action="store", dest="folder", type=str,
-        help="models for which the DUPs are requested.")
+        help="folder from where repository is built")
     parser.add_argument('-c', '--components',
         action="store", dest="component", nargs='+',
         help="components for which the DUPs are requested.")
