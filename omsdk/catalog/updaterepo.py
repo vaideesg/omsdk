@@ -12,6 +12,17 @@ from omsdk.sdkprint import PrettyPrint
 
 logger = logging.getLogger(__name__)
 
+class RepoComparator:
+    def __init__(self, swidentity):
+        self.swidentity = swidentity
+
+    def addBundle(self, model, node, newNode=True):
+        pass
+
+    def addComponent(self, model, node, firm, newNode=True):
+        if not firm: return
+        for (k,v) in node.items():
+            firm["Catalog." + k] = v
 
 class UpdateRepo:
     def __init__(self, folder, catalog='Catalog.xml', source=None, mkdirs=False):
@@ -96,7 +107,7 @@ class UpdateRepo:
             self.addBundle(model, node, False)
             components = self.root.findall("./SoftwareComponent/SupportedSystems/Brand/Model[@systemID='{0}']/.../.../...".format(model))
             for comp in components:
-                self.addComponent(model, comp, False)
+                self.addComponent(model, comp, None, False)
 
     def _finish_init(self):
         if not self.tree:
@@ -154,24 +165,26 @@ class UpdateRepo:
         if self.source:
             count = self.source.filter_bundle(model, ostype, tosource=self)
             logger.debug('filtered bundle ' + str(count))
-        return self.source.filter_by_model(model, ostype, tosource=self)
+        return self.source.filter_by_model(model, ostype, firm=None, tosource=self)
 
     def filter_by_component(self, model,swidentity, compfqdd=None,ostype="WIN", compare=False):
-        if len(compfqdd) <= 0: compfqdd = None
+        if compfqdd and len(compfqdd) <= 0: compfqdd = None
         logger.debug('filter_by_component::compfqdd=' + str(compfqdd))
         logger.debug(PrettyPrint.prettify_json(swidentity))
         if self.source:
             count = self.source.filter_bundle(model, ostype, tosource=self)
             logger.debug('filtered bundle ' + str(count))
+        source = self
+        if compare: source = RepoComparator(swidentity)
+        if not self.source: return 0
         count = 0
         for firm in swidentity["Firmware"]:
             if compfqdd and firm['FQDD'] not in compfqdd:
                 continue
             logger.debug(firm['FQDD'])
             if 'ComponentID' in firm and firm['ComponentID']:
-                if self.source:
-                    count += self.source.filter_by_compid(model,
-                                firm['ComponentID'], ostype, tosource=self)
+                count += self.source.filter_by_compid(model,
+                             firm['ComponentID'], ostype, firm, tosource=source)
                 continue
             pcispec = {}
             if 'VendorID' in firm and firm['VendorID']:
@@ -183,9 +196,8 @@ class UpdateRepo:
             if 'SubDeviceID' in firm and firm['SubDeviceID']:
                 pcispec['subDeviceID'] = firm['SubDeviceID']
             if len(pcispec) > 0:
-                if self.source:
-                    count += self.source.filter_by_pci(model, pcispec,
-                                    ostype, tosource=self)
+                count += self.source.filter_by_pci(model, pcispec,
+                                    ostype, firm, tosource=source)
                 continue
         logger.debug('Filtered ' + str(count) + ' entries!')
         return count
@@ -206,7 +218,7 @@ class UpdateRepo:
                 self.bundles[model] = []
             self.bundles[model].append(node)
 
-    def addComponent(self, model, node, newNode=True):
+    def addComponent(self, model, node, firm, newNode=True):
         fpath = node.get("path").split("/")[-1]
         if fpath in self.entries:
             return

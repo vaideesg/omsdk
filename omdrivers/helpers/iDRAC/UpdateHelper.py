@@ -64,3 +64,23 @@ class UpdateHelper(object):
 
         catscope.save()
         return { 'Status' : 'Success' }
+
+    @staticmethod
+    def get_firmware_inventory():
+        updmgr = UpdateManager.get_instance()
+        if not updmgr:
+            return { 'Status' : 'Failed',
+                     'Message' : 'Update Manager is not initialized' }
+        myshare = updmgr.getInventoryShare()
+        fwfiles_path = os.path.join(myshare.local_full_path, '*_firmware.json')
+        device_fw = {}
+        for fname in glob.glob(fwfiles_path):
+            fwinventory = None
+            with open(fname) as firmware_data:
+                fwinventory = json.load(firmware_data)
+            if not fwinventory:
+                logger.debug(' no data found in '+ fname)
+                continue
+            device_fw[fwinventory['ServiceTag']] = fwinventory
+
+        return { 'Status' : 'Success', 'retval' : device_fw }

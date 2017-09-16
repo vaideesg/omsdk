@@ -54,7 +54,7 @@ class DellPDKCatalog:
                 tosource.addBundle(model, node)
         return count
 
-    def _filter_byid(self, model, ostype, compid_path, tosource):
+    def _filter_byid(self, model, ostype, compid_path, firm, tosource):
         model = model.upper()
         model_path = "./SupportedSystems/Brand/Model[@systemID='{0}']".format(model)
         comp_path = "./SoftwareComponent"
@@ -75,21 +75,21 @@ class DellPDKCatalog:
                     continue
                 count = count + 1
                 if tosource:
-                    tosource.addComponent(model, node)
+                    tosource.addComponent(model, node, firm)
         return count
 
-    def filter_by_model(self, model, ostype="WIN", tosource=None):
+    def filter_by_model(self, model, ostype="WIN", firm = None, tosource=None):
         model = model.upper()
-        return self._filter_byid(model, ostype, "", tosource)
+        return self._filter_byid(model, ostype, "", firm, tosource)
 
-    def filter_by_compid(self, model, cid, ostype="WIN", tosource=None):
+    def filter_by_compid(self, model, cid, ostype="WIN", firm=None, tosource=None):
         model = model.upper()
         compid_path = ""
         if cid:
             compid_path = "[@componentID='{0}']".format(cid)
-        return self._filter_byid(model, ostype, compid_path, tosource)
+        return self._filter_byid(model, ostype, compid_path, firm, tosource)
 
-    def filter_by_pci(self, model, pcispec, ostype="WIN", tosource = None):
+    def filter_by_pci(self, model, pcispec, ostype="WIN", firm=None, tosource = None):
         model = model.upper()
         compid_path = "/PCIInfo"
         for field in ['deviceID', 'subDeviceID', 'subVendorID', 'vendorID']:
@@ -98,4 +98,4 @@ class DellPDKCatalog:
                 continue
             compid_path += "[@" + field + "='" + pcispec[field] + "']"
         compid_path += "/..."
-        return self._filter_byid(model, ostype, compid_path, tosource)
+        return self._filter_byid(model, ostype, compid_path, firm, tosource)
