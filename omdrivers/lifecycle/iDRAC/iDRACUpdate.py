@@ -104,6 +104,16 @@ class iDRACUpdate(Update):
         self.get_swidentity()
         return self.installed_firmware
 
+    @property
+    def ApplicableUpdates(self):
+        return self.get_applicable_updates('Catalog')
+
+    def get_applicable_updates(self, catalog):
+        updmgr = UpdateManager.get_instance()
+        if not updmgr: return {}
+        (ignore, cache_cat) = updmgr.getCatalogScoper(catalog)
+        return cache_cat.compare(self.entity.SystemIDInHex,
+                    self.InstalledFirmware)
 
     def save_invcollector_file(self, invcol_output_file):
         with UnicodeWriter(invcol_output_file) as output:
@@ -123,13 +133,25 @@ class iDRACUpdate(Update):
                 'ComponentMap' : self.entity.config_mgr._fqdd_to_comp_map(swfqdd_list)},
                 sort_keys=True, indent=4, separators=(',', ': ')))
 
-    def update_from_repo(self, myshare, catalog="Catalog.xml", apply_update = True, reboot_needed = False, job_wait = True):
+    def update_from_repo(self, catalog_path, apply_update = True, reboot_needed = False, job_wait = True):
         appUpdateLookup = { True : 1, False : 0 }
         rebootLookup = { True : "TRUE", False : "FALSE" }
         appUpdate = appUpdateLookup[apply_update]
         rebootNeeded = rebootLookup[reboot_needed]
-        share = myshare.format(ip = self.entity.ipaddr)
-        rjson = self.entity._update_repo(share = share, creds = myshare.creds, catalog = catalog, apply = appUpdate, reboot = rebootNeeded)
+
+        if isinstance(catalog_path, str):
+            # Catalog name 
+            updmgr = UpdateManager.get_instance()
+            if not updmgr: return {}
+            (cache_share, ignore) = updmgr.getCatalogScoper(catalog)
+        else:
+            # DRM Repo
+            cache_share = catalog_path
+        catalog_dir = FileOnShare(remote=cache_share.remote_share_path, isFolder=True,
+                                  creds=cache_share.creds)
+        catalog_file = cache_share.remote_file_name
+        rjson = self.entity._update_repo(share = catalog_dir, creds = catalog.creds,
+                 catalog = catalog_file, apply = appUpdate, reboot = rebootNeeded)
         rjson['file'] = str(share)
         if job_wait:
             rjson = self._job_mgr._job_wait(rjson['file'], rjson)

@@ -5,6 +5,7 @@ from omsdk.catalog.sdkupdatemgr import UpdateManager
 from omdrivers.helpers.iDRAC.UpdateHelper import UpdateHelper
 from omsdk.sdkinfra import sdkinfra
 from omsdk.sdkcreds import UserCredentials
+from omsdk.sdkprint import PrettyPrint
 import sys
 
 def CollectInventory(arglist):
@@ -56,6 +57,8 @@ def CollectInventory(arglist):
             if idrac:
                 print("    ... saving firmware!")
                 UpdateHelper.save_firmware_inventory(idrac)
+                #applicable_updates = idrac.update_mgr.ApplicableUpdates))
+                #print(PrettyPrint.prettify_json(applicable_updates))
                 idrac.disconnect()
             else:
                 print("    failed to connect to iDRAC")

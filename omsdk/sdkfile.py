@@ -614,6 +614,10 @@ class FileOnShare(Share):
        return self.remote.file_name
 
     @property
+    def remote_folder_path(self):
+       return self.remote.share_path
+
+    @property
     def local_full_path(self):
        return self.mount_point.full_path
 
