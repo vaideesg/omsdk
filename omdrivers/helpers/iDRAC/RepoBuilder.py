@@ -4,7 +4,13 @@ from omsdk.sdkcenum import TypeHelper
 from omsdk.catalog.sdkupdatemgr import UpdateManager
 from omsdk.catalog.sdkhttpsrc import DownloadProtocolEnum
 from omdrivers.helpers.iDRAC.UpdateHelper import UpdateHelper
+from omsdk.omlog.Logger import LogManager, LoggerConfigTypeEnum
 import sys
+import logging
+
+#LogManager.setup_logging()
+logger = logging.getLogger(__name__)
+#logging.basicConfig(level=logging.DEBUG)
 
 def RepoBuilder(arglist):
     parser = ArgumentParser(description='Local Repository Builder')
@@ -24,7 +30,7 @@ def RepoBuilder(arglist):
         help="models for which the DUPs are requested.")
     parser.add_argument('-p', '--protocol', 
         action="store", dest="protocol", nargs='?',
-        default='HTTP', choices=['HTTP', 'FTP', 'NoOp'],
+        default='HTTP', choices=['HTTP', 'FTP', 'NoOp', 'HashCheck'],
         help="models for which the DUPs are requested.")
 
     options = parser.parse_args(arglist)

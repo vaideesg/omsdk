@@ -104,7 +104,7 @@ class _UpdateCacheManager(object):
 
     def update_cache(self, catalog = 'Catalog'):
         (cache_share, cache) = self.getCatalogScoper(catalog)
-        retval = self._conn.download_newerfiles(cache.UpdateFilePaths,
+        retval = self._conn.download_newerfiles(cache.UpdateFileDetails,
                         self._update_share.local_full_path)
         logger.debug("Download Success = {0}, Failed = {1}".\
                      format(retval['success'], retval['failed']))
@@ -175,3 +175,4 @@ class CatalogScoper(object):
                 self._cache_share.dispose()
             else:
                 logger.debug("Not a temporary cache")
+

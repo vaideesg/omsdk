@@ -7,6 +7,8 @@ import gzip
 import shutil
 import logging
 import gzip
+import hashlib
+import base64
 from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 
@@ -21,9 +23,10 @@ if PY3:
 logger = logging.getLogger(__name__)
 
 DownloadProtocolEnum = EnumWrapper('DPE', {
-   "HTTP" : 1,
-   "FTP" : 2,
-   "NoOp" : 3
+   "HTTP" : 'HTTP',
+   "FTP" : 'FTP',
+   "NoOp" : 'NoOp',
+   'HashCheck' : 'HashCheck',
 }).enum_type
 
 
@@ -51,6 +54,8 @@ class DownloadHelper:
                 self.conn = FTP(self.site, timeout=60)
                 self.conn.login(self.creds.user, self.creds.password)
             elif self.protocol == DownloadProtocolEnum.NoOp:
+                self.conn = 'Connected'
+            elif self.protocol == DownloadProtocolEnum.HashCheck:
                 self.conn = 'Connected'
             return True
         except socket.error as e:
@@ -92,6 +97,8 @@ class DownloadHelper:
                 f = open(lfile, 'wb')
                 self.conn.retrbinary('RETR '+ fname, f.write)
                 f.close()
+            elif self.protocol == DownloadProtocolEnum.HashCheck:
+                print(self.get_hashMD5(lfile))
             else:
                 print('Downloading :' + fname)
                 print('         to :' + lfile)
@@ -115,6 +122,13 @@ class DownloadHelper:
             return False
         return True
 
+    def get_hashMD5(self, filename):
+        md5 = hashlib.md5()
+        with open(filename,'rb') as f:
+            for chunk in iter(lambda: f.read(8192), b''): 
+                md5.update(chunk)
+        return md5.hexdigest()
+
     def download_newerfiles(self, flist, lfolder = "."):
         counter = { 'success' : 0, 'failed' : 0 }
 
@@ -124,8 +138,26 @@ class DownloadHelper:
             print("local folder is not present")
             return counter
 
-        for rfile in flist:
+        for scomponent in flist:
+            rfile = scomponent
+            if isinstance(scomponent, dict):
+                rfile = scomponent['path']
+                md5hash = scomponent['hashMD5']
+            else:
+                rfile = scomponent
+                md5hash = ''
             lfile = os.path.join(lfolder, *rfile.split('/'))
+            if os.path.exists(lfile) and os.path.isfile(lfile):
+                file_md5hash = self.get_hashMD5(lfile)
+                if file_md5hash == md5hash:
+                    logger.debug("HashMD5 for " + lfile + " is same as catalog")
+                    continue
+                else:
+                    logger.debug("HashMD5 for " + lfile + " is different")
+                    logger.debug("File HashMD5={0}, expected HashMD5={1}".\
+                             format(file_md5hash, md5hash))
+            else:
+                logger.debug(lfile + " does not exist")
             logger.debug('Downloading ' + rfile + " to " + lfile)
             if not self._create_dir(os.path.dirname(lfile)):
                 counter['failed'] += 1
