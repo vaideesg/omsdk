@@ -62,48 +62,7 @@ def CompareInventory(arglist):
     devcompare = {}
     for dev in dev_fw:
         swidentity = dev_fw[dev]
-        retval = cache_cat.compare(swidentity['Model_Hex'], swidentity)
-        devcompare[dev] = []
-        for firm in swidentity['Firmware']:
-            fwcompare = {}
-            if 'Catalog.vendorVersion' not in firm:
-                fwcompare['FQDD'] = firm['FQDD']
-                fwcompare['ElementName'] = firm['ElementName']
-                fwcompare['UpdatePackage'] = 'Absent'
-                fwcompare['UpdateNeeded'] = False
-                fwcompare['UpdateType'] = ''
-            elif 'VersionString' not in firm:
-                fwcompare['FQDD'] = firm['FQDD']
-                fwcompare['ElementName'] = firm['ElementName']
-                fwcompare['Catalog.vendorVersion']=firm['Catalog.vendorVersion']
-                fwcompare['UpdatePackage'] = 'Present'
-                fwcompare['UpdateNeeded'] = True
-                fwcompare['UpdateType'] = 'New'
-            elif firm['VersionString'] == firm['Catalog.vendorVersion']:
-                fwcompare['FQDD'] = firm['FQDD']
-                fwcompare['ElementName'] = firm['ElementName']
-                fwcompare['Catalog.vendorVersion']=firm['Catalog.vendorVersion']
-                fwcompare['VersionString']=firm['VersionString']
-                fwcompare['UpdatePackage'] = 'Present'
-                fwcompare['UpdateNeeded'] = False
-                fwcompare['UpdateType'] = 'None'
-            elif firm['VersionString'] > firm['Catalog.vendorVersion']:
-                fwcompare['FQDD'] = firm['FQDD']
-                fwcompare['ElementName'] = firm['ElementName']
-                fwcompare['Catalog.vendorVersion']=firm['Catalog.vendorVersion']
-                fwcompare['VersionString']=firm['VersionString']
-                fwcompare['UpdatePackage'] = 'Present'
-                fwcompare['UpdateNeeded'] = True
-                fwcompare['UpdateType'] = 'Downgrade'
-            else:
-                fwcompare['FQDD'] = firm['FQDD']
-                fwcompare['ElementName'] = firm['ElementName']
-                fwcompare['Catalog.vendorVersion']=firm['Catalog.vendorVersion']
-                fwcompare['VersionString']=firm['VersionString']
-                fwcompare['UpdatePackage'] = 'Present'
-                fwcompare['UpdateNeeded'] = True
-                fwcompare['UpdateType'] = 'Upgrade'
-            devcompare[dev].append(fwcompare)
+        devcompare[dev] = cache_cat.compare(swidentity['Model_Hex'], swidentity)
     print(PrettyPrint.prettify_json(devcompare))
 
 if __name__ == "__main__":

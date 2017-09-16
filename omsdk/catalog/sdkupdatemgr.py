@@ -1,5 +1,5 @@
 from omsdk.catalog.pdkcatalog import DellPDKCatalog
-from omsdk.catalog.updaterepo import UpdateRepo
+from omsdk.catalog.updaterepo import UpdateRepo,RepoComparator
 from omsdk.catalog.sdkhttpsrc import DownloadHelper,DownloadProtocolEnum
 from omsdk.sdkprint import PrettyPrint
 
@@ -159,7 +159,10 @@ class CatalogScoper(object):
         return count
 
     def compare(self, model, swidentity):
-        return self._rcache.filter_by_component(model, swidentity, compare=True)
+        compare = RepoComparator(swidentity)
+        self._rcache.filter_by_component(model, swidentity, compare=compare)
+        compare.final()
+        return compare.firmware
 
     def save(self):
         with self.cache_lock:

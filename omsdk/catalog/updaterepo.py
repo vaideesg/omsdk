@@ -12,17 +12,126 @@ from omsdk.sdkprint import PrettyPrint
 
 logger = logging.getLogger(__name__)
 
+class VersionObj:
+    def __init__(self, version):
+        self.version_string = version
+        try:
+            flist = re.sub("[^0-9]+", ".", version).split('.')
+            self.version = tuple([int(x) for x in flist])
+        except Exception as ex:
+            logger.debug(str(ex))
+            self.version = tuple(version,)
+
 class RepoComparator:
     def __init__(self, swidentity):
         self.swidentity = swidentity
+        self.firmware = {}
 
     def addBundle(self, model, node, newNode=True):
         pass
 
     def addComponent(self, model, node, firm, newNode=True):
+      try:
         if not firm: return
-        for (k,v) in node.items():
-            firm["Catalog." + k] = v
+        fwcompare = {}
+        if not node.get('vendorVersion'):
+            fwcompare['FQDD'] = firm['FQDD']
+            fwcompare['ElementName'] = firm['ElementName']
+            if 'VersionString' in firm:
+                fwcompare['Server.Version']=firm['VersionString']
+            else:
+                fwcompare['Server.Version']=""
+            fwcompare['UpdatePackage'] = 'Absent'
+            fwcompare['UpdateNeeded'] = False
+            fwcompare['UpdateType'] = ''
+        elif 'VersionString' not in firm:
+            fwcompare['FQDD'] = firm['FQDD']
+            fwcompare['ElementName'] = firm['ElementName']
+            fwcompare['Catalog.Version']=node.get('vendorVersion')
+            fwcompare['Server.Version']=""
+            fwcompare['UpdatePackage'] = 'Present'
+            fwcompare['UpdateNeeded'] = True
+            fwcompare['UpdateType'] = 'New'
+        else:
+            fwcompare['FQDD'] = firm['FQDD']
+            fwcompare['ElementName'] = firm['ElementName']
+            fwcompare['Catalog.Version']=node.get('vendorVersion')
+            fwcompare['Server.Version']=firm['VersionString']
+            fwcompare['UpdatePackage'] = 'Present'
+
+        srv_version = VersionObj(fwcompare['Server.Version']).version
+        cat_version = VersionObj(fwcompare['Catalog.Version']).version
+
+        if srv_version == cat_version:
+            fwcompare['UpdateNeeded'] = False
+            fwcompare['UpdateType'] = 'On-Par'
+        elif srv_version > cat_version:
+            fwcompare['UpdateNeeded'] = True
+            fwcompare['UpdateType'] = 'Downgrade'
+        else:
+            fwcompare['UpdateNeeded'] = True
+            fwcompare['UpdateType'] = 'Upgrade'
+
+        logger.debug(str(srv_version) + "<>" + str(cat_version) +
+                "=" + str(fwcompare['UpdateType']))
+        for i in [ 'ComponentID', 'DeviceID', 'SubDeviceID', 'SubVendorID',
+                   'VendorID', 'InstanceID', 'Updateable', 'InstallationDate',
+                   #'MajorVersion', 'MinorVersion', 'RevisionNumber', 
+                   #'RevisionString',
+                   ]:
+            if i in firm:
+                fwcompare[i] = firm[i]
+            else:
+                fwcompare[i] = None
+
+        for i in [ 'hashMD5', 'packageID', 'path', 'rebootRequired',
+                    'releaseDate']:
+            fwcompare['Catalog.' + i] = node.get(i)
+
+        for i in [ 'size' ]:
+            fwcompare['Catalog.' + i] = int(node.get(i))
+
+        for i in [ 'Catalog.rebootRequired', 'Updateable' ]:
+            fwcompare[i] = (fwcompare[i] and fwcompare[i].lower()=="true")
+
+        if firm['FQDD'] not in self.firmware:
+            self.firmware[firm['FQDD']] = []
+        self.firmware[firm['FQDD']].append(fwcompare)
+      except Exception as ex:
+        print(str(ex))
+
+    def final(self):
+        for firm in self.swidentity['Firmware']:
+            if firm['FQDD'] in self.firmware: continue
+            self.firmware[firm['FQDD']] = []
+            fwcompare = {}
+            fwcompare['FQDD'] = firm['FQDD']
+            fwcompare['ElementName'] = firm['ElementName']
+            if 'VersionString' in firm:
+                fwcompare['Server.Version']=firm['VersionString']
+            else:
+                fwcompare['Server.Version']=""
+            fwcompare['UpdatePackage'] = 'Absent'
+            fwcompare['UpdateNeeded'] = False
+            fwcompare['UpdateType'] = ''
+
+            for i in [ 'ComponentID', 'DeviceID', 'SubDeviceID', 'SubVendorID',
+                   'VendorID', 'InstanceID', 'Updateable', 'InstallationDate',
+                   #'MajorVersion', 'MinorVersion', 'RevisionNumber', 
+                   #'RevisionString',
+                   ]:
+                if i in firm:
+                    fwcompare[i] = firm[i]
+                else:
+                    fwcompare[i] = None
+
+            for i in [ 'hashMD5', 'packageID', 'path', 'rebootRequired',
+                       'releaseDate', 'size']:
+                fwcompare['Catalog.' + i] = None
+
+            for i in [ 'Updateable' ]:
+                fwcompare[i] = (fwcompare[i] and fwcompare[i].lower()=="true")
+            self.firmware[firm['FQDD']].append(fwcompare)
 
 class UpdateRepo:
     def __init__(self, folder, catalog='Catalog.xml', source=None, mkdirs=False):
@@ -167,7 +276,7 @@ class UpdateRepo:
             logger.debug('filtered bundle ' + str(count))
         return self.source.filter_by_model(model, ostype, firm=None, tosource=self)
 
-    def filter_by_component(self, model,swidentity, compfqdd=None,ostype="WIN", compare=False):
+    def filter_by_component(self, model,swidentity, compfqdd=None,ostype="WIN", compare=None):
         if compfqdd and len(compfqdd) <= 0: compfqdd = None
         logger.debug('filter_by_component::compfqdd=' + str(compfqdd))
         logger.debug(PrettyPrint.prettify_json(swidentity))
@@ -175,7 +284,7 @@ class UpdateRepo:
             count = self.source.filter_bundle(model, ostype, tosource=self)
             logger.debug('filtered bundle ' + str(count))
         source = self
-        if compare: source = RepoComparator(swidentity)
+        if compare: source = compare
         if not self.source: return 0
         count = 0
         for firm in swidentity["Firmware"]:
