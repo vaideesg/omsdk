@@ -49,14 +49,18 @@ def RepoBuilder(arglist):
         print("Folder is not writable!")
         return -2
 
-    print("Configuring Update Share...")
+    if options.protocol != DownloadProtocolEnum.HashCheck:
+        print("Configuring Update Share...")
     UpdateManager.configure(updshare, site=options.site,
             protocol=options.protocol)
-    print("Updating Catalog from downloads.dell.com...")
+    if options.protocol != DownloadProtocolEnum.HashCheck:
+        print("Updating Catalog from downloads.dell.com...")
     UpdateManager.update_catalog()
-    print("Building Repository Catalog ....")
-    UpdateHelper.build_repo(options.catalog, True, *options.component)
-    print("Downloading DUPs ...")
+    if options.protocol != DownloadProtocolEnum.HashCheck:
+        print("Building Repository Catalog ....")
+        UpdateHelper.build_repo(options.catalog, True, *options.component)
+    if options.protocol != DownloadProtocolEnum.HashCheck:
+        print("Downloading DUPs ...")
     UpdateManager.update_cache(options.catalog)
 
 if __name__ == "__main__":

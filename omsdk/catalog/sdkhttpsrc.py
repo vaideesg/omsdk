@@ -98,7 +98,10 @@ class DownloadHelper:
                 self.conn.retrbinary('RETR '+ fname, f.write)
                 f.close()
             elif self.protocol == DownloadProtocolEnum.HashCheck:
-                print(self.get_hashMD5(lfile))
+                if os.path.exists(lfile) and os.path.isfile(lfile):
+                    print("{0} {1}".format(self.get_hashMD5(lfile), lfile))
+                else:
+                    print("{0:32} {1}".format('Does not exist', lfile))
             else:
                 print('Downloading :' + fname)
                 print('         to :' + lfile)
@@ -151,10 +154,11 @@ class DownloadHelper:
                 file_md5hash = self.get_hashMD5(lfile)
                 if file_md5hash == md5hash:
                     logger.debug("HashMD5 for " + lfile + " is same as catalog")
+                    if self.protocol == DownloadProtocolEnum.HashCheck:
+                        print("{0:32} {1}".format('Same', lfile))
                     continue
-                else:
-                    logger.debug("HashMD5 for " + lfile + " is different")
-                    logger.debug("File HashMD5={0}, expected HashMD5={1}".\
+                logger.debug("HashMD5 for " + lfile + " is different")
+                logger.debug("File HashMD5={0}, expected HashMD5={1}".\
                              format(file_md5hash, md5hash))
             else:
                 logger.debug(lfile + " does not exist")
