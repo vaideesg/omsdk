@@ -99,9 +99,9 @@ class DownloadHelper:
                 f.close()
             elif self.protocol == DownloadProtocolEnum.HashCheck:
                 if os.path.exists(lfile) and os.path.isfile(lfile):
-                    print("{0} {1}".format(self.get_hashMD5(lfile), lfile))
+                    print("{0:16} {1}".format('Different', lfile))
                 else:
-                    print("{0:32} {1}".format('Does not exist', lfile))
+                    print("{0:16} {1}".format('Does not exist', lfile))
             else:
                 print('Downloading :' + fname)
                 print('         to :' + lfile)
@@ -155,7 +155,7 @@ class DownloadHelper:
                 if file_md5hash == md5hash:
                     logger.debug("HashMD5 for " + lfile + " is same as catalog")
                     if self.protocol == DownloadProtocolEnum.HashCheck:
-                        print("{0:32} {1}".format('Same', lfile))
+                        print("{0:16} {1}".format('Same', lfile))
                     continue
                 logger.debug("HashMD5 for " + lfile + " is different")
                 logger.debug("File HashMD5={0}, expected HashMD5={1}".\
