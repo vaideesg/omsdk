@@ -6,9 +6,10 @@ import time
 import gzip
 import shutil
 import logging
-import gzip
 import hashlib
 import base64
+import json
+from datetime import datetime
 from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 
@@ -27,6 +28,15 @@ DownloadProtocolEnum = EnumWrapper('DPE', {
    "FTP" : 'FTP',
    "NoOp" : 'NoOp',
    'HashCheck' : 'HashCheck',
+}).enum_type
+
+DownloadedFileStatusEnum = EnumWrapper('DFSE', {
+   "NotExists" : 'NotExists',
+   "Same" : 'Same',
+   "Present" : 'Present',
+   "Different" : 'Different',
+   "RemoteIsNew" : 'RemoteIsNew',
+   "RemoteIsOld" : 'RemoteIsOld',
 }).enum_type
 
 
@@ -84,26 +94,121 @@ class DownloadHelper:
             logger.debug('ERROR:: ' + str(err))
             return False
 
-    def _download_file(self, fname, lfile):
+    def _convert_date_to_iso(self, date):
+        if date is None: date = '1971-01-01T01:01:01Z',
+        try :
+            return datetime.strptime(date,"%a, %d %b %Y %H:%M:%S %Z")
+        except Exception as ex:
+            logger.debug(str(ex))
+        try :
+            return datetime.strptime(date[:19], "%Y-%m-%dT%H:%M:%S")
+        except Exception as ex:
+            logger.debug(str(ex))
+        return date
+
+    def _validate_file_metadata(self, rfile, file_metadata, rfile_metadata):
+        if 'dateTime' not in rfile:
+            rfile['dateTime'] = rfile_metadata['dateTime']
+        if 'size' not in rfile:
+            rfile['size'] = rfile_metadata['size']
+        rtime = self._convert_date_to_iso(rfile['dateTime'])
+        ltime = self._convert_date_to_iso(file_metadata['dateTime'])
+        if rfile['size'] == file_metadata['size'] and rtime == ltime:
+            return DownloadedFileStatusEnum.Same
+        if rfile['size'] != file_metadata['size']:
+            return DownloadedFileStatusEnum.Different
+        if rtime > ltime:
+            return DownloadedFileStatusEnum.RemoteIsNew
+        return DownloadedFileStatusEnum.RemoteIsOld
+
+    def _get_hashMD5(self, filename):
+        md5 = hashlib.md5()
+        with open(filename,'rb') as f:
+            for chunk in iter(lambda: f.read(8192), b''):
+                md5.update(chunk)
+        return md5.hexdigest()
+
+    def _validate_file(self, rfile, lfile):
+        if not os.path.exists(lfile) or not os.path.isfile(lfile):
+            logger.debug(lfile + " does not exist")
+            return DownloadedFileStatusEnum.NotExists
+
+        if rfile['hashMD5'] is None:
+            logger.debug(lfile + " exists. But no hashMD5 given.")
+            return DownloadedFileStatusEnum.Present
+
+        file_md5hash = self._get_hashMD5(lfile)
+        if file_md5hash == rfile['hashMD5']:
+            logger.debug("HashMD5 for " + lfile + " matches with catalog")
+            return DownloadedFileStatusEnum.Same
+        logger.debug("HashMD5 for " + lfile + " is different")
+        logger.debug("File HashMD5={0}, expected HashMD5={1}".\
+                             format(file_md5hash, rfile['hashMD5']))
+        return DownloadedFileStatusEnum.Different
+
+
+
+    def _download_file(self, rfile, lfile):
         try:
+            fstatus =self._validate_file(rfile, lfile)
+            if fstatus in [DownloadedFileStatusEnum.Same]:
+                logger.debug(rfile['path'] + " is as expected!")
+                if self.protocol == DownloadProtocolEnum.HashCheck:
+                   print("{0:16} {1}".format(TypeHelper.resolve(fstatus),lfile))
+                return True
+            logger.debug('Downloading ' + rfile['path'] + " to " + lfile)
             if not self.connect():
                 return False
+            if not self._create_dir(os.path.dirname(lfile)):
+                return False
             if self.protocol == DownloadProtocolEnum.HTTP:
-                self.conn.request('GET', '/' + fname)
+                file_metadata = {
+                    'dateTime' :  '1971-01-01T01:01:01Z',
+                    'size' : 0
+                }
+                try:
+                    if os.path.isfile(lfile + ".Metadata"):
+                        with open(lfile + ".Metadata", "r") as f1:
+                            file_metadata = json.load(f1)
+                        logger.debug(json.dumps(file_metadata, sort_keys=True,
+                            indent=4, separators=(',', ': ')))
+                except Exception as ex:
+                    logger.debug("Error opening metadata file:" + str(ex))
+
+                self.conn.request('GET', '/' + rfile['path'])
                 response = self.conn.getresponse()
+                rfile_metadata = {}
+                rfile_metadata['size'] = int(response.getheader('Content-Length'))
+                rfile_metadata['dateTime'] = response.getheader('Last-Modified')
+                for header in ['Content-Type', 'Server', 'Date']:
+                    rfile_metadata[header] = response.getheader(header)
+                fstatus =self._validate_file_metadata(rfile, file_metadata,
+                                                      rfile_metadata)
+                logger.debug("_validate_file_metadat() returned" + str(fstatus))
+                if fstatus not in [DownloadedFileStatusEnum.RemoteIsNew,
+                            DownloadedFileStatusEnum.Different ]:
+                    response.close()
+                    return True
+                with open(lfile + ".Metadata", "w") as f1:
+                    f1.write(json.dumps(rfile_metadata, sort_keys=True,
+                            indent=4, separators=(',', ': ')))
                 with open(lfile, 'wb') as f:
                     f.write(response.read())
+                fstatus = self._validate_file(rfile, lfile)
+                logger.debug("_validate_file() returned" + str(fstatus))
+                return (fstatus in [DownloadedFileStatusEnum.Same,
+                                   DownloadedFileStatusEnum.Present])
             elif self.protocol == DownloadProtocolEnum.FTP:
                 f = open(lfile, 'wb')
-                self.conn.retrbinary('RETR '+ fname, f.write)
+                self.conn.retrbinary('RETR '+ rfile['path'], f.write)
                 f.close()
             elif self.protocol == DownloadProtocolEnum.HashCheck:
                 if os.path.exists(lfile) and os.path.isfile(lfile):
-                    print("{0:16} {1}".format('Different', lfile))
+                    print("{0:16} {1}".format(TypeHelper.resolve(fstatus), lfile))
                 else:
                     print("{0:16} {1}".format('Does not exist', lfile))
             else:
-                print('Downloading :' + fname)
+                print('Downloading :' + rfile['path'])
                 print('         to :' + lfile)
             return True
         except Exception as ex:
@@ -125,13 +230,6 @@ class DownloadHelper:
             return False
         return True
 
-    def get_hashMD5(self, filename):
-        md5 = hashlib.md5()
-        with open(filename,'rb') as f:
-            for chunk in iter(lambda: f.read(8192), b''): 
-                md5.update(chunk)
-        return md5.hexdigest()
-
     def download_newerfiles(self, flist, lfolder = "."):
         counter = { 'success' : 0, 'failed' : 0 }
 
@@ -141,31 +239,10 @@ class DownloadHelper:
             print("local folder is not present")
             return counter
 
-        for scomponent in flist:
-            rfile = scomponent
-            if isinstance(scomponent, dict):
-                rfile = scomponent['path']
-                md5hash = scomponent['hashMD5']
-            else:
-                rfile = scomponent
-                md5hash = ''
-            lfile = os.path.join(lfolder, *rfile.split('/'))
-            if os.path.exists(lfile) and os.path.isfile(lfile):
-                file_md5hash = self.get_hashMD5(lfile)
-                if file_md5hash == md5hash:
-                    logger.debug("HashMD5 for " + lfile + " is same as catalog")
-                    if self.protocol == DownloadProtocolEnum.HashCheck:
-                        print("{0:16} {1}".format('Same', lfile))
-                    continue
-                logger.debug("HashMD5 for " + lfile + " is different")
-                logger.debug("File HashMD5={0}, expected HashMD5={1}".\
-                             format(file_md5hash, md5hash))
-            else:
-                logger.debug(lfile + " does not exist")
-            logger.debug('Downloading ' + rfile + " to " + lfile)
-            if not self._create_dir(os.path.dirname(lfile)):
-                counter['failed'] += 1
-                continue
+        for rfile in flist:
+            if not isinstance(rfile, dict):
+                rfile = { 'path' : rfile, 'hashMD5' : None }
+            lfile = os.path.join(lfolder, *rfile['path'].split('/'))
             if self._download_file(rfile, lfile):
                 counter['success'] += 1
             else:
