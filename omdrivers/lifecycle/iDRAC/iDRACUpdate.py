@@ -11,6 +11,8 @@ from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 from omsdk.lifecycle.sdkupdate import Update
 from omsdk.catalog.sdkupdatemgr import UpdateManager
+from omsdk.catalog.updaterepo import RepoComparator, UpdateFilterCriteria
+from omsdk.catalog.updaterepo import UpdatePresenceEnum, UpdateNeededEnum, UpdateTypeEnum
 from omdrivers.enums.iDRAC.iDRACEnums import *
 from omsdk.sdkcunicode import UnicodeWriter
 from omsdk.sdkcunicode import UnicodeWriter
@@ -105,15 +107,42 @@ class iDRACUpdate(Update):
         return self.installed_firmware
 
     @property
-    def ApplicableUpdates(self):
-        return self.get_applicable_updates('Catalog')
+    def AllUpdates(self):
+        return self.get_updates_matching(catalog='Catalog')
 
-    def get_applicable_updates(self, catalog):
+    @property
+    def AvailableUpdates(self):
+        criteria = UpdateFilterCriteria()
+        criteria.include_packages(UpdatePresenceEnum.Present)
+        return self.get_updates_matching(catalog='Catalog', criteria=criteria)
+
+    @property
+    def NeededUpdates(self):
+        criteria = UpdateFilterCriteria()
+        criteria.include_update_needed(UpdateNeededEnum.Needed)
+        return self.get_updates_matching(catalog='Catalog', criteria=criteria)
+
+    def get_updates_matching(self, catalog='Catalog', criteria = None):
         updmgr = UpdateManager.get_instance()
-        if not updmgr: return {}
-        (ignore, cache_cat) = updmgr.getCatalogScoper(catalog)
-        return cache_cat.compare(self.entity.SystemIDInHex,
-                    self.InstalledFirmware)
+        if not updmgr:
+            updates = RepoComparator(self.InstalledFirmware).final()
+        else:
+            (ignore, cache_cat) = updmgr.getCatalogScoper(catalog)
+            updates = cache_cat.compare(self.entity.SystemIDInHex,
+                            self.InstalledFirmware)
+        if not criteria:
+            return updates
+
+        retval = {}
+        for comp in updates:
+            for update in updates[comp]:
+                if not criteria.meets(update):
+                    continue
+                if comp not in retval:
+                    retval[comp] = []
+                retval[comp].append(update)
+        return retval
+        
 
     def save_invcollector_file(self, invcol_output_file):
         with UnicodeWriter(invcol_output_file) as output:

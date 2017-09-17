@@ -161,8 +161,7 @@ class CatalogScoper(object):
     def compare(self, model, swidentity):
         compare = RepoComparator(swidentity)
         self._rcache.filter_by_component(model, swidentity, compare=compare)
-        compare.final()
-        return compare.firmware
+        return compare.final()
 
     def save(self):
         with self.cache_lock:

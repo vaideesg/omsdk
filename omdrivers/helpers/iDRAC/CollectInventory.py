@@ -57,8 +57,6 @@ def CollectInventory(arglist):
             if idrac:
                 print("    ... saving firmware!")
                 UpdateHelper.save_firmware_inventory(idrac)
-                #applicable_updates = idrac.update_mgr.ApplicableUpdates))
-                #print(PrettyPrint.prettify_json(applicable_updates))
                 idrac.disconnect()
             else:
                 print("    failed to connect to iDRAC")

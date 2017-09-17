@@ -8,6 +8,7 @@ import xml.etree.ElementTree as ET
 from xml.dom.minidom import parse
 import xml.dom.minidom
 from omsdk.sdkprint import PrettyPrint
+from omsdk.sdkcenum import TypeHelper, EnumWrapper
 
 
 logger = logging.getLogger(__name__)
@@ -22,6 +23,80 @@ class VersionObj:
             logger.debug(str(ex))
             self.version = tuple(version,)
 
+UpdatePresenceEnum = EnumWrapper('UPE', {
+    'Present' : 'Present',
+    'Absent' : 'Absent',
+}).enum_type
+
+UpdateTypeEnum = EnumWrapper('UTE', {
+    'On_Par' : 'On_Par',
+    'New' : 'New',
+    'Upgrade' : 'Upgrade',
+    'Downgrade' : 'Downgrade',
+    'Absent' : 'Absent',
+}).enum_type
+
+UpdateNeededEnum = EnumWrapper('UNE', {
+    'Needed' : True,
+    'NotNeeded' : False,
+    'Unknown' : 'Unknown'
+}).enum_type
+
+class UpdateFilterCriteria():
+    def __init__(self):
+        self.components = None
+        self.presence = None
+        self.update_needed = None
+        self.update_type = None
+
+    def add_component(self, *component):
+        if not self.components:
+            self.components = []
+        self.components.extend(component)
+        return self
+
+    def include_packages(self, *presence):
+        if not self.presence:
+            self.presence = []
+        self.presence.extend(presence)
+        if UpdatePresenceEnum.Absent in self.presence \
+           and self.update_type is not None:
+            self.include_update_type(UpdateTypeEnum.Absent)
+        return self
+
+    def include_update_needed(self, *needed):
+        if not self.update_needed:
+            self.update_needed = []
+        self.update_needed.extend(needed)
+        return self
+
+    def include_update_type(self, *update_type):
+        if not self.update_type:
+            if self.presence and UpdatePresenceEnum.Absent in self.presence:
+                self.update_type = [UpdateTypeEnum.Absent]
+            else:
+                self.update_type = []
+        self.update_type.extend(update_type)
+
+    def meets(self, update):
+        if self.components is not None and \
+            update['FQDD'] not in self.components:
+            return False
+
+        if self.presence is not None and \
+           update['UpdatePackage'] not in self.presence:
+            return False
+
+        if self.update_needed is not None and \
+           update['UpdateNeeded'] not in self.update_needed:
+            return False
+
+        if self.update_type is not None and \
+           update['UpdateType'] not in self.update_type:
+            return False
+
+        return True
+
 class RepoComparator:
     def __init__(self, swidentity):
         self.swidentity = swidentity
@@ -31,7 +106,6 @@ class RepoComparator:
         pass
 
     def addComponent(self, model, node, firm, newNode=True):
-      try:
         if not firm: return
         fwcompare = {}
         if not node.get('vendorVersion'):
@@ -41,36 +115,36 @@ class RepoComparator:
                 fwcompare['Server.Version']=firm['VersionString']
             else:
                 fwcompare['Server.Version']=""
-            fwcompare['UpdatePackage'] = 'Absent'
-            fwcompare['UpdateNeeded'] = False
-            fwcompare['UpdateType'] = ''
+            fwcompare['UpdatePackage'] = UpdatePresenceEnum.Absent
+            fwcompare['UpdateNeeded'] = UpdateNeededEnum.Unknown
+            fwcompare['UpdateType'] = UpdateTypeEnum.Absent
         elif 'VersionString' not in firm:
             fwcompare['FQDD'] = firm['FQDD']
             fwcompare['ElementName'] = firm['ElementName']
             fwcompare['Catalog.Version']=node.get('vendorVersion')
             fwcompare['Server.Version']=""
-            fwcompare['UpdatePackage'] = 'Present'
-            fwcompare['UpdateNeeded'] = True
-            fwcompare['UpdateType'] = 'New'
+            fwcompare['UpdatePackage'] = UpdatePresenceEnum.Present
+            fwcompare['UpdateNeeded'] = TrueUpdateNeededEnum.Needed
+            fwcompare['UpdateType'] = UpdateTypeEnum.New
         else:
             fwcompare['FQDD'] = firm['FQDD']
             fwcompare['ElementName'] = firm['ElementName']
             fwcompare['Catalog.Version']=node.get('vendorVersion')
             fwcompare['Server.Version']=firm['VersionString']
-            fwcompare['UpdatePackage'] = 'Present'
+            fwcompare['UpdatePackage'] = UpdatePresenceEnum.Present
 
         srv_version = VersionObj(fwcompare['Server.Version']).version
         cat_version = VersionObj(fwcompare['Catalog.Version']).version
 
         if srv_version == cat_version:
-            fwcompare['UpdateNeeded'] = False
-            fwcompare['UpdateType'] = 'On-Par'
+            fwcompare['UpdateNeeded'] = UpdateNeededEnum.NotNeeded
+            fwcompare['UpdateType'] = UpdateTypeEnum.On_Par
         elif srv_version > cat_version:
-            fwcompare['UpdateNeeded'] = True
-            fwcompare['UpdateType'] = 'Downgrade'
+            fwcompare['UpdateNeeded'] = UpdateNeededEnum.Needed
+            fwcompare['UpdateType'] = UpdateTypeEnum.Downgrade
         else:
-            fwcompare['UpdateNeeded'] = True
-            fwcompare['UpdateType'] = 'Upgrade'
+            fwcompare['UpdateNeeded'] = UpdateNeededEnum.Needed
+            fwcompare['UpdateType'] = UpdateTypeEnum.Upgrade
 
         logger.debug(str(srv_version) + "<>" + str(cat_version) +
                 "=" + str(fwcompare['UpdateType']))
@@ -97,8 +171,6 @@ class RepoComparator:
         if firm['FQDD'] not in self.firmware:
             self.firmware[firm['FQDD']] = []
         self.firmware[firm['FQDD']].append(fwcompare)
-      except Exception as ex:
-        print(str(ex))
 
     def final(self):
         for firm in self.swidentity['Firmware']:
@@ -111,9 +183,9 @@ class RepoComparator:
                 fwcompare['Server.Version']=firm['VersionString']
             else:
                 fwcompare['Server.Version']=""
-            fwcompare['UpdatePackage'] = 'Absent'
-            fwcompare['UpdateNeeded'] = False
-            fwcompare['UpdateType'] = ''
+            fwcompare['UpdatePackage'] = UpdatePresenceEnum.Absent
+            fwcompare['UpdateNeeded'] = UpdateNeededEnum.Unknown
+            fwcompare['UpdateType'] = UpdateTypeEnum.Absent
 
             for i in [ 'ComponentID', 'DeviceID', 'SubDeviceID', 'SubVendorID',
                    'VendorID', 'InstanceID', 'Updateable', 'InstallationDate',
@@ -132,6 +204,7 @@ class RepoComparator:
             for i in [ 'Updateable' ]:
                 fwcompare[i] = (fwcompare[i] and fwcompare[i].lower()=="true")
             self.firmware[firm['FQDD']].append(fwcompare)
+        return self.firmware
 
 class UpdateRepo:
     def __init__(self, folder, catalog='Catalog.xml', source=None, mkdirs=False):
