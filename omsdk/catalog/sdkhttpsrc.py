@@ -146,76 +146,108 @@ class DownloadHelper:
                              format(file_md5hash, rfile['hashMD5']))
         return DownloadedFileStatusEnum.Different
 
-
+    def _get_file_metadata(self, fname, response):
+        metadata = {}
+        metadata['path'] = fname
+        if self.protocol == DownloadProtocolEnum.FTP:
+            dlist = []
+            self.conn.dir(fname, dlist.append)
+            for line in dlist:
+                fields = line.split()
+                if not fname.endswith(fields[-1]):
+                    continue
+    
+                stime = None
+                if not ':' in fields[7]:
+                    stime = fields[5:8]
+                    date = datetime.strptime(' '.join(stime), "%b %d %Y")
+                else:
+                    stime = [str(time.gmtime().tm_year)] + fields[5:8]
+                    date = datetime.strptime(' '.join(stime), "%Y %b %d %H:%M")
+                metadata ['dateTime'] = datetime.strftime(date,
+                                        "%a, %d %b %Y %H:%M:%S GMT")
+                metadata['size'] = int(fields[4])
+        elif self.protocol == DownloadProtocolEnum.HTTP:
+            metadata['size'] = int(response.getheader('Content-Length'))
+            metadata['dateTime'] = response.getheader('Last-Modified')
+            for header in ['Content-Type', 'Server', 'Date']:
+                metadata[header] = response.getheader(header)
+        return metadata
 
     def _download_file(self, rfile, lfile):
         try:
             fstatus =self._validate_file(rfile, lfile)
-            if fstatus in [DownloadedFileStatusEnum.Same]:
-                logger.debug(rfile['path'] + " is as expected!")
-                if self.protocol == DownloadProtocolEnum.HashCheck:
-                   print("{0:16} {1}".format(TypeHelper.resolve(fstatus),lfile))
-                return True
-            logger.debug('Downloading ' + rfile['path'] + " to " + lfile)
-            if not self.connect():
-                return False
-            if not self._create_dir(os.path.dirname(lfile)):
-                return False
-            if self.protocol == DownloadProtocolEnum.HTTP:
-                file_metadata = {
-                    'dateTime' :  '1971-01-01T01:01:01Z',
-                    'size' : 0
-                }
-                try:
-                    if os.path.isfile(lfile + ".Metadata"):
-                        with open(lfile + ".Metadata", "r") as f1:
-                            file_metadata = json.load(f1)
-                        logger.debug(json.dumps(file_metadata, sort_keys=True,
-                            indent=4, separators=(',', ': ')))
-                except Exception as ex:
-                    logger.debug("Error opening metadata file:" + str(ex))
 
-                self.conn.request('GET', '/' + rfile['path'])
-                response = self.conn.getresponse()
-                rfile_metadata = {}
-                rfile_metadata['size'] = int(response.getheader('Content-Length'))
-                rfile_metadata['dateTime'] = response.getheader('Last-Modified')
-                for header in ['Content-Type', 'Server', 'Date']:
-                    rfile_metadata[header] = response.getheader(header)
-                fstatus =self._validate_file_metadata(rfile, file_metadata,
-                                                      rfile_metadata)
-                logger.debug("_validate_file_metadat() returned" + str(fstatus))
-                if fstatus not in [DownloadedFileStatusEnum.RemoteIsNew,
-                            DownloadedFileStatusEnum.Different ]:
-                    response.close()
-                    return True
-                with open(lfile + ".Metadata", "w") as f1:
-                    f1.write(json.dumps(rfile_metadata, sort_keys=True,
-                            indent=4, separators=(',', ': ')))
-                with open(lfile, 'wb') as f:
-                    f.write(response.read())
-                fstatus = self._validate_file(rfile, lfile)
-                logger.debug("_validate_file() returned" + str(fstatus))
-                return (fstatus in [DownloadedFileStatusEnum.Same,
-                                   DownloadedFileStatusEnum.Present])
-            elif self.protocol == DownloadProtocolEnum.FTP:
-                f = open(lfile, 'wb')
-                self.conn.retrbinary('RETR '+ rfile['path'], f.write)
-                f.close()
-            elif self.protocol == DownloadProtocolEnum.HashCheck:
+            if fstatus in [DownloadedFileStatusEnum.Same]:
+                # if the file is same, no need to download file
+                logger.debug(rfile['path'] + " is as expected!")
+                if self.protocol in [DownloadProtocolEnum.HashCheck]:
+                    print("{0:16} {1}".format(TypeHelper.resolve(fstatus),lfile))
+                return True
+
+            logger.debug('Downloading ' + rfile['path'] + " to " + lfile)
+
+            if self.protocol == DownloadProtocolEnum.HashCheck:
+                # in case of hashcheck, return the status after printing
                 if os.path.exists(lfile) and os.path.isfile(lfile):
                     print("{0:16} {1}".format(TypeHelper.resolve(fstatus), lfile))
                 else:
                     print("{0:16} {1}".format('Does not exist', lfile))
-            else:
+                return True
+            elif self.protocol == DownloadProtocolEnum.NoOp:
                 print('Downloading :' + rfile['path'])
                 print('         to :' + lfile)
-            return True
+                return True
+
+            if not self.connect():
+                return False
+            if not self._create_dir(os.path.dirname(lfile)):
+                return False
+
+            file_metadata = {
+                    'dateTime' :  '1971-01-01T01:01:01Z',
+                    'size' : 0
+            }
+            try:
+                if os.path.isfile(lfile + ".Metadata"):
+                    with open(lfile + ".Metadata", "r") as f1:
+                        file_metadata = json.load(f1)
+                    logger.debug(json.dumps(file_metadata, sort_keys=True,
+                            indent=4, separators=(',', ': ')))
+            except Exception as ex:
+                logger.debug("Error opening metadata file:" + str(ex))
+
+            response = None
+            if self.protocol == DownloadProtocolEnum.HTTP:
+                self.conn.request('GET', '/' + rfile['path'])
+                response = self.conn.getresponse()
+
+            rfile_metadata = self._get_file_metadata(rfile['path'], response)
+            fstatus =self._validate_file_metadata(rfile,
+                                         file_metadata, rfile_metadata)
+            logger.debug("_validate_file_metadat() returned" + str(fstatus))
+            if fstatus not in [DownloadedFileStatusEnum.RemoteIsNew,
+                            DownloadedFileStatusEnum.Different ]:
+                if response : response.close()
+                return True
+            with open(lfile + ".Metadata", "w") as f1:
+                f1.write(json.dumps(rfile_metadata, sort_keys=True,
+                        indent=4, separators=(',', ': ')))
+            if self.protocol == DownloadProtocolEnum.HTTP:
+                with open(lfile, 'wb') as f:
+                    f.write(response.read())
+            elif self.protocol == DownloadProtocolEnum.FTP:
+                f = open(lfile, 'wb')
+                self.conn.retrbinary('RETR '+ rfile['path'], f.write)
+                f.close()
+            fstatus = self._validate_file(rfile, lfile)
+            logger.debug("_validate_file() returned" + str(fstatus))
+            return (fstatus in [DownloadedFileStatusEnum.Same,
+                                   DownloadedFileStatusEnum.Present])
         except Exception as ex:
             print(str(ex))
             logger.debug("File Download failed:" + str(ex))
             return False
-        return True
 
     def _create_dir(self, lfolder, *rfname):
         nfolder = os.path.join(lfolder, *rfname)
