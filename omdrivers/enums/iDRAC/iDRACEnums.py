@@ -138,7 +138,7 @@ LicenseApiOptionsEnum = EnumWrapper("LAO", {
 TLSOptions_Map = {
     'TLS_1_0' : 'TLS 1.0 and Higher',
     'TLS_1_1' : 'TLS 1.1 and Higher',
-    'TLS_2_0' : 'TLS 2.0 Only'
+    'TLS_1_2' : 'TLS 1.2 Only'
 }
 
 TLSOptions = EnumWrapper("TLS", TLSOptions_Map).enum_type
