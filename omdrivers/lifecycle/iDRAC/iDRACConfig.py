@@ -2276,7 +2276,7 @@ class iDRACConfig(iBaseConfigApi):
 
     @property
     def TimeZone(self):
-        return self._get_scp_comp_field('iDRAC.Embedded.1', 'Time.1#Timezone')
+        return self._get_scp_comp_field('iDRAC.Embedded.1', 'Time.1#TimeZone')
 
     @property
     def NTPServers(self):
