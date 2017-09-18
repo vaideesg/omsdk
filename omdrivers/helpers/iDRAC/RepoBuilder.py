@@ -10,7 +10,6 @@ import logging
 
 #LogManager.setup_logging()
 logger = logging.getLogger(__name__)
-#logging.basicConfig(level=logging.DEBUG)
 
 def RepoBuilder(arglist):
     parser = ArgumentParser(description='Local Repository Builder')
@@ -32,6 +31,14 @@ def RepoBuilder(arglist):
         action="store", dest="protocol", nargs='?',
         default='HTTP', choices=['HTTP', 'FTP', 'NoOp', 'HashCheck'],
         help="models for which the DUPs are requested.")
+    parser.add_argument('-v', '--verbose', 
+        action="store_true", help="verbose mode")
+    parser.add_argument('-D', '--download-dups', 
+        action="store_true", dest="dld_dups", help="download DUPs")
+    parser.add_argument('-l', '--download-catalog', 
+        action="store_true", dest="dld_catalog", help="download catalog")
+    parser.add_argument('-b', '--build-catalog', 
+        action="store_true", dest="build_catalog", help="build catalog")
 
     options = parser.parse_args(arglist)
     if not options.component:
@@ -40,6 +47,18 @@ def RepoBuilder(arglist):
     if options.folder is None:
         print("Folder must be provided")
         return -1
+
+    if options.verbose is None:
+        options.verbose = False
+
+    if options.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+
+    if not options.dld_dups and not options.build_catalog and \
+       not options.dld_catalog:
+        options.dld_catalog = True
+        options.build_catalog = True
+        options.dld_dups = True
 
     options.protocol = TypeHelper.convert_to_enum(options.protocol,
                             DownloadProtocolEnum)
@@ -53,15 +72,19 @@ def RepoBuilder(arglist):
         print("Configuring Update Share...")
     UpdateManager.configure(updshare, site=options.site,
             protocol=options.protocol)
-    if options.protocol != DownloadProtocolEnum.HashCheck:
-        print("Updating Catalog from downloads.dell.com...")
-    UpdateManager.update_catalog()
-    if options.protocol != DownloadProtocolEnum.HashCheck:
-        print("Building Repository Catalog ....")
-        UpdateHelper.build_repo(options.catalog, True, *options.component)
-    if options.protocol != DownloadProtocolEnum.HashCheck:
-        print("Downloading DUPs ...")
-    UpdateManager.update_cache(options.catalog)
+
+    if options.dld_catalog:
+        if options.protocol != DownloadProtocolEnum.HashCheck:
+            print("Updating Catalog from downloads.dell.com...")
+        UpdateManager.update_catalog()
+    if options.build_catalog:
+        if options.protocol != DownloadProtocolEnum.HashCheck:
+            print("Building Repository Catalog ....")
+            UpdateHelper.build_repo(options.catalog, True, *options.component)
+    if options.dld_dups:
+        if options.protocol != DownloadProtocolEnum.HashCheck:
+            print("Downloading DUPs ...")
+        UpdateManager.update_cache(options.catalog)
 
 if __name__ == "__main__":
     RepoBuilder(sys.argv[1:])

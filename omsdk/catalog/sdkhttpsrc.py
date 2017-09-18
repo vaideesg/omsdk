@@ -138,7 +138,7 @@ class DownloadHelper:
             return DownloadedFileStatusEnum.Present
 
         file_md5hash = self._get_hashMD5(lfile)
-        if file_md5hash == rfile['hashMD5']:
+        if file_md5hash.lower() == rfile['hashMD5'].lower():
             logger.debug("HashMD5 for " + lfile + " matches with catalog")
             return DownloadedFileStatusEnum.Same
         logger.debug("HashMD5 for " + lfile + " is different")
@@ -185,7 +185,6 @@ class DownloadHelper:
                     print("{0:16} {1}".format(TypeHelper.resolve(fstatus),lfile))
                 return True
 
-            logger.debug('Downloading ' + rfile['path'] + " to " + lfile)
 
             if self.protocol == DownloadProtocolEnum.HashCheck:
                 # in case of hashcheck, return the status after printing
@@ -217,6 +216,7 @@ class DownloadHelper:
             except Exception as ex:
                 logger.debug("Error opening metadata file:" + str(ex))
 
+            logger.debug('Downloading ' + rfile['path'] + " metadata")
             response = None
             if self.protocol == DownloadProtocolEnum.HTTP:
                 self.conn.request('GET', '/' + rfile['path'])
@@ -230,6 +230,8 @@ class DownloadHelper:
                             DownloadedFileStatusEnum.Different ]:
                 if response : response.close()
                 return True
+            logger.debug('Downloading ' + rfile['path'] + " to " + lfile)
+            print('Downloading ' + rfile['path'])
             with open(lfile + ".Metadata", "w") as f1:
                 f1.write(json.dumps(rfile_metadata, sort_keys=True,
                         indent=4, separators=(',', ': ')))
@@ -284,10 +286,13 @@ class DownloadHelper:
     def unzip_file(self, lfname, tfname=None):
         if not tfname:
             tfname = lfname.rsplit('.gz',1)[0]
-        f_in = gzip.open(lfname, 'rb')
-        try:
-            with open(tfname, 'wb') as f_out:
-                shutil.copyfileobj(f_in, f_out)
-        finally:
-            f_in.close()
-        return True
+        retval = False
+        if os.path.isfile(lfname):
+            f_in = gzip.open(lfname, 'rb')
+            try:
+                with open(tfname, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+                    retval = True
+            finally:
+                f_in.close()
+        return retval
