@@ -12,6 +12,7 @@ import json
 from datetime import datetime
 from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
+from ftplib import FTP, error_perm
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -20,6 +21,11 @@ if PY2:
     from httplib import HTTPConnection
 if PY3:
     from http.client import HTTPConnection
+
+UsePyTz = False
+
+if UsePyTz:
+    import pytz
 
 logger = logging.getLogger(__name__)
 
@@ -94,29 +100,49 @@ class DownloadHelper:
             logger.debug('ERROR:: ' + str(err))
             return False
 
-    def _convert_date_to_iso(self, date):
+    def _normalize_date(self, date):
         if date is None: date = '1971-01-01T01:01:01Z',
         try :
-            return datetime.strptime(date,"%a, %d %b %Y %H:%M:%S %Z")
+            date = datetime.strptime(date,"%a, %d %b %Y %H:%M:%S %Z")
         except Exception as ex:
             logger.debug(str(ex))
         try :
-            return datetime.strptime(date[:19], "%Y-%m-%dT%H:%M:%S")
+            if isinstance(date, str):
+                date = datetime.strptime(date[:19], "%Y-%m-%dT%H:%M:%S")
         except Exception as ex:
             logger.debug(str(ex))
+        if isinstance(date, datetime):
+            date = datetime(date.year, date.month, date.day,
+                            date.hour, date.minute)
         return date
+
+    def _cdt_to_date(self, date):
+        # Special case for FTP Server
+        date = datetime(date.year, date.month, date.day, date.hour, date.minute)
+        if UsePyTz and self.protocol == DownloadProtocolEnum.FTP:
+            central = pytz.timezone('US/Central')
+            dt_central = central.localize(date)
+            date = dt_central.astimezone(pytz.timezone('GMT'))
+        return date.strftime("%a, %d %b %Y %H:%M:%S GMT")
+
+    def _str_date(self, date):
+        return date.strftime("%a, %d %b %Y %H:%M:%S GMT")
 
     def _validate_file_metadata(self, rfile, file_metadata, rfile_metadata):
         if 'dateTime' not in rfile:
             rfile['dateTime'] = rfile_metadata['dateTime']
         if 'size' not in rfile:
             rfile['size'] = rfile_metadata['size']
-        rtime = self._convert_date_to_iso(rfile['dateTime'])
-        ltime = self._convert_date_to_iso(file_metadata['dateTime'])
+        rtime = self._normalize_date(rfile['dateTime'])
+        ltime = self._normalize_date(file_metadata['dateTime'])
         if rfile['size'] == file_metadata['size'] and rtime == ltime:
             return DownloadedFileStatusEnum.Same
         if rfile['size'] != file_metadata['size']:
             return DownloadedFileStatusEnum.Different
+        logger.debug('Remote size=' + str(rfile['size']) +
+                     ", Local size=" + str(file_metadata['size']))
+        logger.debug('Remote time=' + self._str_date(rtime) +
+                     ", Local time="+ self._str_date(ltime))
         if rtime > ltime:
             return DownloadedFileStatusEnum.RemoteIsNew
         return DownloadedFileStatusEnum.RemoteIsOld
@@ -164,8 +190,7 @@ class DownloadHelper:
                 else:
                     stime = [str(time.gmtime().tm_year)] + fields[5:8]
                     date = datetime.strptime(' '.join(stime), "%Y %b %d %H:%M")
-                metadata ['dateTime'] = datetime.strftime(date,
-                                        "%a, %d %b %Y %H:%M:%S GMT")
+                metadata ['dateTime'] = self._cdt_to_date(date)
                 metadata['size'] = int(fields[4])
         elif self.protocol == DownloadProtocolEnum.HTTP:
             metadata['size'] = int(response.getheader('Content-Length'))
@@ -225,9 +250,10 @@ class DownloadHelper:
             rfile_metadata = self._get_file_metadata(rfile['path'], response)
             fstatus =self._validate_file_metadata(rfile,
                                          file_metadata, rfile_metadata)
-            logger.debug("_validate_file_metadat() returned" + str(fstatus))
-            if fstatus not in [DownloadedFileStatusEnum.RemoteIsNew,
-                            DownloadedFileStatusEnum.Different ]:
+            logger.debug("_validate_file_metadata() returned" + str(fstatus))
+            if fstatus not in [DownloadedFileStatusEnum.RemoteIsOld,
+                               DownloadedFileStatusEnum.RemoteIsNew,
+                               DownloadedFileStatusEnum.Different ]:
                 if response : response.close()
                 return True
             logger.debug('Downloading ' + rfile['path'] + " to " + lfile)
