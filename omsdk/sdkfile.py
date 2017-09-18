@@ -472,9 +472,12 @@ class FileOnShare(Share):
         if 'path_sep' in Share._ShareSpec[self.remote.share_type]:
             psep = Share._ShareSpec[self.remote.share_type]['path_sep']
         common_path = fname.replace(self.remote.mountable_path + psep, '')
+        mp_mountable_path = None
+        if self.mount_point:
+            mp_mountable_path = self.mount_point.mountable_path + psep
 
         return FileOnShare(remote = self.remote.mountable_path,
-            mount_point = self.mount_point.mountable_path,
+            mount_point = mp_mountable_path,
             common_path = common_path, fd = None,
             isFolder = self.isFolder, creds = self.creds)
 
