@@ -15,7 +15,7 @@ from omsdk.catalog.updaterepo import RepoComparator, UpdateFilterCriteria
 from omsdk.catalog.updaterepo import UpdatePresenceEnum, UpdateNeededEnum, UpdateTypeEnum
 from omdrivers.enums.iDRAC.iDRACEnums import *
 from omsdk.sdkcunicode import UnicodeWriter
-from omsdk.sdkcunicode import UnicodeWriter
+from omsdk.sdkfile import FileOnShare
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -172,16 +172,17 @@ class iDRACUpdate(Update):
             # Catalog name 
             updmgr = UpdateManager.get_instance()
             if not updmgr: return {}
-            (cache_share, ignore) = updmgr.getCatalogScoper(catalog)
+            (cache_share, ignore) = updmgr.getCatalogScoper(catalog_path)
         else:
             # DRM Repo
             cache_share = catalog_path
-        catalog_dir = FileOnShare(remote=cache_share.remote_share_path, isFolder=True,
-                                  creds=cache_share.creds)
+        catalog_dir = FileOnShare(remote=cache_share.remote_folder_path,
+                                  isFolder=True, creds=cache_share.creds)
         catalog_file = cache_share.remote_file_name
-        rjson = self.entity._update_repo(share = catalog_dir, creds = catalog.creds,
-                 catalog = catalog_file, apply = appUpdate, reboot = rebootNeeded)
-        rjson['file'] = str(share)
+        rjson = self.entity._update_repo(share = catalog_dir,
+                  creds = catalog_dir.creds, catalog = catalog_file,
+                  apply = appUpdate, reboot = rebootNeeded)
+        rjson['file'] = str(cache_share)
         if job_wait:
             rjson = self._job_mgr._job_wait(rjson['file'], rjson)
         return rjson
