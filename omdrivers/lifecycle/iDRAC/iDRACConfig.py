@@ -2435,7 +2435,7 @@ class iDRACConfig(iBaseConfigApi):
         if 'Enclosure' in self.entity.entityjson:
             for enc in self.entity.entityjson['Enclosure']:
                 if enc['PrimaryStatus'] in ['1', '0']:
-                    healthy_enc_list[cnt['FQDD']] = enc['PrimaryStatus']
+                    healthy_enc_list[enc['FQDD']] = enc['PrimaryStatus']
 
         available_pd_list = {}
         if 'PhysicalDisk' in self.entity.entityjson:
@@ -2458,7 +2458,7 @@ class iDRACConfig(iBaseConfigApi):
                     my_list = []
                     for pd in encl_list[encl]['PhysicalDisk']:
                         if pd in available_pd_list:
-                            my_list.append(encl_list[encl]['PhysicalDisk'])
+                            my_list.append(pd)
                     encl_list[encl]['PhysicalDisk'] = my_list
 
             if 'PhysicalDisk' in rjson['Controller'][controller]:
@@ -2553,11 +2553,13 @@ class iDRACConfig(iBaseConfigApi):
         counter = 0
         for disk in s_disks:
             counter += 1
-            if counter >= (n_disks + n_dhs): state = "Global"
-            elif counter >= n_disks: state = "Dedicated"
+            if counter > (n_disks + n_dhs): state = "Global"
+            elif counter > n_disks: state = "Dedicated"
             else: state = "No"
             disk_state = { config.arspec.RAID.RAIDHotSpareStatus : state }
             if s_enclosure:
+                if s_enclosure not in scp[s_controller]:
+                    scp[s_controller][s_enclosure] = {}
                 scp[s_controller][s_enclosure][disk] = disk_state
             else:
                 scp[s_controller][disk] = disk_state
@@ -2582,7 +2584,7 @@ class iDRACConfig(iBaseConfigApi):
     def get_virtual_disk(self, vd_name):
         self._init_raid_tree()
         if 'VirtualDisk' not in self.entity.entityjson:
-            return { 'Status' : 'Success', 'Message' : 'No VDs in Server' }
+            return None
         vdfqdd = None
         for vd in self.entity.entityjson['VirtualDisk']:
             if vd['Name'] == vd_name:
@@ -2606,7 +2608,7 @@ class iDRACConfig(iBaseConfigApi):
             if not 'VirtualDisk' in rjson['Controller'][controller]:
                 continue
             if vdfqdd in rjson['Controller'][controller]['VirtualDisk']:
-                scp[controller] = { vdfqdd : { config.arspec.RAID.RAIDaction : "Delete" } }
+                scp[controller] = { vdfqdd : { self.config.arspec.RAID.RAIDaction : "Delete" } }
 
         if len(scp) <= 0:
             return { 'Status' : 'Failed', 'Message' : 'Unable to find the virtual disk information ' }
