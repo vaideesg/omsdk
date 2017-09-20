@@ -239,7 +239,7 @@
             ],
             "type": "string"
         },
-        "FCoEOffloadModeTypes": {
+        "FCoEOffloadModePartitionTypes": {
             "enum": [
                 "Enabled",
                 "Disabled"
@@ -250,7 +250,7 @@
             ],
             "type": "string"
         },
-        "FCoEOffloadMode[Partition:n]Types": {
+        "FCoEOffloadModeTypes": {
             "enum": [
                 "Enabled",
                 "Disabled"
@@ -1542,7 +1542,7 @@
                     "name": "FCoEOffloadMode[Partition:n]",
                     "qualifier": "ConfigureFormn",
                     "readonly": "FALSE",
-                    "type": "FCoEOffloadMode[Partition:n]Types"
+                    "type": "FCoEOffloadModePartitionTypes"
                 },
                 "FCoEOffloadSupport": {
                     "description": "FCoE Offload Support",
@@ -2299,7 +2299,7 @@
                     "name": "NicMode[Partition:n]",
                     "qualifier": "ConfigureFormn",
                     "readonly": "FALSE",
-                    "type": "NicMode[Partition:n]Types"
+                    "type": "NicModePartitionTypes"
                 },
                 "NicPartitioning": {
                     "default": "Disabled",
@@ -2443,7 +2443,7 @@
                     "name": "PartitionState[Partition:n]",
                     "qualifier": "NICPartitioningConfig",
                     "readonly": "TRUE",
-                    "type": "PartitionState[Partition:n]Types"
+                    "type": "PartitionStatePartitionTypes"
                 },
                 "PortNumber[Partition:n]": {
                     "description": "Port Number",
@@ -2616,7 +2616,7 @@
                     "name": "RDMANICModeOnPartition[Partition:n]",
                     "qualifier": "NICPartitioningConfig",
                     "readonly": "FALSE",
-                    "type": "RDMANICModeOnPartition[Partition:n]Types"
+                    "type": "RDMANICModeOnPartitionPartitionTypes"
                 },
                 "RDMANICModeOnPort": {
                     "default": "Varies",
@@ -3374,7 +3374,7 @@
                     "name": "iScsiOffloadMode[Partition:n]",
                     "qualifier": "ConfigureFormn",
                     "readonly": "FALSE",
-                    "type": "iScsiOffloadMode[Partition:n]Types"
+                    "type": "iScsiOffloadModePartitionTypes"
                 }
             },
             "type": "object"
@@ -3423,7 +3423,7 @@
             ],
             "type": "string"
         },
-        "NicModeTypes": {
+        "NicModePartitionTypes": {
             "enum": [
                 "Enabled",
                 "Disabled"
@@ -3434,7 +3434,7 @@
             ],
             "type": "string"
         },
-        "NicMode[Partition:n]Types": {
+        "NicModeTypes": {
             "enum": [
                 "Enabled",
                 "Disabled"
@@ -3503,7 +3503,7 @@
         "PartitionStateInterpretationTypes": {
             "enum": [
                 "Fixed",
-                " Variable"
+                "Variable"
             ],
             "enumDescriptions": [
                 "Fixed",
@@ -3511,7 +3511,7 @@
             ],
             "type": "string"
         },
-        "PartitionState[Partition:n]Types": {
+        "PartitionStatePartitionTypes": {
             "enum": [
                 "Enabled",
                 "Disabled"
@@ -3701,7 +3701,7 @@
             ],
             "type": "string"
         },
-        "RDMANICModeOnPartition[Partition:n]Types": {
+        "RDMANICModeOnPartitionPartitionTypes": {
             "enum": [
                 "Enabled",
                 "Disabled"
@@ -4022,7 +4022,7 @@
             ],
             "type": "string"
         },
-        "iScsiOffloadModeTypes": {
+        "iScsiOffloadModePartitionTypes": {
             "enum": [
                 "Enabled",
                 "Disabled"
@@ -4033,7 +4033,7 @@
             ],
             "type": "string"
         },
-        "iScsiOffloadMode[Partition:n]Types": {
+        "iScsiOffloadModeTypes": {
             "enum": [
                 "Enabled",
                 "Disabled"

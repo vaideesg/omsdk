@@ -455,7 +455,8 @@
                     "description": "Stripe Size",
                     "longDescription": "This indicates the stripe size of the virtual disk. Configurable via XML configuration feature only.",
                     "name": "StripeSize",
-                    "readonly": "TRUE"
+                    "readonly": "TRUE",
+                    "type": "StripeSizeTypes"
                 },
                 "T10PIStatus": {
                     "description": "T10PIStatus",
@@ -586,11 +587,11 @@
         "RAIDSupportedRAIDLevelsTypes": {
             "enum": [
                 "RAID-0",
-                " RAID-1",
-                " RAID-5",
+                "RAID-1",
+                "RAID-5",
                 "RAID-10",
-                " RAID-50",
-                " RAID-60"
+                "RAID-50",
+                "RAID-60"
             ],
             "enumDescriptions": [
                 "RAID-0",
@@ -605,12 +606,12 @@
         "RAIDTypesTypes": {
             "enum": [
                 "RAID 0",
-                " RAID 1",
+                "RAID 1",
                 "RAID 5",
                 "RAID 6",
-                " RAID 10",
+                "RAID 10",
                 "RAID 50",
-                " RAID 60"
+                "RAID 60"
             ],
             "enumDescriptions": [
                 "RAID 0",
@@ -687,8 +688,8 @@
         "RAIDdefaultReadPolicyTypes": {
             "enum": [
                 "NoReadAhead",
-                " ReadAhead",
-                " Adaptive"
+                "ReadAhead",
+                "Adaptive"
             ],
             "enumDescriptions": [
                 "No Read-Ahead",
@@ -701,7 +702,7 @@
             "enum": [
                 "WriteThrough",
                 "WriteBack",
-                " WriteBackForce"
+                "WriteBackForce"
             ],
             "enumDescriptions": [
                 "Write Through",
@@ -799,6 +800,45 @@
             "enumDescriptions": [
                 "SAS",
                 "SATA"
+            ],
+            "type": "string"
+        },
+        "StripeSizeTypes": {
+            "enum": [
+                "Default",
+                "512",
+                "1KB",
+                "2KB",
+                "4KB",
+                "8KB",
+                "16KB",
+                "32KB",
+                "64KB",
+                "128KB",
+                "256KB",
+                "512KB",
+                "1MB",
+                "2MB",
+                "4MB",
+                "8MB"
+            ],
+            "enumDescriptions": [
+                "Default",
+                "512",
+                "1KB",
+                "2KB",
+                "4KB",
+                "8KB",
+                "16KB",
+                "32KB",
+                "64KB",
+                "128KB",
+                "256KB",
+                "512KB",
+                "1MB",
+                "2MB",
+                "4MB",
+                "8MB"
             ],
             "type": "string"
         },

@@ -5365,7 +5365,7 @@
                     "longDescription": "The iDRAC Direct USB port is managed by iDRAC exclusively with no host visibility. When set to OFF, iDRAC would not detect any USB devices installed in this managed port.",
                     "name": "UsbManagedPort ",
                     "qualifier": "IntegratedDevices",
-                    "type": "UsbManagedPort Types"
+                    "type": "UsbManagedPortTypes"
                 },
                 "UsbPorts": {
                     "description": "User Accessible USB Ports",
@@ -11332,7 +11332,7 @@
             ],
             "type": "string"
         },
-        "UsbManagedPort Types": {
+        "UsbManagedPortTypes": {
             "enum": [
                 "On",
                 "Off"

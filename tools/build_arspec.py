@@ -78,7 +78,7 @@ class AttribRegistry(object):
                             else:
                                 enum_name = child.text
                     myentry[attrfield.tag][enum_name] = enum_value
-                    myentry["enum"].append(enum_value)
+                    myentry["enum"].append(enum_value.strip())
                     myentry["enumDescriptions"].append(enum_name)
                 elif attrfield.tag in ["Modifiers"]:
                     for modifiers in attrfield:
@@ -112,7 +112,11 @@ class AttribRegistry(object):
                 if fld in entry:
                     tt[fld_name][attmap[fld]] = entry[fld]
             if "AttributeValue" in entry:
-                typName = fld_name + "Types"
+                typName = fld_name.strip() + "Types"
+                typName = re.sub('^(^[0-9])', 'E_\\1', typName)
+                typName = re.sub('[[]([^]:]+)[^]]*[]]', '\\1', typName)
+                typName = re.sub('[?]', '', typName)
+                typName = re.sub('-', '_', typName)
                 tt[fld_name]["type"] = typName
                 self.attr_json["definitions"][typName] = {
                     "enum" : entry["enum"],
@@ -129,8 +133,117 @@ class AttribRegistry(object):
             out.write(json.dumps(self.attr_json, sort_keys=True,
                                  indent=4, separators=(',', ': ')))
 
+    def save_enums(self, directory = None, filename = None):
+        if self.comp == 'EventFilters': return
+        if not directory: directory = self.direct
+        if not filename: filename = self.comp + ".py"
+        dest_file = os.path.join(directory, filename)
+        print('Saving to :' + dest_file)
+        with open(dest_file, 'w') as out:
+            out.write('from omsdk.sdkcenum import EnumWrapper\n')
+            out.write('import logging\n')
+            out.write('\n')
+            out.write('logger = logging.getLogger(__name__)\n')
+            out.write('\n')
+            props = self.attr_json
+            sprops = []
+            for i in props['definitions']:
+                if 'enum' not in props['definitions'][i]:
+                    continue
+                sprops.append(i)
+            sprops = sorted(sprops)
+
+            for i in sprops:
+                en_val = [k.strip() for k in props['definitions'][i]['enum']]
+                en_name = []
+                out.write('{0} = EnumWrapper("{0}", '.format(i) + '{\n')
+                for ent in en_val:
+                    en_name.append(self._sanitize(ent))
+                en_dict = dict(zip(en_name, en_val))
+                snames = sorted([i for i in en_dict])
+                for j in snames:
+                    out.write('    "{0}" : "{1}",\n'.format(j, en_dict[j]))
+                out.write('}).enum_type\n')
+                out.write('\n')
+
+    def _sanitize(self, tval):
+        if tval:
+            tval = re.sub('[^A-Za-z0-9]', '_', tval)
+            tval = re.sub('[^A-Za-z0-9]', '_', tval)
+            tval = re.sub('^(True|None|False)$', 'T_\\1', tval)
+            tval = re.sub('^(^[0-9])', 'T_\\1', tval)
+        return tval
+
+    def _print(self, out, props, mode):
+        cls_props = {}
+        for i in props:
+            include_prop = True
+
+            if 'readonly' in props[i] and \
+                props[i]['readonly'].lower() in ['true']:
+                # readonly attributes not applicable for Delete, Modify
+
+                if mode in ['Delete', 'Modify'] or \
+                    'longDescription' not in props[i] or \
+                    'Configurable via XML' not in props[i]['longDescription']:
+                    continue
+
+            if 'default' not in props[i]:
+                props[i]['default'] = None
+            cls_props[i] = props[i]['default']
+
+        s_cls_props = sorted([i for i in cls_props])
+        out.write('    def my_{0}(self):\n'.format(mode))
+        for i in s_cls_props:
+            if '[Partition:n]' in i:
+                continue
+            defval = cls_props[i]
+
+            if defval:
+                typename = None
+                if 'type' in props[i]:
+                    typename = props[i]['type']
+                    if typename in self.attr_json["definitions"]:
+                        typedef = self.attr_json['definitions'][typename]
+                        if 'enum' not in typedef or defval not in typedef['enum']:
+                            print(defval + " not in " + self.comp+'.'+typename)
+                            defval = None
+            if defval and 'type' in props[i]:
+                defval = props[i]['type'] + '.' + self._sanitize(defval)
+            else:
+                defval = str(defval)
+            out.write('        self.{0} = {1}\n'.format(i, str(defval)))
+        out.write('        return self\n')
+        out.write('\n')
+
+    def save_types(self, directory = None, filename = None):
+        # BIOS, FCHBA
+        # iDRAC??
+        if self.comp == 'EventFilters': return
+        if not directory: directory = self.direct
+        if not filename: filename = self.comp + ".py"
+        dest_file = os.path.join(directory, filename)
+        print('Saving to :' + dest_file)
+
+        with open(dest_file, 'w') as out:
+            props = self.attr_json['definitions'][self.comp]['properties']
+            out.write('from omsdk.sdkcenum import EnumWrapper\n')
+            out.write('from omdrivers.types.iDRAC.BaseARType import *\n')
+            out.write('from omdrivers.enums.iDRAC.{0} import *\n'.format(self.comp))
+            out.write('import logging\n')
+            out.write('\n')
+            out.write('logger = logging.getLogger(__name__)\n')
+            out.write('\n')
+            out.write('class {0}(BaseARType):\n'.format(self.comp))
+            out.write('\n')
+            self._print(out, props, 'create')
+            self._print(out, props, 'modify')
+            self._print(out, props, 'delete')
+
 if __name__ == "__main__":
     driver_dir = os.path.join('omdrivers', 'iDRAC')
     for file1 in glob.glob(os.path.join(driver_dir, "xml", "*.xml")):
-        AttribRegistry(file1).save_file(
-             directory=os.path.join(driver_dir, 'Config'))
+        ar= AttribRegistry(file1)
+        ar.save_file(directory=os.path.join(driver_dir, 'Config'))
+        ar.save_enums(directory=os.path.join('omdrivers', 'enums', 'iDRAC'))
+        ar.save_types(directory=os.path.join('omdrivers', 'types', 'iDRAC'))

@@ -195,27 +195,27 @@ RAIDsupportedDiskProtTypes = EnumWrapper("RAIDsupportedDiskProtTypes", {
     "SATA" : "SATA",
 }).enum_type
 
+StripeSizeTypes = EnumWrapper("StripeSizeTypes", {
+    "Default" : "Default",
+    "T_128KB" : "131072",
+    "T_16KB" : "16384",
+    "T_1KB" : "1024",
+    "T_1MB" : "1048576",
+    "T_256KB" : "262144",
+    "T_2KB" : "2048",
+    "T_2MB" : "2097152",
+    "T_32KB" : "32768",
+    "T_4KB" : "4096",
+    "T_4MB" : "4194304",
+    "T_512" : "512",
+    "T_512KB" : "524288",
+    "T_64KB" : "65536",
+    "T_8KB" : "8192",
+    "T_8MB" : "8388608",
+}).enum_type
+
 T10PIStatusTypes = EnumWrapper("T10PIStatusTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
 }).enum_type
 
-StripeSizeTypes = EnumWrapper('StripeSizeTypes', {
-     'S_Default' : 'Default',
-     'S_512'   : 512,
-     'S_1KB'   : 1*1024,
-     'S_2KB'   : 2*1024,
-     'S_4KB'   : 4*1024,
-     'S_8KB'   : 8*1024,
-     'S_16KB'  : 16*1024,
-     'S_32KB'  : 32*1024,
-     'S_64KB'  : 64*1024,
-     'S_128KB' : 128*1024,
-     'S_256KB' : 256*1024,
-     'S_512KB' : 512*1024,
-     'S_1MB'   : 1*1024*1024,
-     'S_2MB'   : 2*1024*1024,
-     'S_4MB'   : 4*1024*1024,
-     'S_8MB'   : 8*1024*1024,
-     'S_16MB'  : 16*1024*1024,
-}).enum_type
