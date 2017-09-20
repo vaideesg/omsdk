@@ -10,8 +10,8 @@ CompareInventory=omdrivers.helpers.iDRAC.CompareInventory
 echo "1. Collect inventory for Representative iDRACs"
 echo "   Inventory is stored under %UpdateRepo%\_inventory folder"
 echo "   Each server inventory is stored as <ipaddr>_firmware.json"
-python -m %CollectInventory% -f %UpdateRepo% -u root -p calvin -i 100.96.25.121 100.96.25.120
-python -m %CollectInventory% -f %UpdateRepo% -u root -p another_password -i 100.96.25.119
+python -m %CollectInventory% -f %UpdateRepo% -u root -p calvin -i 192.168.1.10 192.168.1.11
+python -m %CollectInventory% -f %UpdateRepo% -u root -p another_password -i 192.168.1.12 192.168.1.13
 REM ....
 
 echo "2. Download catalog from downloads.dell.com and prepare Scoped Catalog"
@@ -74,4 +74,20 @@ echo "                       Unknown   - Firmware absent in Catalog"
 echo "       Server.Version - Version of Firmware in Server"
 echo "       Catalog.Version- Version of Firmware in Catalog"
 echo "       Reboot Required - Whether reboot is required when applying update"
-python -m %CompareInventory% -f DD -o csv
+python -m %CompareInventory% -f %UpdateRepo% -o csv
+
+REM Now export the %UpdateRepo% as a Share that is accessible to iDRAC
+REM Let's say the %UpdateRep% was present on host %myhost% and exported as
+REM 'RepoShare', and the credentials to access it are domain\update_user
+REM with password *****.  You can use idrac.update_mgr.update_from_repo()
+REM to update the servers as follows:
+REM 
+REM     reposhare = FileOnShare(remote='\\\\%myhost%\\RepoShare',
+REM                 isFolder=True,
+REM                 creds=UserCredentials('update_user@domain', '*****'))
+REM     UpdateManager.configure(reposhare)
+REM     if UpdateManager.IsValid:
+REM          idrac.update_mgr.update_from_repo(catalog_path='Catalog')
+REM
+REM You can use the following to update only BIOS and NIC
+REM          idrac.update_mgr.update_from_repo(catalog_path='BIOS_NIC')
