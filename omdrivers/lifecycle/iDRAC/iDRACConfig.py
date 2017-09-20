@@ -2478,7 +2478,8 @@ class iDRACConfig(iBaseConfigApi):
         config = self.config
         if not "Storage" in self._raid_tree:
             logger.debug("Storage not found in device")
-            return False
+            return { 'Status' : 'Failed',
+                     'Message' : 'Storage not found in device' }
         rjson = self._raid_tree["Storage"]
         s_controller = None
         s_enclosure = None
@@ -2488,7 +2489,8 @@ class iDRACConfig(iBaseConfigApi):
         s_disks = []
         if not "Controller" in rjson:
             logger.debug("No disks left in any Controllers!")
-            return None
+            return { 'Status' : 'Failed',
+                     'Message' : 'No controllers found' }
 
         for controller in rjson['Controller']:
             if isinstance(rjson['Controller'][controller], list):
@@ -2522,8 +2524,8 @@ class iDRACConfig(iBaseConfigApi):
             if s_controller:
                 break
         if s_controller is None:
-            logger.debug("No sufficient disks found!")
-            return False
+            return { 'Status' : 'Failed',
+                     'Message' : 'No free disks found' }
         vdfqdd = "Disk.Virtual." + str(n_cntr) + ":" + s_controller
         scp = {}
         scp[s_controller] = {
@@ -2632,7 +2634,8 @@ class iDRACConfig(iBaseConfigApi):
         vdfqdd = vdselect['FQDD']
         rjson = self.entity._lock_raid(virtual_disk = vdfqdd)
         if rjson['Status'] in [ 'Error', "Failed"]: return rjson
-        rjson = self.entity._create_raid_config_job(virtual_disk = vd_name, reboot=RebootJobType.GracefulRebootWithForcedShutdown)
+        rjson = self.entity._create_raid_config_job(virtual_disk = vd_name,
+                    reboot=RebootJobType.GracefulRebootWithForcedShutdown)
         rjson['file'] = 'lock_raid'
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
