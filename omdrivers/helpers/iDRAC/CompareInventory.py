@@ -26,6 +26,10 @@ def CompareInventory(arglist):
         action="store", dest="catalog", type=str, nargs='?',
         default='Catalog', help="Catalog to load")
 
+    parser.add_argument('-o', '--output', 
+        action="store", dest="output", type=str, nargs='?',
+        default='csv', help="Catalog to load")
+
     options = parser.parse_args(arglist)
 
     #if options.password is None:
@@ -42,16 +46,15 @@ def CompareInventory(arglist):
         return -1
     if options.catalog is None:
         options.catalog = 'Catalog'
-
+    if options.output is None:
+        options.output = 'csv'
 
     updshare = LocalFile(local = options.folder, isFolder=True)
     if not updshare.IsValid:
         print("Folder is not writable!")
         return -2
 
-    print("Configuring Update Share...")
     UpdateManager.configure(updshare)
-    print("Retrieving Firmware Inventory...")
     rjson = UpdateHelper.get_firmware_inventory()
     dev_fw = {}
     if rjson['Status'] == 'Success':
@@ -63,7 +66,22 @@ def CompareInventory(arglist):
     for dev in dev_fw:
         swidentity = dev_fw[dev]
         devcompare[dev] = cache_cat.compare(swidentity['Model_Hex'], swidentity)
-    print(PrettyPrint.prettify_json(devcompare))
+        print('{0},{1},{2},{3},{4},{5},{6},"{7}"'.format(
+            'Device', 'Component', 'UpdateNeeded',  'UpdatePackage',
+            'UpdateType', 'Server.Version', 'Catalog.Version',
+            'Reboot Required'))
+        for fqdd in devcompare[dev]:
+            for fw in devcompare[dev][fqdd]:
+                print('{0},"{1}",{2},{3},{4},"{5}","{6}",{7}'.format(
+                          str(dev),
+                          str(fw.get('ElementName')),
+                          str(TypeHelper.resolve(fw.get('UpdateNeeded'))),
+                          str(TypeHelper.resolve(fw.get('UpdatePackage'))),
+                          str(TypeHelper.resolve(fw.get('UpdateType'))),
+                          str(fw.get('Server.Version')),
+                          str(fw.get('Catalog.Version', 'Not Available')),
+                          str(fw.get('Catalog.rebootRequired',''))))
+    #print(PrettyPrint.prettify_json(devcompare))
 
 if __name__ == "__main__":
     CompareInventory(sys.argv[1:])
