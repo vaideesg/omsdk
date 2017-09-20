@@ -2472,7 +2472,7 @@ class iDRACConfig(iBaseConfigApi):
         logger.debug("Containment Tree containing healthy/available entries:")
         logger.debug(PrettyPrint.prettify_json(self._raid_tree['Storage']))
 
-    def create_virtual_disk(self, vd_name, span_depth, span_length, raid_type, n_dhs = 0):
+    def create_virtual_disk(self, vd_name, span_depth, span_length, raid_type, n_dhs = 0, n_ghs = 0):
         raid_type = TypeHelper.resolve(raid_type)
         self._init_raid_tree()
         config = self.config
@@ -2484,7 +2484,7 @@ class iDRACConfig(iBaseConfigApi):
         s_controller = None
         s_enclosure = None
         n_disks = span_length * span_depth
-        t_disks = n_disks + n_dhs
+        t_disks = n_disks + n_dhs + n_ghs
         n_cntr = 0
         s_disks = []
         if not "Controller" in rjson:
@@ -2640,9 +2640,6 @@ class iDRACConfig(iBaseConfigApi):
         return self._job_mgr._job_wait(rjson['file'], rjson)
 
     # Tech Service Report Export
-    def export_tsr_async(self, tsr_store_path):
-        return self.export_tsr(tsr_store_path, job_wait = False)
-
     def export_tsr(self, tsr_store_path, job_wait = True):
         share = tsr_store_path.format(ip = self.entity.ipaddr)
         rjson = self.entity._export_tsr(share = share, creds = tsr_store_path.creds)
