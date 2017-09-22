@@ -39,8 +39,6 @@ class ClassType(object):
             self.my_modify()
         elif mode == 'delete':
             self.my_delete()
-        elif mode == 'custom':
-            self.my_custom()
         self._start_tracking()
 
     def __getattr__(self, name):
@@ -215,6 +213,11 @@ class ClassType(object):
                 obj.__dict__[i]._parent = parent
         return obj
 
+    def get_root(self):
+        if self._parent is None:
+            return self
+        return self._parent.get_root()
+
     def commit(self):
         self._stop_tracking()
         self._commit()
@@ -283,9 +286,6 @@ class ClassType(object):
         pass
 
     def my_delete(self):
-        pass
-
-    def my_custom(self):
         pass
 
     @property
