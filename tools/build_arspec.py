@@ -124,6 +124,28 @@ class AttribRegistry(object):
                     "type" : "string",
                 }
 
+        props = self.attr_json["definitions"][self.comp]["properties"]
+        if 'StripeSize' in props:
+            props['StripeSize']['type'] = 'StripeSizeTypes'
+            self.attr_json["definitions"]['StripeSizeTypes'] = {
+                "enum": [
+                    "Default",
+                    "512",
+                    "1KB", "2KB", "4KB", "8KB",
+                    "16KB", "32KB", "64KB",
+                    "128KB", "256KB", "512KB",
+                    "1MB", "2MB", "4MB", "8MB",
+                ],
+                "enumDescriptions": [
+                    "Default",
+                    "512",
+                    "1KB", "2KB", "4KB", "8KB",
+                    "16KB", "32KB", "64KB",
+                    "128KB", "256KB", "512KB",
+                    "1MB", "2MB", "4MB", "8MB",
+                ],
+                "type": "string"
+            }
     def save_file(self, directory = None, filename = None):
         if not directory: directory = self.direct
         if not filename: filename = self.comp + ".json"
@@ -157,8 +179,32 @@ class AttribRegistry(object):
                 en_val = [k.strip() for k in props['definitions'][i]['enum']]
                 en_name = []
                 out.write('{0} = EnumWrapper("{0}", '.format(i) + '{\n')
+                MBLOOKUP = {
+                  '1KB' : 1*1024,
+                  '2KB' : 2*1024,
+                  '4KB' : 4*1024,
+                  '8KB' : 8*1024,
+                  '16KB' : 16*1024,
+                  '32KB' : 32*1024,
+                  '64KB' : 64*1024,
+                  '128KB' : 128*1024,
+                  '256KB' : 256*1024,
+                  '512KB' : 512*1024,
+                  '1MB' : 1*1024*1024,
+                  '2MB' : 2*1024*1024,
+                  '4MB' : 4*1024*1024,
+                  '8MB' : 8*1024*1024,
+                  'Default' : 'Default',
+                  '512' : '512',
+                }
+
                 for ent in en_val:
                     en_name.append(self._sanitize(ent))
+                if i == 'StripeSizeTypes':
+                    t_en_val = []
+                    for ent in en_val:
+                        t_en_val.append(MBLOOKUP[ent])
+                    en_val = t_en_val
                 en_dict = dict(zip(en_name, en_val))
                 snames = sorted([i for i in en_dict])
                 for j in snames:
@@ -210,6 +256,8 @@ class AttribRegistry(object):
                             defval = None
             if defval and 'type' in props[i]:
                 defval = props[i]['type'] + '.' + self._sanitize(defval)
+            elif defval:
+                defval = '"' + defval + '"'
             else:
                 defval = str(defval)
             out.write('        self.{0} = {1}\n'.format(i, str(defval)))

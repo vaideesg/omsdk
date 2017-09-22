@@ -73,6 +73,7 @@ setup(
         'omsdk.listener',
         'omsdk.profiling',
         'omsdk.reflection',
+        'omsdk.typemgr',
         'omsdk.omlog',
         'omdrivers',
         'omdrivers.lifecycle',
