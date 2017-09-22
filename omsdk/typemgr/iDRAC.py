@@ -38,13 +38,14 @@ class SNMP(CloneableClassType):
         super().__init__(mode, None, 'SNMP', parent)
 
     def my_create(self):
-        self.AgentCommunity_SNMP = StringField(None, 'SNMPCommunity')
+        if False:
+            self.AgentCommunity_SNMP = StringField(None, 'SNMPCommunity')
+            self.DiscoveryPort_SNMP = PortField(161, 'SNMPPort')
+            self.AgentEnable_SNMP = \
+                EnumTypeField(None, AgentEnable_SNMPTypes, 'SNMPEnabled')
+            self.SNMPProtocol_SNMP = \
+                EnumTypeField(None, SNMPProtocol_SNMPTypes, 'SNMPVersions')
         self.AlertPort_SNMP = PortField(162, 'SNMPTrapPort')
-        self.DiscoveryPort_SNMP = PortField(161, 'SNMPPort')
-        self.AgentEnable_SNMP = \
-            EnumTypeField(None, AgentEnable_SNMPTypes, 'SNMPEnabled')
-        self.SNMPProtocol_SNMP = \
-            EnumTypeField(None, SNMPProtocol_SNMPTypes, 'SNMPVersions')
         self.TrapFormat_SNMP = \
             EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat', volatile=True)
 
@@ -55,3 +56,11 @@ class iDRAC(CloneableClassType):
 
     def my_create(self):
         self.SNMP = SNMP(mode='create', parent=self)
+
+class System(CloneableClassType):
+
+    def __init__(self, mode, parent = None):
+        super().__init__(mode, 'System', None, parent, False)
+
+    def my_create(self):
+        self.iDRAC = iDRAC(mode='create', parent=self)

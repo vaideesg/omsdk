@@ -2,6 +2,7 @@ import io
 from omsdk.sdkprint import PrettyPrint
 from omsdk.typemgr.FieldType import FieldType
 from omsdk.typemgr.ClassType import ClassType
+from omsdk.sdkcenum import TypeHelper
 
 class FormatterTemplate(object):
     def __init__(self, everything):
@@ -78,7 +79,7 @@ class XMLFormatter(FormatterTemplate):
 
     def _emit(self, output, value):
         if value.has_value():
-            return output.write(value.__str__())
+            return output.write(str(TypeHelper.resolve(value._value)))
         return 0
 
     def _init(self, output, obj):

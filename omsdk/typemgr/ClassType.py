@@ -55,8 +55,8 @@ class ClassType(object):
         if '_freeze' in self.__dict__ and self.__dict__['_freeze']:
             raise ValueError('object in freeze mode')
 
-        if name in [ '_parent' ]:
-            self.__dict__['_parent'] = value
+        if name in [ '_parent', '_volatile' ]:
+            self.__dict__[name] = value
             return
 
         # Update the value
@@ -196,7 +196,8 @@ class ClassType(object):
             if i not in other.__dict__:
                 # am I supposed to delete?
                 continue
-            self.__dict__[i]._copy(other.__dict__[i])
+            if not self.__dict__[i]._volatile:
+                self.__dict__[i]._copy(other.__dict__[i])
         for i in other.Properties:
             if i not in self.__dict__:
                 # am I supposed to add?
