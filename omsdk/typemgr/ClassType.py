@@ -23,20 +23,25 @@ from omsdk.typemgr.FieldType import FieldType
 
 class ClassType(object):
 
-    def __init__(self, mode, fname, alias, volatile=False):
+    def __init__(self, mode, fname, alias, parent = None, volatile=False):
         self.__dict__['_freeze'] = False
         self.__dict__['_removed'] = {}
         self.__dict__['_track'] = False
         self.__dict__['_alias'] = alias
         self.__dict__['_volatile'] = volatile
         self.__dict__['_fname'] = fname
+        self.__dict__['_changed'] = False
+        self.__dict__['_parent'] = parent
+        self.__dict__['_mode'] = mode
         if mode == 'create':
             self.my_create()
         elif mode == 'modify':
             self.my_modify()
         elif mode == 'delete':
             self.my_delete()
-        self._stop_tracking()
+        elif mode == 'custom':
+            self.my_custom()
+        self._start_tracking()
 
     def __getattr__(self, name):
         if name in self.__dict__ and name not in ['_track', '_freeze', '_removed']:
@@ -52,6 +57,10 @@ class ClassType(object):
         if '_freeze' in self.__dict__ and self.__dict__['_freeze']:
             raise ValueError('object in freeze mode')
 
+        if name in [ '_parent' ]:
+            self.__dict__['_parent'] = value
+            return
+
         # Update the value
         if name in self.__dict__['_removed']:
             if name not in self.__dict__:
@@ -65,7 +74,7 @@ class ClassType(object):
                 raise ValueError('value does not belong to FieldType')
         elif isinstance(self.__dict__[name], FieldType):
             self.__dict__[name]._value = value
-        elif isinstance(self.__dict__[name], FieldType):
+        elif isinstance(self.__dict__[name], ClassType):
             not_implemented
         else:
             raise ValueError('value does not belong to FieldType')
@@ -176,6 +185,58 @@ class ClassType(object):
             if not i.startswith('_'):
                 self.__dict__[i]._stop_tracking()
 
+    def copy(self, other, commit = False):
+        if not self._copy(other):
+            return False
+        if commit: self.commit()
+        return True
+
+    def _copy(self, other):
+        if other is None or not isinstance(other, type(self)):
+            return False
+        for i in self.Properties:
+            if i not in other.__dict__:
+                # am I supposed to delete?
+                continue
+            self.__dict__[i]._copy(other.__dict__[i])
+        for i in other.Properties:
+            if i not in self.__dict__:
+                # am I supposed to add?
+                continue
+        return True
+
+    def _duplicate_tree(self, obj, parent):
+        for i in self.Properties:
+            if isinstance(self.__dict__[i], FieldType):
+                obj.__dict__[i]._value = self.__dict__[i]._value
+                obj.__dict__[i]._parent = parent
+            else:
+                obj.__dict__[i] = self.__dict__[i].duplicate(parent=self)
+                obj.__dict__[i]._parent = parent
+        return obj
+
+    def commit(self):
+        self._stop_tracking()
+        self._commit()
+        self._start_tracking()
+        return True
+
+    def _commit(self):
+        for i in self.Properties:
+            self.__dict__[i]._commit()
+        return True
+
+    def reject(self):
+        self._stop_tracking()
+        self._reject()
+        self._start_tracking()
+        return True
+
+    def _reject(self):
+        for i in self.Properties:
+            self.__dict__[i]._reject()
+        return True
+
     def my_accept_value(self, value):
         return True
 
@@ -184,6 +245,15 @@ class ClassType(object):
             if self.__dict__[i].has_value():
                 return True
         return False
+
+    def fix_changed(self):
+        self.__dict__['_changed'] = False
+        if len(self.__dict__['_removed']) > 0:
+            self.__dict__['_changed'] = True
+        for i in self.Properties:
+            if self.__dict__[i].fix_changed():
+                self.__dict__['_changed'] = True
+        return self.__dict__['_changed']
 
     def is_changed(self):
         if len(self.__dict__['_removed']) > 0:
@@ -215,15 +285,11 @@ class ClassType(object):
     def my_delete(self):
         pass
 
+    def my_custom(self):
+        pass
+
     @property
     def Properties(self):
         return sorted([i for i in self.__dict__ if not i.startswith('_')])
 
 
-    def printx(self, print_everything=False):
-        for i in self.Properties:
-            status = ''
-            if self.__dict__[i].is_changed():
-                print('self.{0} = {1} [changed]'.format(i, self.__dict__[i]))
-            elif print_everything:
-                print('self.{0} = {1}'.format(i, self.__dict__[i]))

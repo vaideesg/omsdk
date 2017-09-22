@@ -2,11 +2,19 @@ from omdrivers.enums.iDRAC.iDRAC import *
 from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.BuiltinTypes import *
 
-class SNMP(ClassType):
+class CloneableClassType(ClassType):
 
-    def __init__(self, mode, alias):
-        super().__init__(mode, None, alias)
-        self._start_tracking()
+    def duplicate(self, parent=None):
+        obj = type(self)(self._mode, parent)
+        self._duplicate_tree(obj, parent)
+        obj._start_tracking()
+        return obj
+
+class SNMP(CloneableClassType):
+
+    def __init__(self, mode, parent = None):
+        super().__init__(mode, None, 'SNMP', parent)
+
 
     def my_create(self):
         self.AgentCommunity_SNMP = StringField(None, 'SNMPCommunity')
@@ -19,12 +27,13 @@ class SNMP(ClassType):
         self.TrapFormat_SNMP = \
             EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat', volatile=True)
 
-class iDRAC(ClassType):
+class iDRAC(CloneableClassType):
 
-    def __init__(self, mode='create'):
-        super().__init__(mode, 'Component', None)
-        self._start_tracking()
+    def __init__(self, mode, parent = None):
+        super().__init__(mode, 'Component', None, parent, False)
 
     def my_create(self):
-        self.SNMP = SNMP(mode='create', alias='SNMP')
+        self.SNMP = SNMP(mode='create', parent=self)
 
+    def my_custom(self):
+        pass

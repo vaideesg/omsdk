@@ -24,7 +24,7 @@ from enum import Enum
 
 class FieldType(object):
 
-    def __init__(self, init_value, typename, fname, alias, volatile=False):
+    def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False):
         self.__dict__['_freeze'] = False
         self.__dict__['_track'] = False
 
@@ -33,6 +33,7 @@ class FieldType(object):
         self.__dict__['_alias'] = alias
         self.__dict__['_volatile'] = volatile
         self.__dict__['_fname'] = fname
+        self.__dict__['_parent'] = parent
         self._value = init_value
 
     def __getattr__(self, name):
@@ -48,6 +49,10 @@ class FieldType(object):
         # Freeze mode - don't allow any updates
         if '_freeze' in self.__dict__ and self.__dict__['_freeze']:
             raise ValueError('object in freeze mode')
+
+        if name in ['_parent']:
+            self.__dict__[name] = value
+            return
 
         # Validate value and convert it if needed
         valid = False
@@ -97,7 +102,7 @@ class FieldType(object):
         self.__dict__[name] = value
 
         # if not in tracking mode, then treat the value as original
-        if not self.__dict__['_track']:
+        if not self.__dict__['_track'] and name == '_value':
             self.__dict__['_orig_value'] = value
 
     def __delattr__(self, name):
@@ -116,10 +121,40 @@ class FieldType(object):
         return True
 
     def is_changed(self):
+        return self._changed
+
+    def fix_changed(self):
+        return self._changed
+
+    @property
+    def _changed(self):
         return self._value != self.__dict__['_orig_value']
 
     def has_value(self):
         return self._value != None
+
+    def copy(self, other, commit = False):
+        if isinstance(other, type(self)):
+            return self._copy(other)
+        return False
+
+    def _copy(self, other):
+        self._value = other._value
+        return True
+
+    def commit(self):
+        return self._commit()
+
+    def _commit(self):
+        self.__dict__['_orig_value'] = self._value 
+        return True
+
+    def reject(self):
+        return self._reject()
+
+    def _reject(self):
+        self._value = self.__dict__['_orig_value'] 
+        return True
 
     def __str__(self):
         return str(self._value)

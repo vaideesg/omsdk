@@ -6,6 +6,7 @@ from omsdk.typemgr.ClassType import ClassType
 class FormatterTemplate(object):
     def __init__(self, everything):
         self.everything = everything
+        self.target = None
 
     def _emit(self, output, value):
         return 0
@@ -22,16 +23,19 @@ class FormatterTemplate(object):
     def _get_str(self):
         return None
 
-    def format_(self, output, obj):
-        self._format_(output, obj)
-        return output
+    def format_type(self, obj):
+        self._format_recurse(self.target, obj)
+        return self
 
-    def _format_(self, output_obj, obj):
+    def _format_recurse(self, output_obj, obj):
         if isinstance(obj, FieldType):
             return self._emit(output_obj, obj)
         opobj = self._init(output_obj, obj)
         props = obj.Properties
         for i in props:
+            if not self.everything:
+                if not obj.__dict__[i]._changed:
+                    continue
             attr_name = i
             if obj.__dict__[i]._alias is not None:
                 attr_name = obj.__dict__[i]._alias
@@ -62,7 +66,7 @@ class JSONFormatter(FormatterTemplate):
         return output
 
     def _write(self, output, attr_name, value):
-        output[attr_name] = self._format_(output, value)
+        output[attr_name] = self._format_recurse(output, value)
 
     def _get_str(self):
         return PrettyPrint.prettify_json(self.target)
@@ -91,7 +95,7 @@ class XMLFormatter(FormatterTemplate):
             output.write('<{0} name="{1}">'.  format(value._fname, attr_name))
             if not isinstance(value, FieldType):
                 output.write('\n')
-        self._format_(output, value)
+        self._format_recurse(output, value)
         if value._fname:
             output.write('</{0}>\n'.format(value._fname))
 
@@ -120,7 +124,7 @@ class StringFormatter(FormatterTemplate):
     def _write(self, output, attr_name, value):
         if value._fname:
             output.write('{1}='.  format(value._fname, attr_name))
-        self._format_(output, value)
+        self._format_recurse(output, value)
         if value._fname:
             output.write(','.format(value._fname))
 
