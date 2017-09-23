@@ -47,6 +47,7 @@ class SNMP(CloneableClassType):
         self.AlertPort_SNMP = PortField(162, 'SNMPTrapPort')
         self.TrapFormat_SNMP = \
             EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat')
+        self.Ports = SuperFieldType(self.AlertPort_SNMP, s.DiscoveryPort_SNMP)
 
 class NIC(CloneableClassType):
 
