@@ -1,12 +1,23 @@
 from omsdk.typemgr.FieldType import FieldType
+
 # private
 #
-# def __init__(self, init_value, typename, alias, volatile=False)
-#     def __init__(self, mode)
+# def __init__(self, mode, fname, alias, parent=None, volatile=False)
 # def __eq__, __ne__, __lt__, __le__, __gt__, __ge__
-# def __getattr__, __delattr__, __setattr__
+# def __getattr__
+# def __delattr__
+# def __setattr__
 # def _start_tracking(self)
 # def _stop_tracking(self)
+# def _copy(self, other)
+# def _commit(self)
+# def _reject(self)
+# @_changed
+#
+# def __str__, __repr__
+#
+# def _duplicate_tree(self, obj, parent)
+# def _set_index(self, index=1)
 #
 # protected:
 #
@@ -14,12 +25,16 @@ from omsdk.typemgr.FieldType import FieldType
 #
 # public:
 # def is_changed(self)
+# def fix_changed(self)
+# def has_value(self)
+# def copy(self, other, commit= False)
+# def commit(self)
+# def reject(self)
 # def freeze(self)
 # def unfreeze(self)
-# def json_encode(self)
-# def printx(self, print_everything=False)
-
-# def format(self, formatter, everything = False)
+# def Properties(self):
+#
+# def get_root(self)
 
 class ClassType(object):
 
@@ -217,6 +232,10 @@ class ClassType(object):
                 obj.__dict__[i]._parent = parent
         return obj
 
+    def _set_index(self, index=1):
+        for i in self.Properties:
+            self.__dict__[i]._index = index
+
     def get_root(self):
         if self._parent is None:
             return self
@@ -226,6 +245,7 @@ class ClassType(object):
         self._stop_tracking()
         self._commit()
         self._start_tracking()
+        self.fix_changed()
         return True
 
     def _commit(self):
@@ -237,6 +257,7 @@ class ClassType(object):
         self._stop_tracking()
         self._reject()
         self._start_tracking()
+        self.fix_changed()
         return True
 
     def _reject(self):
@@ -254,21 +275,16 @@ class ClassType(object):
         return False
 
     def fix_changed(self):
-        self.__dict__['_changed'] = False
-        if len(self.__dict__['_removed']) > 0:
-            self.__dict__['_changed'] = True
+        self._changed = False
+        if len(self._removed) > 0:
+            self._changed = True
         for i in self.Properties:
             if self.__dict__[i].fix_changed():
-                self.__dict__['_changed'] = True
-        return self.__dict__['_changed']
+                self._changed = True
+        return self._changed
 
     def is_changed(self):
-        if len(self.__dict__['_removed']) > 0:
-            return True
-        for i in self.Properties:
-            if self.__dict__[i].is_changed():
-                return True
-        return False
+        return self._changed
 
     def freeze(self):
         self.__dict__['_freeze'] = True
@@ -296,4 +312,5 @@ class ClassType(object):
     def Properties(self):
         return sorted([i for i in self.__dict__ if not i.startswith('_')])
 
-
+    def json_encode(self):
+        return str(self)

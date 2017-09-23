@@ -1,36 +1,8 @@
 from omdrivers.enums.iDRAC.iDRAC import *
 from omsdk.typemgr.ClassType import ClassType
+from omsdk.typemgr.CloneClassType import CloneableClassType
+from omsdk.typemgr.ArrayType import ArrayType
 from omsdk.typemgr.BuiltinTypes import *
-
-class CloneableClassType(ClassType):
-
-    def duplicate_parent(self):
-        parent_list = []
-        obj = self
-        while obj._parent:
-            field_name = None
-            for prop_name in obj._parent.Properties:
-                if obj._parent.__dict__[prop_name] == obj:
-                    field_name = prop_name
-                    break
-            parent_list.insert(0, (obj._parent, field_name))
-            obj = obj._parent
-        new_list = [ None ]
-        for (parent, field) in parent_list:
-            new_list.append(type(parent)('custom', new_list[-1]))
-            if new_list[-2]:
-                new_list[-2].__dict__[field] = new_list[-1]
-        return (new_list[1], parent_list[-1][1])
-
-    def duplicate(self, parent=None):
-        if parent is None:
-            (parent, field) = self.duplicate_parent()
-        obj = type(self)(self._mode, parent)
-        self._duplicate_tree(obj, parent)
-        if parent:
-            parent.__dict__[field] = obj
-        obj._start_tracking()
-        return obj
 
 class SNMP(CloneableClassType):
 
@@ -38,28 +10,30 @@ class SNMP(CloneableClassType):
         super().__init__(mode, None, 'SNMP', parent)
 
     def my_create(self):
-        self.AgentCommunity_SNMP = StringField(None, 'SNMPCommunity')
-        self.DiscoveryPort_SNMP = PortField(161, 'SNMPPort')
+        self.AgentCommunity_SNMP = StringField(None, 'SNMPCommunity', parent=self)
+        self.DiscoveryPort_SNMP = PortField(161, 'SNMPPort', parent=self)
         self.AgentEnable_SNMP = \
-                EnumTypeField(None, AgentEnable_SNMPTypes, 'SNMPEnabled')
+                EnumTypeField(None, AgentEnable_SNMPTypes, 'SNMPEnabled', parent=self)
         self.SNMPProtocol_SNMP = \
-                EnumTypeField(None, SNMPProtocol_SNMPTypes, 'SNMPVersions')
-        self.AlertPort_SNMP = PortField(162, 'SNMPTrapPort')
+                EnumTypeField(None, SNMPProtocol_SNMPTypes, 'SNMPVersions', parent=self)
+        self.AlertPort_SNMP = PortField(162, 'SNMPTrapPort', parent=self)
         self.TrapFormat_SNMP = \
-            EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat')
-        self.Ports = SuperFieldType(self.AlertPort_SNMP, s.DiscoveryPort_SNMP)
+            EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat', parent=self)
+        self.Ports = SuperFieldType(self.AlertPort_SNMP, self.DiscoveryPort_SNMP)
 
 class NIC(CloneableClassType):
 
     def __init__(self, mode, parent = None):
         super().__init__(mode, None, 'SNMP', parent)
 
+    def my_create(self):
+        self.Selection_NIC = EnumTypeField(None, Selection_NICTypes)
+        self.Failover_NIC = EnumTypeField(None, Failover_NICTypes)
+
     def my_accept_value(self):
-        # Selection_NIC = 'Dedicated', LOM1, LOM2, LOM3, LOM4
-        # Failover_NIC = None, LOM1, LOM2, LOM3, LOM4, All LOMs
-        if self.Selection_NIC == SelectionTypes.Dedicated:
-            self.Failover_NIC = None
-            self.AutoDedicatedNIC_NIC = AutoDedicatedNICTypes.Enabled
+        #if self.Selection_NIC == SelectionTypes.Dedicated:
+        #    self.Failover_NIC = None
+        #    self.AutoDedicatedNIC_NIC = AutoDedicatedNICTypes.Enabled
         if self.Selection_NIC == self.Failover_NIC:
             return False
         return True                
@@ -83,6 +57,33 @@ class Time(CloneableClassType):
     # (self.config.arspec.iDRAC.Timezone_Time, tz, self.TimeZone),
     # (self.config.arspec.iDRAC.DayLightOffset_Time, 0, 0),
     # (self.config.arspec.iDRAC.TimeZoneOffset_Time, 0, 0) ])
+
+class Users(CloneableClassType):
+
+    UserName = 'UserName_Users'
+
+    def __init__(self, mode, parent = None):
+        super().__init__(mode, None, 'SNMP', parent)
+
+    @property
+    def Key(self):
+        return self.UserName_Users
+
+    @property
+    def Index(self):
+        return self.UserName_Users._index
+
+    def my_create(self):
+        self.UserName_Users = StringField(None)
+        self.Password_Users = StringField(None)
+        self.Privilege_Users = EnumTypeField(None, Privilege_UsersTypes)
+        self.IpmiLanPrivilege_Users = EnumTypeField(None, IpmiLanPrivilege_UsersTypes)
+        self.Enable_Users = EnumTypeField(None, Enable_UsersTypes)
+        self.SolEnable_Users = EnumTypeField(None, SolEnable_UsersTypes)
+        self.ProtocolEnable_Users = EnumTypeField(None, ProtocolEnable_UsersTypes)
+        self.AuthenticationProtocol_Users = EnumTypeField(None, AuthenticationProtocol_UsersTypes)
+        self.PrivacyProtocol_Users = EnumTypeField(None, PrivacyProtocol_UsersTypes)
+
 class iDRAC(CloneableClassType):
 
     def __init__(self, mode, parent = None):
@@ -90,6 +91,7 @@ class iDRAC(CloneableClassType):
 
     def my_create(self):
         self.SNMP = SNMP(mode='create', parent=self)
+        #self.Users = ArrayType(Users)
 
 class System(CloneableClassType):
 

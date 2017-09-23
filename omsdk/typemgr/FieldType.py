@@ -2,12 +2,18 @@ from enum import Enum
 
 # private
 #
-# def __init__(self, init_value, typename, fname, alias, volatile=False)
-#     def __init__(self, mode)
+# def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False)
 # def __eq__, __ne__, __lt__, __le__, __gt__, __ge__
-# def __getattr__, __delattr__, __setattr__
+# def __str__, __repr__
+# def __getattr__
+# def __delattr__
+# def __setattr__
 # def _start_tracking(self)
 # def _stop_tracking(self)
+# def _copy(self, other)
+# def _commit(self)
+# def _reject(self)
+# @_changed
 #
 # protected:
 #
@@ -15,12 +21,14 @@ from enum import Enum
 #
 # public:
 # def is_changed(self)
+# def fix_changed(self)
+# def has_value(self)
+# def copy(self, other, commit= False)
+# def commit(self)
+# def reject(self)
 # def freeze(self)
 # def unfreeze(self)
 # def json_encode(self)
-# def printx(self, print_everything=False)
-
-# def format(self, formatter, everything = False)
 
 class FieldType(object):
 
@@ -35,6 +43,8 @@ class FieldType(object):
         self.__dict__['_volatile'] = volatile
         self.__dict__['_parent'] = parent
         self.__dict__['_super_field'] = False
+        self.__dict__['_index'] = 1
+        self.__dict__['_changed'] = False
         self._value = init_value
 
     def __getattr__(self, name):
@@ -111,8 +121,19 @@ class FieldType(object):
         # modify the value
         self.__dict__[name] = value
 
-        # if not in tracking mode, then treat the value as original
-        if not self.__dict__['_track']:
+        if self.__dict__['_track']:
+            # if in tracking mode, propagate the changes to parent
+            if not self._super_field:
+                self._changed = (self._value != self._orig_value)
+
+            if self._changed:
+                parent = self._parent
+                while parent is not None:
+                    parent._changed = True
+                    parent = parent._parent
+
+        else:
+            # if not in tracking mode, then treat the value as original
             self.__dict__['_orig_value'] = value
 
     def __delattr__(self, name):
@@ -135,11 +156,9 @@ class FieldType(object):
         return self._changed
 
     def fix_changed(self):
+        if not self._super_field:
+            self._changed = (self._value != self.__dict__['_orig_value'])
         return self._changed
-
-    @property
-    def _changed(self):
-        return self._value != self.__dict__['_orig_value']
 
     def has_value(self):
         return self._value != None
@@ -157,14 +176,18 @@ class FieldType(object):
         return self._commit()
 
     def _commit(self):
-        self.__dict__['_orig_value'] = self._value 
+        if not self._super_field:
+            self.__dict__['_orig_value'] = self._value 
+        self.fix_changed()
         return True
 
     def reject(self):
         return self._reject()
 
     def _reject(self):
-        self._value = self.__dict__['_orig_value'] 
+        if not self._super_field:
+            self._value = self.__dict__['_orig_value'] 
+        self.fix_changed()
         return True
 
     def __str__(self):
