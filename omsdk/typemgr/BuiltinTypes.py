@@ -1,5 +1,14 @@
 from omsdk.typemgr.FieldType import FieldType
 
+class SuperFieldType(FieldType):
+    def __init__(self, parent, *parts):
+        super().__init__(None, tuple, 'Attribute', None, parent, True)
+        self.__dict__['_value'] = parts
+        self._super_field = True
+
+    def clone(self, parent=None):
+        return type(self)(parent, *self.__dict__['_value'])
+
 class CloneableFieldType(FieldType):
     def clone(self, parent=None):
         return type(self)(self._value, self._alias, parent, self._volatile)
@@ -25,3 +34,10 @@ class EnumTypeField(CloneableFieldType):
     def __init__(self, init_value, entype, alias=None, parent=None, volatile=False):
         super().__init__(init_value, entype, 'Attribute', alias, parent, volatile)
 
+class IPv4AddressField(CloneableFieldType):
+    def __init__(self, init_value, entype, alias=None, parent=None, volatile=False):
+        super().__init__(init_value, entype, 'Attribute', alias, parent, volatile)
+
+class IPv6AddressField(CloneableFieldType):
+    def __init__(self, init_value, entype, alias=None, parent=None, volatile=False):
+        super().__init__(init_value, entype, 'Attribute', alias, parent, volatile)

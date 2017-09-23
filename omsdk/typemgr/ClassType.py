@@ -33,6 +33,7 @@ class ClassType(object):
         self.__dict__['_changed'] = False
         self.__dict__['_parent'] = parent
         self.__dict__['_mode'] = mode
+        self.__dict__['_super_field'] = False
         if mode == 'create':
             self.my_create()
         elif mode == 'modify':
@@ -55,7 +56,9 @@ class ClassType(object):
         if '_freeze' in self.__dict__ and self.__dict__['_freeze']:
             raise ValueError('object in freeze mode')
 
-        if name in [ '_parent', '_volatile' ]:
+        # Allow updates to internal fields
+        if name in [ '_alias', '_parent', '_volatile', '_fname',
+                     '_changed', '_mode', '_super_field' ]:
             self.__dict__[name] = value
             return
 

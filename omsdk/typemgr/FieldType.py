@@ -31,9 +31,10 @@ class FieldType(object):
         self.__dict__['_orig_value'] = init_value
         self.__dict__['_type']  = typename
         self.__dict__['_alias'] = alias
-        self.__dict__['_volatile'] = volatile
         self.__dict__['_fname'] = fname
+        self.__dict__['_volatile'] = volatile
         self.__dict__['_parent'] = parent
+        self.__dict__['_super_field'] = False
         self._value = init_value
 
     def __getattr__(self, name):
@@ -43,21 +44,30 @@ class FieldType(object):
 
     def __setattr__(self, name, value):
         # Do not allow access to internal variables
-        if name in ['_orig_value', '_track']:
+        if name in ['_orig_value', '_track', '_freeze']:
             raise AttributeError('Invalid attribute ' + name)
 
         # Freeze mode - don't allow any updates
         if '_freeze' in self.__dict__ and self.__dict__['_freeze']:
             raise ValueError('object in freeze mode')
 
-        if name in ['_parent']:
+        if name not in ['_value']:
             self.__dict__[name] = value
             return
+        # should we allow updates to  '_type', '_alias', '_fname'?
+
+        if '_super_field' in self.__dict__ and self.__dict__['_super_field']:
+            # sets not allowed in superfields
+            raise AttributeError('super_field objects cannot be modified')
 
         # Validate value and convert it if needed
         valid = False
         msg = None
         if value is None:
+            if name in self.__dict__:
+                # value None is considered - "no change",
+                # except when it is initialized
+                return 
             self.__dict__[name] = value
             valid = True
         # value belongs to the expected type
@@ -102,12 +112,13 @@ class FieldType(object):
         self.__dict__[name] = value
 
         # if not in tracking mode, then treat the value as original
-        if not self.__dict__['_track'] and name == '_value':
+        if not self.__dict__['_track']:
             self.__dict__['_orig_value'] = value
 
     def __delattr__(self, name):
         # Do not allow access to internal variables
-        if name in ['_orig_value', '_track', '_freeze', '_type', '_value', '_volatile']:
+        if name in ['_orig_value', '_track', '_freeze', '_type',
+                    '_value', '_volatile', '_super_field']:
             raise AttributeError('Invalid attribute ' + name)
 
         # Freeze mode - don't allow any updates

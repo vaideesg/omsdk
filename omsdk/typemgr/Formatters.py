@@ -7,6 +7,7 @@ from omsdk.sdkcenum import TypeHelper
 class FormatterTemplate(object):
     def __init__(self, everything):
         self.everything = everything
+        self.include_super_field = True
         self.target = None
 
     def _emit(self, output, value):
@@ -37,6 +38,8 @@ class FormatterTemplate(object):
             if not self.everything:
                 if not obj.__dict__[i]._changed:
                     continue
+            if obj.__dict__[i]._super_field and not self.include_super_field:
+                continue
             attr_name = i
             if obj.__dict__[i]._alias is not None:
                 attr_name = obj.__dict__[i]._alias
@@ -76,6 +79,7 @@ class XMLFormatter(FormatterTemplate):
     def __init__(self, everything):
         super().__init__(everything)
         self.target = io.StringIO()
+        self.include_super_field = False
 
     def _emit(self, output, value):
         if value.has_value():

@@ -38,17 +38,50 @@ class SNMP(CloneableClassType):
         super().__init__(mode, None, 'SNMP', parent)
 
     def my_create(self):
-        if False:
-            self.AgentCommunity_SNMP = StringField(None, 'SNMPCommunity')
-            self.DiscoveryPort_SNMP = PortField(161, 'SNMPPort')
-            self.AgentEnable_SNMP = \
+        self.AgentCommunity_SNMP = StringField(None, 'SNMPCommunity')
+        self.DiscoveryPort_SNMP = PortField(161, 'SNMPPort')
+        self.AgentEnable_SNMP = \
                 EnumTypeField(None, AgentEnable_SNMPTypes, 'SNMPEnabled')
-            self.SNMPProtocol_SNMP = \
+        self.SNMPProtocol_SNMP = \
                 EnumTypeField(None, SNMPProtocol_SNMPTypes, 'SNMPVersions')
         self.AlertPort_SNMP = PortField(162, 'SNMPTrapPort')
         self.TrapFormat_SNMP = \
-            EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat', volatile=True)
+            EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat')
 
+class NIC(CloneableClassType):
+
+    def __init__(self, mode, parent = None):
+        super().__init__(mode, None, 'SNMP', parent)
+
+    def my_accept_value(self):
+        # Selection_NIC = 'Dedicated', LOM1, LOM2, LOM3, LOM4
+        # Failover_NIC = None, LOM1, LOM2, LOM3, LOM4, All LOMs
+        if self.Selection_NIC == SelectionTypes.Dedicated:
+            self.Failover_NIC = None
+            self.AutoDedicatedNIC_NIC = AutoDedicatedNICTypes.Enabled
+        if self.Selection_NIC == self.Failover_NIC:
+            return False
+        return True                
+
+class SysLog(CloneableClassType):
+
+    def __init__(self, mode, parent = None):
+        super().__init__(mode, None, 'SNMP', parent)
+
+    def my_accept_value(self):
+        powerlog_enable = 'Enabled'
+        if powerlog_interval <= 0:
+            powerlog_interval = 0
+            powerlog_enable = 'Disabled'
+
+class Time(CloneableClassType):
+    def __init__(self, mode, parent = None):
+        super().__init__(mode, None, 'Time', parent)
+
+    # return self._get_scp_comp_field('iDRAC.Embedded.1', 'Time.1#TimeZone')
+    # (self.config.arspec.iDRAC.Timezone_Time, tz, self.TimeZone),
+    # (self.config.arspec.iDRAC.DayLightOffset_Time, 0, 0),
+    # (self.config.arspec.iDRAC.TimeZoneOffset_Time, 0, 0) ])
 class iDRAC(CloneableClassType):
 
     def __init__(self, mode, parent = None):
