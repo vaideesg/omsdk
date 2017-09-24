@@ -1,4 +1,5 @@
 from enum import Enum
+from omsdk.sdkcenum import EnumWrapper, TypeHelper
 
 # private
 #
@@ -30,59 +31,74 @@ from enum import Enum
 # def unfreeze(self)
 # def json_encode(self)
 
+TypeState = EnumWrapper('TMS', { 
+    'UnInitialized' : 'UnInitialized',
+    'Initializing' : 'Initializing',
+    'Committed' : 'Committed',
+    'Changing' : 'Changing',
+}).enum_type
+
+
 class FieldType(object):
 
     def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False):
-        self.__dict__['_freeze'] = False
-        self.__dict__['_track'] = False
+        self._type  = typename
+        self._alias = alias
+        self._fname = fname
+        self._volatile = volatile
+        self._parent = parent
+        self._composite = False
+        self._index = 1
+        self._modifyAllowed = True
 
-        self.__dict__['_orig_value'] = init_value
-        self.__dict__['_type']  = typename
-        self.__dict__['_alias'] = alias
-        self.__dict__['_fname'] = fname
-        self.__dict__['_volatile'] = volatile
-        self.__dict__['_parent'] = parent
-        self.__dict__['_super_field'] = False
-        self.__dict__['_index'] = 1
-        self.__dict__['_changed'] = False
+        self._freeze = False
+
+        self.__dict__['_state'] = TypeState.UnInitialized
         self._value = init_value
 
+    # Value APIs
     def __getattr__(self, name):
-        if name in self.__dict__ and name not in ['_orig_value', '_track']:
+        if name in self.__dict__ and name not in ['_orig_value']:
             return self.__dict__[name]
         raise AttributeError('Invalid attribute ' + name)
 
+    # Value APIs
     def __setattr__(self, name, value):
         # Do not allow access to internal variables
-        if name in ['_orig_value', '_track', '_freeze']:
+        if name in ['_orig_value', '_state']:
             raise AttributeError('Invalid attribute ' + name)
 
-        # Freeze mode - don't allow any updates
+        # Freeze mode: No sets allowed
         if '_freeze' in self.__dict__ and self.__dict__['_freeze']:
             raise ValueError('object in freeze mode')
 
+        # allow updates to other fields except _value
+        # should we allow updates to  '_type', '_alias', '_fname'?
         if name not in ['_value']:
             self.__dict__[name] = value
             return
-        # should we allow updates to  '_type', '_alias', '_fname'?
 
-        if '_super_field' in self.__dict__ and self.__dict__['_super_field']:
-            # sets not allowed in superfields
-            raise AttributeError('super_field objects cannot be modified')
+        # Create-only attribute : No updates allowed
+        if not self._modifyAllowed and \
+           self._state in [TypeState.Committed, TypeState.Changing]:
+            raise ValueError('updates not allowed to this object')
+
+
+        # SuperField : sets not allowed in superfields
+        if self.__dict__['_composite']:
+            raise AttributeError('composite objects cannot be modified')
+
+        # value is None, object was committed; ==> no change
+        if value is None and self._state in [TypeState.Committed, TypeState.Changing]:
+            return 
 
         # Validate value and convert it if needed
         valid = False
         msg = None
-        if value is None:
-            if name in self.__dict__:
-                # value None is considered - "no change",
-                # except when it is initialized
-                return 
-            self.__dict__[name] = value
+        if value is None or isinstance(value, self._type):
             valid = True
-        # value belongs to the expected type
-        elif isinstance(value, self._type):
-            self.__dict__[name] = value
+        elif type(self) == type(value):
+            value = value._value
             valid = True
         elif isinstance(value, str):
             # expected value is int
@@ -94,7 +110,7 @@ class FieldType(object):
                 value = bool(value)
                 valid = True
             # expected value is enumeration
-            elif self._type == Enum:
+            elif isinstance(self._type, type(Enum)):
                 value = TypeHelper.convert_to_enum(value, self._type)
                 if value is not None:
                     valid = True
@@ -102,9 +118,6 @@ class FieldType(object):
                     msg = str(value) + " is not " + str(self._type)
             else:
                 msg = str(value) + " cannot be converted to " + str(self._type)
-        elif type(self) == type(value):
-            value = value._value
-            valid = True
         else:
             msg = "No type conversion found for '" + str(value) + "'. "\
                   "Expected " + str(self._type.__name__) + ". Got " +\
@@ -120,26 +133,25 @@ class FieldType(object):
 
         # modify the value
         self.__dict__[name] = value
-
-        if self.__dict__['_track']:
-            # if in tracking mode, propagate the changes to parent
-            if not self._super_field:
-                self._changed = (self._value != self._orig_value)
-
-            if self._changed:
-                parent = self._parent
-                while parent is not None:
-                    parent._changed = True
-                    parent = parent._parent
-
+        if self._state in [TypeState.UnInitialized, TypeState.Initializing]:
+            self.__dict__['_state'] = TypeState.Initializing
+        elif self._state in [TypeState.Committed, TypeState.Changing]:
+            if self.__dict__['_orig_value'] == self._value:
+                self.__dict__['_state'] = TypeState.Committed
+            else:
+                self.__dict__['_state'] = TypeState.Changing
         else:
-            # if not in tracking mode, then treat the value as original
-            self.__dict__['_orig_value'] = value
+            print("Should not come here")
 
+        if self.is_changed():
+            #TODO: self._parent.child_state_changed(self, self._state)
+            pass
+
+    # Value APIs
     def __delattr__(self, name):
         # Do not allow access to internal variables
         if name in ['_orig_value', '_track', '_freeze', '_type',
-                    '_value', '_volatile', '_super_field']:
+                    '_value', '_volatile', '_composite']:
             raise AttributeError('Invalid attribute ' + name)
 
         # Freeze mode - don't allow any updates
@@ -149,53 +161,66 @@ class FieldType(object):
         if name in self.__dict__:
             del self.__dict__[name]
 
+    # Value APIs
     def my_accept_value(self, value):
         return True
 
-    def is_changed(self):
-        return self._changed
-
-    def fix_changed(self):
-        if not self._super_field:
-            self._changed = (self._value != self.__dict__['_orig_value'])
-        return self._changed
-
-    def has_value(self):
-        return self._value != None
-
-    def copy(self, other, commit = False):
-        if isinstance(other, type(self)):
-            return self._copy(other)
-        return False
-
-    def _copy(self, other):
-        self._value = other._value
-        return True
-
-    def commit(self):
-        return self._commit()
-
-    def _commit(self):
-        if not self._super_field:
-            self.__dict__['_orig_value'] = self._value 
-        self.fix_changed()
-        return True
-
-    def reject(self):
-        return self._reject()
-
-    def _reject(self):
-        if not self._super_field:
-            self._value = self.__dict__['_orig_value'] 
-        self.fix_changed()
-        return True
-
+    # Representation APIs
     def __str__(self):
         return str(self._value)
 
+    # Representation APIs
     def __repr__(self):
         return str(self._value)
 
+    # Representation APIs
+    def sanitized_value(self):
+        if '_value' not in self.__dict__ or self._value is None:
+            return None
+        return TypeHelper.resolve(self._value)
+
+    # State APIs:
+    def is_changed(self):
+        return self._state in [TypeState.Initializing, TypeState.Changing]
+
+    # State : to Committed
+    # allowed even during freeze
+    def commit(self):
+        if self.is_changed():
+            if not self._composite:
+                self.__dict__['_orig_value'] = self._value
+            self.__dict__['_state'] = TypeState.Committed
+        return True
+
+    # State : to Committed
+    # allowed even during freeze
+    def reject(self):
+        if self.is_changed():
+            if not self._composite:
+                if '_orig_value' not in self.__dict__:
+                    del self.__dict__['_value']
+                    self.__dict__['_state'] = TypeState.UnInitialized
+                else:
+                    self._value = self.__dict__['_orig_value']
+                    self.__dict__['_state'] = TypeState.Committed
+        return True
+
+    # Does not have children - so not implemented
+    def child_state_changed(self, child, child_state):
+        not_implemented
+
+    # what to do?
+    def parent_state_changed(self, new_state):
+        not_implemented
+
+    # Object APIs
+    def copy(self, other):
+        if isinstance(other, type(self)):
+            self._value = other._value
+            return True
+        return False
+
+    # Compare APIs:
     def __lt__(self, other):
         if isinstance(other, type(self)):
             if self._value is None and other._value is None:
@@ -207,39 +232,38 @@ class FieldType(object):
             return self._value < other
         return False
 
+    # Compare APIs:
     def __le__(self, other):
+        if self._value is None and other._value is None:
+            return True
         if isinstance(other, type(self)):
-            if self._value is None and other._value is None:
-                return True
             return self._value <= other._value
         elif isinstance(other, self._type):
-            if self._value is None and other is None:
-                return True
             return self._value <= other
         return False
 
+    # Compare APIs:
     def __gt__(self, other):
+        if self._value is None and other._value is None:
+            return True
         if isinstance(other, type(self)):
-            if self._value is None and other._value is None:
-                return False
             return self._value > other._value
         elif isinstance(other, self._type):
-            if self._value is None and other is None:
-                return False
             return self._value > other
         return False
 
+    # Compare APIs:
     def __ge__(self, other):
+        if self._value is None and other._value is None:
+            return True
         if isinstance(other, type(self)):
-            if self._value is None and other._value is None:
-                return True
             return self._value >= other._value
         elif isinstance(other, self._type):
-            if self._value is None and other is None:
-                return True
             return self._value >= other
         return False
 
+    # Don't allow comparision with string ==> becomes too generic
+    # Compare APIs:
     def __eq__(self, other):
         if isinstance(other, type(self)):
             return self._value == other._value
@@ -247,20 +271,21 @@ class FieldType(object):
             return self._value == other
         return False
 
+    # Compare APIs:
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def _start_tracking(self):
-        self.__dict__['_track'] = True
-
-    def _stop_tracking(self):
-        self.__dict__['_track'] = False
-
+    # Freeze APIs
     def freeze(self):
-        self.__dict__['_freeze'] = True
+        self._freeze = True
 
+    # Freeze APIs
     def unfreeze(self):
         self.__dict__['_freeze'] = False
+
+    # Freeze APIs
+    def is_frozen(self):
+        return self.__dict__['_freeze']
 
     def json_encode(self):
         return self._value

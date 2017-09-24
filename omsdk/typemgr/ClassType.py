@@ -7,8 +7,6 @@ from omsdk.typemgr.FieldType import FieldType
 # def __getattr__
 # def __delattr__
 # def __setattr__
-# def _start_tracking(self)
-# def _stop_tracking(self)
 # def _copy(self, other)
 # def _commit(self)
 # def _reject(self)
@@ -26,7 +24,6 @@ from omsdk.typemgr.FieldType import FieldType
 # public:
 # def is_changed(self)
 # def fix_changed(self)
-# def has_value(self)
 # def copy(self, other, commit= False)
 # def commit(self)
 # def reject(self)
@@ -55,7 +52,6 @@ class ClassType(object):
             self.my_modify()
         elif mode == 'delete':
             self.my_delete()
-        self._start_tracking()
 
     def __getattr__(self, name):
         if name in self.__dict__ and name not in ['_track', '_freeze', '_removed']:
@@ -189,18 +185,6 @@ class ClassType(object):
     def __ne__(self, other):
         return self.__eq__(other) != True
 
-    def _start_tracking(self):
-        self.__dict__['_track'] = True
-        for i in self.__dict__:
-            if not i.startswith('_'):
-                self.__dict__[i]._start_tracking()
-
-    def _stop_tracking(self):
-        self.__dict__['_track'] = False
-        for i in self.__dict__:
-            if not i.startswith('_'):
-                self.__dict__[i]._stop_tracking()
-
     def copy(self, other, commit = False):
         if not self._copy(other):
             return False
@@ -225,7 +209,8 @@ class ClassType(object):
     def _duplicate_tree(self, obj, parent):
         for i in self.Properties:
             if isinstance(self.__dict__[i], FieldType):
-                obj.__dict__[i]._value = self.__dict__[i]._value
+                if not obj.__dict__[i]._super_field:
+                    obj.__dict__[i]._value = self.__dict__[i]._value
                 obj.__dict__[i]._parent = parent
             else:
                 obj.__dict__[i] = self.__dict__[i].duplicate(parent=self)
@@ -242,9 +227,7 @@ class ClassType(object):
         return self._parent.get_root()
 
     def commit(self):
-        self._stop_tracking()
         self._commit()
-        self._start_tracking()
         self.fix_changed()
         return True
 
@@ -254,9 +237,7 @@ class ClassType(object):
         return True
 
     def reject(self):
-        self._stop_tracking()
         self._reject()
-        self._start_tracking()
         self.fix_changed()
         return True
 
@@ -267,12 +248,6 @@ class ClassType(object):
 
     def my_accept_value(self, value):
         return True
-
-    def has_value(self):
-        for i in self.Properties:
-            if self.__dict__[i].has_value():
-                return True
-        return False
 
     def fix_changed(self):
         self._changed = False
@@ -298,6 +273,32 @@ class ClassType(object):
             if not i.startswith('_'):
                 self.__dict__[i].unfreeze()
 
+    def _duplicate_parent(self):
+        parent_list = []
+        obj = self
+        while obj._parent:
+            field_name = None
+            for prop_name in obj._parent.Properties:
+                if obj._parent.__dict__[prop_name] == obj:
+                    field_name = prop_name
+                    break
+            parent_list.insert(0, (obj._parent, field_name))
+            obj = obj._parent
+        new_list = [ None ]
+        for (parent, field) in parent_list:
+            new_list.append(type(parent)('custom', new_list[-1]))
+            if new_list[-2]:
+                new_list[-2].__dict__[field] = new_list[-1]
+        return (new_list[1], parent_list[-1][1])
+
+    def duplicate(self, parent=None):
+        if parent is None:
+            (parent, field) = self._duplicate_parent()
+        obj = type(self)(self._mode, parent)
+        self._duplicate_tree(obj, parent)
+        if parent:
+            parent.__dict__[field] = obj
+        return obj
 
     def my_create(self):
         pass

@@ -21,6 +21,10 @@ class PortField(CloneableFieldType):
         if not isinstance(value, int) or value <= 0:
             raise ValueError(str(value) + " should be an integer > 0")
         return True
+        
+class IntField(CloneableFieldType):
+    def __init__(self, init_value, alias =None, parent=None, volatile=False):
+        super().__init__(init_value, int, 'Attribute', alias, parent, volatile)
 
 class BooleanField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False):

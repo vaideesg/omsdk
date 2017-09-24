@@ -34,7 +34,6 @@ from omsdk.typemgr.ClassType import ClassType
 #
 # def is_changed(self)
 # def fix_changed(self)
-# def has_value(self)
 # def copy(self, other, commit= False)
 # def commit(self)
 # def reject(self)
@@ -157,14 +156,9 @@ class ArrayType(object):
     def my_accept_value(self, value):
         return True
 
-    def has_value(self):
-        for entry in self.Properties:
-            if entry.has_value():
-                return True
-        return False
-
     def fix_changed(self):
         self._changed = False
+        print(str(len(self._orig_entries)) + "!=" + str(len(self._entries)))
         if len(self._orig_entries) != len(self._entries):
             self._changed = True
         for entry in self._entries:
@@ -192,10 +186,9 @@ class ArrayType(object):
     def new(self, **kwargs):
         if len(self._indexes_free) <= 0:
             raise AttributeError('no more entries in array')
-        entry = self.cls(mode = 'create')
+        entry = self.cls(mode = 'create', parent=self)
         for i in kwargs:
             entry.__dict__[i]._value = kwargs[i]
-            entry.__dict__[i]._parent = self
         if entry.Key is None:
             raise ValueError('key not provided')
         if str(entry.Key) in self.keys:

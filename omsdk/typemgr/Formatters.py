@@ -28,6 +28,7 @@ class FormatterTemplate(object):
 
     def format_type(self, obj):
         if obj:
+            obj.fix_changed()
             self._format_recurse(self.target, obj)
         return self
 
@@ -102,8 +103,8 @@ class XMLFormatter(FormatterTemplate):
         self.include_super_field = False
 
     def _emit(self, output, value):
-        if value.has_value():
-            return output.write(str(TypeHelper.resolve(value._value)))
+        val = value.sanitized_value()
+        if val: output.write(str(val))
         return 0
 
     def _init(self, output, obj, array=False):
@@ -139,8 +140,8 @@ class StringFormatter(FormatterTemplate):
         self.target = io.StringIO()
 
     def _emit(self, output, value):
-        if value.has_value():
-            return output.write(value.__str__())
+        val = value.sanitized_value()
+        if val: output.write(str(val))
         return 0
 
     def _init(self, output, obj):

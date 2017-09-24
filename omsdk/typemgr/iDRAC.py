@@ -1,10 +1,9 @@
 from omdrivers.enums.iDRAC.iDRAC import *
 from omsdk.typemgr.ClassType import ClassType
-from omsdk.typemgr.CloneClassType import CloneableClassType
 from omsdk.typemgr.ArrayType import ArrayType
 from omsdk.typemgr.BuiltinTypes import *
 
-class SNMP(CloneableClassType):
+class SNMP(ClassType):
 
     def __init__(self, mode, parent = None):
         super().__init__(mode, None, 'SNMP', parent)
@@ -21,7 +20,7 @@ class SNMP(CloneableClassType):
             EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat', parent=self)
         self.Ports = SuperFieldType(self.AlertPort_SNMP, self.DiscoveryPort_SNMP)
 
-class NIC(CloneableClassType):
+class NIC(ClassType):
 
     def __init__(self, mode, parent = None):
         super().__init__(mode, None, 'SNMP', parent)
@@ -38,7 +37,7 @@ class NIC(CloneableClassType):
             return False
         return True                
 
-class SysLog(CloneableClassType):
+class SysLog(ClassType):
 
     def __init__(self, mode, parent = None):
         super().__init__(mode, None, 'SNMP', parent)
@@ -49,7 +48,7 @@ class SysLog(CloneableClassType):
             powerlog_interval = 0
             powerlog_enable = 'Disabled'
 
-class Time(CloneableClassType):
+class Time(ClassType):
     def __init__(self, mode, parent = None):
         super().__init__(mode, None, 'Time', parent)
 
@@ -58,7 +57,7 @@ class Time(CloneableClassType):
     # (self.config.arspec.iDRAC.DayLightOffset_Time, 0, 0),
     # (self.config.arspec.iDRAC.TimeZoneOffset_Time, 0, 0) ])
 
-class Users(CloneableClassType):
+class Users(ClassType):
 
     UserName = 'UserName_Users'
 
@@ -84,7 +83,7 @@ class Users(CloneableClassType):
         self.AuthenticationProtocol_Users = EnumTypeField(None, AuthenticationProtocol_UsersTypes)
         self.PrivacyProtocol_Users = EnumTypeField(None, PrivacyProtocol_UsersTypes)
 
-class iDRAC(CloneableClassType):
+class iDRAC(ClassType):
 
     def __init__(self, mode, parent = None):
         super().__init__(mode, 'Component', None, parent, False)
@@ -93,7 +92,7 @@ class iDRAC(CloneableClassType):
         self.SNMP = SNMP(mode='create', parent=self)
         #self.Users = ArrayType(Users)
 
-class System(CloneableClassType):
+class System(ClassType):
 
     def __init__(self, mode, parent = None):
         super().__init__(mode, 'System', None, parent, False)
