@@ -1,8 +1,14 @@
+from omsdk.sdkcenum import TypeHelper
 from omsdk.typemgr.FieldType import FieldType
+from omsdk.typemgr.TypeState import TypeState
+import sys
+
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
 
 # private
 #
-# def __init__(self, mode, fname, alias, parent=None, volatile=False)
+# def __init__(self, fname, alias, parent=None, volatile=False)
 # def __eq__, __ne__, __lt__, __le__, __gt__, __ge__
 # def __getattr__
 # def __delattr__
@@ -14,7 +20,7 @@ from omsdk.typemgr.FieldType import FieldType
 #
 # def __str__, __repr__
 #
-# def _duplicate_tree(self, obj, parent)
+# def _replicate(self, obj, parent)
 # def _set_index(self, index=1)
 #
 # protected:
@@ -35,55 +41,63 @@ from omsdk.typemgr.FieldType import FieldType
 
 class ClassType(object):
 
-    def __init__(self, mode, fname, alias, parent = None, volatile=False):
-        self.__dict__['_freeze'] = False
-        self.__dict__['_removed'] = {}
-        self.__dict__['_track'] = False
-        self.__dict__['_alias'] = alias
-        self.__dict__['_volatile'] = volatile
-        self.__dict__['_fname'] = fname
-        self.__dict__['_changed'] = False
-        self.__dict__['_parent'] = parent
-        self.__dict__['_mode'] = mode
-        self.__dict__['_super_field'] = False
-        if mode == 'create':
-            self.my_create()
-        elif mode == 'modify':
-            self.my_modify()
-        elif mode == 'delete':
-            self.my_delete()
+    def __init__(self, fname, alias, parent = None, volatile=False):
+        self._alias = alias
+        self._fname = fname
+        self._volatile = volatile
+        self._parent = parent
+        self._composite = False
+        self._index = 1
+        #self._modifyAllowed = True
 
+        self._freeze = False
+
+        self.__dict__['_state'] = TypeState.UnInitialized
+
+    # Value APIs
     def __getattr__(self, name):
-        if name in self.__dict__ and name not in ['_track', '_freeze', '_removed']:
+        if name in self.__dict__ and name not in ['_removed']:
             return self.__dict__[name]
         raise AttributeError('Invalid attribute ' + name)
 
+    # Value APIs
     def __setattr__(self, name, value):
         # Do not allow access to internal variables
-        if name in ['_track', '_freeze', '_removed']:
+        if name in ['_removed', '_state']:
             raise AttributeError('Invalid attribute ' + name)
 
-        # Freeze mode - don't allow any updates
-        if '_freeze' in self.__dict__ and self.__dict__['_freeze']:
+        # Freeze mode: No sets allowed
+        if '_freeze' in self.__dict__ and self._freeze:
             raise ValueError('object in freeze mode')
 
-        # Allow updates to internal fields
-        if name in [ '_alias', '_parent', '_volatile', '_fname',
-                     '_changed', '_mode', '_super_field' ]:
+        # allow updates to other fields except _value
+        # should we allow updates to  '_type', '_alias', '_fname'?
+        if name in [ '_alias', '_fname', '_volatile', '_parent',
+                     '_composite', '_index', '_freeze']:
             self.__dict__[name] = value
             return
 
-        # Update the value
-        if name in self.__dict__['_removed']:
-            if name not in self.__dict__:
-                self.__dict__[name] = self.__dict__['_removed'][name]
-            del self.__dict__['_removed'][name]
+        # Does it make sense to have create-only attribute!
+        # Create-only attribute : No updates allowed
+        #if not self._modifyAllowed and \
+        #   self._state in [TypeState.Committed, TypeState.Changing]:
+        #    raise ValueError('updates not allowed to this object')
+
+        # CompositeClass : sets not allowed in composite classes
+        if self._composite:
+            raise AttributeError('composite objects cannot be modified')
+
+        # value is None, object was committed; ==> no change
+        # value is actually a object!!
+        if value is None and \
+           self._state in [TypeState.Committed, TypeState.Changing]:
+            return 
+
 
         if name not in self.__dict__:
-            if isinstance(value, FieldType) or isinstance(value, ClassType):
-                self.__dict__[name] = value
-            else:
-                raise ValueError('value does not belong to FieldType')
+            if not (isinstance(value, FieldType) or isinstance(value, ClassType)):
+                raise AttributeError(name + ' attribute not found')
+            self.__dict__[name] = value
         elif isinstance(self.__dict__[name], FieldType):
             self.__dict__[name]._value = value
         elif isinstance(self.__dict__[name], ClassType):
@@ -91,25 +105,134 @@ class ClassType(object):
         else:
             raise ValueError('value does not belong to FieldType')
 
-        # In tracking mode, update '_removed'
-        if self.__dict__['_track'] and name in self.__dict__['_removed']:
-            del self.__dict__['_removed'][name]
+        if self._state in [TypeState.UnInitialized, TypeState.Initializing]:
+            self.__dict__['_state'] = TypeState.Initializing
+        elif self._state in [TypeState.Committed, TypeState.Changing]:
+            if self._values_changed(self.__dict__, self.__dict__['_orig_value']):
+                self.__dict__['_state'] = TypeState.Committed
+            else:
+                self.__dict__['_state'] = TypeState.Changing
+        else:
+            print("Should not come here")
 
+        if self.is_changed() and self._parent:
+            self._parent.child_state_changed(self, self._state)
+
+    # Value APIs
     def __delattr__(self, name):
         # Do not allow access to internal variables
-        if name in ['_track', '_freeze', '_removed', '_child_name']:
+        if name in ['_orig_value', '_track', '_freeze', '_type',
+                    '_value', '_volatile', '_composite']:
             raise AttributeError('Invalid attribute ' + name)
 
         # Freeze mode - don't allow any updates
-        if '_freeze' in self.__dict__ and self.__dict__['_freeze']:
+        if '_freeze' in self.__dict__ and self._freeze:
             raise AttributeError('object in freeze mode')
 
-
         if name in self.__dict__:
-            if self.__dict__['_track']:
-                self.__dict__['_removed'][name] = self.__dict__[name]
             del self.__dict__[name]
 
+        if self._state in [TypeState.UnInitialized, TypeState.Initializing]:
+            self.__dict__['_state'] = TypeState.Initializing
+        elif self._state in [TypeState.Committed, TypeState.Changing]:
+            if self._values_changed(self.__dict__, self.__dict__['_orig_value']):
+                self.__dict__['_state'] = TypeState.Committed
+            else:
+                self.__dict__['_state'] = TypeState.Changing
+        else:
+            print("Should not come here")
+
+    # Value APIs
+    def my_accept_value(self, value):
+        return True
+
+    # State APIs:
+    def is_changed(self):
+        return self._state in [TypeState.Initializing, TypeState.Changing]
+
+    def _copy_state(self, source, dest):
+        for i in source:
+            if i.startswith('_'): continue
+            if i not in dest:
+                dest[i] = source[i]
+
+        for i in dest:
+            if i.startswith('_'): continue
+            if i not in source: del dest[i]
+
+    def _values_changed(self, source, dest):
+        for i in source:
+            if i.startswith('_'): continue
+            if i not in dest: return False
+            if source[i].is_changed(): return False
+
+        for i in dest:
+            if i.startswith('_'): continue
+            if i not in source: return False
+            if dest[i].is_changed(): return False
+
+        return True
+
+    # State : to Committed
+    # allowed even during freeze
+    def commit(self):
+        if self.is_changed():
+            if not self._composite:
+                if '_orig_value' not in self.__dict__:
+                    self.__dict__['_orig_value'] = {}
+                self._copy_state(source = self.__dict__,
+                                 dest = self.__dict__['_orig_value'])
+                for i in self.Properties:
+                    self.__dict__[i].commit()
+            self.__dict__['_state'] = TypeState.Committed
+        return True
+
+    def print_commit(self):
+        for i in self.Properties:
+            print(i + "<>" + str(self.__dict__[i]._state))
+
+    # State : to Committed
+    # allowed even during freeze
+    def reject(self):
+        print('rejecting....')
+        if self.is_changed():
+            if not self._composite:
+                if '_orig_value' not in self.__dict__:
+                    for i in self.Properties:
+                        del self.__dict__[i]
+                    self.__dict__['_state'] = TypeState.UnInitialized
+                else:
+                    self._copy_state(source = self.__dict__['_orig_value'],
+                                 dest = self.__dict__)
+                    self.__dict__['_state'] = TypeState.Committed
+                    for i in self.Properties:
+                        self.__dict__[i].reject()
+        return True
+
+    # Does not have children - so not implemented
+    def child_state_changed(self, child, child_state):
+        if child_state in [TypeState.Initializing, TypeState.Changing]:
+            if self._state == TypeState.UnInitialized:
+                self.__dict__['_state'] = TypeState.Initializing
+            elif self._state == TypeState.Committed:
+                self.__dict__['_state'] = TypeState.Changing
+
+    # what to do?
+    def parent_state_changed(self, new_state):
+        not_implemented
+
+    # Object APIs
+    def copy(self, other):
+        if other is None or not isinstance(other, type(self)):
+            return False
+        for i in other.Properties:
+            if i not in self.__dict__:
+                self.__dict__[i] = other.__dict__[i].clone(parent=self)
+            elif not self.__dict__[i]._volatile:
+                self.__dict__[i].copy(other.__dict__[i])
+        return True
+
+    # Compare APIs:
     def __lt__(self, other):
         counter = 0
         if isinstance(other, type(self)):
@@ -125,6 +248,7 @@ class ClassType(object):
                     counter = counter + 1
         return (counter > 0)
 
+    # Compare APIs:
     def __le__(self, other):
         counter = 0
         if isinstance(other, type(self)):
@@ -140,6 +264,7 @@ class ClassType(object):
                     counter = counter + 1
         return (counter >= 0)
 
+    # Compare APIs:
     def __gt__(self, other):
         counter = 0
         if isinstance(other, type(self)):
@@ -155,6 +280,7 @@ class ClassType(object):
                     counter = counter - 1
         return (counter > 0)
 
+    # Compare APIs:
     def __ge__(self, other):
         counter = 0
         if isinstance(other, type(self)):
@@ -170,6 +296,7 @@ class ClassType(object):
                     counter = counter - 1
         return (counter >= 0)
 
+    # Compare APIs:
     def __eq__(self, other):
         if isinstance(other, type(self)):
             for i in self.Properties:
@@ -182,40 +309,25 @@ class ClassType(object):
             return True
         return False
 
+    # Compare APIs:
     def __ne__(self, other):
         return self.__eq__(other) != True
 
-    def copy(self, other, commit = False):
-        if not self._copy(other):
-            return False
-        if commit: self.commit()
-        return True
-
-    def _copy(self, other):
-        if other is None or not isinstance(other, type(self)):
-            return False
+    # Freeze APIs
+    def freeze(self):
+        self._freeze = True
         for i in self.Properties:
-            if i not in other.__dict__:
-                # am I supposed to delete?
-                continue
-            if not self.__dict__[i]._volatile:
-                self.__dict__[i]._copy(other.__dict__[i])
-        for i in other.Properties:
-            if i not in self.__dict__:
-                # am I supposed to add?
-                continue
-        return True
+            self.__dict__[i].freeze()
 
-    def _duplicate_tree(self, obj, parent):
+    # Freeze APIs
+    def unfreeze(self):
+        self.__dict__['_freeze'] = False
         for i in self.Properties:
-            if isinstance(self.__dict__[i], FieldType):
-                if not obj.__dict__[i]._super_field:
-                    obj.__dict__[i]._value = self.__dict__[i]._value
-                obj.__dict__[i]._parent = parent
-            else:
-                obj.__dict__[i] = self.__dict__[i].duplicate(parent=self)
-                obj.__dict__[i]._parent = parent
-        return obj
+            self.__dict__[i].unfreeze()
+
+    # Freeze APIs
+    def is_frozen(self):
+        return self.__dict__['_freeze']
 
     def _set_index(self, index=1):
         for i in self.Properties:
@@ -226,54 +338,7 @@ class ClassType(object):
             return self
         return self._parent.get_root()
 
-    def commit(self):
-        self._commit()
-        self.fix_changed()
-        return True
-
-    def _commit(self):
-        for i in self.Properties:
-            self.__dict__[i]._commit()
-        return True
-
-    def reject(self):
-        self._reject()
-        self.fix_changed()
-        return True
-
-    def _reject(self):
-        for i in self.Properties:
-            self.__dict__[i]._reject()
-        return True
-
-    def my_accept_value(self, value):
-        return True
-
-    def fix_changed(self):
-        self._changed = False
-        if len(self._removed) > 0:
-            self._changed = True
-        for i in self.Properties:
-            if self.__dict__[i].fix_changed():
-                self._changed = True
-        return self._changed
-
-    def is_changed(self):
-        return self._changed
-
-    def freeze(self):
-        self.__dict__['_freeze'] = True
-        for i in self.__dict__:
-            if not i.startswith('_'):
-                self.__dict__[i].freeze()
-
-    def unfreeze(self):
-        self.__dict__['_freeze'] = False
-        for i in self.__dict__:
-            if not i.startswith('_'):
-                self.__dict__[i].unfreeze()
-
-    def _duplicate_parent(self):
+    def _clone_parent(self):
         parent_list = []
         obj = self
         while obj._parent:
@@ -286,32 +351,29 @@ class ClassType(object):
             obj = obj._parent
         new_list = [ None ]
         for (parent, field) in parent_list:
-            new_list.append(type(parent)('custom', new_list[-1]))
+            new_list.append(type(parent)(new_list[-1]))
             if new_list[-2]:
                 new_list[-2].__dict__[field] = new_list[-1]
         return (new_list[1], parent_list[-1][1])
 
-    def duplicate(self, parent=None):
+    def clone(self, parent=None):
         if parent is None:
-            (parent, field) = self._duplicate_parent()
-        obj = type(self)(self._mode, parent)
-        self._duplicate_tree(obj, parent)
-        if parent:
-            parent.__dict__[field] = obj
-        return obj
-
-    def my_create(self):
-        pass
-
-    def my_modify(self):
-        pass
-
-    def my_delete(self):
-        pass
+            (parent, field) = self._clone_parent()
+        cloneobj = type(self)(parent)
+        for i in self.Properties:
+            cloneobj.__dict__[i] = self.__dict__[i].clone(parent)
+        if parent: parent.__dict__[field] = cloneobj
+        return cloneobj
 
     @property
     def Properties(self):
         return sorted([i for i in self.__dict__ if not i.startswith('_')])
+
+    def _get_fields(self, obj):
+        if PY2:
+            return {k: v for k,v in obj.iteritems() if not k.startswith('_')}
+        if PY3:
+            return {k: v for k,v in obj.items() if not k.startswith('_')}
 
     def json_encode(self):
         return str(self)

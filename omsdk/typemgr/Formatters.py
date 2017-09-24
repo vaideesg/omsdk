@@ -8,7 +8,7 @@ from omsdk.sdkcenum import TypeHelper
 class FormatterTemplate(object):
     def __init__(self, everything):
         self.everything = everything
-        self.include_super_field = True
+        self.include_composite = True
         self.target = None
 
     def _emit(self, output, value):
@@ -28,7 +28,6 @@ class FormatterTemplate(object):
 
     def format_type(self, obj):
         if obj:
-            obj.fix_changed()
             self._format_recurse(self.target, obj)
         return self
 
@@ -40,10 +39,10 @@ class FormatterTemplate(object):
         for i in props:
             if isinstance(i, str):
                 if not self.everything:
-                    if not obj.__dict__[i]._changed:
+                    if not obj.__dict__[i].is_changed():
                         continue
-                if obj.__dict__[i]._super_field and \
-                   not self.include_super_field:
+                if obj.__dict__[i]._composite and \
+                   not self.include_composite:
                     continue
                 attr_name = i
                 if obj.__dict__[i]._alias is not None:
@@ -100,7 +99,7 @@ class XMLFormatter(FormatterTemplate):
     def __init__(self, everything):
         super().__init__(everything)
         self.target = io.StringIO()
-        self.include_super_field = False
+        self.include_composite = False
 
     def _emit(self, output, value):
         val = value.sanitized_value()

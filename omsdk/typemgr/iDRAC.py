@@ -5,10 +5,8 @@ from omsdk.typemgr.BuiltinTypes import *
 
 class SNMP(ClassType):
 
-    def __init__(self, mode, parent = None):
-        super().__init__(mode, None, 'SNMP', parent)
-
-    def my_create(self):
+    def __init__(self,  parent = None):
+        super().__init__( None, 'SNMP', parent)
         self.AgentCommunity_SNMP = StringField(None, 'SNMPCommunity', parent=self)
         self.DiscoveryPort_SNMP = PortField(161, 'SNMPPort', parent=self)
         self.AgentEnable_SNMP = \
@@ -19,15 +17,15 @@ class SNMP(ClassType):
         self.TrapFormat_SNMP = \
             EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat', parent=self)
         self.Ports = SuperFieldType(self.AlertPort_SNMP, self.DiscoveryPort_SNMP)
+        self.commit()
 
 class NIC(ClassType):
 
-    def __init__(self, mode, parent = None):
-        super().__init__(mode, None, 'SNMP', parent)
-
-    def my_create(self):
+    def __init__(self,  parent = None):
+        super().__init__( None, 'SNMP', parent)
         self.Selection_NIC = EnumTypeField(None, Selection_NICTypes)
         self.Failover_NIC = EnumTypeField(None, Failover_NICTypes)
+        self.commit()
 
     def my_accept_value(self):
         #if self.Selection_NIC == SelectionTypes.Dedicated:
@@ -39,8 +37,9 @@ class NIC(ClassType):
 
 class SysLog(ClassType):
 
-    def __init__(self, mode, parent = None):
-        super().__init__(mode, None, 'SNMP', parent)
+    def __init__(self,  parent = None):
+        super().__init__( None, 'SNMP', parent)
+        self.commit()
 
     def my_accept_value(self):
         powerlog_enable = 'Enabled'
@@ -49,8 +48,9 @@ class SysLog(ClassType):
             powerlog_enable = 'Disabled'
 
 class Time(ClassType):
-    def __init__(self, mode, parent = None):
-        super().__init__(mode, None, 'Time', parent)
+    def __init__(self,  parent = None):
+        super().__init__( None, 'Time', parent)
+        self.commit()
 
     # return self._get_scp_comp_field('iDRAC.Embedded.1', 'Time.1#TimeZone')
     # (self.config.arspec.iDRAC.Timezone_Time, tz, self.TimeZone),
@@ -61,18 +61,8 @@ class Users(ClassType):
 
     UserName = 'UserName_Users'
 
-    def __init__(self, mode, parent = None):
-        super().__init__(mode, None, 'SNMP', parent)
-
-    @property
-    def Key(self):
-        return self.UserName_Users
-
-    @property
-    def Index(self):
-        return self.UserName_Users._index
-
-    def my_create(self):
+    def __init__(self,  parent = None):
+        super().__init__( None, 'SNMP', parent)
         self.UserName_Users = StringField(None)
         self.Password_Users = StringField(None)
         self.Privilege_Users = EnumTypeField(None, Privilege_UsersTypes)
@@ -82,20 +72,28 @@ class Users(ClassType):
         self.ProtocolEnable_Users = EnumTypeField(None, ProtocolEnable_UsersTypes)
         self.AuthenticationProtocol_Users = EnumTypeField(None, AuthenticationProtocol_UsersTypes)
         self.PrivacyProtocol_Users = EnumTypeField(None, PrivacyProtocol_UsersTypes)
+        self.commit()
+
+    @property
+    def Key(self):
+        return self.UserName_Users
+
+    @property
+    def Index(self):
+        return self.UserName_Users._index
+
 
 class iDRAC(ClassType):
 
-    def __init__(self, mode, parent = None):
-        super().__init__(mode, 'Component', None, parent, False)
-
-    def my_create(self):
-        self.SNMP = SNMP(mode='create', parent=self)
+    def __init__(self,  parent = None):
+        super().__init__( 'Component', None, parent, False)
+        self.SNMP = SNMP(parent=self)
         #self.Users = ArrayType(Users)
+        self.commit()
 
 class System(ClassType):
 
-    def __init__(self, mode, parent = None):
-        super().__init__(mode, 'System', None, parent, False)
-
-    def my_create(self):
-        self.iDRAC = iDRAC(mode='create', parent=self)
+    def __init__(self,  parent = None):
+        super().__init__( 'System', None, parent, False)
+        self.iDRAC = iDRAC(parent=self)
+        self.commit()

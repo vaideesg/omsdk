@@ -4,7 +4,7 @@ class SuperFieldType(FieldType):
     def __init__(self, *parts):
         super().__init__(None, tuple, 'Attribute', None, None, True)
         self.__dict__['_value'] = parts
-        self._super_field = True
+        self._composite = True
 
     def clone(self, parent=None):
         return type(self)(*self.__dict__['_value'])

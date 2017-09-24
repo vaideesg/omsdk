@@ -72,8 +72,7 @@ class FieldType(object):
            self._state in [TypeState.Committed, TypeState.Changing]:
             raise ValueError('updates not allowed to this object')
 
-
-        # SuperField : sets not allowed in superfields
+        # CompositeField : sets not allowed in composite fields
         if self._composite:
             raise AttributeError('composite objects cannot be modified')
 
@@ -132,9 +131,8 @@ class FieldType(object):
         else:
             print("Should not come here")
 
-        if self.is_changed():
-            #TODO: self._parent.child_state_changed(self, self._state)
-            pass
+        if self.is_changed() and self._parent:
+            self._parent.child_state_changed(self, self._state)
 
     # Value APIs
     def __delattr__(self, name):
@@ -209,20 +207,25 @@ class FieldType(object):
             return True
         return False
 
+    def print_commit(self):
+        print(self._state)
+
     # Compare APIs:
     def __lt__(self, other):
+        if self._state is TypeState.UnInitialized:
+            return False
+        if self._value is None and other._value is None:
+            return False
         if isinstance(other, type(self)):
-            if self._value is None and other._value is None:
-                return False
             return self._value < other._value
         elif isinstance(other, self._type):
-            if self._value is None and other is None:
-                return False
             return self._value < other
         return False
 
     # Compare APIs:
     def __le__(self, other):
+        if self._state is TypeState.UnInitialized:
+            return False
         if self._value is None and other._value is None:
             return True
         if isinstance(other, type(self)):
@@ -233,8 +236,10 @@ class FieldType(object):
 
     # Compare APIs:
     def __gt__(self, other):
+        if self._state is TypeState.UnInitialized:
+            return False
         if self._value is None and other._value is None:
-            return True
+            return False
         if isinstance(other, type(self)):
             return self._value > other._value
         elif isinstance(other, self._type):
@@ -243,6 +248,8 @@ class FieldType(object):
 
     # Compare APIs:
     def __ge__(self, other):
+        if self._state is TypeState.UnInitialized:
+            return False
         if self._value is None and other._value is None:
             return True
         if isinstance(other, type(self)):
@@ -254,6 +261,8 @@ class FieldType(object):
     # Don't allow comparision with string ==> becomes too generic
     # Compare APIs:
     def __eq__(self, other):
+        if self._state is TypeState.UnInitialized:
+            return False
         if isinstance(other, type(self)):
             return self._value == other._value
         elif isinstance(other, self._type):
