@@ -1,5 +1,6 @@
 from enum import Enum
-from omsdk.sdkcenum import EnumWrapper, TypeHelper
+from omsdk.sdkcenum import TypeHelper
+from omsdk.typemgr.TypeState import TypeState
 
 # private
 #
@@ -9,12 +10,6 @@ from omsdk.sdkcenum import EnumWrapper, TypeHelper
 # def __getattr__
 # def __delattr__
 # def __setattr__
-# def _start_tracking(self)
-# def _stop_tracking(self)
-# def _copy(self, other)
-# def _commit(self)
-# def _reject(self)
-# @_changed
 #
 # protected:
 #
@@ -22,22 +17,16 @@ from omsdk.sdkcenum import EnumWrapper, TypeHelper
 #
 # public:
 # def is_changed(self)
-# def fix_changed(self)
-# def has_value(self)
-# def copy(self, other, commit= False)
+# def sanitized_value(self):
+# def copy(self, other)
 # def commit(self)
 # def reject(self)
 # def freeze(self)
 # def unfreeze(self)
+# def is_frozen(self)
 # def json_encode(self)
-
-TypeState = EnumWrapper('TMS', { 
-    'UnInitialized' : 'UnInitialized',
-    'Initializing' : 'Initializing',
-    'Committed' : 'Committed',
-    'Changing' : 'Changing',
-}).enum_type
-
+# def child_state_changed(self, child, child_state)
+# def parent_state_changed(self, new_state)
 
 class FieldType(object):
 
@@ -69,7 +58,7 @@ class FieldType(object):
             raise AttributeError('Invalid attribute ' + name)
 
         # Freeze mode: No sets allowed
-        if '_freeze' in self.__dict__ and self.__dict__['_freeze']:
+        if '_freeze' in self.__dict__ and self._freeze:
             raise ValueError('object in freeze mode')
 
         # allow updates to other fields except _value
@@ -85,7 +74,7 @@ class FieldType(object):
 
 
         # SuperField : sets not allowed in superfields
-        if self.__dict__['_composite']:
+        if self._composite:
             raise AttributeError('composite objects cannot be modified')
 
         # value is None, object was committed; ==> no change
@@ -136,7 +125,7 @@ class FieldType(object):
         if self._state in [TypeState.UnInitialized, TypeState.Initializing]:
             self.__dict__['_state'] = TypeState.Initializing
         elif self._state in [TypeState.Committed, TypeState.Changing]:
-            if self.__dict__['_orig_value'] == self._value:
+            if self._orig_value == self._value:
                 self.__dict__['_state'] = TypeState.Committed
             else:
                 self.__dict__['_state'] = TypeState.Changing
@@ -155,7 +144,7 @@ class FieldType(object):
             raise AttributeError('Invalid attribute ' + name)
 
         # Freeze mode - don't allow any updates
-        if '_freeze' in self.__dict__ and self.__dict__['_freeze']:
+        if '_freeze' in self.__dict__ and self._freeze:
             raise AttributeError('object in freeze mode')
 
         if name in self.__dict__:
@@ -201,7 +190,7 @@ class FieldType(object):
                     del self.__dict__['_value']
                     self.__dict__['_state'] = TypeState.UnInitialized
                 else:
-                    self._value = self.__dict__['_orig_value']
+                    self._value = self._orig_value
                     self.__dict__['_state'] = TypeState.Committed
         return True
 
