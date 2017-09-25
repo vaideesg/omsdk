@@ -194,7 +194,6 @@ class ClassType(object):
     # State : to Committed
     # allowed even during freeze
     def reject(self):
-        print('rejecting....')
         if self.is_changed():
             if not self._composite:
                 if '_orig_value' not in self.__dict__:
@@ -232,82 +231,99 @@ class ClassType(object):
                 self.__dict__[i].copy(other.__dict__[i])
         return True
 
+    def _get_combined_properties(self, obj1, obj2):
+        list1 = [i for i in obj1.__dict__ if not i.startswith('_')]
+        list1.extend([i for i in obj2.__dict__ if not i.startswith('_')])
+        return sorted(set(list1))
+
     # Compare APIs:
     def __lt__(self, other):
-        counter = 0
-        if isinstance(other, type(self)):
-            for i in self.Properties:
-                if i not in other.__dict__:
-                    counter = counter - 1
-                elif self.__dict__[i].__lt__(other.__dict__[i]):
-                    counter = counter + 1
-                elif self.__dict__[i].__ne__(other.__dict__[i]):
-                    counter = counter - 1
-            for i in other.Properties:
-                if i not in self.__dict__:
-                    counter = counter + 1
-        return (counter > 0)
+        # uses sorted order of attributes for comparision similar to tuples, list!
+        if not isinstance(other, type(self)):
+            raise TypeError('unorderable types: ' + type(self).__name__ +
+                            ", " + type(other).__name__)
+        combined_props = self._get_combined_properties(self, other)
+        for i in combined_props:
+            if  i not in self.__dict__:
+                return True
+            if  i not in other.__dict__:
+                return False
+            if self.__dict__[i].__lt__(other.__dict__[i]):
+                return True
+            if self.__dict__[i].__gt__(other.__dict__[i]):
+                return False
+        return False
 
     # Compare APIs:
     def __le__(self, other):
-        counter = 0
-        if isinstance(other, type(self)):
-            for i in self.Properties:
-                if i not in other.__dict__:
-                    counter = counter - 1
-                elif self.__dict__[i].__eq__(other.__dict__[i]):
-                    continue
-                elif self.__dict__[i].__gt__(other.__dict__[i]):
-                    counter = counter - 1
-            for i in other.Properties:
-                if i not in self.__dict__:
-                    counter = counter + 1
-        return (counter >= 0)
+        # uses sorted order of attributes for comparision similar to tuples, list!
+        if not isinstance(other, type(self)):
+            raise TypeError('unorderable types: ' + type(self).__name__ +
+                            ", " + type(other).__name__)
+        combined_props = self._get_combined_properties(self, other)
+        for i in combined_props:
+            if  i not in self.__dict__:
+                return True
+            if  i not in other.__dict__:
+                return False
+            if self.__dict__[i].__lt__(other.__dict__[i]):
+                return True
+            if self.__dict__[i].__gt__(other.__dict__[i]):
+                return False
+        return True
 
     # Compare APIs:
     def __gt__(self, other):
-        counter = 0
-        if isinstance(other, type(self)):
-            for i in self.Properties:
-                if i not in other.__dict__:
-                    counter = counter + 1
-                elif self.__dict__[i].__gt__(other.__dict__[i]):
-                    counter = counter + 1
-                elif self.__dict__[i].__ne__(other.__dict__[i]):
-                    counter = counter - 1
-            for i in other.Properties:
-                if i not in self.__dict__:
-                    counter = counter - 1
-        return (counter > 0)
+        # uses sorted order of attributes for comparision similar to tuples, list!
+        if not isinstance(other, type(self)):
+            raise TypeError('unorderable types: ' + type(self).__name__ +
+                            ", " + type(other).__name__)
+        combined_props = self._get_combined_properties(self, other)
+        for i in combined_props:
+            if  i not in self.__dict__:
+                return False
+            if  i not in other.__dict__:
+                return True
+            if self.__dict__[i].__lt__(other.__dict__[i]):
+                return False
+            if self.__dict__[i].__gt__(other.__dict__[i]):
+                return True
+        return False
 
     # Compare APIs:
     def __ge__(self, other):
-        counter = 0
-        if isinstance(other, type(self)):
-            for i in self.Properties:
-                if i not in other.__dict__:
-                    counter = counter + 1
-                elif self.__dict__[i].__eq__(other.__dict__[i]):
-                    continue
-                elif self.__dict__[i].__lt__(other.__dict__[i]):
-                    counter = counter - 1
-            for i in other.Properties:
-                if i not in self.__dict__:
-                    counter = counter - 1
-        return (counter >= 0)
+        # uses sorted order of attributes for comparision similar to tuples, list!
+        if not isinstance(other, type(self)):
+            raise TypeError('unorderable types: ' + type(self).__name__ +
+                            ", " + type(other).__name__)
+        combined_props = self._get_combined_properties(self, other)
+        for i in combined_props:
+            if  i not in self.__dict__:
+                return False
+            if  i not in other.__dict__:
+                return True
+            if self.__dict__[i].__lt__(other.__dict__[i]):
+                return False
+            if self.__dict__[i].__gt__(other.__dict__[i]):
+                return True
+        return True
 
     # Compare APIs:
     def __eq__(self, other):
-        if isinstance(other, type(self)):
-            for i in self.Properties:
-                if i not in other.__dict__ or \
-                   self.__dict__[i].__eq__(other.__dict__[i]) is False:
-                    return False
-            for i in other.Properties:
-                if i not in self.__dict__:
-                    return False
-            return True
-        return False
+        if not isinstance(other, type(self)):
+            raise TypeError('unorderable types: ' + type(self).__name__ +
+                            ", " + type(other).__name__)
+        combined_props = self._get_combined_properties(self, other)
+        for i in combined_props:
+            if  i not in self.__dict__:
+                return False
+            if  i not in other.__dict__:
+                return False
+            if self.__dict__[i].__lt__(other.__dict__[i]):
+                return False
+            if self.__dict__[i].__gt__(other.__dict__[i]):
+                return False
+        return True
 
     # Compare APIs:
     def __ne__(self, other):

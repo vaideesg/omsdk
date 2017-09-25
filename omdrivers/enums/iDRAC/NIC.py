@@ -74,6 +74,7 @@ DCBXSupportTypes = EnumWrapper("DCBXSupportTypes", {
 EEEControlTypes = EnumWrapper("EEEControlTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
+    "varies" : "varies",
 }).enum_type
 
 EVBModesSupportTypes = EnumWrapper("EVBModesSupportTypes", {
@@ -205,6 +206,7 @@ LegacyBootProtoTypes = EnumWrapper("LegacyBootProtoTypes", {
     "iSCSI" : "iSCSI",
     "iSCSIPrimary" : "iSCSIPrimary",
     "iSCSISecondary" : "iSCSISecondary",
+    "varies" : "varies",
 }).enum_type
 
 LinkStatusTypes = EnumWrapper("LinkStatusTypes", {
@@ -275,6 +277,7 @@ NicModePartitionTypes = EnumWrapper("NicModePartitionTypes", {
 NicModeTypes = EnumWrapper("NicModeTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
+    "Varies" : "Varies",
 }).enum_type
 
 NicPartitioningSupportTypes = EnumWrapper("NicPartitioningSupportTypes", {
@@ -404,6 +407,7 @@ RDMANICModeOnPartitionPartitionTypes = EnumWrapper("RDMANICModeOnPartitionPartit
 RDMANICModeOnPortTypes = EnumWrapper("RDMANICModeOnPortTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
+    "Varies" : "Varies",
 }).enum_type
 
 RDMAProtocolSupportTypes = EnumWrapper("RDMAProtocolSupportTypes", {

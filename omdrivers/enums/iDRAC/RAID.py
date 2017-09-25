@@ -123,6 +123,7 @@ RAIDactionTypes = EnumWrapper("RAIDactionTypes", {
 RAIDbatteryLearnModeTypes = EnumWrapper("RAIDbatteryLearnModeTypes", {
     "Automatic" : "Automatic",
     "Disabled" : "Disabled",
+    "T_None" : "None",
     "Warn_only" : "Warn only",
 }).enum_type
 

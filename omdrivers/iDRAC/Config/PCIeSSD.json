@@ -52,7 +52,7 @@
                 "Yes",
                 "No"
             ],
-            "type": "string"
+            "type": "enumeration"
         },
         "DeviceProtocolTypes": {
             "enum": [
@@ -113,6 +113,7 @@
             },
             "properties": {
                 "BusProtocol": {
+                    "baseType": "str",
                     "description": "Bus Protocol",
                     "longDescription": "Displays the type of the physical device, such as PCIe.",
                     "name": "BusProtocol",
@@ -121,6 +122,7 @@
                     "type": "BusProtocolTypes"
                 },
                 "BusProtocolVersion": {
+                    "baseType": "str",
                     "description": "Bus Protocol Version",
                     "longDescription": "Displays the revision of the PCI Express Base Specification to which this device complies.",
                     "name": "BusProtocolVersion",
@@ -129,6 +131,7 @@
                     "type": "BusProtocolVersionTypes"
                 },
                 "CapableSpeed": {
+                    "baseType": "str",
                     "description": "PCIe Maximum Link Speed",
                     "longDescription": "Displays the capable transfer speed of the physical device in GT/s.",
                     "name": "CapableSpeed",
@@ -137,6 +140,7 @@
                     "type": "CapableSpeedTypes"
                 },
                 "CryptographicErase": {
+                    "baseType": "enum",
                     "description": "Cryptographic Erase",
                     "longDescription": "Performs a secure Cryptographic Erase on the physical device. This operation erases all user data by deleting the encryption key with which the user data was previously encrypted.",
                     "name": "CryptographicErase",
@@ -145,6 +149,7 @@
                     "type": "CryptographicEraseTypes"
                 },
                 "DeviceProtocol": {
+                    "baseType": "str",
                     "description": "Device Protocol",
                     "longDescription": "Displays the device protocol of the physical device, such as NVMe.",
                     "name": "DeviceProtocol",
@@ -153,6 +158,7 @@
                     "type": "DeviceProtocolTypes"
                 },
                 "FailurePredicted": {
+                    "baseType": "str",
                     "description": "Failure Predicted",
                     "longDescription": "Indicates whether the physical device has detected a condition that may lead to a device failure.",
                     "name": "FailurePredicted",
@@ -161,6 +167,7 @@
                     "type": "FailurePredictedTypes"
                 },
                 "ModelNumber": {
+                    "baseType": "str",
                     "description": "Model Number",
                     "longDescription": "Displays the model number of the physical device.",
                     "name": "ModelNumber",
@@ -168,6 +175,7 @@
                     "readonly": "true"
                 },
                 "Name": {
+                    "baseType": "str",
                     "description": "Physical Device ID",
                     "longDescription": "Displays the ID of the physical device representing the slot ID and bay ID.",
                     "name": "Name",
@@ -175,6 +183,7 @@
                     "readonly": "true"
                 },
                 "PcieMaxLinkWidth": {
+                    "baseType": "str",
                     "description": "PCIe Maximum Link Width",
                     "longDescription": "Displays the capable link width of the physical device",
                     "name": "PcieMaxLinkWidth",
@@ -183,6 +192,7 @@
                     "type": "PcieMaxLinkWidthTypes"
                 },
                 "PcieNegotiatedLinkSpeed": {
+                    "baseType": "str",
                     "description": "PCIe Negotiated Link Speed",
                     "longDescription": "Displays the current negotiated transfer speed of the physical device in GT/s.",
                     "name": "PcieNegotiatedLinkSpeed",
@@ -191,6 +201,7 @@
                     "type": "PcieNegotiatedLinkSpeedTypes"
                 },
                 "PcieNegotiatedLinkWidth": {
+                    "baseType": "str",
                     "description": "PCIe Negotiated Link Width",
                     "longDescription": "Displays the current negotiated link width of the physical device.",
                     "name": "PcieNegotiatedLinkWidth",
@@ -198,35 +209,8 @@
                     "readonly": "true",
                     "type": "PcieNegotiatedLinkWidthTypes"
                 },
-                "PcieSsd": {
-                    "description": "Dell PCIe Solid State Devices",
-                    "longDescription": "Lists the Dell PCIe Solid State Devices and allows it to be configured",
-                    "name": "PcieSsd",
-                    "qualifier": "DeviceSettings",
-                    "readonly": "true"
-                },
-                "PcieSsdLog": {
-                    "description": "Export Log",
-                    "longDescription": "Exports a log containing debug information of the device used for troubleshooting.",
-                    "name": "PcieSsdLog",
-                    "qualifier": "PcieSsdLog",
-                    "readonly": "true"
-                },
-                "PcieSsdOps": {
-                    "description": "Select Physical Device Operations",
-                    "longDescription": "Executes Physical Device Operations such as full initialization and blink/unblink.",
-                    "name": "PcieSsdOps",
-                    "qualifier": "PcieSsdOps",
-                    "readonly": "true"
-                },
-                "PcieSsdProps": {
-                    "description": "View Physical Device Properties",
-                    "longDescription": "Displays the physical device properties.",
-                    "name": "PcieSsdProps",
-                    "qualifier": "PcieSsdProps",
-                    "readonly": "true"
-                },
                 "RemainingRatedWriteEndurance": {
+                    "baseType": "str",
                     "description": "Remaining Rated Write Endurance",
                     "longDescription": "Displays the warranted wearout level of the PCIe SSD (in percentage).",
                     "name": "RemainingRatedWriteEndurance",
@@ -234,6 +218,7 @@
                     "readonly": "true"
                 },
                 "SecureErase": {
+                    "baseType": "enum",
                     "description": "Full Initialization",
                     "longDescription": "Performs full initialization on the selected physical device. This operation deletes all data on the device.",
                     "name": "SecureErase",
@@ -242,6 +227,7 @@
                     "type": "SecureEraseTypes"
                 },
                 "SerialNumber": {
+                    "baseType": "str",
                     "description": "Serial Number",
                     "longDescription": "Displays the serial number of the physical device.",
                     "name": "SerialNumber",
@@ -249,6 +235,7 @@
                     "readonly": "true"
                 },
                 "Size": {
+                    "baseType": "int",
                     "description": "Capacity (GB)",
                     "longDescription": "Displays the size of the physical device in bytes.",
                     "name": "Size",
@@ -256,6 +243,7 @@
                     "readonly": "true"
                 },
                 "SmartStatus": {
+                    "baseType": "str",
                     "description": "SMART Status",
                     "longDescription": "Displays the SMART status of a physical device.",
                     "name": "SmartStatus",
@@ -264,6 +252,7 @@
                     "type": "SmartStatusTypes"
                 },
                 "State": {
+                    "baseType": "str",
                     "description": "State",
                     "longDescription": "Displays the status of the physical device.",
                     "name": "State",
@@ -272,6 +261,7 @@
                     "type": "StateTypes"
                 },
                 "Version": {
+                    "baseType": "str",
                     "description": "Firmware Revision",
                     "longDescription": "Displays the firmware revision of the physical device.",
                     "name": "Version",
@@ -339,7 +329,7 @@
                 "Yes",
                 "No"
             ],
-            "type": "string"
+            "type": "enumeration"
         },
         "SmartStatusTypes": {
             "enum": [

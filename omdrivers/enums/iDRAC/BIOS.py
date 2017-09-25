@@ -46,14 +46,6 @@ AttemptFastBootTypes = EnumWrapper("AttemptFastBootTypes", {
     "Enabled" : "Enabled",
 }).enum_type
 
-BiosBootSettingsRefTypes = EnumWrapper("BiosBootSettingsRefTypes", {
-    "BiosBootSettings" : "BiosBootSettings",
-}).enum_type
-
-BiosBootSettingsTypes = EnumWrapper("BiosBootSettingsTypes", {
-    "N_A" : "N/A",
-}).enum_type
-
 BiosUpdateControlTypes = EnumWrapper("BiosUpdateControlTypes", {
     "Limited" : "Limited",
     "Locked" : "Locked",
@@ -63,94 +55,6 @@ BiosUpdateControlTypes = EnumWrapper("BiosUpdateControlTypes", {
 BootModeTypes = EnumWrapper("BootModeTypes", {
     "Bios" : "Bios",
     "Uefi" : "Uefi",
-}).enum_type
-
-BootSeqEnDis10Types = EnumWrapper("BootSeqEnDis10Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis11Types = EnumWrapper("BootSeqEnDis11Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis12Types = EnumWrapper("BootSeqEnDis12Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis13Types = EnumWrapper("BootSeqEnDis13Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis14Types = EnumWrapper("BootSeqEnDis14Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis15Types = EnumWrapper("BootSeqEnDis15Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis16Types = EnumWrapper("BootSeqEnDis16Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis17Types = EnumWrapper("BootSeqEnDis17Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis18Types = EnumWrapper("BootSeqEnDis18Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis19Types = EnumWrapper("BootSeqEnDis19Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis1Types = EnumWrapper("BootSeqEnDis1Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis20Types = EnumWrapper("BootSeqEnDis20Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis2Types = EnumWrapper("BootSeqEnDis2Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis3Types = EnumWrapper("BootSeqEnDis3Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis4Types = EnumWrapper("BootSeqEnDis4Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis5Types = EnumWrapper("BootSeqEnDis5Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis6Types = EnumWrapper("BootSeqEnDis6Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis7Types = EnumWrapper("BootSeqEnDis7Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis8Types = EnumWrapper("BootSeqEnDis8Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDis9Types = EnumWrapper("BootSeqEnDis9Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-BootSeqEnDisRefTypes = EnumWrapper("BootSeqEnDisRefTypes", {
-    "BootSeqEnDis" : "BootSeqEnDis",
-}).enum_type
-
-BootSeqEnDisTypes = EnumWrapper("BootSeqEnDisTypes", {
-    "N_A" : "N/A",
 }).enum_type
 
 BootSeqRetryTypes = EnumWrapper("BootSeqRetryTypes", {
@@ -392,10 +296,6 @@ EmbSataTypes = EnumWrapper("EmbSataTypes", {
     "RaidMode" : "RaidMode",
 }).enum_type
 
-EmbServerMgmtTypes = EnumWrapper("EmbServerMgmtTypes", {
-    "N_A" : "N/A",
-}).enum_type
-
 EmbVideoTypes = EnumWrapper("EmbVideoTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
@@ -572,10 +472,6 @@ IntNic1Port4BootProtoTypes = EnumWrapper("IntNic1Port4BootProtoTypes", {
     "Pxe" : "Pxe",
     "T_None" : "None",
     "Unknown" : "Unknown",
-}).enum_type
-
-IntegratedDevicesTypes = EnumWrapper("IntegratedDevicesTypes", {
-    "N_A" : "N/A",
 }).enum_type
 
 IntegratedNetwork1Types = EnumWrapper("IntegratedNetwork1Types", {
@@ -838,10 +734,6 @@ MemRefreshRateTypes = EnumWrapper("MemRefreshRateTypes", {
     "T_2x" : "2x",
 }).enum_type
 
-MemSettingsTypes = EnumWrapper("MemSettingsTypes", {
-    "N_A" : "N/A",
-}).enum_type
-
 MemTestOnFastBootTypes = EnumWrapper("MemTestOnFastBootTypes", {
     "Auto" : "Auto",
     "Disabled" : "Disabled",
@@ -876,6 +768,7 @@ MemoryFastBootColdTypes = EnumWrapper("MemoryFastBootColdTypes", {
 }).enum_type
 
 MemoryMappedIOHTypes = EnumWrapper("MemoryMappedIOHTypes", {
+    "Disabled" : "Disabled",
     "T_12TB" : "12TB",
     "T_512GB" : "512GB",
     "T_56TB" : "56TB",
@@ -901,10 +794,6 @@ MemoryThrottlingModeTypes = EnumWrapper("MemoryThrottlingModeTypes", {
     "MemoryThrottlingModeCLTTWithPECI" : "MemoryThrottlingModeCLTTWithPECI",
     "MemoryThrottlingModeNone" : "MemoryThrottlingModeNone",
     "MemoryThrottlingModeOLTT" : "MemoryThrottlingModeOLTT",
-}).enum_type
-
-MiscSettingsTypes = EnumWrapper("MiscSettingsTypes", {
-    "N_A" : "N/A",
 }).enum_type
 
 MltRnkSprTypes = EnumWrapper("MltRnkSprTypes", {
@@ -1055,14 +944,6 @@ NvmeModeTypes = EnumWrapper("NvmeModeTypes", {
     "Raid" : "Raid",
 }).enum_type
 
-NvmeSettingsRefTypes = EnumWrapper("NvmeSettingsRefTypes", {
-    "NA" : "NA",
-}).enum_type
-
-NvmeSettingsTypes = EnumWrapper("NvmeSettingsTypes", {
-    "NA" : "NA",
-}).enum_type
-
 OldSetupPasswordTypes = EnumWrapper("OldSetupPasswordTypes", {
     "N_A" : "N/A",
 }).enum_type
@@ -1085,15 +966,7 @@ OneTimeBootModeTypes = EnumWrapper("OneTimeBootModeTypes", {
     "OneTimeUefiBootSeq" : "OneTimeUefiBootSeq",
 }).enum_type
 
-OneTimeBootRefTypes = EnumWrapper("OneTimeBootRefTypes", {
-    "OneTimeBoot" : "OneTimeBoot",
-}).enum_type
-
 OneTimeBootSeqDevTypes = EnumWrapper("OneTimeBootSeqDevTypes", {
-    "N_A" : "N/A",
-}).enum_type
-
-OneTimeBootTypes = EnumWrapper("OneTimeBootTypes", {
     "N_A" : "N/A",
 }).enum_type
 
@@ -1187,10 +1060,6 @@ PowerCycleRequestTypes = EnumWrapper("PowerCycleRequestTypes", {
 PowerDeliveryTypes = EnumWrapper("PowerDeliveryTypes", {
     "MaxReliability" : "MaxReliability",
     "MinPwr" : "MinPwr",
-}).enum_type
-
-PowerMgmtSettingsTypes = EnumWrapper("PowerMgmtSettingsTypes", {
-    "N_A" : "N/A",
 }).enum_type
 
 PowerMgmtTypes = EnumWrapper("PowerMgmtTypes", {
@@ -1565,10 +1434,6 @@ ProcPwrPerfTypes = EnumWrapper("ProcPwrPerfTypes", {
     "MinPwr" : "MinPwr",
     "OsDbpm" : "OsDbpm",
     "SysDbpm" : "SysDbpm",
-}).enum_type
-
-ProcSettingsTypes = EnumWrapper("ProcSettingsTypes", {
-    "N_A" : "N/A",
 }).enum_type
 
 ProcSoftwarePrefetcherTypes = EnumWrapper("ProcSoftwarePrefetcherTypes", {
@@ -2020,15 +1885,12 @@ SataPortNDriveTypeTypes = EnumWrapper("SataPortNDriveTypeTypes", {
 
 SataPortNModelTypes = EnumWrapper("SataPortNModelTypes", {
     "N_A" : "N/A",
+    "SATA_MODEL" : "SATA_MODEL",
 }).enum_type
 
 SataPortNTypes = EnumWrapper("SataPortNTypes", {
     "Auto" : "Auto",
     "Off" : "Off",
-}).enum_type
-
-SataSettingsTypes = EnumWrapper("SataSettingsTypes", {
-    "N_A" : "N/A",
 }).enum_type
 
 SccDebugEnabledTypes = EnumWrapper("SccDebugEnabledTypes", {
@@ -2056,10 +1918,6 @@ SecureBootTypes = EnumWrapper("SecureBootTypes", {
 SecurityFreezeLockTypes = EnumWrapper("SecurityFreezeLockTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
-}).enum_type
-
-SerialCommSettingsTypes = EnumWrapper("SerialCommSettingsTypes", {
-    "N_A" : "N/A",
 }).enum_type
 
 SerialCommTypes = EnumWrapper("SerialCommTypes", {
@@ -2405,10 +2263,6 @@ Slot9Types = EnumWrapper("Slot9Types", {
     "Enabled" : "Enabled",
 }).enum_type
 
-SlotDisablementRefTypes = EnumWrapper("SlotDisablementRefTypes", {
-    "SlotDisablement" : "SlotDisablement",
-}).enum_type
-
 SnoopFilterTypes = EnumWrapper("SnoopFilterTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
@@ -2434,10 +2288,6 @@ SriovGlobalEnableTypes = EnumWrapper("SriovGlobalEnableTypes", {
 SubNumaClusterTypes = EnumWrapper("SubNumaClusterTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
-}).enum_type
-
-SysInformationTypes = EnumWrapper("SysInformationTypes", {
-    "N_A" : "N/A",
 }).enum_type
 
 SysMemSizeTypes = EnumWrapper("SysMemSizeTypes", {
@@ -2472,10 +2322,6 @@ SysPasswordTypes = EnumWrapper("SysPasswordTypes", {
     "N_A" : "N/A",
 }).enum_type
 
-SysProfileSettingsTypes = EnumWrapper("SysProfileSettingsTypes", {
-    "N_A" : "N/A",
-}).enum_type
-
 SysProfileTypes = EnumWrapper("SysProfileTypes", {
     "Custom" : "Custom",
     "DenseCfgOptimized" : "DenseCfgOptimized",
@@ -2484,10 +2330,6 @@ SysProfileTypes = EnumWrapper("SysProfileTypes", {
     "PerfPerWattOptimizedDapc" : "PerfPerWattOptimizedDapc",
     "PerfPerWattOptimizedOs" : "PerfPerWattOptimizedOs",
     "PerfWorkStationOptimized" : "PerfWorkStationOptimized",
-}).enum_type
-
-SysSecurityTypes = EnumWrapper("SysSecurityTypes", {
-    "N_A" : "N/A",
 }).enum_type
 
 SystemBiosVersionTypes = EnumWrapper("SystemBiosVersionTypes", {
@@ -2609,102 +2451,6 @@ TpmStatusTypes = EnumWrapper("TpmStatusTypes", {
 TraceHubDebugTypes = EnumWrapper("TraceHubDebugTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
-}).enum_type
-
-UefiBootSeqEnDis10Types = EnumWrapper("UefiBootSeqEnDis10Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis11Types = EnumWrapper("UefiBootSeqEnDis11Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis12Types = EnumWrapper("UefiBootSeqEnDis12Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis13Types = EnumWrapper("UefiBootSeqEnDis13Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis14Types = EnumWrapper("UefiBootSeqEnDis14Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis15Types = EnumWrapper("UefiBootSeqEnDis15Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis16Types = EnumWrapper("UefiBootSeqEnDis16Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis17Types = EnumWrapper("UefiBootSeqEnDis17Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis18Types = EnumWrapper("UefiBootSeqEnDis18Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis19Types = EnumWrapper("UefiBootSeqEnDis19Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis1Types = EnumWrapper("UefiBootSeqEnDis1Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis20Types = EnumWrapper("UefiBootSeqEnDis20Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis2Types = EnumWrapper("UefiBootSeqEnDis2Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis3Types = EnumWrapper("UefiBootSeqEnDis3Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis4Types = EnumWrapper("UefiBootSeqEnDis4Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis5Types = EnumWrapper("UefiBootSeqEnDis5Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis6Types = EnumWrapper("UefiBootSeqEnDis6Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis7Types = EnumWrapper("UefiBootSeqEnDis7Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis8Types = EnumWrapper("UefiBootSeqEnDis8Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDis9Types = EnumWrapper("UefiBootSeqEnDis9Types", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSeqEnDisRefTypes = EnumWrapper("UefiBootSeqEnDisRefTypes", {
-    "UefiBootSeqEnDis" : "UefiBootSeqEnDis",
-}).enum_type
-
-UefiBootSeqEnDisTypes = EnumWrapper("UefiBootSeqEnDisTypes", {
-    "N_A" : "N/A",
-}).enum_type
-
-UefiBootSettingsRefTypes = EnumWrapper("UefiBootSettingsRefTypes", {
-    "UefiBootSettings" : "UefiBootSettings",
-}).enum_type
-
-UefiBootSettingsTypes = EnumWrapper("UefiBootSettingsTypes", {
-    "N_A" : "N/A",
 }).enum_type
 
 UefiComplianceVersionTypes = EnumWrapper("UefiComplianceVersionTypes", {

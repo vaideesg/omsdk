@@ -4,7 +4,7 @@ from omsdk.sdkcenum import TypeHelper
 from omsdk.catalog.sdkupdatemgr import UpdateManager
 from omsdk.catalog.sdkhttpsrc import DownloadProtocolEnum
 from omdrivers.helpers.iDRAC.UpdateHelper import UpdateHelper
-from omsdk.omlog.Logger import LogManager, LoggerConfigTypeEnum
+from omsdk.omlogs.Logger import LogManager, LoggerConfigTypeEnum
 import sys
 import logging
 
