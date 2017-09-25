@@ -102,5 +102,13 @@
         "registry" : null,
         "groups" : [  ],
         "nogroup" : true
+    },
+    "arrays" : {
+        "Users" : { "min" : 1, "max" : 16, "key" : [ "UserName" ] },
+        "EmailAlert" : { "min" : 1, "max" : 4 , "key" : [ "Address" ]},
+        "SNMPAlert" : { "min" : 1, "max" : 8 , "key" : ["Destination"]},
+        "ADGroup" : { "min" : 1, "max" : 5, "key" : ["Name"] },
+        "UserDomain" : { "min" : 1, "max" : 40, "key" : ["Name"] },
+        "LDAPRoleGroup" : { "min" : 1, "max" : 5, "key" : ["DN"] }
     }
 }

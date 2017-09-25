@@ -272,6 +272,12 @@ class AttribRegistry(object):
                 'enum' : 'EnumTypeField',
                 'list' : 'StringField', # TODO
         }
+        js = { self.comp : { "groups" : sorted(new_prop_def.keys()) }}
+        if group:
+            config_spec = os.path.join(dconfig, self.comp + '.comp_spec')
+            if os.path.exists(config_spec):
+                with open(config_spec) as f:
+                    js = json.load(f)
 
         for i in props:
             if group: gname = props[i]['qualifier']
@@ -394,6 +400,26 @@ class AttribRegistry(object):
                 out.write(field_spec + ')\n')
             out.write('        self.commit()\n')
             out.write('\n')
+            if 'arrays' in js and grp in js['arrays']:
+                ent = js['arrays'][grp]
+                if 'key' not in ent:
+                    print("ERROR: Key is not present for "+ grp)
+                    ent['key'] = [ grp ]
+                out.write('    @property\n')
+                out.write('    def Key(self):\n')
+                fmsg = ""
+                comma = ""
+                for field in ent['key']:
+                    fmsg += comma + 'self.' + field + '_' + grp
+                    comma = ", "
+                if ',' in fmsg:
+                    fmsg = '(' + fmsg + ')'
+                out.write('        return {0}\n'.format(fmsg))
+                out.write('\n')
+                out.write('    @property\n')
+                out.write('    def Index(self):\n')
+                out.write('        return self.{0}_{1}._index\n'.format(ent['key'][0], grp))
+                out.write('\n')
         if group:
             js = { self.comp : { "groups" : sorted(new_prop_def.keys()) }}
             config_spec = os.path.join(dconfig, self.comp + '.comp_spec')
@@ -401,7 +427,8 @@ class AttribRegistry(object):
                 with open(config_spec) as f:
                     js = json.load(f)
             for comp in js:
-                if js[comp]['registry'] != self.comp:
+                if 'registry' not in js[comp] or \
+                   js[comp]['registry'] != self.comp:
                     continue
                 if 'groups' not in js[comp]:
                     js[comp]['groups'] = []
@@ -417,7 +444,13 @@ class AttribRegistry(object):
                 out.write('        super().__init__("Component", None, parent)\n')
                 for grp in sorted(js[comp]['groups']):
                     ngrp = self._sanitize(grp)
-                    out.write('        self.{0} = {0}(parent=self)\n'.format(ngrp))
+                    if 'arrays' in js and grp in js['arrays']:
+                        ent = js['arrays'][grp]
+                        out.write('        self.{0} = ArrayType({0}, parent=self, min_index={1}, max_index={2})\n'.format(ngrp, ent['min'], ent['max']))
+
+
+                    else:
+                        out.write('        self.{0} = {0}(parent=self)\n'.format(ngrp))
 
                 out.write('        self.commit()\n')
                 out.write('\n')

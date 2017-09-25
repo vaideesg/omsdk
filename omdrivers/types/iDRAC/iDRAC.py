@@ -15,6 +15,14 @@ class ADGroup(ClassType):
         self.Privilege_ADGroup = IntField(None, parent=self)
         self.commit()
 
+    @property
+    def Key(self):
+        return self.Name_ADGroup
+
+    @property
+    def Index(self):
+        return self.Name_ADGroup._index
+
 class ASRConfig(ClassType):
 
     def __init__(self, parent = None):
@@ -529,6 +537,14 @@ class EmailAlert(ClassType):
         self.CustomMsg_EmailAlert = StringField(None, parent=self)
         self.Enable_EmailAlert = EnumTypeField(None,Enable_EmailAlertTypes, parent=self)
         self.commit()
+
+    @property
+    def Key(self):
+        return self.Address_EmailAlert
+
+    @property
+    def Index(self):
+        return self.Address_EmailAlert._index
 
 class FPGAFWInventory(ClassType):
 
@@ -1391,6 +1407,14 @@ class LDAPRoleGroup(ClassType):
         self.State_LDAPRoleGroup = EnumTypeField(None,State_LDAPRoleGroupTypes, parent=self)
         self.commit()
 
+    @property
+    def Key(self):
+        return self.DN_LDAPRoleGroup
+
+    @property
+    def Index(self):
+        return self.DN_LDAPRoleGroup._index
+
 class LocalSecurity(ClassType):
 
     def __init__(self, parent = None):
@@ -2121,6 +2145,14 @@ class SNMPAlert(ClassType):
         self.State_SNMPAlert = EnumTypeField(None,State_SNMPAlertTypes, parent=self)
         self.commit()
 
+    @property
+    def Key(self):
+        return self.Destination_SNMPAlert
+
+    @property
+    def Index(self):
+        return self.Destination_SNMPAlert._index
+
 class SNMPTrapIPv4(ClassType):
 
     def __init__(self, parent = None):
@@ -2735,6 +2767,14 @@ class UserDomain(ClassType):
         self.Name_UserDomain = StringField(None, parent=self)
         self.commit()
 
+    @property
+    def Key(self):
+        return self.Name_UserDomain
+
+    @property
+    def Index(self):
+        return self.Name_UserDomain._index
+
 class Users(ClassType):
 
     def __init__(self, parent = None):
@@ -2758,6 +2798,14 @@ class Users(ClassType):
         self.UserName_Users = StringField(None, parent=self)
         self.UserPayloadAccess_Users = StringField(None, parent=self)
         self.commit()
+
+    @property
+    def Key(self):
+        return self.UserName_Users
+
+    @property
+    def Index(self):
+        return self.UserName_Users._index
 
 class VNCServer(ClassType):
 
@@ -2904,7 +2952,7 @@ class iDRAC(ClassType):
 
     def __init__(self, parent = None):
         super().__init__("Component", None, parent)
-        self.ADGroup = ADGroup(parent=self)
+        self.ADGroup = ArrayType(ADGroup, parent=self, min_index=1, max_index=5)
         self.ASRConfig = ASRConfig(parent=self)
         self.ActiveDirectory = ActiveDirectory(parent=self)
         self.AutoBackup = AutoBackup(parent=self)
@@ -2937,7 +2985,7 @@ class iDRAC(ClassType):
         self.DefaultFactoryPassword = DefaultFactoryPassword(parent=self)
         self.Diagnostics = Diagnostics(parent=self)
         self.EC = EC(parent=self)
-        self.EmailAlert = EmailAlert(parent=self)
+        self.EmailAlert = ArrayType(EmailAlert, parent=self, min_index=1, max_index=4)
         self.FPGAFWInventory = FPGAFWInventory(parent=self)
         self.FReDFWInventory = FReDFWInventory(parent=self)
         self.FWInventory = FWInventory(parent=self)
@@ -2985,7 +3033,7 @@ class iDRAC(ClassType):
         self.IntegratedDatacenter = IntegratedDatacenter(parent=self)
         self.LCAttributes = LCAttributes(parent=self)
         self.LDAP = LDAP(parent=self)
-        self.LDAPRoleGroup = LDAPRoleGroup(parent=self)
+        self.LDAPRoleGroup = ArrayType(LDAPRoleGroup, parent=self, min_index=1, max_index=5)
         self.LocalSecurity = LocalSecurity(parent=self)
         self.Lockdown = Lockdown(parent=self)
         self.Logging = Logging(parent=self)
@@ -3025,7 +3073,7 @@ class iDRAC(ClassType):
         self.SC_BMC = SC_BMC(parent=self)
         self.SECONDARYNIC = SECONDARYNIC(parent=self)
         self.SNMP = SNMP(parent=self)
-        self.SNMPAlert = SNMPAlert(parent=self)
+        self.SNMPAlert = ArrayType(SNMPAlert, parent=self, min_index=1, max_index=8)
         self.SNMPTrapIPv4 = SNMPTrapIPv4(parent=self)
         self.SNMPTrapIPv6 = SNMPTrapIPv6(parent=self)
         self.SSH = SSH(parent=self)
@@ -3059,8 +3107,8 @@ class iDRAC(ClassType):
         self.USB = USB(parent=self)
         self.Update = Update(parent=self)
         self.UpdateTask = UpdateTask(parent=self)
-        self.UserDomain = UserDomain(parent=self)
-        self.Users = Users(parent=self)
+        self.UserDomain = ArrayType(UserDomain, parent=self, min_index=1, max_index=40)
+        self.Users = ArrayType(Users, parent=self, min_index=1, max_index=16)
         self.VNCServer = VNCServer(parent=self)
         self.VirtualConsole = VirtualConsole(parent=self)
         self.VirtualMedia = VirtualMedia(parent=self)
