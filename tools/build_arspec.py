@@ -398,6 +398,15 @@ class AttribRegistry(object):
                 elif not new_prop_def[grp][i]['modDeleteAllowed']:
                     out.write('        # readonly attribute\n')
                 out.write(field_spec + ')\n')
+            if 'composite' in js and grp in js['composite']:
+                for field in js['composite'][grp]:
+                    fmsg = ""
+                    comma = ""
+                    for ent in  js['composite'][grp][field]:
+                        fmsg +=  comma + 'self.' + ent + '_' + grp
+                        comma = ", "
+                    out.write('        self.{0} = CompositeFieldType({1})\n'.format(field, fmsg))
+
             out.write('        self.commit()\n')
             out.write('\n')
             if 'arrays' in js and grp in js['arrays']:
