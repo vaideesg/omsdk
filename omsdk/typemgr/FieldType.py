@@ -1,6 +1,6 @@
 from enum import Enum
 from omsdk.sdkcenum import TypeHelper
-from omsdk.typemgr.TypeState import TypeState
+from omsdk.typemgr.TypeState import TypeState, TypeBase
 
 # private
 #
@@ -28,7 +28,7 @@ from omsdk.typemgr.TypeState import TypeState
 # def child_state_changed(self, child, child_state)
 # def parent_state_changed(self, new_state)
 
-class FieldType(object):
+class FieldType(TypeBase):
 
     def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False):
         self._type  = typename
@@ -216,6 +216,12 @@ class FieldType(object):
             return False
         if self._value is None and other._value is None:
             return False
+        if self._value is not None and other._value is None:
+            return False
+        if not (isinstance(other, type(self)) or isinstance(other, self._type)):
+            return TypeError('cannot compare with ' + type(other).__name__)
+        if self._value is None and other._value is not None:
+            return True
         if isinstance(other, type(self)):
             return self._value < other._value
         elif isinstance(other, self._type):
@@ -227,6 +233,12 @@ class FieldType(object):
         if self._state is TypeState.UnInitialized:
             return False
         if self._value is None and other._value is None:
+            return True
+        if self._value is not None and other._value is None:
+            return False
+        if not (isinstance(other, type(self)) or isinstance(other, self._type)):
+            return TypeError('cannot compare with ' + type(other).__name__)
+        if self._value is None and other._value is not None:
             return True
         if isinstance(other, type(self)):
             return self._value <= other._value
@@ -240,6 +252,12 @@ class FieldType(object):
             return False
         if self._value is None and other._value is None:
             return False
+        if self._value is not None and other._value is None:
+            return True
+        if not (isinstance(other, type(self)) or isinstance(other, self._type)):
+            return TypeError('cannot compare with ' + type(other).__name__)
+        if self._value is None and other._value is not None:
+            return False
         if isinstance(other, type(self)):
             return self._value > other._value
         elif isinstance(other, self._type):
@@ -252,6 +270,12 @@ class FieldType(object):
             return False
         if self._value is None and other._value is None:
             return True
+        if self._value is not None and other._value is None:
+            return True
+        if not (isinstance(other, type(self)) or isinstance(other, self._type)):
+            return TypeError('cannot compare with ' + type(other).__name__)
+        if self._value is None and other._value is not None:
+            return False
         if isinstance(other, type(self)):
             return self._value >= other._value
         elif isinstance(other, self._type):
@@ -263,6 +287,8 @@ class FieldType(object):
     def __eq__(self, other):
         if self._state is TypeState.UnInitialized:
             return False
+        if not (isinstance(other, type(self)) or isinstance(other, self._type)):
+            return TypeError('cannot compare with ' + type(other).__name__)
         if isinstance(other, type(self)):
             return self._value == other._value
         elif isinstance(other, self._type):

@@ -7,3 +7,6 @@ TypeState = EnumWrapper('TMS', {
     'Changing' : 'Changing',
 }).enum_type
 
+class TypeBase(object):
+    pass
+

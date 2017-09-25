@@ -1,6 +1,6 @@
 from omsdk.sdkcenum import TypeHelper
 from omsdk.typemgr.FieldType import FieldType
-from omsdk.typemgr.TypeState import TypeState
+from omsdk.typemgr.TypeState import TypeState, TypeBase
 import sys
 
 PY2 = sys.version_info[0] == 2
@@ -39,7 +39,7 @@ PY3 = sys.version_info[0] == 3
 #
 # def get_root(self)
 
-class ClassType(object):
+class ClassType(TypeBase):
 
     def __init__(self, fname, alias, parent = None, volatile=False):
         self._alias = alias
@@ -93,9 +93,8 @@ class ClassType(object):
            self._state in [TypeState.Committed, TypeState.Changing]:
             return 
 
-
         if name not in self.__dict__:
-            if not (isinstance(value, FieldType) or isinstance(value, ClassType)):
+            if not isinstance(value, TypeBase):
                 raise AttributeError(name + ' attribute not found')
             self.__dict__[name] = value
         elif isinstance(self.__dict__[name], FieldType):
@@ -187,10 +186,6 @@ class ClassType(object):
             self.__dict__['_state'] = TypeState.Committed
         return True
 
-    def print_commit(self):
-        for i in self.Properties:
-            print(i + "<>" + str(self.__dict__[i]._state))
-
     # State : to Committed
     # allowed even during freeze
     def reject(self):
@@ -215,6 +210,8 @@ class ClassType(object):
                 self.__dict__['_state'] = TypeState.Initializing
             elif self._state == TypeState.Committed:
                 self.__dict__['_state'] = TypeState.Changing
+        if self.is_changed() and self._parent:
+            self._parent.child_state_changed(self, self._state)
 
     # what to do?
     def parent_state_changed(self, new_state):
@@ -319,9 +316,7 @@ class ClassType(object):
                 return False
             if  i not in other.__dict__:
                 return False
-            if self.__dict__[i].__lt__(other.__dict__[i]):
-                return False
-            if self.__dict__[i].__gt__(other.__dict__[i]):
+            if self.__dict__[i].__ne__(other.__dict__[i]):
                 return False
         return True
 
@@ -357,6 +352,8 @@ class ClassType(object):
     def _clone_parent(self):
         parent_list = []
         obj = self
+        if not obj._parent:
+            return (None, None)
         while obj._parent:
             field_name = None
             for prop_name in obj._parent.Properties:
@@ -365,8 +362,9 @@ class ClassType(object):
                     break
             parent_list.insert(0, (obj._parent, field_name))
             obj = obj._parent
-        new_list = [ None ]
+        new_list = [None]
         for (parent, field) in parent_list:
+            #print(type(parent).__name__ + "." + field)
             new_list.append(type(parent)(new_list[-1]))
             if new_list[-2]:
                 new_list[-2].__dict__[field] = new_list[-1]
@@ -377,7 +375,7 @@ class ClassType(object):
             (parent, field) = self._clone_parent()
         cloneobj = type(self)(parent)
         for i in self.Properties:
-            cloneobj.__dict__[i] = self.__dict__[i].clone(parent)
+            cloneobj.__dict__[i] = self.__dict__[i].clone(cloneobj)
         if parent: parent.__dict__[field] = cloneobj
         return cloneobj
 

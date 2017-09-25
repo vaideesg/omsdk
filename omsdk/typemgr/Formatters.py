@@ -51,9 +51,8 @@ class FormatterTemplate(object):
                     attr_name = obj._alias + "." + str(obj.__dict__[i]._index) + "#" + attr_name
                 self._write(opobj, attr_name, obj.__dict__[i])
             else:
-                if not self.everything:
-                    if i._changed:
-                        continue
+                if not self.everything and not i.is_changed():
+                    continue
                 entry = self._create_array_entry(opobj)
                 entry = self._format_recurse(entry, i)
                 entry = self._close_array_entry(opobj, entry)

@@ -11,7 +11,12 @@ class SuperFieldType(FieldType):
 
 class CloneableFieldType(FieldType):
     def clone(self, parent=None):
-        return type(self)(self._value, self._alias, parent, self._volatile)
+        if isinstance(self, EnumTypeField):
+            return type(self)(self._value, entype=self._type, alias=self._alias,
+                  parent=parent, volatile=self._volatile)
+        else:
+            return type(self)(self._value, alias=self._alias,
+                  parent=parent, volatile=self._volatile)
 
 class PortField(CloneableFieldType):
     def __init__(self, init_value, alias =None, parent=None, volatile=False):
@@ -39,9 +44,9 @@ class EnumTypeField(CloneableFieldType):
         super().__init__(init_value, entype, 'Attribute', alias, parent, volatile)
 
 class IPv4AddressField(CloneableFieldType):
-    def __init__(self, init_value, entype, alias=None, parent=None, volatile=False):
+    def __init__(self, init_value, alias=None, parent=None, volatile=False):
         super().__init__(init_value, entype, 'Attribute', alias, parent, volatile)
 
 class IPv6AddressField(CloneableFieldType):
-    def __init__(self, init_value, entype, alias=None, parent=None, volatile=False):
+    def __init__(self, init_value, alias=None, parent=None, volatile=False):
         super().__init__(init_value, entype, 'Attribute', alias, parent, volatile)
