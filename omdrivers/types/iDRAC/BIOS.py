@@ -612,7 +612,7 @@ class BIOS(ClassType):
         self.UncoreFrequency = EnumTypeField(None,UncoreFrequencyTypes, parent=self)
         self.UnusedPcieClk = EnumTypeField(None,UnusedPcieClkTypes, parent=self)
         self.Usb3Setting = EnumTypeField(None,Usb3SettingTypes, parent=self)
-        self.UsbManagedPort  = EnumTypeField(UsbManagedPortTypes.On,UsbManagedPortTypes, parent=self)
+        self.UsbManagedPort = EnumTypeField(UsbManagedPortTypes.On,UsbManagedPortTypes, parent=self)
         self.UsbPorts = EnumTypeField(None,UsbPortsTypes, parent=self)
         self.UserLcdStr = StringField(None, parent=self)
         self.VideoMem = StringField(None, parent=self)

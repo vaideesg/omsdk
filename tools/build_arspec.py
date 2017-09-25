@@ -12,6 +12,14 @@ logger = logging.getLogger(__name__)
 
 class AttribRegistry(object):
 
+    def _sanitize_name(self, fld_name, suffix):
+        typName = fld_name.strip() + suffix
+        typName = re.sub('^(^[0-9])', 'E_\\1', typName)
+        typName = re.sub('[[]([^]:]+)[^]]*[]]', '\\1', typName)
+        typName = re.sub('[?]', '', typName)
+        typName = re.sub('-.', '_', typName)
+        typName = re.sub('^[ \t]+', '', typName)
+        return typName
     def __init__(self, file_name):
         self.tree = ET.parse(file_name)
         self.root = self.tree.getroot()
@@ -139,11 +147,7 @@ class AttribRegistry(object):
             if "AttributeType" in entry:
                 attr_type = entry["AttributeType"].lower()
             if "AttributeValue" in entry:
-                typName = fld_name.strip() + "Types"
-                typName = re.sub('^(^[0-9])', 'E_\\1', typName)
-                typName = re.sub('[[]([^]:]+)[^]]*[]]', '\\1', typName)
-                typName = re.sub('[?]', '', typName)
-                typName = re.sub('-', '_', typName)
+                typName = self._sanitize_name(fld_name, 'Types')
                 tt[fld_name]["type"] = typName
                 self.attr_json["definitions"][typName] = {
                     "enum" : entry["enum"],
@@ -337,7 +341,8 @@ class AttribRegistry(object):
             #out.write('        """\n')
             #out.write('        ' + desc_props[i] + '\n')
             #out.write('        """\n')
-            out.write('        self.{0} = {1}({2})\n'.format(i, f_pytype, field_spec))
+            fld_name = self._sanitize_name(i, '')
+            out.write('        self.{0} = {1}({2})\n'.format(fld_name, f_pytype, field_spec))
         out.write('        self.commit()\n')
         out.write('\n')
 

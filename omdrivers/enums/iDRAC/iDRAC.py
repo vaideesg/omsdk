@@ -64,7 +64,7 @@ AddressState_IPv6Types = EnumWrapper("AddressState_IPv6Types", {
     "Pending" : "Pending",
 }).enum_type
 
-AdminState_OS_BMCTypes = EnumWrapper("AdminState_OS_BMCTypes", {
+AdminState_OS_MCTypes = EnumWrapper("AdminState_OS_MCTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
 }).enum_type
@@ -1359,407 +1359,401 @@ LFMMode_PCIeSlotLFMTypes = EnumWrapper("LFMMode_PCIeSlotLFMTypes", {
     "Disabled" : "Disabled",
 }).enum_type
 
-LM_AUTO_DISCOVERY_PMLicensingTypes = EnumWrapper("LM_AUTO_DISCOVERY_PMLicensingTypes", {
+LM_ACADM_LI_PMLicensingTypes = EnumWrapper("LM_ACADM_LI_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_AUTO_UPDATE_PMLicensingTypes = EnumWrapper("LM_AUTO_UPDATE_PMLicensingTypes", {
+LM_ACKUP_ESTORE_PMLicensingTypes = EnumWrapper("LM_ACKUP_ESTORE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_AVOTON_4CORE_PMLicensingTypes = EnumWrapper("LM_AVOTON_4CORE_PMLicensingTypes", {
+LM_ART_EPLACEMENT_PMLicensingTypes = EnumWrapper("LM_ART_EPLACEMENT_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_AVOTON_8CORE_PMLicensingTypes = EnumWrapper("LM_AVOTON_8CORE_PMLicensingTypes", {
+LM_ASE_PMI_UI_PMLicensingTypes = EnumWrapper("LM_ASE_PMI_UI_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_BACKUP_RESTORE_PMLicensingTypes = EnumWrapper("LM_BACKUP_RESTORE_PMLicensingTypes", {
+LM_ASIC_EMOTE_NVENTORY_XPORT_PMLicensingTypes = EnumWrapper("LM_ASIC_EMOTE_NVENTORY_XPORT_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_BASE_IPMI_GUI_PMLicensingTypes = EnumWrapper("LM_BASE_IPMI_GUI_PMLicensingTypes", {
+LM_AST_RASH_CREEN_APTURE_PMLicensingTypes = EnumWrapper("LM_AST_RASH_CREEN_APTURE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_BASIC_REMOTE_INVENTORY_EXPORT_PMLicensingTypes = EnumWrapper("LM_BASIC_REMOTE_INVENTORY_EXPORT_PMLicensingTypes", {
+LM_AST_RASH_IDEO_APTURE_PMLicensingTypes = EnumWrapper("LM_AST_RASH_IDEO_APTURE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_BMC_PLUS_PMLicensingTypes = EnumWrapper("LM_BMC_PLUS_PMLicensingTypes", {
+LM_CONSOLE_HAT_PMLicensingTypes = EnumWrapper("LM_CONSOLE_HAT_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_BOOT_CAPTURE_PMLicensingTypes = EnumWrapper("LM_BOOT_CAPTURE_PMLicensingTypes", {
+LM_CONSOLE_PMLicensingTypes = EnumWrapper("LM_CONSOLE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_CONNECTION_VIEW_PMLicensingTypes = EnumWrapper("LM_CONNECTION_VIEW_PMLicensingTypes", {
+LM_CONSOLE_TML5_CCESS_PMLicensingTypes = EnumWrapper("LM_CONSOLE_TML5_CCESS_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_CONSOLE_COLLABORATION_PMLicensingTypes = EnumWrapper("LM_CONSOLE_COLLABORATION_PMLicensingTypes", {
+LM_CS_UI_PMLicensingTypes = EnumWrapper("LM_CS_UI_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_DCS_GUI_PMLicensingTypes = EnumWrapper("LM_DCS_GUI_PMLicensingTypes", {
+LM_C_I_PMLicensingTypes = EnumWrapper("LM_C_I_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_DEDICATED_NIC_PMLicensingTypes = EnumWrapper("LM_DEDICATED_NIC_PMLicensingTypes", {
+LM_DRAC_NTERPRISE_PMLicensingTypes = EnumWrapper("LM_DRAC_NTERPRISE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_DEVICE_MONITORING_PMLicensingTypes = EnumWrapper("LM_DEVICE_MONITORING_PMLicensingTypes", {
-    "T_0" : "0",
+LM_DRAC_XPRESS_LADES_PMLicensingTypes = EnumWrapper("LM_DRAC_XPRESS_LADES_PMLicensingTypes", {
     "T_0xFF" : "0xFF",
-    "T_1" : "1",
 }).enum_type
 
-LM_DHCP_CONFIGURE_PMLicensingTypes = EnumWrapper("LM_DHCP_CONFIGURE_PMLicensingTypes", {
+LM_DRAC_XPRESS_PMLicensingTypes = EnumWrapper("LM_DRAC_XPRESS_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_DIRECTORY_SERVICES_PMLicensingTypes = EnumWrapper("LM_DIRECTORY_SERVICES_PMLicensingTypes", {
+LM_ECURITY_OCKOUT_PMLicensingTypes = EnumWrapper("LM_ECURITY_OCKOUT_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_DYNAMIC_DNS_PMLicensingTypes = EnumWrapper("LM_DYNAMIC_DNS_PMLicensingTypes", {
+LM_EDFISH_PMLicensingTypes = EnumWrapper("LM_EDFISH_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_EMAIL_ALERTING_PMLicensingTypes = EnumWrapper("LM_EMAIL_ALERTING_PMLicensingTypes", {
+LM_EDICATED_IC_PMLicensingTypes = EnumWrapper("LM_EDICATED_IC_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_FULL_UI_PMLicensingTypes = EnumWrapper("LM_FULL_UI_PMLicensingTypes", {
+LM_ELNET_PMLicensingTypes = EnumWrapper("LM_ELNET_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_GROUP_MANAGER_PMLicensingTypes = EnumWrapper("LM_GROUP_MANAGER_PMLicensingTypes", {
+LM_EMOTE_ILE_HARE_PMLicensingTypes = EnumWrapper("LM_EMOTE_ILE_HARE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_IDRAC_ENTERPRISE_PMLicensingTypes = EnumWrapper("LM_IDRAC_ENTERPRISE_PMLicensingTypes", {
+LM_EMOTE_IRWARE_PDATE_PMLicensingTypes = EnumWrapper("LM_EMOTE_IRWARE_PDATE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
-}).enum_type
-
-LM_IDRAC_EXPRESS_BLADES_PMLicensingTypes = EnumWrapper("LM_IDRAC_EXPRESS_BLADES_PMLicensingTypes", {
-    "T_0xFF" : "0xFF",
 }).enum_type
 
-LM_IDRAC_EXPRESS_PMLicensingTypes = EnumWrapper("LM_IDRAC_EXPRESS_PMLicensingTypes", {
+LM_EMOTE_ONFIGURATION_PMLicensingTypes = EnumWrapper("LM_EMOTE_ONFIGURATION_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_INBAND_FIRMWARE_UPDATE_PMLicensingTypes = EnumWrapper("LM_INBAND_FIRMWARE_UPDATE_PMLicensingTypes", {
+LM_EMOTE_SSET_NVENTORY_PMLicensingTypes = EnumWrapper("LM_EMOTE_SSET_NVENTORY_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_IPV6_PMLicensingTypes = EnumWrapper("LM_IPV6_PMLicensingTypes", {
+LM_EMOTE_S_EPLOYMENT_PMLicensingTypes = EnumWrapper("LM_EMOTE_S_EPLOYMENT_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_LAST_CRASH_SCREEN_CAPTURE_PMLicensingTypes = EnumWrapper("LM_LAST_CRASH_SCREEN_CAPTURE_PMLicensingTypes", {
+LM_EMOTE_YSLOG_PMLicensingTypes = EnumWrapper("LM_EMOTE_YSLOG_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_LAST_CRASH_VIDEO_CAPTURE_PMLicensingTypes = EnumWrapper("LM_LAST_CRASH_VIDEO_CAPTURE_PMLicensingTypes", {
+LM_ESTORE_PMLicensingTypes = EnumWrapper("LM_ESTORE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_LC_UI_PMLicensingTypes = EnumWrapper("LM_LC_UI_PMLicensingTypes", {
+LM_EVICE_ONITORING_PMLicensingTypes = EnumWrapper("LM_EVICE_ONITORING_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_LICENSE_UI_PMLicensingTypes = EnumWrapper("LM_LICENSE_UI_PMLicensingTypes", {
+LM_FOLDER_PMLicensingTypes = EnumWrapper("LM_FOLDER_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_LOCKDOWN_MODE_PMLicensingTypes = EnumWrapper("LM_LOCKDOWN_MODE_PMLicensingTypes", {
+LM_HCP_ONFIGURE_PMLicensingTypes = EnumWrapper("LM_HCP_ONFIGURE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_NTP_PMLicensingTypes = EnumWrapper("LM_NTP_PMLicensingTypes", {
+LM_ICENSE_I_PMLicensingTypes = EnumWrapper("LM_ICENSE_I_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_OME_PMLicensingTypes = EnumWrapper("LM_OME_PMLicensingTypes", {
+LM_IRECTORY_ERVICES_PMLicensingTypes = EnumWrapper("LM_IRECTORY_ERVICES_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_OOB_PMLicensingTypes = EnumWrapper("LM_OOB_PMLicensingTypes", {
+LM_IRTUAL_LASH_ARTITIONS_PMLicensingTypes = EnumWrapper("LM_IRTUAL_LASH_ARTITIONS_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_PART_REPLACEMENT_PMLicensingTypes = EnumWrapper("LM_PART_REPLACEMENT_PMLicensingTypes", {
+LM_MAIL_LERTING_PMLicensingTypes = EnumWrapper("LM_MAIL_LERTING_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_POWER_BUDGETING_PMLicensingTypes = EnumWrapper("LM_POWER_BUDGETING_PMLicensingTypes", {
+LM_MASH_LP_PMLicensingTypes = EnumWrapper("LM_MASH_LP_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_POWER_MONITORING_PMLicensingTypes = EnumWrapper("LM_POWER_MONITORING_PMLicensingTypes", {
+LM_MC_LUS_PMLicensingTypes = EnumWrapper("LM_MC_LUS_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_QUALITY_BANDWIDTH_CONTROL_PMLicensingTypes = EnumWrapper("LM_QUALITY_BANDWIDTH_CONTROL_PMLicensingTypes", {
+LM_MEDIA_PMLicensingTypes = EnumWrapper("LM_MEDIA_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_RACADM_CLI_PMLicensingTypes = EnumWrapper("LM_RACADM_CLI_PMLicensingTypes", {
+LM_ME_PMLicensingTypes = EnumWrapper("LM_ME_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_REDFISH_PMLicensingTypes = EnumWrapper("LM_REDFISH_PMLicensingTypes", {
+LM_NBAND_IRMWARE_PDATE_PMLicensingTypes = EnumWrapper("LM_NBAND_IRMWARE_PDATE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_REMOTE_ASSET_INVENTORY_PMLicensingTypes = EnumWrapper("LM_REMOTE_ASSET_INVENTORY_PMLicensingTypes", {
+LM_NC_PMLicensingTypes = EnumWrapper("LM_NC_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_REMOTE_CONFIGURATION_PMLicensingTypes = EnumWrapper("LM_REMOTE_CONFIGURATION_PMLicensingTypes", {
+LM_NMP_ET_PMLicensingTypes = EnumWrapper("LM_NMP_ET_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_REMOTE_FILE_SHARE_PMLicensingTypes = EnumWrapper("LM_REMOTE_FILE_SHARE_PMLicensingTypes", {
+LM_OB_PMLicensingTypes = EnumWrapper("LM_OB_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_REMOTE_FIRWARE_UPDATE_PMLicensingTypes = EnumWrapper("LM_REMOTE_FIRWARE_UPDATE_PMLicensingTypes", {
+LM_OCKDOWN_ODE_PMLicensingTypes = EnumWrapper("LM_OCKDOWN_ODE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_REMOTE_OS_DEPLOYMENT_PMLicensingTypes = EnumWrapper("LM_REMOTE_OS_DEPLOYMENT_PMLicensingTypes", {
+LM_ONNECTION_IEW_PMLicensingTypes = EnumWrapper("LM_ONNECTION_IEW_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_REMOTE_SYSLOG_PMLicensingTypes = EnumWrapper("LM_REMOTE_SYSLOG_PMLicensingTypes", {
+LM_ONSOLE_OLLABORATION_PMLicensingTypes = EnumWrapper("LM_ONSOLE_OLLABORATION_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_RESTORE_PMLicensingTypes = EnumWrapper("LM_RESTORE_PMLicensingTypes", {
+LM_OOT_APTURE_PMLicensingTypes = EnumWrapper("LM_OOT_APTURE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_SECURITY_LOCKOUT_PMLicensingTypes = EnumWrapper("LM_SECURITY_LOCKOUT_PMLicensingTypes", {
+LM_OWER_ONITORING_PMLicensingTypes = EnumWrapper("LM_OWER_ONITORING_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_SMASH_CLP_PMLicensingTypes = EnumWrapper("LM_SMASH_CLP_PMLicensingTypes", {
+LM_OWER_UDGETING_PMLicensingTypes = EnumWrapper("LM_OWER_UDGETING_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_SNMP_GET_PMLicensingTypes = EnumWrapper("LM_SNMP_GET_PMLicensingTypes", {
+LM_PDATE_ROM_EPO_PMLicensingTypes = EnumWrapper("LM_PDATE_ROM_EPO_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_SSH_PK_AUTHEN_PMLicensingTypes = EnumWrapper("LM_SSH_PK_AUTHEN_PMLicensingTypes", {
+LM_PV6_PMLicensingTypes = EnumWrapper("LM_PV6_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_SSH_PMLicensingTypes = EnumWrapper("LM_SSH_PMLicensingTypes", {
+LM_ROUP_ANAGER_PMLicensingTypes = EnumWrapper("LM_ROUP_ANAGER_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_SSO_PMLicensingTypes = EnumWrapper("LM_SSO_PMLicensingTypes", {
+LM_SC_EVICE_ONFIGURATION_PMLicensingTypes = EnumWrapper("LM_SC_EVICE_ONFIGURATION_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_STORAGE_MONITORING_PMLicensingTypes = EnumWrapper("LM_STORAGE_MONITORING_PMLicensingTypes", {
+LM_SC_IRMWARE_PDATE_PMLicensingTypes = EnumWrapper("LM_SC_IRMWARE_PDATE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_TELNET_PMLicensingTypes = EnumWrapper("LM_TELNET_PMLicensingTypes", {
+LM_SC_MBEDDED_IAGNOSTICS_PMLicensingTypes = EnumWrapper("LM_SC_MBEDDED_IAGNOSTICS_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_TWO_FACTOR_AUTHEN_PMLicensingTypes = EnumWrapper("LM_TWO_FACTOR_AUTHEN_PMLicensingTypes", {
+LM_SC_SSISTED_S_EPLOYEMENT_PMLicensingTypes = EnumWrapper("LM_SC_SSISTED_S_EPLOYEMENT_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_UPDATE_FROM_REPO_PMLicensingTypes = EnumWrapper("LM_UPDATE_FROM_REPO_PMLicensingTypes", {
+LM_SH_K_UTHEN_PMLicensingTypes = EnumWrapper("LM_SH_K_UTHEN_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_USC_ASSISTED_OS_DEPLOYEMENT_PMLicensingTypes = EnumWrapper("LM_USC_ASSISTED_OS_DEPLOYEMENT_PMLicensingTypes", {
+LM_SH_PMLicensingTypes = EnumWrapper("LM_SH_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_USC_DEVICE_CONFIGURATION_PMLicensingTypes = EnumWrapper("LM_USC_DEVICE_CONFIGURATION_PMLicensingTypes", {
+LM_SMAN_PMLicensingTypes = EnumWrapper("LM_SMAN_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_USC_EMBEDDED_DIAGNOSTICS_PMLicensingTypes = EnumWrapper("LM_USC_EMBEDDED_DIAGNOSTICS_PMLicensingTypes", {
+LM_SO_PMLicensingTypes = EnumWrapper("LM_SO_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_USC_FIRMWARE_UPDATE_PMLicensingTypes = EnumWrapper("LM_USC_FIRMWARE_UPDATE_PMLicensingTypes", {
+LM_TORAGE_ONITORING_PMLicensingTypes = EnumWrapper("LM_TORAGE_ONITORING_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_VCONSOLE_CHAT_PMLicensingTypes = EnumWrapper("LM_VCONSOLE_CHAT_PMLicensingTypes", {
+LM_TP_PMLicensingTypes = EnumWrapper("LM_TP_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_VCONSOLE_HTML5_ACCESS_PMLicensingTypes = EnumWrapper("LM_VCONSOLE_HTML5_ACCESS_PMLicensingTypes", {
+LM_UALITY_ANDWIDTH_ONTROL_PMLicensingTypes = EnumWrapper("LM_UALITY_ANDWIDTH_ONTROL_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_VCONSOLE_PMLicensingTypes = EnumWrapper("LM_VCONSOLE_PMLicensingTypes", {
+LM_ULL_I_PMLicensingTypes = EnumWrapper("LM_ULL_I_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_VFOLDER_PMLicensingTypes = EnumWrapper("LM_VFOLDER_PMLicensingTypes", {
+LM_UTO_ISCOVERY_PMLicensingTypes = EnumWrapper("LM_UTO_ISCOVERY_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_VIRTUAL_FLASH_PARTITIONS_PMLicensingTypes = EnumWrapper("LM_VIRTUAL_FLASH_PARTITIONS_PMLicensingTypes", {
+LM_UTO_PDATE_PMLicensingTypes = EnumWrapper("LM_UTO_PDATE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_VMEDIA_PMLicensingTypes = EnumWrapper("LM_VMEDIA_PMLicensingTypes", {
+LM_VOTON_CORE_PMLicensingTypes = EnumWrapper("LM_VOTON_CORE_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_VNC_PMLicensingTypes = EnumWrapper("LM_VNC_PMLicensingTypes", {
+LM_WO_ACTOR_UTHEN_PMLicensingTypes = EnumWrapper("LM_WO_ACTOR_UTHEN_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
 }).enum_type
 
-LM_WSMAN_PMLicensingTypes = EnumWrapper("LM_WSMAN_PMLicensingTypes", {
+LM_YNAMIC_NS_PMLicensingTypes = EnumWrapper("LM_YNAMIC_NS_PMLicensingTypes", {
     "T_0" : "0",
     "T_0xFF" : "0xFF",
     "T_1" : "1",
@@ -2212,13 +2206,13 @@ PSURedundancyCapable_PlatformCapabilityTypes = EnumWrapper("PSURedundancyCapable
     "Enabled" : "Enabled",
 }).enum_type
 
-PTCapability_OS_BMCTypes = EnumWrapper("PTCapability_OS_BMCTypes", {
+PTCapability_OS_MCTypes = EnumWrapper("PTCapability_OS_MCTypes", {
     "Capable" : "Capable",
     "Not_Capable" : "Not Capable",
     "Unavailable" : "Unavailable",
 }).enum_type
 
-PTMode_OS_BMCTypes = EnumWrapper("PTMode_OS_BMCTypes", {
+PTMode_OS_MCTypes = EnumWrapper("PTMode_OS_MCTypes", {
     "lom_p2p" : "lom-p2p",
     "usb_p2p" : "usb-p2p",
 }).enum_type
@@ -2494,7 +2488,7 @@ Role_GroupManagerTypes = EnumWrapper("Role_GroupManagerTypes", {
     "Unconfigured" : "Unconfigured",
 }).enum_type
 
-SCFWUpdateState_SC_BMCTypes = EnumWrapper("SCFWUpdateState_SC_BMCTypes", {
+SCFWUpdateState_SC_MCTypes = EnumWrapper("SCFWUpdateState_SC_MCTypes", {
     "Availiable_to_SC" : "Availiable to SC",
     "Complete" : "Complete",
     "Downloaded" : "Downloaded",
