@@ -110,5 +110,11 @@
         "ADGroup" : { "min" : 1, "max" : 5, "key" : ["Name"] },
         "UserDomain" : { "min" : 1, "max" : 40, "key" : ["Name"] },
         "LDAPRoleGroup" : { "min" : 1, "max" : 5, "key" : ["DN"] }
+    },
+    "composite" : {
+        "SysLog" : { "Servers" : [ "Server1", "Server2", "Server3" ] },
+        "NTPConfigGroup" : { "NTPServers" : [ "NTP1", "NTP2", "NTP3" ] },
+        "IPv4Static" : { "DNSServers" : [ "DNS1", "DNS2" ] },
+        "IPv6Static" : { "DNSServers" : [ "DNS1", "DNS2" ] }
     }
 }

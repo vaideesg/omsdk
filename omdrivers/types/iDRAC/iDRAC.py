@@ -1044,6 +1044,7 @@ class IPv4Static(ClassType):
         self.DNSFromDHCP_IPv4Static = EnumTypeField(None,DNSFromDHCP_IPv4StaticTypes, parent=self)
         self.Gateway_IPv4Static = StringField(None, parent=self)
         self.Netmask_IPv4Static = StringField(None, parent=self)
+        self.DNSServers = CompositeFieldType(self.DNS1_IPv4Static, self.DNS2_IPv4Static)
         self.commit()
 
 class IPv6(ClassType):
@@ -1106,6 +1107,7 @@ class IPv6Static(ClassType):
         self.Gateway_IPv6Static = StringField(None, parent=self)
         self.Netmask_IPv6Static = StringField(None, parent=self)
         self.PrefixLength_IPv6Static = IntField(None, parent=self)
+        self.DNSServers = CompositeFieldType(self.DNS1_IPv6Static, self.DNS2_IPv6Static)
         self.commit()
 
 class IPv6URL(ClassType):
@@ -1584,6 +1586,7 @@ class NTPConfigGroup(ClassType):
         self.NTP3_NTPConfigGroup = StringField(None, parent=self)
         self.NTPEnable_NTPConfigGroup = EnumTypeField(None,NTPEnable_NTPConfigGroupTypes, parent=self)
         self.NTPMaxDist_NTPConfigGroup = IntField(None, parent=self)
+        self.NTPServers = CompositeFieldType(self.NTP1_NTPConfigGroup, self.NTP2_NTPConfigGroup, self.NTP3_NTPConfigGroup)
         self.commit()
 
 class OS_BMC(ClassType):
@@ -2614,6 +2617,7 @@ class SysLog(ClassType):
         self.Server2_SysLog = StringField(None, parent=self)
         self.Server3_SysLog = StringField(None, parent=self)
         self.SysLogEnable_SysLog = EnumTypeField(None,SysLogEnable_SysLogTypes, parent=self)
+        self.Servers = CompositeFieldType(self.Server1_SysLog, self.Server2_SysLog, self.Server3_SysLog)
         self.commit()
 
 class Telnet(ClassType):
@@ -2937,6 +2941,13 @@ class vFlashSD(ClassType):
         self.WriteProtect_vFlashSD = EnumTypeField(None,WriteProtect_vFlashSDTypes, parent=self)
         self.commit()
 
+class LifecycleController(ClassType):
+
+    def __init__(self, parent = None):
+        super().__init__("Component", None, parent)
+        self.LCAttributes = LCAttributes(parent=self)
+        self.commit()
+
 class System(ClassType):
 
     def __init__(self, parent = None):
@@ -3116,12 +3127,5 @@ class iDRAC(ClassType):
         self._STP_ = _STP_(parent=self)
         self.vFlashPartition = vFlashPartition(parent=self)
         self.vFlashSD = vFlashSD(parent=self)
-        self.commit()
-
-class LifecycleController(ClassType):
-
-    def __init__(self, parent = None):
-        super().__init__("Component", None, parent)
-        self.LCAttributes = LCAttributes(parent=self)
         self.commit()
 

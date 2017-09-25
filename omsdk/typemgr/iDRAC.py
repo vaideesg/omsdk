@@ -16,7 +16,7 @@ class SNMP(ClassType):
         self.AlertPort_SNMP = PortField(162, 'SNMPTrapPort', parent=self)
         self.TrapFormat_SNMP = \
             EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat', parent=self)
-        self.Ports = SuperFieldType(self.AlertPort_SNMP, self.DiscoveryPort_SNMP)
+        self.Ports = CompositeFieldType(self.AlertPort_SNMP, self.DiscoveryPort_SNMP)
         self.commit()
 
 class NIC(ClassType):

@@ -50,6 +50,9 @@ class FieldType(TypeBase):
     def __getattr__(self, name):
         if name in self.__dict__ and name not in ['_orig_value']:
             return self.__dict__[name]
+        elif name == '_optimal' and self._composite:
+            return tuple(sorted([i for i in self.__dict__['_value'] \
+                                 if i._value is not None]))
         raise AttributeError('Invalid attribute ' + name)
 
     # Value APIs

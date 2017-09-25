@@ -1,6 +1,6 @@
 from omsdk.typemgr.FieldType import FieldType
 
-class SuperFieldType(FieldType):
+class CompositeFieldType(FieldType):
     def __init__(self, *parts):
         super().__init__(None, tuple, 'Attribute', None, None, True)
         self.__dict__['_value'] = parts
