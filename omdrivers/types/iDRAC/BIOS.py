@@ -10,7 +10,6 @@ class BIOS(ClassType):
 
     def __init__(self, parent = None):
         super().__init__("Component", None, parent)
-
         self.AcPwrRcvry = EnumTypeField(None,AcPwrRcvryTypes, parent=self)
         self.AcPwrRcvryDelay = EnumTypeField(None,AcPwrRcvryDelayTypes, parent=self)
         self.AcPwrRcvryUserDelay = IntField(None, parent=self)

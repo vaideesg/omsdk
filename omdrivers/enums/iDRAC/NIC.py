@@ -272,6 +272,7 @@ NetworkPartitioningModeTypes = EnumWrapper("NetworkPartitioningModeTypes", {
 NicModePartitionTypes = EnumWrapper("NicModePartitionTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
+    "Varies" : "Varies",
 }).enum_type
 
 NicModeTypes = EnumWrapper("NicModeTypes", {
@@ -402,6 +403,7 @@ RDMAApplicationProfileTypes = EnumWrapper("RDMAApplicationProfileTypes", {
 RDMANICModeOnPartitionPartitionTypes = EnumWrapper("RDMANICModeOnPartitionPartitionTypes", {
     "Disabled" : "Disabled",
     "Enabled" : "Enabled",
+    "Varies" : "Varies",
 }).enum_type
 
 RDMANICModeOnPortTypes = EnumWrapper("RDMANICModeOnPortTypes", {

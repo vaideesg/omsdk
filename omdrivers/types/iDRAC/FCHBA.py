@@ -10,7 +10,6 @@ class FCHBA(ClassType):
 
     def __init__(self, parent = None):
         super().__init__("Component", None, parent)
-
         self.BootScanSelection = EnumTypeField(BootScanSelectionTypes.Disabled,BootScanSelectionTypes, parent=self)
         # readonly attribute
         self.BusDeviceFunction = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)

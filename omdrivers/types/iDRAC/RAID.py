@@ -10,7 +10,6 @@ class RAID(ClassType):
 
     def __init__(self, parent = None):
         super().__init__("Component", None, parent)
-
         # readonly attribute populated by iDRAC
         self.BackplaneType = EnumTypeField(None,BackplaneTypeTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute

@@ -10,7 +10,6 @@ class NIC(ClassType):
 
     def __init__(self, parent = None):
         super().__init__("Component", None, parent)
-
         # readonly attribute populated by iDRAC
         self.AddressingMode = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.BannerMessageTimeout = IntField(None, parent=self)
