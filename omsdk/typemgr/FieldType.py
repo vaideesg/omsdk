@@ -30,7 +30,7 @@ from omsdk.typemgr.TypeState import TypeState, TypeBase
 
 class FieldType(TypeBase):
 
-    def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False):
+    def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False, modifyAllowed = True, deleteAllowed = True):
         self._type  = typename
         self._alias = alias
         self._fname = fname
@@ -38,7 +38,8 @@ class FieldType(TypeBase):
         self._parent = parent
         self._composite = False
         self._index = 1
-        self._modifyAllowed = True
+        self._modifyAllowed = modifyAllowed
+        self._deleteAllowed = deleteAllowed
 
         self._freeze = False
 

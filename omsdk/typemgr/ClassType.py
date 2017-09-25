@@ -41,14 +41,15 @@ PY3 = sys.version_info[0] == 3
 
 class ClassType(TypeBase):
 
-    def __init__(self, fname, alias, parent = None, volatile=False):
+    def __init__(self, fname, alias, parent = None, volatile=False, modifyAllowed = True, deleteAllowed = True):
         self._alias = alias
         self._fname = fname
         self._volatile = volatile
         self._parent = parent
         self._composite = False
         self._index = 1
-        #self._modifyAllowed = True
+        self._modifyAllowed = modifyAllowed
+        self._deleteAllowed = deleteAllowed
 
         self._freeze = False
 
@@ -73,7 +74,8 @@ class ClassType(TypeBase):
         # allow updates to other fields except _value
         # should we allow updates to  '_type', '_alias', '_fname'?
         if name in [ '_alias', '_fname', '_volatile', '_parent',
-                     '_composite', '_index', '_freeze']:
+                     '_composite', '_index', '_freeze',
+                     '_modifyAllowed', '_deleteAllowed']:
             self.__dict__[name] = value
             return
 
