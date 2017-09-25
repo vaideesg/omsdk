@@ -15,7 +15,7 @@ from omsdk.sdkinfra import sdkinfra
 from omsdk.sdkprotopref import ProtoPreference, ProtocolEnum, ProtoMethods
 from omsdk.catalog.sdkupdatemgr import UpdateManager
 import logging
-from omsdk.omlog.Logger import LogManager, LoggerConfigTypeEnum
+from omsdk.omlogs.Logger import LogManager, LoggerConfigTypeEnum
 from omdrivers.enums.iDRAC.iDRACEnums import *
 from omdrivers.helpers.iDRAC.UpdateHelper import UpdateHelper
 from omsdk.sdkproto import Simulator

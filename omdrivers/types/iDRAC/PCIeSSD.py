@@ -1,24 +1,49 @@
-from omsdk.sdkcenum import EnumWrapper
-from omdrivers.types.iDRAC.BaseARType import *
 from omdrivers.enums.iDRAC.PCIeSSD import *
+from omsdk.typemgr.ClassType import ClassType
+from omsdk.typemgr.ArrayType import ArrayType
+from omsdk.typemgr.BuiltinTypes import *
 import logging
 
 logger = logging.getLogger(__name__)
 
-class PCIeSSD(BaseARType):
+class PCIeSSD(ClassType):
 
-    def my_create(self):
-        self.CryptographicErase = None
-        self.SecureErase = None
-        return self
+    def __init__(self, parent = None):
+        super().__init__("Component", None, parent)
 
-    def my_modify(self):
-        self.CryptographicErase = None
-        self.SecureErase = None
-        return self
-
-    def my_delete(self):
-        self.CryptographicErase = None
-        self.SecureErase = None
-        return self
+        # readonly attribute populated by iDRAC
+        self.BusProtocol = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.BusProtocolVersion = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.CapableSpeed = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.CryptographicErase = EnumTypeField(None,CryptographicEraseTypes, parent=self)
+        # readonly attribute populated by iDRAC
+        self.DeviceProtocol = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.FailurePredicted = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.ModelNumber = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.Name = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.PcieMaxLinkWidth = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.PcieNegotiatedLinkSpeed = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.PcieNegotiatedLinkWidth = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.RemainingRatedWriteEndurance = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.SecureErase = EnumTypeField(None,SecureEraseTypes, parent=self)
+        # readonly attribute populated by iDRAC
+        self.SerialNumber = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.Size = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.SmartStatus = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.State = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.Version = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.commit()
 

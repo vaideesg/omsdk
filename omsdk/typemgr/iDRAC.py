@@ -88,7 +88,7 @@ class iDRAC(ClassType):
     def __init__(self,  parent = None):
         super().__init__( 'Component', None, parent, False)
         self.SNMP = SNMP(parent=self)
-        #self.Users = ArrayType(Users)
+        self.Users = ArrayType(Users)
         self.commit()
 
 class System(ClassType):

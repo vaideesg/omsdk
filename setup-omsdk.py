@@ -74,7 +74,7 @@ setup(
         'omsdk.profiling',
         'omsdk.reflection',
         'omsdk.typemgr',
-        'omsdk.omlog',
+        'omsdk.omlogs',
         'omdrivers',
         'omdrivers.lifecycle',
         'omdrivers.lifecycle.iDRAC',
@@ -117,7 +117,7 @@ setup(
                 'CMC/*.Monitor',
         ],
         'omsdk': [
-                'omlog/config/*',
+                'omlogs/config/*',
         ],
     },
 

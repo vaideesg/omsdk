@@ -45,7 +45,19 @@ class AttribRegistry(object):
             'RegEx' : 'pattern',
             'GroupName' : 'qualifier',
             'AttributeName' : 'name',
+            'AttributeType' : 'baseType',
             'DefaultValue' : 'default',
+        }
+        typemaps = {
+            'integer' : 'int',
+            'string' : 'str',
+            'enumeration' : 'enum',
+
+            'orderlistseq' : 'list',
+            'password' : 'str',
+            'binary' : 'str',
+            'minmaxrange' : 'int',
+            'range' : 'int'
         }
         attrx_group = {}
         all_entries = []
@@ -59,6 +71,10 @@ class AttribRegistry(object):
                         if not attrfield.text in attrx_group:
                             attrx_group[attrfield.text] = []
                         attrx_group[attrfield.text].append(myentry)
+                elif attrfield.tag in ["AttributeType"]:
+                    if not attrfield.tag in myentry:
+                        myentry[attrfield.tag] = {}
+                    myentry [attrfield.tag] = attrfield.text
                 elif attrfield.tag in ["AttributeValue"]:
                     if not attrfield.tag in myentry:
                         myentry[attrfield.tag] = {}
@@ -104,13 +120,24 @@ class AttribRegistry(object):
 
         for entry in all_entries:
             tt = self.attr_json["definitions"][self.comp]["properties"]
+            if entry['AttributeType'].lower() in [
+                'form title', 'form ref', 'checkbox', 'formset title'
+            ]: continue
+
             fld_name = entry["AttributeName"]
             if self.addGroup and "GroupName" in entry:
                 fld_name = fld_name + "_" + entry["GroupName"]
             tt[fld_name] = {}
             for fld in attmap:
                 if fld in entry:
-                    tt[fld_name][attmap[fld]] = entry[fld]
+                    if attmap[fld] in ['baseType']:
+                        ntype = typemaps[entry[fld].lower()]
+                        tt[fld_name][attmap[fld]] = ntype
+                    else:
+                        tt[fld_name][attmap[fld]] = entry[fld]
+            attr_type = 'string'
+            if "AttributeType" in entry:
+                attr_type = entry["AttributeType"].lower()
             if "AttributeValue" in entry:
                 typName = fld_name.strip() + "Types"
                 typName = re.sub('^(^[0-9])', 'E_\\1', typName)
@@ -121,7 +148,7 @@ class AttribRegistry(object):
                 self.attr_json["definitions"][typName] = {
                     "enum" : entry["enum"],
                     "enumDescriptions" : entry["enumDescriptions"],
-                    "type" : "string",
+                    "type" : attr_type,
                 }
 
         props = self.attr_json["definitions"][self.comp]["properties"]
@@ -220,48 +247,98 @@ class AttribRegistry(object):
             tval = re.sub('^(^[0-9])', 'T_\\1', tval)
         return tval
 
-    def _print(self, out, props, mode):
+    def _print(self, out, props):
         cls_props = {}
+        md_props = {}
+        desc_props = {}
+        unedit_props = {}
         for i in props:
-            include_prop = True
+            modDeleteAllowed = True
 
+            unedit_props[i] = False
             if 'readonly' in props[i] and \
                 props[i]['readonly'].lower() in ['true']:
-                # readonly attributes not applicable for Delete, Modify
 
-                if mode in ['Delete', 'Modify'] or \
-                    'longDescription' not in props[i] or \
+                if 'longDescription' in props[i] and \
                     'Configurable via XML' not in props[i]['longDescription']:
-                    continue
+                    unedit_props[i] = True
+
+                modDeleteAllowed = False
 
             if 'default' not in props[i]:
                 props[i]['default'] = None
             cls_props[i] = props[i]['default']
+            md_props[i] = modDeleteAllowed
+            desc = i
+            if 'longDescription' in props[i]:
+                desc = props[i]['longDescription']
+            desc = re.sub('[ \t\v\b]+', ' ', desc)
+            desc = re.sub('[^[A-Za-z0-9;,.<>/:!()]" -]', "", desc)
+            desc_props[i] = desc.replace('"', "'")
+
 
         s_cls_props = sorted([i for i in cls_props])
-        out.write('    def my_{0}(self):\n'.format(mode))
         for i in s_cls_props:
             if '[Partition:n]' in i:
                 continue
             defval = cls_props[i]
 
+            typnames = { 'enum' : 'EnumTypeField',
+               'str' : 'StringField',
+               'int' : 'IntField',
+               'bool' : 'BooleanField',
+               'enum' : 'EnumTypeField',
+               'list' : 'StringField', # TODO
+            }
+            f_pytype = typnames[props[i]['baseType']]
             if defval:
                 typename = None
                 if 'type' in props[i]:
                     typename = props[i]['type']
                     if typename in self.attr_json["definitions"]:
                         typedef = self.attr_json['definitions'][typename]
-                        if 'enum' not in typedef or defval not in typedef['enum']:
-                            print(defval + " not in " + self.comp+'.'+typename)
-                            defval = None
-            if defval and 'type' in props[i]:
-                defval = props[i]['type'] + '.' + self._sanitize(defval)
-            elif defval:
-                defval = '"' + defval + '"'
+                        if 'enum' not in typedef:
+                            pass
+                            #print(self.comp+'.'+typename+ ' has no enums!')
+                        elif defval not in typedef['enum']:
+                            typedef['enum'].append(defval)
+                            typedef["enumDescriptions"].append(defval)
+                            #print(defval+" added to " + self.comp+'.'+typename)
+                        if len(typedef['enum']) <= 1:
+                            #print(i + " is suspcious enum. has one entry!")
+                            f_pytype = 'StringField'
+                        elif f_pytype not in ['EnumTypeField']:
+                            #print(props[i]['baseType']+" wrong enum:" + i)
+                            f_pytype = 'EnumTypeField'
+            if f_pytype in ['EnumTypeField']:
+                if 'type' not in props[i]:
+                    #print(i + " is wrong typed as enum. switching to enum!")
+                    f_pytype = 'StringField'
+
+            if f_pytype in ['EnumTypeField']:
+                if defval:
+                    defval = props[i]['type'] + '.' + self._sanitize(defval)
+                else:
+                    defval = str(defval)
+                field_spec = defval + ',' + props[i]['type']
             else:
-                defval = str(defval)
-            out.write('        self.{0} = {1}\n'.format(i, str(defval)))
-        out.write('        return self\n')
+                if defval:
+                    defval = '"' + defval + '"'
+                else:
+                    defval = str(defval)
+                field_spec = defval
+            field_spec +=  ", parent=self"
+            if not md_props[i]:
+                field_spec += ", modifyAllowed = False, deleteAllowed = False"
+                if unedit_props[i]:
+                    out.write('        # readonly attribute populated by iDRAC\n')
+                else:
+                    out.write('        # readonly attribute\n')
+            #out.write('        """\n')
+            #out.write('        ' + desc_props[i] + '\n')
+            #out.write('        """\n')
+            out.write('        self.{0} = {1}({2})\n'.format(i, f_pytype, field_spec))
+        out.write('        self.commit()\n')
         out.write('\n')
 
     def save_types(self, directory = None, filename = None):
@@ -272,26 +349,32 @@ class AttribRegistry(object):
         if not filename: filename = self.comp + ".py"
         dest_file = os.path.join(directory, filename)
         print('Saving to :' + dest_file)
+        self.device = 'iDRAC'
 
         with open(dest_file, 'w') as out:
             props = self.attr_json['definitions'][self.comp]['properties']
-            out.write('from omsdk.sdkcenum import EnumWrapper\n')
-            out.write('from omdrivers.types.iDRAC.BaseARType import *\n')
-            out.write('from omdrivers.enums.iDRAC.{0} import *\n'.format(self.comp))
+            out.write('from omdrivers.enums.{0}.{1} import *\n'.format(self.device, self.comp))
+            out.write('from omsdk.typemgr.ClassType import ClassType\n')
+            out.write('from omsdk.typemgr.ArrayType import ArrayType\n')
+            out.write('from omsdk.typemgr.BuiltinTypes import *\n')
             out.write('import logging\n')
             out.write('\n')
             out.write('logger = logging.getLogger(__name__)\n')
             out.write('\n')
-            out.write('class {0}(BaseARType):\n'.format(self.comp))
+            out.write('class {0}(ClassType):\n'.format(self.comp))
             out.write('\n')
-            self._print(out, props, 'create')
-            self._print(out, props, 'modify')
-            self._print(out, props, 'delete')
+            out.write('    def __init__(self, parent = None):\n')
+            out.write('        super().__init__("Component", None, parent)\n')
+            out.write('\n')
+
+            self._print(out, props)
 
 if __name__ == "__main__":
     driver_dir = os.path.join('omdrivers', 'iDRAC')
     for file1 in glob.glob(os.path.join(driver_dir, "xml", "*.xml")):
+        if file1.endswith('EventFilters.xml') is True: continue
         ar= AttribRegistry(file1)
         ar.save_file(directory=os.path.join(driver_dir, 'Config'))
-        ar.save_enums(directory=os.path.join('omdrivers', 'enums', 'iDRAC'))
         ar.save_types(directory=os.path.join('omdrivers', 'types', 'iDRAC'))
+        # types would have added unknown enumerations!
+        ar.save_enums(directory=os.path.join('omdrivers', 'enums', 'iDRAC'))

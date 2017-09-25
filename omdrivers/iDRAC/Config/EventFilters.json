@@ -11,7 +11,7 @@
                 "Enabled",
                 "Disabled"
             ],
-            "type": "string"
+            "type": "enumeration"
         },
         "Alert#IPMITypes": {
             "enum": [
@@ -22,7 +22,7 @@
                 "Enabled",
                 "Disabled"
             ],
-            "type": "string"
+            "type": "enumeration"
         },
         "Alert#OSLogTypes": {
             "enum": [
@@ -33,7 +33,7 @@
                 "Enabled",
                 "Disabled"
             ],
-            "type": "string"
+            "type": "enumeration"
         },
         "Alert#SNMPTypes": {
             "enum": [
@@ -44,7 +44,7 @@
                 "Enabled",
                 "Disabled"
             ],
-            "type": "string"
+            "type": "enumeration"
         },
         "Alert#SyslogTypes": {
             "enum": [
@@ -55,7 +55,7 @@
                 "Enabled",
                 "Disabled"
             ],
-            "type": "string"
+            "type": "enumeration"
         },
         "Alert#WSEventingTypes": {
             "enum": [
@@ -66,7 +66,7 @@
                 "Enabled",
                 "Disabled"
             ],
-            "type": "string"
+            "type": "enumeration"
         },
         "EventFilters": {
             "config_groups": {
@@ -85,12 +85,14 @@
             },
             "properties": {
                 "Action": {
+                    "baseType": "str",
                     "description": "action",
                     "longDescription": "Action enablement",
                     "name": "Action",
                     "qualifier": "Action"
                 },
                 "Alert#Email": {
+                    "baseType": "enum",
                     "description": "Email enablement",
                     "longDescription": "Email enablement",
                     "name": "Alert#Email",
@@ -98,6 +100,7 @@
                     "type": "Alert#EmailTypes"
                 },
                 "Alert#IPMI": {
+                    "baseType": "enum",
                     "description": "IPMI enablement",
                     "longDescription": "IPMI enablement",
                     "name": "Alert#IPMI",
@@ -105,6 +108,7 @@
                     "type": "Alert#IPMITypes"
                 },
                 "Alert#OSLog": {
+                    "baseType": "enum",
                     "description": "OSLog enablement",
                     "longDescription": "OSLog enablement",
                     "name": "Alert#OSLog",
@@ -112,6 +116,7 @@
                     "type": "Alert#OSLogTypes"
                 },
                 "Alert#SNMP": {
+                    "baseType": "enum",
                     "description": "SNMP enablement",
                     "longDescription": "SNMP enablement",
                     "name": "Alert#SNMP",
@@ -119,6 +124,7 @@
                     "type": "Alert#SNMPTypes"
                 },
                 "Alert#Syslog": {
+                    "baseType": "enum",
                     "description": "Syslog enablement",
                     "longDescription": "Syslog enablement",
                     "name": "Alert#Syslog",
@@ -126,6 +132,7 @@
                     "type": "Alert#SyslogTypes"
                 },
                 "Alert#WSEventing": {
+                    "baseType": "enum",
                     "description": "WSEventing enablement",
                     "longDescription": "WSEventing enablement",
                     "name": "Alert#WSEventing",
@@ -133,6 +140,7 @@
                     "type": "Alert#WSEventingTypes"
                 },
                 "DisplayName": {
+                    "baseType": "str",
                     "description": "Display Name",
                     "longDescription": "This field displays the name of the filter",
                     "name": "DisplayName",

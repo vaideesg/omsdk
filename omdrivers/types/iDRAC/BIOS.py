@@ -1,2070 +1,627 @@
-from omsdk.sdkcenum import EnumWrapper
-from omdrivers.types.iDRAC.BaseARType import *
 from omdrivers.enums.iDRAC.BIOS import *
+from omsdk.typemgr.ClassType import ClassType
+from omsdk.typemgr.ArrayType import ArrayType
+from omsdk.typemgr.BuiltinTypes import *
 import logging
 
 logger = logging.getLogger(__name__)
 
-class BIOS(BaseARType):
+class BIOS(ClassType):
 
-    def my_create(self):
-        self.AcPwrRcvry = None
-        self.AcPwrRcvryDelay = None
-        self.AcPwrRcvryUserDelay = None
-        self.AddrBasMir = None
-        self.AesNi = None
-        self.AssetTag = None
-        self.AttemptFastBoot = None
-        self.AttemptFastBootCold = None
-        self.BatteryStatus = None
-        self.BiosBootSeq = None
-        self.BiosBootSettings = None
-        self.BiosBootSettingsRef = None
-        self.BiosUpdateControl = None
-        self.BootMode = None
-        self.BootSeq = None
-        self.BootSeqEnDis = None
-        self.BootSeqEnDis1 = None
-        self.BootSeqEnDis10 = None
-        self.BootSeqEnDis11 = None
-        self.BootSeqEnDis12 = None
-        self.BootSeqEnDis13 = None
-        self.BootSeqEnDis14 = None
-        self.BootSeqEnDis15 = None
-        self.BootSeqEnDis16 = None
-        self.BootSeqEnDis17 = None
-        self.BootSeqEnDis18 = None
-        self.BootSeqEnDis19 = None
-        self.BootSeqEnDis2 = None
-        self.BootSeqEnDis20 = None
-        self.BootSeqEnDis3 = None
-        self.BootSeqEnDis4 = None
-        self.BootSeqEnDis5 = None
-        self.BootSeqEnDis6 = None
-        self.BootSeqEnDis7 = None
-        self.BootSeqEnDis8 = None
-        self.BootSeqEnDis9 = None
-        self.BootSeqEnDisRef = None
-        self.BootSeqRetry = None
-        self.BrowserDebugMode = None
-        self.BrowserMode = None
-        self.BrowserOptionsRef = None
-        self.BugChecking = None
-        self.CTOMasking = None
-        self.CkeThrottling = None
-        self.ClpOutput = None
-        self.ClusterOnDie = None
-        self.CollaborativeCpuPerfCtrl = None
-        self.ConTermType = None
-        self.ControlledTurbo = None
-        self.ControlledTurboExtended = None
-        self.CorePerfBoost = None
-        self.CorrEccSmi = None
-        self.CpuInterconnectBusLinkPower = None
-        self.CpuInterconnectBusSpeed = None
-        self.CurrentEmbVideoState = None
-        self.CurrentLimit = None
-        self.CurrentMemOpModeState = None
-        self.DataReuse = None
-        self.DcuIpPrefetcher = None
-        self.DcuStreamerPrefetcher = None
-        self.DebugErrorLevel = None
-        self.DellAutoDiscovery = None
-        self.DellWyseP25BIOSAccess = None
-        self.DeviceUnhide = None
-        self.Dfx = None
-        self.DirectMediaInterfaceSpeed = None
-        self.DmaVirtualization = None
-        self.DynamicCoreAllocation = None
-        self.EmbNic1 = None
-        self.EmbNic1Nic2 = None
-        self.EmbNic2 = None
-        self.EmbNic3 = None
-        self.EmbNic3Nic4 = None
-        self.EmbNic4 = None
-        self.EmbNicPort1BootProto = None
-        self.EmbNicPort2BootProto = None
-        self.EmbNicPort3BootProto = None
-        self.EmbNicPort4BootProto = None
-        self.EmbSata = None
-        self.EmbSataRSTeDebug = None
-        self.EmbSataShadow = None
-        self.EmbSataTestMode = None
-        self.EmbServerMgmt = None
-        self.EmbVideo = None
-        self.EnergyEfficientTurbo = None
-        self.EnergyPerformanceBias = None
-        self.ErrPrompt = None
-        self.ExtSerialConnector = None
-        self.FailSafeBaud = None
-        self.FanPwrPerf = None
-        self.ForceInt10 = None
-        self.FrontLcd = None
-        self.GlobalSlotDriverDisable = None
-        self.HddFailover = None
-        self.HddSeq = None
-        self.HttpDev1EnDis = HttpDev1EnDisTypes.Disabled
-        self.HttpDev1Interface = None
-        self.HttpDev1Protocol = HttpDev1ProtocolTypes.IPv4
-        self.HttpDev1Settings = None
-        self.HttpDev1SettingsRef = None
-        self.HttpDev1Uri = None
-        self.HttpDev1VlanEnDis = HttpDev1VlanEnDisTypes.Disabled
-        self.HttpDev1VlanId = None
-        self.HttpDev1VlanPriority = None
-        self.HttpDev2EnDis = HttpDev2EnDisTypes.Disabled
-        self.HttpDev2Interface = None
-        self.HttpDev2Protocol = HttpDev2ProtocolTypes.IPv4
-        self.HttpDev2Settings = None
-        self.HttpDev2SettingsRef = None
-        self.HttpDev2Uri = None
-        self.HttpDev2VlanEnDis = HttpDev2VlanEnDisTypes.Disabled
-        self.HttpDev2VlanId = None
-        self.HttpDev2VlanPriority = None
-        self.HttpDev3EnDis = HttpDev3EnDisTypes.Disabled
-        self.HttpDev3Interface = None
-        self.HttpDev3Protocol = HttpDev3ProtocolTypes.IPv4
-        self.HttpDev3Settings = None
-        self.HttpDev3SettingsRef = None
-        self.HttpDev3Uri = None
-        self.HttpDev3VlanEnDis = HttpDev3VlanEnDisTypes.Disabled
-        self.HttpDev3VlanId = None
-        self.HttpDev3VlanPriority = None
-        self.HttpDev4EnDis = HttpDev4EnDisTypes.Disabled
-        self.HttpDev4Interface = None
-        self.HttpDev4Protocol = HttpDev4ProtocolTypes.IPv4
-        self.HttpDev4Settings = None
-        self.HttpDev4SettingsRef = None
-        self.HttpDev4Uri = None
-        self.HttpDev4VlanEnDis = HttpDev4VlanEnDisTypes.Disabled
-        self.HttpDev4VlanId = None
-        self.HttpDev4VlanPriority = None
-        self.IdracDebugMode = None
-        self.IgnoreIdracCrReq = None
-        self.IioPcieGlobalSpeed = None
-        self.InBandManageabilityInterface = None
-        self.InSystemCharacterization = None
-        self.IntNic1Port1BootProto = None
-        self.IntNic1Port2BootProto = None
-        self.IntNic1Port3BootProto = None
-        self.IntNic1Port4BootProto = None
-        self.IntegratedDevices = None
-        self.IntegratedNetwork1 = None
-        self.IntegratedNetwork2 = None
-        self.IntegratedRaid = None
-        self.IntegratedSas = None
-        self.IntelTestEventIio = None
-        self.IntelTxt = None
-        self.InteractivePassword24A = None
-        self.InternalSdCard = None
-        self.InternalSdCardPresence = None
-        self.InternalSdCardPrimaryCard = None
-        self.InternalSdCardRedundancy = None
-        self.InternalUsb = None
-        self.InternalUsb1 = None
-        self.InternalUsb2 = None
-        self.IoNonPostedPrefetch = None
-        self.IoatEngine = None
-        self.IscsiDev1Con1Auth = None
-        self.IscsiDev1Con1ChapName = None
-        self.IscsiDev1Con1ChapSecret = None
-        self.IscsiDev1Con1ChapType = None
-        self.IscsiDev1Con1DhcpEnDis = None
-        self.IscsiDev1Con1EnDis = None
-        self.IscsiDev1Con1Gateway = None
-        self.IscsiDev1Con1Interface = None
-        self.IscsiDev1Con1Ip = None
-        self.IscsiDev1Con1IsId = None
-        self.IscsiDev1Con1Lun = None
-        self.IscsiDev1Con1Mask = None
-        self.IscsiDev1Con1Port = None
-        self.IscsiDev1Con1Protocol = None
-        self.IscsiDev1Con1Retry = None
-        self.IscsiDev1Con1RevChapName = None
-        self.IscsiDev1Con1RevChapSecret = None
-        self.IscsiDev1Con1Settings = None
-        self.IscsiDev1Con1SettingsRef = None
-        self.IscsiDev1Con1TargetIp = None
-        self.IscsiDev1Con1TargetName = None
-        self.IscsiDev1Con1TgtDhcpEnDis = None
-        self.IscsiDev1Con1Timeout = None
-        self.IscsiDev1Con1VlanEnDis = None
-        self.IscsiDev1Con1VlanId = None
-        self.IscsiDev1Con1VlanPriority = None
-        self.IscsiDev1Con2Auth = None
-        self.IscsiDev1Con2ChapName = None
-        self.IscsiDev1Con2ChapSecret = None
-        self.IscsiDev1Con2ChapType = None
-        self.IscsiDev1Con2DhcpEnDis = None
-        self.IscsiDev1Con2EnDis = None
-        self.IscsiDev1Con2Gateway = None
-        self.IscsiDev1Con2Interface = None
-        self.IscsiDev1Con2Ip = None
-        self.IscsiDev1Con2IsId = None
-        self.IscsiDev1Con2Lun = None
-        self.IscsiDev1Con2Mask = None
-        self.IscsiDev1Con2Port = None
-        self.IscsiDev1Con2Protocol = None
-        self.IscsiDev1Con2Retry = None
-        self.IscsiDev1Con2RevChapName = None
-        self.IscsiDev1Con2RevChapSecret = None
-        self.IscsiDev1Con2Settings = None
-        self.IscsiDev1Con2SettingsRef = None
-        self.IscsiDev1Con2TargetIp = None
-        self.IscsiDev1Con2TargetName = None
-        self.IscsiDev1Con2TgtDhcpEnDis = None
-        self.IscsiDev1Con2Timeout = None
-        self.IscsiDev1Con2VlanEnDis = None
-        self.IscsiDev1Con2VlanId = None
-        self.IscsiDev1Con2VlanPriority = None
-        self.IscsiDev1ConOrder = None
-        self.IscsiDev1EnDis = None
-        self.IscsiDev1Settings = None
-        self.IscsiInitiatorName = None
-        self.JunoPmEnable = None
-        self.L1Prefetcher = "Enabled"
-        self.L2Prefetcher = "Enabled"
-        self.LinkDowntrainReporting = None
-        self.LogicalProc = None
-        self.MRCSerialDbgOut = None
-        self.MeFailureRecoveryEnable = None
-        self.MeUmaEnable = None
-        self.MemDynamicPwr = None
-        self.MemFrequency = None
-        self.MemHotThrottlingMode = None
-        self.MemLowPower = None
-        self.MemOpMode = None
-        self.MemOpVoltage = None
-        self.MemOptimizer = None
-        self.MemPatrolScrub = None
-        self.MemPwrMgmt = None
-        self.MemPwrPerf = None
-        self.MemRefreshRate = None
-        self.MemSettings = None
-        self.MemTest = None
-        self.MemTestOnFastBoot = None
-        self.MemTestType = None
-        self.MemThrottlingMode = MemThrottlingModeTypes.Cltt
-        self.MemVolt = None
-        self.MemoryFastBootCold = None
-        self.MemoryMappedIOH = None
-        self.MemoryMultiThread = None
-        self.MemoryPerBitMargin = None
-        self.MemoryRmt = None
-        self.MemoryThrottlingMode = None
-        self.MiscSettings = None
-        self.MltRnkSpr = None
-        self.MmioAbove4Gb = None
-        self.MonitorMwait = None
-        self.MultiThreaded = None
-        self.Ndc1PcieLink1 = None
-        self.Ndc1PcieLink2 = None
-        self.Ndc1PcieLink3 = None
-        self.NdcConfigurationSpeed = None
-        self.NmiButton = None
-        self.NodeInterleave = None
-        self.NumLock = None
-        self.NvdimmFactoryDefault = None
-        self.NvdimmFactoryDefault0 = None
-        self.NvdimmFactoryDefault1 = None
-        self.NvdimmFactoryDefault10 = None
-        self.NvdimmFactoryDefault11 = None
-        self.NvdimmFactoryDefault2 = None
-        self.NvdimmFactoryDefault3 = None
-        self.NvdimmFactoryDefault4 = None
-        self.NvdimmFactoryDefault5 = None
-        self.NvdimmFactoryDefault6 = None
-        self.NvdimmFactoryDefault7 = None
-        self.NvdimmFactoryDefault8 = None
-        self.NvdimmFactoryDefault9 = None
-        self.NvdimmFirmwareVer0 = None
-        self.NvdimmFirmwareVer1 = None
-        self.NvdimmFirmwareVer10 = None
-        self.NvdimmFirmwareVer11 = None
-        self.NvdimmFirmwareVer2 = None
-        self.NvdimmFirmwareVer3 = None
-        self.NvdimmFirmwareVer4 = None
-        self.NvdimmFirmwareVer5 = None
-        self.NvdimmFirmwareVer6 = None
-        self.NvdimmFirmwareVer7 = None
-        self.NvdimmFirmwareVer8 = None
-        self.NvdimmFirmwareVer9 = None
-        self.NvdimmFreq0 = None
-        self.NvdimmFreq1 = None
-        self.NvdimmFreq10 = None
-        self.NvdimmFreq11 = None
-        self.NvdimmFreq2 = None
-        self.NvdimmFreq3 = None
-        self.NvdimmFreq4 = None
-        self.NvdimmFreq5 = None
-        self.NvdimmFreq6 = None
-        self.NvdimmFreq7 = None
-        self.NvdimmFreq8 = None
-        self.NvdimmFreq9 = None
-        self.NvdimmInterleaveSupport = None
-        self.NvdimmLocation0 = None
-        self.NvdimmLocation1 = None
-        self.NvdimmLocation10 = None
-        self.NvdimmLocation11 = None
-        self.NvdimmLocation2 = None
-        self.NvdimmLocation3 = None
-        self.NvdimmLocation4 = None
-        self.NvdimmLocation5 = None
-        self.NvdimmLocation6 = None
-        self.NvdimmLocation7 = None
-        self.NvdimmLocation8 = None
-        self.NvdimmLocation9 = None
-        self.NvdimmReadOnly = None
-        self.NvdimmSerialNum0 = None
-        self.NvdimmSerialNum1 = None
-        self.NvdimmSerialNum10 = None
-        self.NvdimmSerialNum11 = None
-        self.NvdimmSerialNum2 = None
-        self.NvdimmSerialNum3 = None
-        self.NvdimmSerialNum4 = None
-        self.NvdimmSerialNum5 = None
-        self.NvdimmSerialNum6 = None
-        self.NvdimmSerialNum7 = None
-        self.NvdimmSerialNum8 = None
-        self.NvdimmSerialNum9 = None
-        self.NvdimmSize0 = None
-        self.NvdimmSize1 = None
-        self.NvdimmSize10 = None
-        self.NvdimmSize11 = None
-        self.NvdimmSize2 = None
-        self.NvdimmSize3 = None
-        self.NvdimmSize4 = None
-        self.NvdimmSize5 = None
-        self.NvdimmSize6 = None
-        self.NvdimmSize7 = None
-        self.NvdimmSize8 = None
-        self.NvdimmSize9 = None
-        self.NvmeMode = None
-        self.NvmeSettings = None
-        self.NvmeSettingsRef = None
-        self.OneTimeBiosBootSeq = None
-        self.OneTimeBoot = None
-        self.OneTimeBootMode = None
-        self.OneTimeBootModeSeq = None
-        self.OneTimeBootRef = None
-        self.OneTimeBootSeqDev = None
-        self.OneTimeCustomBootStr = None
-        self.OneTimeHddSeq = None
-        self.OneTimeHddSeqDev = None
-        self.OneTimeUefiBootPath = None
-        self.OneTimeUefiBootSeq = None
-        self.OneTimeUefiBootSeqDev = None
-        self.OppSrefEn = None
-        self.OsWatchdogTimer = None
-        self.PCIeErrorInjection = None
-        self.PCIeLiveErrorRecovery = None
-        self.PPRErrInjectionTest = None
-        self.PasswordStatus = None
-        self.PcieAspmL1 = None
-        self.PerfMonitorDevices = None
-        self.PersistentMemoryMode = None
-        self.PersistentMemoryScrubbing = None
-        self.PostPackageRepair = None
-        self.PowerCycleRequest = None
-        self.PowerDelivery = None
-        self.PowerMgmt = None
-        self.PowerMgmtSettings = None
-        self.PowerSaver = None
-        self.Proc1Brand = None
-        self.Proc1ControlledTurbo = None
-        self.Proc1Cores = None
-        self.Proc1Id = None
-        self.Proc1L2Cache = None
-        self.Proc1L3Cache = None
-        self.Proc1Microcode = None
-        self.Proc1NumCores = None
-        self.Proc1TurboCoreNum = None
-        self.Proc2Brand = None
-        self.Proc2ControlledTurbo = None
-        self.Proc2Cores = None
-        self.Proc2Id = None
-        self.Proc2L2Cache = None
-        self.Proc2L3Cache = None
-        self.Proc2Microcode = None
-        self.Proc2NumCores = None
-        self.Proc2TurboCoreNum = None
-        self.Proc3Brand = None
-        self.Proc3ControlledTurbo = None
-        self.Proc3Cores = None
-        self.Proc3Id = None
-        self.Proc3L2Cache = None
-        self.Proc3L3Cache = None
-        self.Proc3Microcode = None
-        self.Proc3NumCores = None
-        self.Proc3TurboCoreNum = None
-        self.Proc4Brand = None
-        self.Proc4ControlledTurbo = None
-        self.Proc4Cores = None
-        self.Proc4Id = None
-        self.Proc4L2Cache = None
-        self.Proc4L3Cache = None
-        self.Proc4Microcode = None
-        self.Proc4NumCores = None
-        self.Proc4TurboCoreNum = None
-        self.Proc64bit = None
-        self.ProcATS = None
-        self.ProcAdjCacheLine = None
-        self.ProcBusSpeed = None
-        self.ProcC1E = None
-        self.ProcCStates = None
-        self.ProcConfigTdp = None
-        self.ProcCoreSpeed = None
-        self.ProcCores = None
-        self.ProcDpatProDebug = None
-        self.ProcDramPrefetcher = None
-        self.ProcEmbMemCacheSize = None
-        self.ProcEmbMemMode = ProcEmbMemModeTypes.Cache
-        self.ProcEmbMemSystemSize = None
-        self.ProcEmbMemTotalSize = None
-        self.ProcExecuteDisable = None
-        self.ProcHpcMode = None
-        self.ProcHtAssist = None
-        self.ProcHwPrefetcher = None
-        self.ProcHyperTransport = None
-        self.ProcMtrrPatDebug = None
-        self.ProcPwrPerf = None
-        self.ProcSettings = None
-        self.ProcSoftwarePrefetcher = None
-        self.ProcTurboMode = None
-        self.ProcVirtualization = None
-        self.ProcX2Apic = None
-        self.PwrButton = None
-        self.PxeDev1EnDis = None
-        self.PxeDev1Interface = None
-        self.PxeDev1Protocol = None
-        self.PxeDev1VlanEnDis = None
-        self.PxeDev1VlanId = None
-        self.PxeDev1VlanPriority = None
-        self.PxeDev2EnDis = None
-        self.PxeDev2Interface = None
-        self.PxeDev2Protocol = None
-        self.PxeDev2VlanEnDis = None
-        self.PxeDev2VlanId = None
-        self.PxeDev2VlanPriority = None
-        self.PxeDev3EnDis = None
-        self.PxeDev3Interface = None
-        self.PxeDev3Protocol = None
-        self.PxeDev3VlanEnDis = None
-        self.PxeDev3VlanId = None
-        self.PxeDev3VlanPriority = None
-        self.PxeDev4EnDis = None
-        self.PxeDev4Interface = None
-        self.PxeDev4Protocol = None
-        self.PxeDev4VlanEnDis = None
-        self.PxeDev4VlanId = None
-        self.PxeDev4VlanPriority = None
-        self.QpiBandwidthPriority = None
-        self.QpiSpeed = None
-        self.RebootTestCount = None
-        self.RebootTestMode = None
-        self.RebootTestPoint = None
-        self.RedirAfterBoot = None
-        self.RedundantMem = None
-        self.RedundantMemCfgValid = None
-        self.RedundantMemInUse = None
-        self.RedundantOsBoot = None
-        self.RedundantOsLocation = None
-        self.RedundantOsState = None
-        self.ReportKbdErr = None
-        self.RipsPresence = None
-        self.RtidSetting = None
-        self.S4SupportDebug = None
-        self.SHA256SetupPassword = None
-        self.SHA256SetupPasswordSalt = None
-        self.SHA256SystemPassword = None
-        self.SHA256SystemPasswordSalt = None
-        self.SNC = None
-        self.SataPortA = None
-        self.SataPortACapacity = None
-        self.SataPortADriveType = None
-        self.SataPortAModel = None
-        self.SataPortB = None
-        self.SataPortBCapacity = None
-        self.SataPortBDriveType = None
-        self.SataPortBModel = None
-        self.SataPortC = None
-        self.SataPortCCapacity = None
-        self.SataPortCDriveType = None
-        self.SataPortCModel = None
-        self.SataPortD = None
-        self.SataPortDCapacity = None
-        self.SataPortDDriveType = None
-        self.SataPortDModel = None
-        self.SataPortE = None
-        self.SataPortECapacity = None
-        self.SataPortEDriveType = None
-        self.SataPortEModel = None
-        self.SataPortF = None
-        self.SataPortFCapacity = None
-        self.SataPortFDriveType = None
-        self.SataPortFModel = None
-        self.SataPortG = None
-        self.SataPortGCapacity = None
-        self.SataPortGDriveType = None
-        self.SataPortGModel = None
-        self.SataPortH = None
-        self.SataPortHCapacity = None
-        self.SataPortHDriveType = None
-        self.SataPortHModel = None
-        self.SataPortI = None
-        self.SataPortICapacity = None
-        self.SataPortIDriveType = None
-        self.SataPortIModel = None
-        self.SataPortJ = None
-        self.SataPortJCapacity = None
-        self.SataPortJDriveType = None
-        self.SataPortJModel = None
-        self.SataPortK = None
-        self.SataPortKCapacity = None
-        self.SataPortKDriveType = None
-        self.SataPortKModel = None
-        self.SataPortL = None
-        self.SataPortLCapacity = None
-        self.SataPortLDriveType = None
-        self.SataPortLModel = None
-        self.SataPortM = None
-        self.SataPortMCapacity = None
-        self.SataPortMDriveType = None
-        self.SataPortMModel = None
-        self.SataPortN = None
-        self.SataPortNCapacity = None
-        self.SataPortNDriveType = None
-        self.SataPortNModel = None
-        self.SataSettings = None
-        self.SccDebugEnabled = None
-        self.SecureBoot = None
-        self.SecureBootMode = SecureBootModeTypes.UserMode
-        self.SecureBootPolicy = None
-        self.SecurityFreezeLock = None
-        self.SerialComm = None
-        self.SerialCommSettings = None
-        self.SerialPortAddress = None
-        self.SetBootOrderFqdd1 = None
-        self.SetBootOrderFqdd10 = None
-        self.SetBootOrderFqdd11 = None
-        self.SetBootOrderFqdd12 = None
-        self.SetBootOrderFqdd13 = None
-        self.SetBootOrderFqdd14 = None
-        self.SetBootOrderFqdd15 = None
-        self.SetBootOrderFqdd16 = None
-        self.SetBootOrderFqdd2 = None
-        self.SetBootOrderFqdd3 = None
-        self.SetBootOrderFqdd4 = None
-        self.SetBootOrderFqdd5 = None
-        self.SetBootOrderFqdd6 = None
-        self.SetBootOrderFqdd7 = None
-        self.SetBootOrderFqdd8 = None
-        self.SetBootOrderFqdd9 = None
-        self.SetLegacyHddOrderFqdd1 = None
-        self.SetLegacyHddOrderFqdd10 = None
-        self.SetLegacyHddOrderFqdd11 = None
-        self.SetLegacyHddOrderFqdd12 = None
-        self.SetLegacyHddOrderFqdd13 = None
-        self.SetLegacyHddOrderFqdd14 = None
-        self.SetLegacyHddOrderFqdd15 = None
-        self.SetLegacyHddOrderFqdd16 = None
-        self.SetLegacyHddOrderFqdd2 = None
-        self.SetLegacyHddOrderFqdd3 = None
-        self.SetLegacyHddOrderFqdd4 = None
-        self.SetLegacyHddOrderFqdd5 = None
-        self.SetLegacyHddOrderFqdd6 = None
-        self.SetLegacyHddOrderFqdd7 = None
-        self.SetLegacyHddOrderFqdd8 = None
-        self.SetLegacyHddOrderFqdd9 = None
-        self.SetupPassword = None
-        self.SignedFirmwareUpdate = None
-        self.Slot1 = None
-        self.Slot10 = None
-        self.Slot10Bif = None
-        self.Slot11 = None
-        self.Slot11Bif = None
-        self.Slot12 = None
-        self.Slot12Bif = None
-        self.Slot13 = None
-        self.Slot13Bif = None
-        self.Slot14Bif = None
-        self.Slot1Bif = None
-        self.Slot2 = None
-        self.Slot2Bif = None
-        self.Slot3 = None
-        self.Slot3Bif = None
-        self.Slot4 = None
-        self.Slot4Bif = None
-        self.Slot5 = None
-        self.Slot5Bif = None
-        self.Slot6 = None
-        self.Slot6Bif = None
-        self.Slot7 = None
-        self.Slot7Bif = None
-        self.Slot8 = None
-        self.Slot8Bif = None
-        self.Slot9 = None
-        self.Slot9Bif = None
-        self.SlotBifurcation = None
-        self.SlotDisablement = None
-        self.SlotDisablementRef = None
-        self.SnoopFilter = None
-        self.SnoopMode = None
-        self.SrefProgramming = None
-        self.SriovGlobalEnable = None
-        self.SubNumaCluster = None
-        self.SysInformation = None
-        self.SysMemSize = None
-        self.SysMemSpeed = None
-        self.SysMemType = None
-        self.SysMemVolt = None
-        self.SysMfrContactInfo = None
-        self.SysMgmtNVByte1 = None
-        self.SysMgmtNVByte2 = None
-        self.SysPassword = None
-        self.SysProfile = None
-        self.SysProfileSettings = None
-        self.SysSecurity = None
-        self.SystemBiosVersion = None
-        self.SystemCpldVersion = None
-        self.SystemManufacturer = None
-        self.SystemMeVersion = None
-        self.SystemMemoryModel = SystemMemoryModelTypes.Quadrant
-        self.SystemModelName = None
-        self.SystemServiceTag = None
-        self.SystemUefiShell = None
-        self.TXEQWA = None
-        self.TcmActivation = None
-        self.TcmClear = None
-        self.TcmSecurity = None
-        self.Tpm2Algorithm = None
-        self.Tpm2Hierarchy = None
-        self.TpmActivation = None
-        self.TpmBindingReset = None
-        self.TpmClear = None
-        self.TpmCommand = None
-        self.TpmFirmware = None
-        self.TpmInfo = None
-        self.TpmPpiBypassClear = None
-        self.TpmPpiBypassProvision = None
-        self.TpmSecurity = None
-        self.TpmStatus = None
-        self.TraceHubDebug = None
-        self.UefiBootSeq = None
-        self.UefiBootSeqEnDis = None
-        self.UefiBootSeqEnDis1 = None
-        self.UefiBootSeqEnDis10 = None
-        self.UefiBootSeqEnDis11 = None
-        self.UefiBootSeqEnDis12 = None
-        self.UefiBootSeqEnDis13 = None
-        self.UefiBootSeqEnDis14 = None
-        self.UefiBootSeqEnDis15 = None
-        self.UefiBootSeqEnDis16 = None
-        self.UefiBootSeqEnDis17 = None
-        self.UefiBootSeqEnDis18 = None
-        self.UefiBootSeqEnDis19 = None
-        self.UefiBootSeqEnDis2 = None
-        self.UefiBootSeqEnDis20 = None
-        self.UefiBootSeqEnDis3 = None
-        self.UefiBootSeqEnDis4 = None
-        self.UefiBootSeqEnDis5 = None
-        self.UefiBootSeqEnDis6 = None
-        self.UefiBootSeqEnDis7 = None
-        self.UefiBootSeqEnDis8 = None
-        self.UefiBootSeqEnDis9 = None
-        self.UefiBootSeqEnDisRef = None
-        self.UefiBootSettings = None
-        self.UefiBootSettingsRef = None
-        self.UefiComplianceVersion = None
-        self.UefiPxeIpVersion = None
-        self.UefiVariableAccess = None
-        self.UncoreFrequency = None
-        self.UnusedPcieClk = None
-        self.Usb3Setting = None
-        self.UsbManagedPort  = UsbManagedPortTypes.On
-        self.UsbPorts = None
-        self.UserLcdStr = None
-        self.VideoMem = None
-        self.WorkloadProfile = None
-        self.WriteCache = None
-        self.WriteDataCrc = None
-        self.eSataPort1 = None
-        self.eSataPort1Capacity = None
-        self.eSataPort1DriveType = None
-        self.eSataPort1Model = None
-        return self
+    def __init__(self, parent = None):
+        super().__init__("Component", None, parent)
 
-    def my_modify(self):
-        self.AcPwrRcvry = None
-        self.AcPwrRcvryDelay = None
-        self.AcPwrRcvryUserDelay = None
-        self.AddrBasMir = None
-        self.AesNi = None
-        self.AssetTag = None
-        self.AttemptFastBoot = None
-        self.AttemptFastBootCold = None
-        self.BatteryStatus = None
-        self.BiosBootSeq = None
-        self.BiosBootSettings = None
-        self.BiosBootSettingsRef = None
-        self.BiosUpdateControl = None
-        self.BootMode = None
-        self.BootSeq = None
-        self.BootSeqEnDis = None
-        self.BootSeqEnDis1 = None
-        self.BootSeqEnDis10 = None
-        self.BootSeqEnDis11 = None
-        self.BootSeqEnDis12 = None
-        self.BootSeqEnDis13 = None
-        self.BootSeqEnDis14 = None
-        self.BootSeqEnDis15 = None
-        self.BootSeqEnDis16 = None
-        self.BootSeqEnDis17 = None
-        self.BootSeqEnDis18 = None
-        self.BootSeqEnDis19 = None
-        self.BootSeqEnDis2 = None
-        self.BootSeqEnDis20 = None
-        self.BootSeqEnDis3 = None
-        self.BootSeqEnDis4 = None
-        self.BootSeqEnDis5 = None
-        self.BootSeqEnDis6 = None
-        self.BootSeqEnDis7 = None
-        self.BootSeqEnDis8 = None
-        self.BootSeqEnDis9 = None
-        self.BootSeqEnDisRef = None
-        self.BootSeqRetry = None
-        self.BrowserDebugMode = None
-        self.BrowserMode = None
-        self.BrowserOptionsRef = None
-        self.BugChecking = None
-        self.CTOMasking = None
-        self.CkeThrottling = None
-        self.ClpOutput = None
-        self.ClusterOnDie = None
-        self.CollaborativeCpuPerfCtrl = None
-        self.ConTermType = None
-        self.ControlledTurbo = None
-        self.ControlledTurboExtended = None
-        self.CorePerfBoost = None
-        self.CorrEccSmi = None
-        self.CpuInterconnectBusLinkPower = None
-        self.CpuInterconnectBusSpeed = None
-        self.CurrentEmbVideoState = None
-        self.CurrentLimit = None
-        self.CurrentMemOpModeState = None
-        self.DataReuse = None
-        self.DcuIpPrefetcher = None
-        self.DcuStreamerPrefetcher = None
-        self.DebugErrorLevel = None
-        self.DellAutoDiscovery = None
-        self.DellWyseP25BIOSAccess = None
-        self.DeviceUnhide = None
-        self.Dfx = None
-        self.DirectMediaInterfaceSpeed = None
-        self.DmaVirtualization = None
-        self.DynamicCoreAllocation = None
-        self.EmbNic1 = None
-        self.EmbNic1Nic2 = None
-        self.EmbNic2 = None
-        self.EmbNic3 = None
-        self.EmbNic3Nic4 = None
-        self.EmbNic4 = None
-        self.EmbNicPort1BootProto = None
-        self.EmbNicPort2BootProto = None
-        self.EmbNicPort3BootProto = None
-        self.EmbNicPort4BootProto = None
-        self.EmbSata = None
-        self.EmbSataRSTeDebug = None
-        self.EmbSataShadow = None
-        self.EmbSataTestMode = None
-        self.EmbServerMgmt = None
-        self.EmbVideo = None
-        self.EnergyEfficientTurbo = None
-        self.EnergyPerformanceBias = None
-        self.ErrPrompt = None
-        self.ExtSerialConnector = None
-        self.FailSafeBaud = None
-        self.FanPwrPerf = None
-        self.ForceInt10 = None
-        self.FrontLcd = None
-        self.GlobalSlotDriverDisable = None
-        self.HddFailover = None
-        self.HddSeq = None
-        self.HttpDev1EnDis = HttpDev1EnDisTypes.Disabled
-        self.HttpDev1Interface = None
-        self.HttpDev1Protocol = HttpDev1ProtocolTypes.IPv4
-        self.HttpDev1Settings = None
-        self.HttpDev1SettingsRef = None
-        self.HttpDev1Uri = None
-        self.HttpDev1VlanEnDis = HttpDev1VlanEnDisTypes.Disabled
-        self.HttpDev1VlanId = None
-        self.HttpDev1VlanPriority = None
-        self.HttpDev2EnDis = HttpDev2EnDisTypes.Disabled
-        self.HttpDev2Interface = None
-        self.HttpDev2Protocol = HttpDev2ProtocolTypes.IPv4
-        self.HttpDev2Settings = None
-        self.HttpDev2SettingsRef = None
-        self.HttpDev2Uri = None
-        self.HttpDev2VlanEnDis = HttpDev2VlanEnDisTypes.Disabled
-        self.HttpDev2VlanId = None
-        self.HttpDev2VlanPriority = None
-        self.HttpDev3EnDis = HttpDev3EnDisTypes.Disabled
-        self.HttpDev3Interface = None
-        self.HttpDev3Protocol = HttpDev3ProtocolTypes.IPv4
-        self.HttpDev3Settings = None
-        self.HttpDev3SettingsRef = None
-        self.HttpDev3Uri = None
-        self.HttpDev3VlanEnDis = HttpDev3VlanEnDisTypes.Disabled
-        self.HttpDev3VlanId = None
-        self.HttpDev3VlanPriority = None
-        self.HttpDev4EnDis = HttpDev4EnDisTypes.Disabled
-        self.HttpDev4Interface = None
-        self.HttpDev4Protocol = HttpDev4ProtocolTypes.IPv4
-        self.HttpDev4Settings = None
-        self.HttpDev4SettingsRef = None
-        self.HttpDev4Uri = None
-        self.HttpDev4VlanEnDis = HttpDev4VlanEnDisTypes.Disabled
-        self.HttpDev4VlanId = None
-        self.HttpDev4VlanPriority = None
-        self.IdracDebugMode = None
-        self.IgnoreIdracCrReq = None
-        self.IioPcieGlobalSpeed = None
-        self.InBandManageabilityInterface = None
-        self.InSystemCharacterization = None
-        self.IntNic1Port1BootProto = None
-        self.IntNic1Port2BootProto = None
-        self.IntNic1Port3BootProto = None
-        self.IntNic1Port4BootProto = None
-        self.IntegratedDevices = None
-        self.IntegratedNetwork1 = None
-        self.IntegratedNetwork2 = None
-        self.IntegratedRaid = None
-        self.IntegratedSas = None
-        self.IntelTestEventIio = None
-        self.IntelTxt = None
-        self.InteractivePassword24A = None
-        self.InternalSdCard = None
-        self.InternalSdCardPresence = None
-        self.InternalSdCardPrimaryCard = None
-        self.InternalSdCardRedundancy = None
-        self.InternalUsb = None
-        self.InternalUsb1 = None
-        self.InternalUsb2 = None
-        self.IoNonPostedPrefetch = None
-        self.IoatEngine = None
-        self.IscsiDev1Con1Auth = None
-        self.IscsiDev1Con1ChapName = None
-        self.IscsiDev1Con1ChapSecret = None
-        self.IscsiDev1Con1ChapType = None
-        self.IscsiDev1Con1DhcpEnDis = None
-        self.IscsiDev1Con1EnDis = None
-        self.IscsiDev1Con1Gateway = None
-        self.IscsiDev1Con1Interface = None
-        self.IscsiDev1Con1Ip = None
-        self.IscsiDev1Con1IsId = None
-        self.IscsiDev1Con1Lun = None
-        self.IscsiDev1Con1Mask = None
-        self.IscsiDev1Con1Port = None
-        self.IscsiDev1Con1Protocol = None
-        self.IscsiDev1Con1Retry = None
-        self.IscsiDev1Con1RevChapName = None
-        self.IscsiDev1Con1RevChapSecret = None
-        self.IscsiDev1Con1Settings = None
-        self.IscsiDev1Con1SettingsRef = None
-        self.IscsiDev1Con1TargetIp = None
-        self.IscsiDev1Con1TargetName = None
-        self.IscsiDev1Con1TgtDhcpEnDis = None
-        self.IscsiDev1Con1Timeout = None
-        self.IscsiDev1Con1VlanEnDis = None
-        self.IscsiDev1Con1VlanId = None
-        self.IscsiDev1Con1VlanPriority = None
-        self.IscsiDev1Con2Auth = None
-        self.IscsiDev1Con2ChapName = None
-        self.IscsiDev1Con2ChapSecret = None
-        self.IscsiDev1Con2ChapType = None
-        self.IscsiDev1Con2DhcpEnDis = None
-        self.IscsiDev1Con2EnDis = None
-        self.IscsiDev1Con2Gateway = None
-        self.IscsiDev1Con2Interface = None
-        self.IscsiDev1Con2Ip = None
-        self.IscsiDev1Con2IsId = None
-        self.IscsiDev1Con2Lun = None
-        self.IscsiDev1Con2Mask = None
-        self.IscsiDev1Con2Port = None
-        self.IscsiDev1Con2Protocol = None
-        self.IscsiDev1Con2Retry = None
-        self.IscsiDev1Con2RevChapName = None
-        self.IscsiDev1Con2RevChapSecret = None
-        self.IscsiDev1Con2Settings = None
-        self.IscsiDev1Con2SettingsRef = None
-        self.IscsiDev1Con2TargetIp = None
-        self.IscsiDev1Con2TargetName = None
-        self.IscsiDev1Con2TgtDhcpEnDis = None
-        self.IscsiDev1Con2Timeout = None
-        self.IscsiDev1Con2VlanEnDis = None
-        self.IscsiDev1Con2VlanId = None
-        self.IscsiDev1Con2VlanPriority = None
-        self.IscsiDev1ConOrder = None
-        self.IscsiDev1EnDis = None
-        self.IscsiDev1Settings = None
-        self.IscsiInitiatorName = None
-        self.JunoPmEnable = None
-        self.L1Prefetcher = "Enabled"
-        self.L2Prefetcher = "Enabled"
-        self.LinkDowntrainReporting = None
-        self.LogicalProc = None
-        self.MRCSerialDbgOut = None
-        self.MeFailureRecoveryEnable = None
-        self.MeUmaEnable = None
-        self.MemDynamicPwr = None
-        self.MemFrequency = None
-        self.MemHotThrottlingMode = None
-        self.MemLowPower = None
-        self.MemOpMode = None
-        self.MemOpVoltage = None
-        self.MemOptimizer = None
-        self.MemPatrolScrub = None
-        self.MemPwrMgmt = None
-        self.MemPwrPerf = None
-        self.MemRefreshRate = None
-        self.MemSettings = None
-        self.MemTest = None
-        self.MemTestOnFastBoot = None
-        self.MemTestType = None
-        self.MemThrottlingMode = MemThrottlingModeTypes.Cltt
-        self.MemVolt = None
-        self.MemoryFastBootCold = None
-        self.MemoryMappedIOH = None
-        self.MemoryMultiThread = None
-        self.MemoryPerBitMargin = None
-        self.MemoryRmt = None
-        self.MemoryThrottlingMode = None
-        self.MiscSettings = None
-        self.MltRnkSpr = None
-        self.MmioAbove4Gb = None
-        self.MonitorMwait = None
-        self.MultiThreaded = None
-        self.Ndc1PcieLink1 = None
-        self.Ndc1PcieLink2 = None
-        self.Ndc1PcieLink3 = None
-        self.NdcConfigurationSpeed = None
-        self.NmiButton = None
-        self.NodeInterleave = None
-        self.NumLock = None
-        self.NvdimmFactoryDefault = None
-        self.NvdimmFactoryDefault0 = None
-        self.NvdimmFactoryDefault1 = None
-        self.NvdimmFactoryDefault10 = None
-        self.NvdimmFactoryDefault11 = None
-        self.NvdimmFactoryDefault2 = None
-        self.NvdimmFactoryDefault3 = None
-        self.NvdimmFactoryDefault4 = None
-        self.NvdimmFactoryDefault5 = None
-        self.NvdimmFactoryDefault6 = None
-        self.NvdimmFactoryDefault7 = None
-        self.NvdimmFactoryDefault8 = None
-        self.NvdimmFactoryDefault9 = None
-        self.NvdimmFirmwareVer0 = None
-        self.NvdimmFirmwareVer1 = None
-        self.NvdimmFirmwareVer10 = None
-        self.NvdimmFirmwareVer11 = None
-        self.NvdimmFirmwareVer2 = None
-        self.NvdimmFirmwareVer3 = None
-        self.NvdimmFirmwareVer4 = None
-        self.NvdimmFirmwareVer5 = None
-        self.NvdimmFirmwareVer6 = None
-        self.NvdimmFirmwareVer7 = None
-        self.NvdimmFirmwareVer8 = None
-        self.NvdimmFirmwareVer9 = None
-        self.NvdimmFreq0 = None
-        self.NvdimmFreq1 = None
-        self.NvdimmFreq10 = None
-        self.NvdimmFreq11 = None
-        self.NvdimmFreq2 = None
-        self.NvdimmFreq3 = None
-        self.NvdimmFreq4 = None
-        self.NvdimmFreq5 = None
-        self.NvdimmFreq6 = None
-        self.NvdimmFreq7 = None
-        self.NvdimmFreq8 = None
-        self.NvdimmFreq9 = None
-        self.NvdimmInterleaveSupport = None
-        self.NvdimmLocation0 = None
-        self.NvdimmLocation1 = None
-        self.NvdimmLocation10 = None
-        self.NvdimmLocation11 = None
-        self.NvdimmLocation2 = None
-        self.NvdimmLocation3 = None
-        self.NvdimmLocation4 = None
-        self.NvdimmLocation5 = None
-        self.NvdimmLocation6 = None
-        self.NvdimmLocation7 = None
-        self.NvdimmLocation8 = None
-        self.NvdimmLocation9 = None
-        self.NvdimmReadOnly = None
-        self.NvdimmSerialNum0 = None
-        self.NvdimmSerialNum1 = None
-        self.NvdimmSerialNum10 = None
-        self.NvdimmSerialNum11 = None
-        self.NvdimmSerialNum2 = None
-        self.NvdimmSerialNum3 = None
-        self.NvdimmSerialNum4 = None
-        self.NvdimmSerialNum5 = None
-        self.NvdimmSerialNum6 = None
-        self.NvdimmSerialNum7 = None
-        self.NvdimmSerialNum8 = None
-        self.NvdimmSerialNum9 = None
-        self.NvdimmSize0 = None
-        self.NvdimmSize1 = None
-        self.NvdimmSize10 = None
-        self.NvdimmSize11 = None
-        self.NvdimmSize2 = None
-        self.NvdimmSize3 = None
-        self.NvdimmSize4 = None
-        self.NvdimmSize5 = None
-        self.NvdimmSize6 = None
-        self.NvdimmSize7 = None
-        self.NvdimmSize8 = None
-        self.NvdimmSize9 = None
-        self.NvmeMode = None
-        self.NvmeSettings = None
-        self.NvmeSettingsRef = None
-        self.OneTimeBiosBootSeq = None
-        self.OneTimeBoot = None
-        self.OneTimeBootMode = None
-        self.OneTimeBootModeSeq = None
-        self.OneTimeBootRef = None
-        self.OneTimeBootSeqDev = None
-        self.OneTimeCustomBootStr = None
-        self.OneTimeHddSeq = None
-        self.OneTimeHddSeqDev = None
-        self.OneTimeUefiBootPath = None
-        self.OneTimeUefiBootSeq = None
-        self.OneTimeUefiBootSeqDev = None
-        self.OppSrefEn = None
-        self.OsWatchdogTimer = None
-        self.PCIeErrorInjection = None
-        self.PCIeLiveErrorRecovery = None
-        self.PPRErrInjectionTest = None
-        self.PasswordStatus = None
-        self.PcieAspmL1 = None
-        self.PerfMonitorDevices = None
-        self.PersistentMemoryMode = None
-        self.PersistentMemoryScrubbing = None
-        self.PostPackageRepair = None
-        self.PowerCycleRequest = None
-        self.PowerDelivery = None
-        self.PowerMgmt = None
-        self.PowerMgmtSettings = None
-        self.PowerSaver = None
-        self.Proc1Brand = None
-        self.Proc1ControlledTurbo = None
-        self.Proc1Cores = None
-        self.Proc1Id = None
-        self.Proc1L2Cache = None
-        self.Proc1L3Cache = None
-        self.Proc1Microcode = None
-        self.Proc1NumCores = None
-        self.Proc1TurboCoreNum = None
-        self.Proc2Brand = None
-        self.Proc2ControlledTurbo = None
-        self.Proc2Cores = None
-        self.Proc2Id = None
-        self.Proc2L2Cache = None
-        self.Proc2L3Cache = None
-        self.Proc2Microcode = None
-        self.Proc2NumCores = None
-        self.Proc2TurboCoreNum = None
-        self.Proc3Brand = None
-        self.Proc3ControlledTurbo = None
-        self.Proc3Cores = None
-        self.Proc3Id = None
-        self.Proc3L2Cache = None
-        self.Proc3L3Cache = None
-        self.Proc3Microcode = None
-        self.Proc3NumCores = None
-        self.Proc3TurboCoreNum = None
-        self.Proc4Brand = None
-        self.Proc4ControlledTurbo = None
-        self.Proc4Cores = None
-        self.Proc4Id = None
-        self.Proc4L2Cache = None
-        self.Proc4L3Cache = None
-        self.Proc4Microcode = None
-        self.Proc4NumCores = None
-        self.Proc4TurboCoreNum = None
-        self.Proc64bit = None
-        self.ProcATS = None
-        self.ProcAdjCacheLine = None
-        self.ProcBusSpeed = None
-        self.ProcC1E = None
-        self.ProcCStates = None
-        self.ProcConfigTdp = None
-        self.ProcCoreSpeed = None
-        self.ProcCores = None
-        self.ProcDpatProDebug = None
-        self.ProcDramPrefetcher = None
-        self.ProcEmbMemCacheSize = None
-        self.ProcEmbMemMode = ProcEmbMemModeTypes.Cache
-        self.ProcEmbMemSystemSize = None
-        self.ProcEmbMemTotalSize = None
-        self.ProcExecuteDisable = None
-        self.ProcHpcMode = None
-        self.ProcHtAssist = None
-        self.ProcHwPrefetcher = None
-        self.ProcHyperTransport = None
-        self.ProcMtrrPatDebug = None
-        self.ProcPwrPerf = None
-        self.ProcSettings = None
-        self.ProcSoftwarePrefetcher = None
-        self.ProcTurboMode = None
-        self.ProcVirtualization = None
-        self.ProcX2Apic = None
-        self.PwrButton = None
-        self.PxeDev1EnDis = None
-        self.PxeDev1Interface = None
-        self.PxeDev1Protocol = None
-        self.PxeDev1VlanEnDis = None
-        self.PxeDev1VlanId = None
-        self.PxeDev1VlanPriority = None
-        self.PxeDev2EnDis = None
-        self.PxeDev2Interface = None
-        self.PxeDev2Protocol = None
-        self.PxeDev2VlanEnDis = None
-        self.PxeDev2VlanId = None
-        self.PxeDev2VlanPriority = None
-        self.PxeDev3EnDis = None
-        self.PxeDev3Interface = None
-        self.PxeDev3Protocol = None
-        self.PxeDev3VlanEnDis = None
-        self.PxeDev3VlanId = None
-        self.PxeDev3VlanPriority = None
-        self.PxeDev4EnDis = None
-        self.PxeDev4Interface = None
-        self.PxeDev4Protocol = None
-        self.PxeDev4VlanEnDis = None
-        self.PxeDev4VlanId = None
-        self.PxeDev4VlanPriority = None
-        self.QpiBandwidthPriority = None
-        self.QpiSpeed = None
-        self.RebootTestCount = None
-        self.RebootTestMode = None
-        self.RebootTestPoint = None
-        self.RedirAfterBoot = None
-        self.RedundantMem = None
-        self.RedundantMemCfgValid = None
-        self.RedundantMemInUse = None
-        self.RedundantOsBoot = None
-        self.RedundantOsLocation = None
-        self.RedundantOsState = None
-        self.ReportKbdErr = None
-        self.RipsPresence = None
-        self.RtidSetting = None
-        self.S4SupportDebug = None
-        self.SHA256SetupPassword = None
-        self.SHA256SetupPasswordSalt = None
-        self.SHA256SystemPassword = None
-        self.SHA256SystemPasswordSalt = None
-        self.SNC = None
-        self.SataPortA = None
-        self.SataPortACapacity = None
-        self.SataPortADriveType = None
-        self.SataPortAModel = None
-        self.SataPortB = None
-        self.SataPortBCapacity = None
-        self.SataPortBDriveType = None
-        self.SataPortBModel = None
-        self.SataPortC = None
-        self.SataPortCCapacity = None
-        self.SataPortCDriveType = None
-        self.SataPortCModel = None
-        self.SataPortD = None
-        self.SataPortDCapacity = None
-        self.SataPortDDriveType = None
-        self.SataPortDModel = None
-        self.SataPortE = None
-        self.SataPortECapacity = None
-        self.SataPortEDriveType = None
-        self.SataPortEModel = None
-        self.SataPortF = None
-        self.SataPortFCapacity = None
-        self.SataPortFDriveType = None
-        self.SataPortFModel = None
-        self.SataPortG = None
-        self.SataPortGCapacity = None
-        self.SataPortGDriveType = None
-        self.SataPortGModel = None
-        self.SataPortH = None
-        self.SataPortHCapacity = None
-        self.SataPortHDriveType = None
-        self.SataPortHModel = None
-        self.SataPortI = None
-        self.SataPortICapacity = None
-        self.SataPortIDriveType = None
-        self.SataPortIModel = None
-        self.SataPortJ = None
-        self.SataPortJCapacity = None
-        self.SataPortJDriveType = None
-        self.SataPortJModel = None
-        self.SataPortK = None
-        self.SataPortKCapacity = None
-        self.SataPortKDriveType = None
-        self.SataPortKModel = None
-        self.SataPortL = None
-        self.SataPortLCapacity = None
-        self.SataPortLDriveType = None
-        self.SataPortLModel = None
-        self.SataPortM = None
-        self.SataPortMCapacity = None
-        self.SataPortMDriveType = None
-        self.SataPortMModel = None
-        self.SataPortN = None
-        self.SataPortNCapacity = None
-        self.SataPortNDriveType = None
-        self.SataPortNModel = None
-        self.SataSettings = None
-        self.SccDebugEnabled = None
-        self.SecureBoot = None
-        self.SecureBootMode = SecureBootModeTypes.UserMode
-        self.SecureBootPolicy = None
-        self.SecurityFreezeLock = None
-        self.SerialComm = None
-        self.SerialCommSettings = None
-        self.SerialPortAddress = None
-        self.SetBootOrderFqdd1 = None
-        self.SetBootOrderFqdd10 = None
-        self.SetBootOrderFqdd11 = None
-        self.SetBootOrderFqdd12 = None
-        self.SetBootOrderFqdd13 = None
-        self.SetBootOrderFqdd14 = None
-        self.SetBootOrderFqdd15 = None
-        self.SetBootOrderFqdd16 = None
-        self.SetBootOrderFqdd2 = None
-        self.SetBootOrderFqdd3 = None
-        self.SetBootOrderFqdd4 = None
-        self.SetBootOrderFqdd5 = None
-        self.SetBootOrderFqdd6 = None
-        self.SetBootOrderFqdd7 = None
-        self.SetBootOrderFqdd8 = None
-        self.SetBootOrderFqdd9 = None
-        self.SetLegacyHddOrderFqdd1 = None
-        self.SetLegacyHddOrderFqdd10 = None
-        self.SetLegacyHddOrderFqdd11 = None
-        self.SetLegacyHddOrderFqdd12 = None
-        self.SetLegacyHddOrderFqdd13 = None
-        self.SetLegacyHddOrderFqdd14 = None
-        self.SetLegacyHddOrderFqdd15 = None
-        self.SetLegacyHddOrderFqdd16 = None
-        self.SetLegacyHddOrderFqdd2 = None
-        self.SetLegacyHddOrderFqdd3 = None
-        self.SetLegacyHddOrderFqdd4 = None
-        self.SetLegacyHddOrderFqdd5 = None
-        self.SetLegacyHddOrderFqdd6 = None
-        self.SetLegacyHddOrderFqdd7 = None
-        self.SetLegacyHddOrderFqdd8 = None
-        self.SetLegacyHddOrderFqdd9 = None
-        self.SetupPassword = None
-        self.SignedFirmwareUpdate = None
-        self.Slot1 = None
-        self.Slot10 = None
-        self.Slot10Bif = None
-        self.Slot11 = None
-        self.Slot11Bif = None
-        self.Slot12 = None
-        self.Slot12Bif = None
-        self.Slot13 = None
-        self.Slot13Bif = None
-        self.Slot14Bif = None
-        self.Slot1Bif = None
-        self.Slot2 = None
-        self.Slot2Bif = None
-        self.Slot3 = None
-        self.Slot3Bif = None
-        self.Slot4 = None
-        self.Slot4Bif = None
-        self.Slot5 = None
-        self.Slot5Bif = None
-        self.Slot6 = None
-        self.Slot6Bif = None
-        self.Slot7 = None
-        self.Slot7Bif = None
-        self.Slot8 = None
-        self.Slot8Bif = None
-        self.Slot9 = None
-        self.Slot9Bif = None
-        self.SlotBifurcation = None
-        self.SlotDisablement = None
-        self.SlotDisablementRef = None
-        self.SnoopFilter = None
-        self.SnoopMode = None
-        self.SrefProgramming = None
-        self.SriovGlobalEnable = None
-        self.SubNumaCluster = None
-        self.SysInformation = None
-        self.SysMemSize = None
-        self.SysMemSpeed = None
-        self.SysMemType = None
-        self.SysMemVolt = None
-        self.SysMfrContactInfo = None
-        self.SysMgmtNVByte1 = None
-        self.SysMgmtNVByte2 = None
-        self.SysPassword = None
-        self.SysProfile = None
-        self.SysProfileSettings = None
-        self.SysSecurity = None
-        self.SystemBiosVersion = None
-        self.SystemCpldVersion = None
-        self.SystemManufacturer = None
-        self.SystemMeVersion = None
-        self.SystemMemoryModel = SystemMemoryModelTypes.Quadrant
-        self.SystemModelName = None
-        self.SystemServiceTag = None
-        self.SystemUefiShell = None
-        self.TXEQWA = None
-        self.TcmActivation = None
-        self.TcmClear = None
-        self.TcmSecurity = None
-        self.Tpm2Algorithm = None
-        self.Tpm2Hierarchy = None
-        self.TpmActivation = None
-        self.TpmBindingReset = None
-        self.TpmClear = None
-        self.TpmCommand = None
-        self.TpmFirmware = None
-        self.TpmInfo = None
-        self.TpmPpiBypassClear = None
-        self.TpmPpiBypassProvision = None
-        self.TpmSecurity = None
-        self.TpmStatus = None
-        self.TraceHubDebug = None
-        self.UefiBootSeq = None
-        self.UefiBootSeqEnDis = None
-        self.UefiBootSeqEnDis1 = None
-        self.UefiBootSeqEnDis10 = None
-        self.UefiBootSeqEnDis11 = None
-        self.UefiBootSeqEnDis12 = None
-        self.UefiBootSeqEnDis13 = None
-        self.UefiBootSeqEnDis14 = None
-        self.UefiBootSeqEnDis15 = None
-        self.UefiBootSeqEnDis16 = None
-        self.UefiBootSeqEnDis17 = None
-        self.UefiBootSeqEnDis18 = None
-        self.UefiBootSeqEnDis19 = None
-        self.UefiBootSeqEnDis2 = None
-        self.UefiBootSeqEnDis20 = None
-        self.UefiBootSeqEnDis3 = None
-        self.UefiBootSeqEnDis4 = None
-        self.UefiBootSeqEnDis5 = None
-        self.UefiBootSeqEnDis6 = None
-        self.UefiBootSeqEnDis7 = None
-        self.UefiBootSeqEnDis8 = None
-        self.UefiBootSeqEnDis9 = None
-        self.UefiBootSeqEnDisRef = None
-        self.UefiBootSettings = None
-        self.UefiBootSettingsRef = None
-        self.UefiComplianceVersion = None
-        self.UefiPxeIpVersion = None
-        self.UefiVariableAccess = None
-        self.UncoreFrequency = None
-        self.UnusedPcieClk = None
-        self.Usb3Setting = None
-        self.UsbManagedPort  = UsbManagedPortTypes.On
-        self.UsbPorts = None
-        self.UserLcdStr = None
-        self.VideoMem = None
-        self.WorkloadProfile = None
-        self.WriteCache = None
-        self.WriteDataCrc = None
-        self.eSataPort1 = None
-        self.eSataPort1Capacity = None
-        self.eSataPort1DriveType = None
-        self.eSataPort1Model = None
-        return self
-
-    def my_delete(self):
-        self.AcPwrRcvry = None
-        self.AcPwrRcvryDelay = None
-        self.AcPwrRcvryUserDelay = None
-        self.AddrBasMir = None
-        self.AesNi = None
-        self.AssetTag = None
-        self.AttemptFastBoot = None
-        self.AttemptFastBootCold = None
-        self.BatteryStatus = None
-        self.BiosBootSeq = None
-        self.BiosBootSettings = None
-        self.BiosBootSettingsRef = None
-        self.BiosUpdateControl = None
-        self.BootMode = None
-        self.BootSeq = None
-        self.BootSeqEnDis = None
-        self.BootSeqEnDis1 = None
-        self.BootSeqEnDis10 = None
-        self.BootSeqEnDis11 = None
-        self.BootSeqEnDis12 = None
-        self.BootSeqEnDis13 = None
-        self.BootSeqEnDis14 = None
-        self.BootSeqEnDis15 = None
-        self.BootSeqEnDis16 = None
-        self.BootSeqEnDis17 = None
-        self.BootSeqEnDis18 = None
-        self.BootSeqEnDis19 = None
-        self.BootSeqEnDis2 = None
-        self.BootSeqEnDis20 = None
-        self.BootSeqEnDis3 = None
-        self.BootSeqEnDis4 = None
-        self.BootSeqEnDis5 = None
-        self.BootSeqEnDis6 = None
-        self.BootSeqEnDis7 = None
-        self.BootSeqEnDis8 = None
-        self.BootSeqEnDis9 = None
-        self.BootSeqEnDisRef = None
-        self.BootSeqRetry = None
-        self.BrowserDebugMode = None
-        self.BrowserMode = None
-        self.BrowserOptionsRef = None
-        self.BugChecking = None
-        self.CTOMasking = None
-        self.CkeThrottling = None
-        self.ClpOutput = None
-        self.ClusterOnDie = None
-        self.CollaborativeCpuPerfCtrl = None
-        self.ConTermType = None
-        self.ControlledTurbo = None
-        self.ControlledTurboExtended = None
-        self.CorePerfBoost = None
-        self.CorrEccSmi = None
-        self.CpuInterconnectBusLinkPower = None
-        self.CpuInterconnectBusSpeed = None
-        self.CurrentEmbVideoState = None
-        self.CurrentLimit = None
-        self.CurrentMemOpModeState = None
-        self.DataReuse = None
-        self.DcuIpPrefetcher = None
-        self.DcuStreamerPrefetcher = None
-        self.DebugErrorLevel = None
-        self.DellAutoDiscovery = None
-        self.DellWyseP25BIOSAccess = None
-        self.DeviceUnhide = None
-        self.Dfx = None
-        self.DirectMediaInterfaceSpeed = None
-        self.DmaVirtualization = None
-        self.DynamicCoreAllocation = None
-        self.EmbNic1 = None
-        self.EmbNic1Nic2 = None
-        self.EmbNic2 = None
-        self.EmbNic3 = None
-        self.EmbNic3Nic4 = None
-        self.EmbNic4 = None
-        self.EmbNicPort1BootProto = None
-        self.EmbNicPort2BootProto = None
-        self.EmbNicPort3BootProto = None
-        self.EmbNicPort4BootProto = None
-        self.EmbSata = None
-        self.EmbSataRSTeDebug = None
-        self.EmbSataShadow = None
-        self.EmbSataTestMode = None
-        self.EmbServerMgmt = None
-        self.EmbVideo = None
-        self.EnergyEfficientTurbo = None
-        self.EnergyPerformanceBias = None
-        self.ErrPrompt = None
-        self.ExtSerialConnector = None
-        self.FailSafeBaud = None
-        self.FanPwrPerf = None
-        self.ForceInt10 = None
-        self.FrontLcd = None
-        self.GlobalSlotDriverDisable = None
-        self.HddFailover = None
-        self.HddSeq = None
-        self.HttpDev1EnDis = HttpDev1EnDisTypes.Disabled
-        self.HttpDev1Interface = None
-        self.HttpDev1Protocol = HttpDev1ProtocolTypes.IPv4
-        self.HttpDev1Settings = None
-        self.HttpDev1SettingsRef = None
-        self.HttpDev1Uri = None
-        self.HttpDev1VlanEnDis = HttpDev1VlanEnDisTypes.Disabled
-        self.HttpDev1VlanId = None
-        self.HttpDev1VlanPriority = None
-        self.HttpDev2EnDis = HttpDev2EnDisTypes.Disabled
-        self.HttpDev2Interface = None
-        self.HttpDev2Protocol = HttpDev2ProtocolTypes.IPv4
-        self.HttpDev2Settings = None
-        self.HttpDev2SettingsRef = None
-        self.HttpDev2Uri = None
-        self.HttpDev2VlanEnDis = HttpDev2VlanEnDisTypes.Disabled
-        self.HttpDev2VlanId = None
-        self.HttpDev2VlanPriority = None
-        self.HttpDev3EnDis = HttpDev3EnDisTypes.Disabled
-        self.HttpDev3Interface = None
-        self.HttpDev3Protocol = HttpDev3ProtocolTypes.IPv4
-        self.HttpDev3Settings = None
-        self.HttpDev3SettingsRef = None
-        self.HttpDev3Uri = None
-        self.HttpDev3VlanEnDis = HttpDev3VlanEnDisTypes.Disabled
-        self.HttpDev3VlanId = None
-        self.HttpDev3VlanPriority = None
-        self.HttpDev4EnDis = HttpDev4EnDisTypes.Disabled
-        self.HttpDev4Interface = None
-        self.HttpDev4Protocol = HttpDev4ProtocolTypes.IPv4
-        self.HttpDev4Settings = None
-        self.HttpDev4SettingsRef = None
-        self.HttpDev4Uri = None
-        self.HttpDev4VlanEnDis = HttpDev4VlanEnDisTypes.Disabled
-        self.HttpDev4VlanId = None
-        self.HttpDev4VlanPriority = None
-        self.IdracDebugMode = None
-        self.IgnoreIdracCrReq = None
-        self.IioPcieGlobalSpeed = None
-        self.InBandManageabilityInterface = None
-        self.InSystemCharacterization = None
-        self.IntNic1Port1BootProto = None
-        self.IntNic1Port2BootProto = None
-        self.IntNic1Port3BootProto = None
-        self.IntNic1Port4BootProto = None
-        self.IntegratedDevices = None
-        self.IntegratedNetwork1 = None
-        self.IntegratedNetwork2 = None
-        self.IntegratedRaid = None
-        self.IntegratedSas = None
-        self.IntelTestEventIio = None
-        self.IntelTxt = None
-        self.InteractivePassword24A = None
-        self.InternalSdCard = None
-        self.InternalSdCardPresence = None
-        self.InternalSdCardPrimaryCard = None
-        self.InternalSdCardRedundancy = None
-        self.InternalUsb = None
-        self.InternalUsb1 = None
-        self.InternalUsb2 = None
-        self.IoNonPostedPrefetch = None
-        self.IoatEngine = None
-        self.IscsiDev1Con1Auth = None
-        self.IscsiDev1Con1ChapName = None
-        self.IscsiDev1Con1ChapSecret = None
-        self.IscsiDev1Con1ChapType = None
-        self.IscsiDev1Con1DhcpEnDis = None
-        self.IscsiDev1Con1EnDis = None
-        self.IscsiDev1Con1Gateway = None
-        self.IscsiDev1Con1Interface = None
-        self.IscsiDev1Con1Ip = None
-        self.IscsiDev1Con1IsId = None
-        self.IscsiDev1Con1Lun = None
-        self.IscsiDev1Con1Mask = None
-        self.IscsiDev1Con1Port = None
-        self.IscsiDev1Con1Protocol = None
-        self.IscsiDev1Con1Retry = None
-        self.IscsiDev1Con1RevChapName = None
-        self.IscsiDev1Con1RevChapSecret = None
-        self.IscsiDev1Con1Settings = None
-        self.IscsiDev1Con1SettingsRef = None
-        self.IscsiDev1Con1TargetIp = None
-        self.IscsiDev1Con1TargetName = None
-        self.IscsiDev1Con1TgtDhcpEnDis = None
-        self.IscsiDev1Con1Timeout = None
-        self.IscsiDev1Con1VlanEnDis = None
-        self.IscsiDev1Con1VlanId = None
-        self.IscsiDev1Con1VlanPriority = None
-        self.IscsiDev1Con2Auth = None
-        self.IscsiDev1Con2ChapName = None
-        self.IscsiDev1Con2ChapSecret = None
-        self.IscsiDev1Con2ChapType = None
-        self.IscsiDev1Con2DhcpEnDis = None
-        self.IscsiDev1Con2EnDis = None
-        self.IscsiDev1Con2Gateway = None
-        self.IscsiDev1Con2Interface = None
-        self.IscsiDev1Con2Ip = None
-        self.IscsiDev1Con2IsId = None
-        self.IscsiDev1Con2Lun = None
-        self.IscsiDev1Con2Mask = None
-        self.IscsiDev1Con2Port = None
-        self.IscsiDev1Con2Protocol = None
-        self.IscsiDev1Con2Retry = None
-        self.IscsiDev1Con2RevChapName = None
-        self.IscsiDev1Con2RevChapSecret = None
-        self.IscsiDev1Con2Settings = None
-        self.IscsiDev1Con2SettingsRef = None
-        self.IscsiDev1Con2TargetIp = None
-        self.IscsiDev1Con2TargetName = None
-        self.IscsiDev1Con2TgtDhcpEnDis = None
-        self.IscsiDev1Con2Timeout = None
-        self.IscsiDev1Con2VlanEnDis = None
-        self.IscsiDev1Con2VlanId = None
-        self.IscsiDev1Con2VlanPriority = None
-        self.IscsiDev1ConOrder = None
-        self.IscsiDev1EnDis = None
-        self.IscsiDev1Settings = None
-        self.IscsiInitiatorName = None
-        self.JunoPmEnable = None
-        self.L1Prefetcher = "Enabled"
-        self.L2Prefetcher = "Enabled"
-        self.LinkDowntrainReporting = None
-        self.LogicalProc = None
-        self.MRCSerialDbgOut = None
-        self.MeFailureRecoveryEnable = None
-        self.MeUmaEnable = None
-        self.MemDynamicPwr = None
-        self.MemFrequency = None
-        self.MemHotThrottlingMode = None
-        self.MemLowPower = None
-        self.MemOpMode = None
-        self.MemOpVoltage = None
-        self.MemOptimizer = None
-        self.MemPatrolScrub = None
-        self.MemPwrMgmt = None
-        self.MemPwrPerf = None
-        self.MemRefreshRate = None
-        self.MemSettings = None
-        self.MemTest = None
-        self.MemTestOnFastBoot = None
-        self.MemTestType = None
-        self.MemThrottlingMode = MemThrottlingModeTypes.Cltt
-        self.MemVolt = None
-        self.MemoryFastBootCold = None
-        self.MemoryMappedIOH = None
-        self.MemoryMultiThread = None
-        self.MemoryPerBitMargin = None
-        self.MemoryRmt = None
-        self.MemoryThrottlingMode = None
-        self.MiscSettings = None
-        self.MltRnkSpr = None
-        self.MmioAbove4Gb = None
-        self.MonitorMwait = None
-        self.MultiThreaded = None
-        self.Ndc1PcieLink1 = None
-        self.Ndc1PcieLink2 = None
-        self.Ndc1PcieLink3 = None
-        self.NdcConfigurationSpeed = None
-        self.NmiButton = None
-        self.NodeInterleave = None
-        self.NumLock = None
-        self.NvdimmFactoryDefault = None
-        self.NvdimmFactoryDefault0 = None
-        self.NvdimmFactoryDefault1 = None
-        self.NvdimmFactoryDefault10 = None
-        self.NvdimmFactoryDefault11 = None
-        self.NvdimmFactoryDefault2 = None
-        self.NvdimmFactoryDefault3 = None
-        self.NvdimmFactoryDefault4 = None
-        self.NvdimmFactoryDefault5 = None
-        self.NvdimmFactoryDefault6 = None
-        self.NvdimmFactoryDefault7 = None
-        self.NvdimmFactoryDefault8 = None
-        self.NvdimmFactoryDefault9 = None
-        self.NvdimmFirmwareVer0 = None
-        self.NvdimmFirmwareVer1 = None
-        self.NvdimmFirmwareVer10 = None
-        self.NvdimmFirmwareVer11 = None
-        self.NvdimmFirmwareVer2 = None
-        self.NvdimmFirmwareVer3 = None
-        self.NvdimmFirmwareVer4 = None
-        self.NvdimmFirmwareVer5 = None
-        self.NvdimmFirmwareVer6 = None
-        self.NvdimmFirmwareVer7 = None
-        self.NvdimmFirmwareVer8 = None
-        self.NvdimmFirmwareVer9 = None
-        self.NvdimmFreq0 = None
-        self.NvdimmFreq1 = None
-        self.NvdimmFreq10 = None
-        self.NvdimmFreq11 = None
-        self.NvdimmFreq2 = None
-        self.NvdimmFreq3 = None
-        self.NvdimmFreq4 = None
-        self.NvdimmFreq5 = None
-        self.NvdimmFreq6 = None
-        self.NvdimmFreq7 = None
-        self.NvdimmFreq8 = None
-        self.NvdimmFreq9 = None
-        self.NvdimmInterleaveSupport = None
-        self.NvdimmLocation0 = None
-        self.NvdimmLocation1 = None
-        self.NvdimmLocation10 = None
-        self.NvdimmLocation11 = None
-        self.NvdimmLocation2 = None
-        self.NvdimmLocation3 = None
-        self.NvdimmLocation4 = None
-        self.NvdimmLocation5 = None
-        self.NvdimmLocation6 = None
-        self.NvdimmLocation7 = None
-        self.NvdimmLocation8 = None
-        self.NvdimmLocation9 = None
-        self.NvdimmReadOnly = None
-        self.NvdimmSerialNum0 = None
-        self.NvdimmSerialNum1 = None
-        self.NvdimmSerialNum10 = None
-        self.NvdimmSerialNum11 = None
-        self.NvdimmSerialNum2 = None
-        self.NvdimmSerialNum3 = None
-        self.NvdimmSerialNum4 = None
-        self.NvdimmSerialNum5 = None
-        self.NvdimmSerialNum6 = None
-        self.NvdimmSerialNum7 = None
-        self.NvdimmSerialNum8 = None
-        self.NvdimmSerialNum9 = None
-        self.NvdimmSize0 = None
-        self.NvdimmSize1 = None
-        self.NvdimmSize10 = None
-        self.NvdimmSize11 = None
-        self.NvdimmSize2 = None
-        self.NvdimmSize3 = None
-        self.NvdimmSize4 = None
-        self.NvdimmSize5 = None
-        self.NvdimmSize6 = None
-        self.NvdimmSize7 = None
-        self.NvdimmSize8 = None
-        self.NvdimmSize9 = None
-        self.NvmeMode = None
-        self.NvmeSettings = None
-        self.NvmeSettingsRef = None
-        self.OneTimeBiosBootSeq = None
-        self.OneTimeBoot = None
-        self.OneTimeBootMode = None
-        self.OneTimeBootModeSeq = None
-        self.OneTimeBootRef = None
-        self.OneTimeBootSeqDev = None
-        self.OneTimeCustomBootStr = None
-        self.OneTimeHddSeq = None
-        self.OneTimeHddSeqDev = None
-        self.OneTimeUefiBootPath = None
-        self.OneTimeUefiBootSeq = None
-        self.OneTimeUefiBootSeqDev = None
-        self.OppSrefEn = None
-        self.OsWatchdogTimer = None
-        self.PCIeErrorInjection = None
-        self.PCIeLiveErrorRecovery = None
-        self.PPRErrInjectionTest = None
-        self.PasswordStatus = None
-        self.PcieAspmL1 = None
-        self.PerfMonitorDevices = None
-        self.PersistentMemoryMode = None
-        self.PersistentMemoryScrubbing = None
-        self.PostPackageRepair = None
-        self.PowerCycleRequest = None
-        self.PowerDelivery = None
-        self.PowerMgmt = None
-        self.PowerMgmtSettings = None
-        self.PowerSaver = None
-        self.Proc1Brand = None
-        self.Proc1ControlledTurbo = None
-        self.Proc1Cores = None
-        self.Proc1Id = None
-        self.Proc1L2Cache = None
-        self.Proc1L3Cache = None
-        self.Proc1Microcode = None
-        self.Proc1NumCores = None
-        self.Proc1TurboCoreNum = None
-        self.Proc2Brand = None
-        self.Proc2ControlledTurbo = None
-        self.Proc2Cores = None
-        self.Proc2Id = None
-        self.Proc2L2Cache = None
-        self.Proc2L3Cache = None
-        self.Proc2Microcode = None
-        self.Proc2NumCores = None
-        self.Proc2TurboCoreNum = None
-        self.Proc3Brand = None
-        self.Proc3ControlledTurbo = None
-        self.Proc3Cores = None
-        self.Proc3Id = None
-        self.Proc3L2Cache = None
-        self.Proc3L3Cache = None
-        self.Proc3Microcode = None
-        self.Proc3NumCores = None
-        self.Proc3TurboCoreNum = None
-        self.Proc4Brand = None
-        self.Proc4ControlledTurbo = None
-        self.Proc4Cores = None
-        self.Proc4Id = None
-        self.Proc4L2Cache = None
-        self.Proc4L3Cache = None
-        self.Proc4Microcode = None
-        self.Proc4NumCores = None
-        self.Proc4TurboCoreNum = None
-        self.Proc64bit = None
-        self.ProcATS = None
-        self.ProcAdjCacheLine = None
-        self.ProcBusSpeed = None
-        self.ProcC1E = None
-        self.ProcCStates = None
-        self.ProcConfigTdp = None
-        self.ProcCoreSpeed = None
-        self.ProcCores = None
-        self.ProcDpatProDebug = None
-        self.ProcDramPrefetcher = None
-        self.ProcEmbMemCacheSize = None
-        self.ProcEmbMemMode = ProcEmbMemModeTypes.Cache
-        self.ProcEmbMemSystemSize = None
-        self.ProcEmbMemTotalSize = None
-        self.ProcExecuteDisable = None
-        self.ProcHpcMode = None
-        self.ProcHtAssist = None
-        self.ProcHwPrefetcher = None
-        self.ProcHyperTransport = None
-        self.ProcMtrrPatDebug = None
-        self.ProcPwrPerf = None
-        self.ProcSettings = None
-        self.ProcSoftwarePrefetcher = None
-        self.ProcTurboMode = None
-        self.ProcVirtualization = None
-        self.ProcX2Apic = None
-        self.PwrButton = None
-        self.PxeDev1EnDis = None
-        self.PxeDev1Interface = None
-        self.PxeDev1Protocol = None
-        self.PxeDev1VlanEnDis = None
-        self.PxeDev1VlanId = None
-        self.PxeDev1VlanPriority = None
-        self.PxeDev2EnDis = None
-        self.PxeDev2Interface = None
-        self.PxeDev2Protocol = None
-        self.PxeDev2VlanEnDis = None
-        self.PxeDev2VlanId = None
-        self.PxeDev2VlanPriority = None
-        self.PxeDev3EnDis = None
-        self.PxeDev3Interface = None
-        self.PxeDev3Protocol = None
-        self.PxeDev3VlanEnDis = None
-        self.PxeDev3VlanId = None
-        self.PxeDev3VlanPriority = None
-        self.PxeDev4EnDis = None
-        self.PxeDev4Interface = None
-        self.PxeDev4Protocol = None
-        self.PxeDev4VlanEnDis = None
-        self.PxeDev4VlanId = None
-        self.PxeDev4VlanPriority = None
-        self.QpiBandwidthPriority = None
-        self.QpiSpeed = None
-        self.RebootTestCount = None
-        self.RebootTestMode = None
-        self.RebootTestPoint = None
-        self.RedirAfterBoot = None
-        self.RedundantMem = None
-        self.RedundantMemCfgValid = None
-        self.RedundantMemInUse = None
-        self.RedundantOsBoot = None
-        self.RedundantOsLocation = None
-        self.RedundantOsState = None
-        self.ReportKbdErr = None
-        self.RipsPresence = None
-        self.RtidSetting = None
-        self.S4SupportDebug = None
-        self.SHA256SetupPassword = None
-        self.SHA256SetupPasswordSalt = None
-        self.SHA256SystemPassword = None
-        self.SHA256SystemPasswordSalt = None
-        self.SNC = None
-        self.SataPortA = None
-        self.SataPortACapacity = None
-        self.SataPortADriveType = None
-        self.SataPortAModel = None
-        self.SataPortB = None
-        self.SataPortBCapacity = None
-        self.SataPortBDriveType = None
-        self.SataPortBModel = None
-        self.SataPortC = None
-        self.SataPortCCapacity = None
-        self.SataPortCDriveType = None
-        self.SataPortCModel = None
-        self.SataPortD = None
-        self.SataPortDCapacity = None
-        self.SataPortDDriveType = None
-        self.SataPortDModel = None
-        self.SataPortE = None
-        self.SataPortECapacity = None
-        self.SataPortEDriveType = None
-        self.SataPortEModel = None
-        self.SataPortF = None
-        self.SataPortFCapacity = None
-        self.SataPortFDriveType = None
-        self.SataPortFModel = None
-        self.SataPortG = None
-        self.SataPortGCapacity = None
-        self.SataPortGDriveType = None
-        self.SataPortGModel = None
-        self.SataPortH = None
-        self.SataPortHCapacity = None
-        self.SataPortHDriveType = None
-        self.SataPortHModel = None
-        self.SataPortI = None
-        self.SataPortICapacity = None
-        self.SataPortIDriveType = None
-        self.SataPortIModel = None
-        self.SataPortJ = None
-        self.SataPortJCapacity = None
-        self.SataPortJDriveType = None
-        self.SataPortJModel = None
-        self.SataPortK = None
-        self.SataPortKCapacity = None
-        self.SataPortKDriveType = None
-        self.SataPortKModel = None
-        self.SataPortL = None
-        self.SataPortLCapacity = None
-        self.SataPortLDriveType = None
-        self.SataPortLModel = None
-        self.SataPortM = None
-        self.SataPortMCapacity = None
-        self.SataPortMDriveType = None
-        self.SataPortMModel = None
-        self.SataPortN = None
-        self.SataPortNCapacity = None
-        self.SataPortNDriveType = None
-        self.SataPortNModel = None
-        self.SataSettings = None
-        self.SccDebugEnabled = None
-        self.SecureBoot = None
-        self.SecureBootMode = SecureBootModeTypes.UserMode
-        self.SecureBootPolicy = None
-        self.SecurityFreezeLock = None
-        self.SerialComm = None
-        self.SerialCommSettings = None
-        self.SerialPortAddress = None
-        self.SetBootOrderFqdd1 = None
-        self.SetBootOrderFqdd10 = None
-        self.SetBootOrderFqdd11 = None
-        self.SetBootOrderFqdd12 = None
-        self.SetBootOrderFqdd13 = None
-        self.SetBootOrderFqdd14 = None
-        self.SetBootOrderFqdd15 = None
-        self.SetBootOrderFqdd16 = None
-        self.SetBootOrderFqdd2 = None
-        self.SetBootOrderFqdd3 = None
-        self.SetBootOrderFqdd4 = None
-        self.SetBootOrderFqdd5 = None
-        self.SetBootOrderFqdd6 = None
-        self.SetBootOrderFqdd7 = None
-        self.SetBootOrderFqdd8 = None
-        self.SetBootOrderFqdd9 = None
-        self.SetLegacyHddOrderFqdd1 = None
-        self.SetLegacyHddOrderFqdd10 = None
-        self.SetLegacyHddOrderFqdd11 = None
-        self.SetLegacyHddOrderFqdd12 = None
-        self.SetLegacyHddOrderFqdd13 = None
-        self.SetLegacyHddOrderFqdd14 = None
-        self.SetLegacyHddOrderFqdd15 = None
-        self.SetLegacyHddOrderFqdd16 = None
-        self.SetLegacyHddOrderFqdd2 = None
-        self.SetLegacyHddOrderFqdd3 = None
-        self.SetLegacyHddOrderFqdd4 = None
-        self.SetLegacyHddOrderFqdd5 = None
-        self.SetLegacyHddOrderFqdd6 = None
-        self.SetLegacyHddOrderFqdd7 = None
-        self.SetLegacyHddOrderFqdd8 = None
-        self.SetLegacyHddOrderFqdd9 = None
-        self.SetupPassword = None
-        self.SignedFirmwareUpdate = None
-        self.Slot1 = None
-        self.Slot10 = None
-        self.Slot10Bif = None
-        self.Slot11 = None
-        self.Slot11Bif = None
-        self.Slot12 = None
-        self.Slot12Bif = None
-        self.Slot13 = None
-        self.Slot13Bif = None
-        self.Slot14Bif = None
-        self.Slot1Bif = None
-        self.Slot2 = None
-        self.Slot2Bif = None
-        self.Slot3 = None
-        self.Slot3Bif = None
-        self.Slot4 = None
-        self.Slot4Bif = None
-        self.Slot5 = None
-        self.Slot5Bif = None
-        self.Slot6 = None
-        self.Slot6Bif = None
-        self.Slot7 = None
-        self.Slot7Bif = None
-        self.Slot8 = None
-        self.Slot8Bif = None
-        self.Slot9 = None
-        self.Slot9Bif = None
-        self.SlotBifurcation = None
-        self.SlotDisablement = None
-        self.SlotDisablementRef = None
-        self.SnoopFilter = None
-        self.SnoopMode = None
-        self.SrefProgramming = None
-        self.SriovGlobalEnable = None
-        self.SubNumaCluster = None
-        self.SysInformation = None
-        self.SysMemSize = None
-        self.SysMemSpeed = None
-        self.SysMemType = None
-        self.SysMemVolt = None
-        self.SysMfrContactInfo = None
-        self.SysMgmtNVByte1 = None
-        self.SysMgmtNVByte2 = None
-        self.SysPassword = None
-        self.SysProfile = None
-        self.SysProfileSettings = None
-        self.SysSecurity = None
-        self.SystemBiosVersion = None
-        self.SystemCpldVersion = None
-        self.SystemManufacturer = None
-        self.SystemMeVersion = None
-        self.SystemMemoryModel = SystemMemoryModelTypes.Quadrant
-        self.SystemModelName = None
-        self.SystemServiceTag = None
-        self.SystemUefiShell = None
-        self.TXEQWA = None
-        self.TcmActivation = None
-        self.TcmClear = None
-        self.TcmSecurity = None
-        self.Tpm2Algorithm = None
-        self.Tpm2Hierarchy = None
-        self.TpmActivation = None
-        self.TpmBindingReset = None
-        self.TpmClear = None
-        self.TpmCommand = None
-        self.TpmFirmware = None
-        self.TpmInfo = None
-        self.TpmPpiBypassClear = None
-        self.TpmPpiBypassProvision = None
-        self.TpmSecurity = None
-        self.TpmStatus = None
-        self.TraceHubDebug = None
-        self.UefiBootSeq = None
-        self.UefiBootSeqEnDis = None
-        self.UefiBootSeqEnDis1 = None
-        self.UefiBootSeqEnDis10 = None
-        self.UefiBootSeqEnDis11 = None
-        self.UefiBootSeqEnDis12 = None
-        self.UefiBootSeqEnDis13 = None
-        self.UefiBootSeqEnDis14 = None
-        self.UefiBootSeqEnDis15 = None
-        self.UefiBootSeqEnDis16 = None
-        self.UefiBootSeqEnDis17 = None
-        self.UefiBootSeqEnDis18 = None
-        self.UefiBootSeqEnDis19 = None
-        self.UefiBootSeqEnDis2 = None
-        self.UefiBootSeqEnDis20 = None
-        self.UefiBootSeqEnDis3 = None
-        self.UefiBootSeqEnDis4 = None
-        self.UefiBootSeqEnDis5 = None
-        self.UefiBootSeqEnDis6 = None
-        self.UefiBootSeqEnDis7 = None
-        self.UefiBootSeqEnDis8 = None
-        self.UefiBootSeqEnDis9 = None
-        self.UefiBootSeqEnDisRef = None
-        self.UefiBootSettings = None
-        self.UefiBootSettingsRef = None
-        self.UefiComplianceVersion = None
-        self.UefiPxeIpVersion = None
-        self.UefiVariableAccess = None
-        self.UncoreFrequency = None
-        self.UnusedPcieClk = None
-        self.Usb3Setting = None
-        self.UsbManagedPort  = UsbManagedPortTypes.On
-        self.UsbPorts = None
-        self.UserLcdStr = None
-        self.VideoMem = None
-        self.WorkloadProfile = None
-        self.WriteCache = None
-        self.WriteDataCrc = None
-        self.eSataPort1 = None
-        self.eSataPort1Capacity = None
-        self.eSataPort1DriveType = None
-        self.eSataPort1Model = None
-        return self
+        self.AcPwrRcvry = EnumTypeField(None,AcPwrRcvryTypes, parent=self)
+        self.AcPwrRcvryDelay = EnumTypeField(None,AcPwrRcvryDelayTypes, parent=self)
+        self.AcPwrRcvryUserDelay = IntField(None, parent=self)
+        self.AddrBasMir = EnumTypeField(None,AddrBasMirTypes, parent=self)
+        self.AesNi = StringField(None, parent=self)
+        self.AssetTag = StringField(None, parent=self)
+        self.AttemptFastBoot = EnumTypeField(None,AttemptFastBootTypes, parent=self)
+        self.AttemptFastBootCold = EnumTypeField(None,AttemptFastBootColdTypes, parent=self)
+        self.BatteryStatus = StringField(None, parent=self)
+        self.BiosBootSeq = StringField(None, parent=self)
+        self.BiosUpdateControl = EnumTypeField(None,BiosUpdateControlTypes, parent=self)
+        self.BootMode = EnumTypeField(None,BootModeTypes, parent=self)
+        self.BootSeq = StringField(None, parent=self)
+        self.BootSeqRetry = EnumTypeField(None,BootSeqRetryTypes, parent=self)
+        self.BrowserDebugMode = EnumTypeField(None,BrowserDebugModeTypes, parent=self)
+        self.BrowserMode = EnumTypeField(None,BrowserModeTypes, parent=self)
+        self.BugChecking = EnumTypeField(None,BugCheckingTypes, parent=self)
+        self.CTOMasking = EnumTypeField(None,CTOMaskingTypes, parent=self)
+        self.CkeThrottling = EnumTypeField(None,CkeThrottlingTypes, parent=self)
+        self.ClpOutput = EnumTypeField(None,ClpOutputTypes, parent=self)
+        self.ClusterOnDie = EnumTypeField(None,ClusterOnDieTypes, parent=self)
+        self.CollaborativeCpuPerfCtrl = EnumTypeField(None,CollaborativeCpuPerfCtrlTypes, parent=self)
+        self.ConTermType = EnumTypeField(None,ConTermTypeTypes, parent=self)
+        self.ControlledTurbo = EnumTypeField(None,ControlledTurboTypes, parent=self)
+        self.ControlledTurboExtended = EnumTypeField(None,ControlledTurboExtendedTypes, parent=self)
+        self.CorePerfBoost = EnumTypeField(None,CorePerfBoostTypes, parent=self)
+        self.CorrEccSmi = EnumTypeField(None,CorrEccSmiTypes, parent=self)
+        self.CpuInterconnectBusLinkPower = EnumTypeField(None,CpuInterconnectBusLinkPowerTypes, parent=self)
+        self.CpuInterconnectBusSpeed = EnumTypeField(None,CpuInterconnectBusSpeedTypes, parent=self)
+        self.CurrentEmbVideoState = StringField(None, parent=self)
+        self.CurrentLimit = IntField(None, parent=self)
+        self.CurrentMemOpModeState = StringField(None, parent=self)
+        self.DataReuse = EnumTypeField(None,DataReuseTypes, parent=self)
+        self.DcuIpPrefetcher = EnumTypeField(None,DcuIpPrefetcherTypes, parent=self)
+        self.DcuStreamerPrefetcher = EnumTypeField(None,DcuStreamerPrefetcherTypes, parent=self)
+        self.DebugErrorLevel = StringField(None, parent=self)
+        self.DellAutoDiscovery = EnumTypeField(None,DellAutoDiscoveryTypes, parent=self)
+        self.DellWyseP25BIOSAccess = EnumTypeField(None,DellWyseP25BIOSAccessTypes, parent=self)
+        self.DeviceUnhide = EnumTypeField(None,DeviceUnhideTypes, parent=self)
+        self.Dfx = EnumTypeField(None,DfxTypes, parent=self)
+        self.DirectMediaInterfaceSpeed = EnumTypeField(None,DirectMediaInterfaceSpeedTypes, parent=self)
+        self.DmaVirtualization = EnumTypeField(None,DmaVirtualizationTypes, parent=self)
+        self.DynamicCoreAllocation = EnumTypeField(None,DynamicCoreAllocationTypes, parent=self)
+        self.EmbNic1 = EnumTypeField(None,EmbNic1Types, parent=self)
+        self.EmbNic1Nic2 = EnumTypeField(None,EmbNic1Nic2Types, parent=self)
+        self.EmbNic2 = EnumTypeField(None,EmbNic2Types, parent=self)
+        self.EmbNic3 = EnumTypeField(None,EmbNic3Types, parent=self)
+        self.EmbNic3Nic4 = EnumTypeField(None,EmbNic3Nic4Types, parent=self)
+        self.EmbNic4 = EnumTypeField(None,EmbNic4Types, parent=self)
+        self.EmbNicPort1BootProto = EnumTypeField(None,EmbNicPort1BootProtoTypes, parent=self)
+        self.EmbNicPort2BootProto = EnumTypeField(None,EmbNicPort2BootProtoTypes, parent=self)
+        self.EmbNicPort3BootProto = EnumTypeField(None,EmbNicPort3BootProtoTypes, parent=self)
+        self.EmbNicPort4BootProto = EnumTypeField(None,EmbNicPort4BootProtoTypes, parent=self)
+        self.EmbSata = EnumTypeField(None,EmbSataTypes, parent=self)
+        self.EmbSataRSTeDebug = EnumTypeField(None,EmbSataRSTeDebugTypes, parent=self)
+        self.EmbSataShadow = EnumTypeField(None,EmbSataShadowTypes, parent=self)
+        self.EmbSataTestMode = EnumTypeField(None,EmbSataTestModeTypes, parent=self)
+        self.EmbVideo = EnumTypeField(None,EmbVideoTypes, parent=self)
+        self.EnergyEfficientTurbo = EnumTypeField(None,EnergyEfficientTurboTypes, parent=self)
+        self.EnergyPerformanceBias = EnumTypeField(None,EnergyPerformanceBiasTypes, parent=self)
+        self.ErrPrompt = EnumTypeField(None,ErrPromptTypes, parent=self)
+        self.ExtSerialConnector = EnumTypeField(None,ExtSerialConnectorTypes, parent=self)
+        self.FailSafeBaud = EnumTypeField(None,FailSafeBaudTypes, parent=self)
+        self.FanPwrPerf = EnumTypeField(None,FanPwrPerfTypes, parent=self)
+        self.ForceInt10 = EnumTypeField(None,ForceInt10Types, parent=self)
+        self.FrontLcd = EnumTypeField(None,FrontLcdTypes, parent=self)
+        self.GlobalSlotDriverDisable = EnumTypeField(None,GlobalSlotDriverDisableTypes, parent=self)
+        self.HddFailover = EnumTypeField(None,HddFailoverTypes, parent=self)
+        self.HddSeq = StringField(None, parent=self)
+        self.HttpDev1EnDis = EnumTypeField(HttpDev1EnDisTypes.Disabled,HttpDev1EnDisTypes, parent=self)
+        self.HttpDev1Interface = StringField(None, parent=self)
+        self.HttpDev1Protocol = EnumTypeField(HttpDev1ProtocolTypes.IPv4,HttpDev1ProtocolTypes, parent=self)
+        self.HttpDev1Uri = StringField(None, parent=self)
+        self.HttpDev1VlanEnDis = EnumTypeField(HttpDev1VlanEnDisTypes.Disabled,HttpDev1VlanEnDisTypes, parent=self)
+        self.HttpDev1VlanId = IntField(None, parent=self)
+        self.HttpDev1VlanPriority = IntField(None, parent=self)
+        self.HttpDev2EnDis = EnumTypeField(HttpDev2EnDisTypes.Disabled,HttpDev2EnDisTypes, parent=self)
+        self.HttpDev2Interface = StringField(None, parent=self)
+        self.HttpDev2Protocol = EnumTypeField(HttpDev2ProtocolTypes.IPv4,HttpDev2ProtocolTypes, parent=self)
+        self.HttpDev2Uri = StringField(None, parent=self)
+        self.HttpDev2VlanEnDis = EnumTypeField(HttpDev2VlanEnDisTypes.Disabled,HttpDev2VlanEnDisTypes, parent=self)
+        self.HttpDev2VlanId = IntField(None, parent=self)
+        self.HttpDev2VlanPriority = IntField(None, parent=self)
+        self.HttpDev3EnDis = EnumTypeField(HttpDev3EnDisTypes.Disabled,HttpDev3EnDisTypes, parent=self)
+        self.HttpDev3Interface = StringField(None, parent=self)
+        self.HttpDev3Protocol = EnumTypeField(HttpDev3ProtocolTypes.IPv4,HttpDev3ProtocolTypes, parent=self)
+        self.HttpDev3Uri = StringField(None, parent=self)
+        self.HttpDev3VlanEnDis = EnumTypeField(HttpDev3VlanEnDisTypes.Disabled,HttpDev3VlanEnDisTypes, parent=self)
+        self.HttpDev3VlanId = IntField(None, parent=self)
+        self.HttpDev3VlanPriority = IntField(None, parent=self)
+        self.HttpDev4EnDis = EnumTypeField(HttpDev4EnDisTypes.Disabled,HttpDev4EnDisTypes, parent=self)
+        self.HttpDev4Interface = StringField(None, parent=self)
+        self.HttpDev4Protocol = EnumTypeField(HttpDev4ProtocolTypes.IPv4,HttpDev4ProtocolTypes, parent=self)
+        self.HttpDev4Uri = StringField(None, parent=self)
+        self.HttpDev4VlanEnDis = EnumTypeField(HttpDev4VlanEnDisTypes.Disabled,HttpDev4VlanEnDisTypes, parent=self)
+        self.HttpDev4VlanId = IntField(None, parent=self)
+        self.HttpDev4VlanPriority = IntField(None, parent=self)
+        self.IdracDebugMode = EnumTypeField(None,IdracDebugModeTypes, parent=self)
+        self.IgnoreIdracCrReq = EnumTypeField(None,IgnoreIdracCrReqTypes, parent=self)
+        self.IioPcieGlobalSpeed = EnumTypeField(None,IioPcieGlobalSpeedTypes, parent=self)
+        self.InBandManageabilityInterface = EnumTypeField(None,InBandManageabilityInterfaceTypes, parent=self)
+        self.InSystemCharacterization = EnumTypeField(None,InSystemCharacterizationTypes, parent=self)
+        self.IntNic1Port1BootProto = EnumTypeField(None,IntNic1Port1BootProtoTypes, parent=self)
+        self.IntNic1Port2BootProto = EnumTypeField(None,IntNic1Port2BootProtoTypes, parent=self)
+        self.IntNic1Port3BootProto = EnumTypeField(None,IntNic1Port3BootProtoTypes, parent=self)
+        self.IntNic1Port4BootProto = EnumTypeField(None,IntNic1Port4BootProtoTypes, parent=self)
+        self.IntegratedNetwork1 = EnumTypeField(None,IntegratedNetwork1Types, parent=self)
+        self.IntegratedNetwork2 = EnumTypeField(None,IntegratedNetwork2Types, parent=self)
+        self.IntegratedRaid = EnumTypeField(None,IntegratedRaidTypes, parent=self)
+        self.IntegratedSas = EnumTypeField(None,IntegratedSasTypes, parent=self)
+        self.IntelTestEventIio = EnumTypeField(None,IntelTestEventIioTypes, parent=self)
+        self.IntelTxt = EnumTypeField(None,IntelTxtTypes, parent=self)
+        self.InteractivePassword24A = EnumTypeField(None,InteractivePassword24ATypes, parent=self)
+        self.InternalSdCard = EnumTypeField(None,InternalSdCardTypes, parent=self)
+        self.InternalSdCardPresence = EnumTypeField(None,InternalSdCardPresenceTypes, parent=self)
+        self.InternalSdCardPrimaryCard = EnumTypeField(None,InternalSdCardPrimaryCardTypes, parent=self)
+        self.InternalSdCardRedundancy = EnumTypeField(None,InternalSdCardRedundancyTypes, parent=self)
+        self.InternalUsb = EnumTypeField(None,InternalUsbTypes, parent=self)
+        self.InternalUsb1 = EnumTypeField(None,InternalUsb1Types, parent=self)
+        self.InternalUsb2 = EnumTypeField(None,InternalUsb2Types, parent=self)
+        self.IoNonPostedPrefetch = EnumTypeField(None,IoNonPostedPrefetchTypes, parent=self)
+        self.IoatEngine = EnumTypeField(None,IoatEngineTypes, parent=self)
+        self.IscsiDev1Con1Auth = EnumTypeField(None,IscsiDev1Con1AuthTypes, parent=self)
+        self.IscsiDev1Con1ChapName = StringField(None, parent=self)
+        self.IscsiDev1Con1ChapSecret = StringField(None, parent=self)
+        self.IscsiDev1Con1ChapType = EnumTypeField(None,IscsiDev1Con1ChapTypeTypes, parent=self)
+        self.IscsiDev1Con1DhcpEnDis = EnumTypeField(None,IscsiDev1Con1DhcpEnDisTypes, parent=self)
+        self.IscsiDev1Con1EnDis = EnumTypeField(None,IscsiDev1Con1EnDisTypes, parent=self)
+        self.IscsiDev1Con1Gateway = StringField(None, parent=self)
+        self.IscsiDev1Con1Interface = StringField(None, parent=self)
+        self.IscsiDev1Con1Ip = StringField(None, parent=self)
+        self.IscsiDev1Con1IsId = StringField(None, parent=self)
+        self.IscsiDev1Con1Lun = IntField(None, parent=self)
+        self.IscsiDev1Con1Mask = StringField(None, parent=self)
+        self.IscsiDev1Con1Port = IntField(None, parent=self)
+        self.IscsiDev1Con1Protocol = EnumTypeField(None,IscsiDev1Con1ProtocolTypes, parent=self)
+        self.IscsiDev1Con1Retry = IntField(None, parent=self)
+        self.IscsiDev1Con1RevChapName = StringField(None, parent=self)
+        self.IscsiDev1Con1RevChapSecret = StringField(None, parent=self)
+        self.IscsiDev1Con1TargetIp = StringField(None, parent=self)
+        self.IscsiDev1Con1TargetName = StringField(None, parent=self)
+        self.IscsiDev1Con1TgtDhcpEnDis = EnumTypeField(None,IscsiDev1Con1TgtDhcpEnDisTypes, parent=self)
+        self.IscsiDev1Con1Timeout = IntField(None, parent=self)
+        self.IscsiDev1Con1VlanEnDis = EnumTypeField(None,IscsiDev1Con1VlanEnDisTypes, parent=self)
+        self.IscsiDev1Con1VlanId = IntField(None, parent=self)
+        self.IscsiDev1Con1VlanPriority = IntField(None, parent=self)
+        self.IscsiDev1Con2Auth = EnumTypeField(None,IscsiDev1Con2AuthTypes, parent=self)
+        self.IscsiDev1Con2ChapName = StringField(None, parent=self)
+        self.IscsiDev1Con2ChapSecret = StringField(None, parent=self)
+        self.IscsiDev1Con2ChapType = EnumTypeField(None,IscsiDev1Con2ChapTypeTypes, parent=self)
+        self.IscsiDev1Con2DhcpEnDis = EnumTypeField(None,IscsiDev1Con2DhcpEnDisTypes, parent=self)
+        self.IscsiDev1Con2EnDis = EnumTypeField(None,IscsiDev1Con2EnDisTypes, parent=self)
+        self.IscsiDev1Con2Gateway = StringField(None, parent=self)
+        self.IscsiDev1Con2Interface = StringField(None, parent=self)
+        self.IscsiDev1Con2Ip = StringField(None, parent=self)
+        self.IscsiDev1Con2IsId = StringField(None, parent=self)
+        self.IscsiDev1Con2Lun = IntField(None, parent=self)
+        self.IscsiDev1Con2Mask = StringField(None, parent=self)
+        self.IscsiDev1Con2Port = IntField(None, parent=self)
+        self.IscsiDev1Con2Protocol = EnumTypeField(None,IscsiDev1Con2ProtocolTypes, parent=self)
+        self.IscsiDev1Con2Retry = IntField(None, parent=self)
+        self.IscsiDev1Con2RevChapName = StringField(None, parent=self)
+        self.IscsiDev1Con2RevChapSecret = StringField(None, parent=self)
+        self.IscsiDev1Con2TargetIp = StringField(None, parent=self)
+        self.IscsiDev1Con2TargetName = StringField(None, parent=self)
+        self.IscsiDev1Con2TgtDhcpEnDis = EnumTypeField(None,IscsiDev1Con2TgtDhcpEnDisTypes, parent=self)
+        self.IscsiDev1Con2Timeout = IntField(None, parent=self)
+        self.IscsiDev1Con2VlanEnDis = EnumTypeField(None,IscsiDev1Con2VlanEnDisTypes, parent=self)
+        self.IscsiDev1Con2VlanId = IntField(None, parent=self)
+        self.IscsiDev1Con2VlanPriority = IntField(None, parent=self)
+        self.IscsiDev1ConOrder = StringField(None, parent=self)
+        self.IscsiDev1EnDis = EnumTypeField(None,IscsiDev1EnDisTypes, parent=self)
+        self.IscsiInitiatorName = StringField(None, parent=self)
+        self.JunoPmEnable = EnumTypeField(None,JunoPmEnableTypes, parent=self)
+        self.L1Prefetcher = StringField("Enabled", parent=self)
+        self.L2Prefetcher = StringField("Enabled", parent=self)
+        self.LinkDowntrainReporting = EnumTypeField(None,LinkDowntrainReportingTypes, parent=self)
+        self.LogicalProc = EnumTypeField(None,LogicalProcTypes, parent=self)
+        self.MRCSerialDbgOut = EnumTypeField(None,MRCSerialDbgOutTypes, parent=self)
+        self.MeFailureRecoveryEnable = EnumTypeField(None,MeFailureRecoveryEnableTypes, parent=self)
+        self.MeUmaEnable = EnumTypeField(None,MeUmaEnableTypes, parent=self)
+        self.MemDynamicPwr = EnumTypeField(None,MemDynamicPwrTypes, parent=self)
+        self.MemFrequency = EnumTypeField(None,MemFrequencyTypes, parent=self)
+        self.MemHotThrottlingMode = EnumTypeField(None,MemHotThrottlingModeTypes, parent=self)
+        self.MemLowPower = EnumTypeField(None,MemLowPowerTypes, parent=self)
+        self.MemOpMode = EnumTypeField(None,MemOpModeTypes, parent=self)
+        self.MemOpVoltage = EnumTypeField(None,MemOpVoltageTypes, parent=self)
+        self.MemOptimizer = EnumTypeField(None,MemOptimizerTypes, parent=self)
+        self.MemPatrolScrub = EnumTypeField(None,MemPatrolScrubTypes, parent=self)
+        self.MemPwrMgmt = EnumTypeField(None,MemPwrMgmtTypes, parent=self)
+        self.MemPwrPerf = EnumTypeField(None,MemPwrPerfTypes, parent=self)
+        self.MemRefreshRate = EnumTypeField(None,MemRefreshRateTypes, parent=self)
+        self.MemTest = EnumTypeField(None,MemTestTypes, parent=self)
+        self.MemTestOnFastBoot = EnumTypeField(None,MemTestOnFastBootTypes, parent=self)
+        self.MemTestType = EnumTypeField(None,MemTestTypeTypes, parent=self)
+        self.MemThrottlingMode = EnumTypeField(MemThrottlingModeTypes.Cltt,MemThrottlingModeTypes, parent=self)
+        self.MemVolt = EnumTypeField(None,MemVoltTypes, parent=self)
+        self.MemoryFastBootCold = EnumTypeField(None,MemoryFastBootColdTypes, parent=self)
+        self.MemoryMappedIOH = EnumTypeField(MemoryMappedIOHTypes.Disabled,MemoryMappedIOHTypes, parent=self)
+        self.MemoryMultiThread = EnumTypeField(None,MemoryMultiThreadTypes, parent=self)
+        self.MemoryPerBitMargin = EnumTypeField(None,MemoryPerBitMarginTypes, parent=self)
+        self.MemoryRmt = EnumTypeField(None,MemoryRmtTypes, parent=self)
+        self.MemoryThrottlingMode = EnumTypeField(None,MemoryThrottlingModeTypes, parent=self)
+        self.MltRnkSpr = EnumTypeField(None,MltRnkSprTypes, parent=self)
+        self.MmioAbove4Gb = EnumTypeField(None,MmioAbove4GbTypes, parent=self)
+        self.MonitorMwait = EnumTypeField(None,MonitorMwaitTypes, parent=self)
+        self.MultiThreaded = EnumTypeField(None,MultiThreadedTypes, parent=self)
+        self.Ndc1PcieLink1 = EnumTypeField(None,Ndc1PcieLink1Types, parent=self)
+        self.Ndc1PcieLink2 = EnumTypeField(None,Ndc1PcieLink2Types, parent=self)
+        self.Ndc1PcieLink3 = EnumTypeField(None,Ndc1PcieLink3Types, parent=self)
+        self.NdcConfigurationSpeed = EnumTypeField(None,NdcConfigurationSpeedTypes, parent=self)
+        # readonly attribute
+        self.NewSetupPassword = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute
+        self.NewSysPassword = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.NmiButton = EnumTypeField(None,NmiButtonTypes, parent=self)
+        self.NodeInterleave = EnumTypeField(None,NodeInterleaveTypes, parent=self)
+        self.NumLock = EnumTypeField(None,NumLockTypes, parent=self)
+        self.NvdimmFactoryDefault = EnumTypeField(None,NvdimmFactoryDefaultTypes, parent=self)
+        self.NvdimmFactoryDefault0 = EnumTypeField(None,NvdimmFactoryDefault0Types, parent=self)
+        self.NvdimmFactoryDefault1 = EnumTypeField(None,NvdimmFactoryDefault1Types, parent=self)
+        self.NvdimmFactoryDefault10 = EnumTypeField(None,NvdimmFactoryDefault10Types, parent=self)
+        self.NvdimmFactoryDefault11 = EnumTypeField(None,NvdimmFactoryDefault11Types, parent=self)
+        self.NvdimmFactoryDefault2 = EnumTypeField(None,NvdimmFactoryDefault2Types, parent=self)
+        self.NvdimmFactoryDefault3 = EnumTypeField(None,NvdimmFactoryDefault3Types, parent=self)
+        self.NvdimmFactoryDefault4 = EnumTypeField(None,NvdimmFactoryDefault4Types, parent=self)
+        self.NvdimmFactoryDefault5 = EnumTypeField(None,NvdimmFactoryDefault5Types, parent=self)
+        self.NvdimmFactoryDefault6 = EnumTypeField(None,NvdimmFactoryDefault6Types, parent=self)
+        self.NvdimmFactoryDefault7 = EnumTypeField(None,NvdimmFactoryDefault7Types, parent=self)
+        self.NvdimmFactoryDefault8 = EnumTypeField(None,NvdimmFactoryDefault8Types, parent=self)
+        self.NvdimmFactoryDefault9 = EnumTypeField(None,NvdimmFactoryDefault9Types, parent=self)
+        self.NvdimmFirmwareVer0 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer1 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer10 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer11 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer2 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer3 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer4 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer5 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer6 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer7 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer8 = StringField(None, parent=self)
+        self.NvdimmFirmwareVer9 = StringField(None, parent=self)
+        self.NvdimmFreq0 = StringField(None, parent=self)
+        self.NvdimmFreq1 = StringField(None, parent=self)
+        self.NvdimmFreq10 = StringField(None, parent=self)
+        self.NvdimmFreq11 = StringField(None, parent=self)
+        self.NvdimmFreq2 = StringField(None, parent=self)
+        self.NvdimmFreq3 = StringField(None, parent=self)
+        self.NvdimmFreq4 = StringField(None, parent=self)
+        self.NvdimmFreq5 = StringField(None, parent=self)
+        self.NvdimmFreq6 = StringField(None, parent=self)
+        self.NvdimmFreq7 = StringField(None, parent=self)
+        self.NvdimmFreq8 = StringField(None, parent=self)
+        self.NvdimmFreq9 = StringField(None, parent=self)
+        self.NvdimmInterleaveSupport = EnumTypeField(None,NvdimmInterleaveSupportTypes, parent=self)
+        self.NvdimmLocation0 = StringField(None, parent=self)
+        self.NvdimmLocation1 = StringField(None, parent=self)
+        self.NvdimmLocation10 = StringField(None, parent=self)
+        self.NvdimmLocation11 = StringField(None, parent=self)
+        self.NvdimmLocation2 = StringField(None, parent=self)
+        self.NvdimmLocation3 = StringField(None, parent=self)
+        self.NvdimmLocation4 = StringField(None, parent=self)
+        self.NvdimmLocation5 = StringField(None, parent=self)
+        self.NvdimmLocation6 = StringField(None, parent=self)
+        self.NvdimmLocation7 = StringField(None, parent=self)
+        self.NvdimmLocation8 = StringField(None, parent=self)
+        self.NvdimmLocation9 = StringField(None, parent=self)
+        self.NvdimmReadOnly = EnumTypeField(None,NvdimmReadOnlyTypes, parent=self)
+        self.NvdimmSerialNum0 = StringField(None, parent=self)
+        self.NvdimmSerialNum1 = StringField(None, parent=self)
+        self.NvdimmSerialNum10 = StringField(None, parent=self)
+        self.NvdimmSerialNum11 = StringField(None, parent=self)
+        self.NvdimmSerialNum2 = StringField(None, parent=self)
+        self.NvdimmSerialNum3 = StringField(None, parent=self)
+        self.NvdimmSerialNum4 = StringField(None, parent=self)
+        self.NvdimmSerialNum5 = StringField(None, parent=self)
+        self.NvdimmSerialNum6 = StringField(None, parent=self)
+        self.NvdimmSerialNum7 = StringField(None, parent=self)
+        self.NvdimmSerialNum8 = StringField(None, parent=self)
+        self.NvdimmSerialNum9 = StringField(None, parent=self)
+        self.NvdimmSize0 = StringField(None, parent=self)
+        self.NvdimmSize1 = StringField(None, parent=self)
+        self.NvdimmSize10 = StringField(None, parent=self)
+        self.NvdimmSize11 = StringField(None, parent=self)
+        self.NvdimmSize2 = StringField(None, parent=self)
+        self.NvdimmSize3 = StringField(None, parent=self)
+        self.NvdimmSize4 = StringField(None, parent=self)
+        self.NvdimmSize5 = StringField(None, parent=self)
+        self.NvdimmSize6 = StringField(None, parent=self)
+        self.NvdimmSize7 = StringField(None, parent=self)
+        self.NvdimmSize8 = StringField(None, parent=self)
+        self.NvdimmSize9 = StringField(None, parent=self)
+        self.NvmeMode = EnumTypeField(None,NvmeModeTypes, parent=self)
+        # readonly attribute
+        self.OldSetupPassword = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute
+        self.OldSysPassword = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.OneTimeBiosBootSeq = StringField(None, parent=self)
+        self.OneTimeBootMode = EnumTypeField(None,OneTimeBootModeTypes, parent=self)
+        self.OneTimeBootModeSeq = StringField(None, parent=self)
+        self.OneTimeBootSeqDev = EnumTypeField(None,OneTimeBootSeqDevTypes, parent=self)
+        self.OneTimeCustomBootStr = StringField(None, parent=self)
+        self.OneTimeHddSeq = StringField(None, parent=self)
+        self.OneTimeHddSeqDev = EnumTypeField(None,OneTimeHddSeqDevTypes, parent=self)
+        self.OneTimeUefiBootPath = StringField(None, parent=self)
+        self.OneTimeUefiBootSeq = StringField(None, parent=self)
+        self.OneTimeUefiBootSeqDev = EnumTypeField(None,OneTimeUefiBootSeqDevTypes, parent=self)
+        self.OppSrefEn = EnumTypeField(None,OppSrefEnTypes, parent=self)
+        self.OsWatchdogTimer = EnumTypeField(None,OsWatchdogTimerTypes, parent=self)
+        self.PCIeErrorInjection = EnumTypeField(None,PCIeErrorInjectionTypes, parent=self)
+        self.PCIeLiveErrorRecovery = EnumTypeField(None,PCIeLiveErrorRecoveryTypes, parent=self)
+        self.PPRErrInjectionTest = EnumTypeField(None,PPRErrInjectionTestTypes, parent=self)
+        self.PasswordStatus = EnumTypeField(None,PasswordStatusTypes, parent=self)
+        self.PcieAspmL1 = EnumTypeField(None,PcieAspmL1Types, parent=self)
+        self.PerfMonitorDevices = EnumTypeField(None,PerfMonitorDevicesTypes, parent=self)
+        self.PersistentMemoryMode = EnumTypeField(None,PersistentMemoryModeTypes, parent=self)
+        self.PersistentMemoryScrubbing = EnumTypeField(None,PersistentMemoryScrubbingTypes, parent=self)
+        self.PostPackageRepair = EnumTypeField(None,PostPackageRepairTypes, parent=self)
+        self.PowerCycleRequest = EnumTypeField(None,PowerCycleRequestTypes, parent=self)
+        self.PowerDelivery = EnumTypeField(None,PowerDeliveryTypes, parent=self)
+        self.PowerMgmt = EnumTypeField(None,PowerMgmtTypes, parent=self)
+        self.PowerSaver = EnumTypeField(None,PowerSaverTypes, parent=self)
+        self.Proc1Brand = StringField(None, parent=self)
+        self.Proc1ControlledTurbo = EnumTypeField(None,Proc1ControlledTurboTypes, parent=self)
+        self.Proc1Cores = EnumTypeField(None,Proc1CoresTypes, parent=self)
+        self.Proc1Id = StringField(None, parent=self)
+        self.Proc1L2Cache = StringField(None, parent=self)
+        self.Proc1L3Cache = StringField(None, parent=self)
+        self.Proc1Microcode = IntField(None, parent=self)
+        self.Proc1NumCores = IntField(None, parent=self)
+        self.Proc1TurboCoreNum = EnumTypeField(None,Proc1TurboCoreNumTypes, parent=self)
+        self.Proc2Brand = StringField(None, parent=self)
+        self.Proc2ControlledTurbo = EnumTypeField(None,Proc2ControlledTurboTypes, parent=self)
+        self.Proc2Cores = EnumTypeField(None,Proc2CoresTypes, parent=self)
+        self.Proc2Id = StringField(None, parent=self)
+        self.Proc2L2Cache = StringField(None, parent=self)
+        self.Proc2L3Cache = StringField(None, parent=self)
+        self.Proc2Microcode = IntField(None, parent=self)
+        self.Proc2NumCores = IntField(None, parent=self)
+        self.Proc2TurboCoreNum = EnumTypeField(None,Proc2TurboCoreNumTypes, parent=self)
+        self.Proc3Brand = StringField(None, parent=self)
+        self.Proc3ControlledTurbo = EnumTypeField(None,Proc3ControlledTurboTypes, parent=self)
+        self.Proc3Cores = EnumTypeField(None,Proc3CoresTypes, parent=self)
+        self.Proc3Id = StringField(None, parent=self)
+        self.Proc3L2Cache = StringField(None, parent=self)
+        self.Proc3L3Cache = StringField(None, parent=self)
+        self.Proc3Microcode = IntField(None, parent=self)
+        self.Proc3NumCores = IntField(None, parent=self)
+        self.Proc3TurboCoreNum = EnumTypeField(None,Proc3TurboCoreNumTypes, parent=self)
+        self.Proc4Brand = StringField(None, parent=self)
+        self.Proc4ControlledTurbo = EnumTypeField(None,Proc4ControlledTurboTypes, parent=self)
+        self.Proc4Cores = EnumTypeField(None,Proc4CoresTypes, parent=self)
+        self.Proc4Id = StringField(None, parent=self)
+        self.Proc4L2Cache = StringField(None, parent=self)
+        self.Proc4L3Cache = StringField(None, parent=self)
+        self.Proc4Microcode = IntField(None, parent=self)
+        self.Proc4NumCores = IntField(None, parent=self)
+        self.Proc4TurboCoreNum = EnumTypeField(None,Proc4TurboCoreNumTypes, parent=self)
+        self.Proc64bit = StringField(None, parent=self)
+        self.ProcATS = EnumTypeField(None,ProcATSTypes, parent=self)
+        self.ProcAdjCacheLine = EnumTypeField(None,ProcAdjCacheLineTypes, parent=self)
+        self.ProcBusSpeed = StringField(None, parent=self)
+        self.ProcC1E = EnumTypeField(None,ProcC1ETypes, parent=self)
+        self.ProcCStates = EnumTypeField(None,ProcCStatesTypes, parent=self)
+        self.ProcConfigTdp = EnumTypeField(None,ProcConfigTdpTypes, parent=self)
+        self.ProcCoreSpeed = StringField(None, parent=self)
+        self.ProcCores = EnumTypeField(None,ProcCoresTypes, parent=self)
+        self.ProcDpatProDebug = EnumTypeField(None,ProcDpatProDebugTypes, parent=self)
+        self.ProcDramPrefetcher = EnumTypeField(None,ProcDramPrefetcherTypes, parent=self)
+        self.ProcEmbMemCacheSize = StringField(None, parent=self)
+        self.ProcEmbMemMode = EnumTypeField(ProcEmbMemModeTypes.Cache,ProcEmbMemModeTypes, parent=self)
+        self.ProcEmbMemSystemSize = StringField(None, parent=self)
+        self.ProcEmbMemTotalSize = StringField(None, parent=self)
+        self.ProcExecuteDisable = EnumTypeField(None,ProcExecuteDisableTypes, parent=self)
+        self.ProcHpcMode = EnumTypeField(None,ProcHpcModeTypes, parent=self)
+        self.ProcHtAssist = EnumTypeField(None,ProcHtAssistTypes, parent=self)
+        self.ProcHwPrefetcher = EnumTypeField(None,ProcHwPrefetcherTypes, parent=self)
+        self.ProcHyperTransport = EnumTypeField(None,ProcHyperTransportTypes, parent=self)
+        self.ProcMtrrPatDebug = EnumTypeField(None,ProcMtrrPatDebugTypes, parent=self)
+        self.ProcPwrPerf = EnumTypeField(None,ProcPwrPerfTypes, parent=self)
+        self.ProcSoftwarePrefetcher = EnumTypeField(None,ProcSoftwarePrefetcherTypes, parent=self)
+        self.ProcTurboMode = EnumTypeField(None,ProcTurboModeTypes, parent=self)
+        self.ProcVirtualization = EnumTypeField(None,ProcVirtualizationTypes, parent=self)
+        self.ProcX2Apic = EnumTypeField(None,ProcX2ApicTypes, parent=self)
+        self.PwrButton = EnumTypeField(None,PwrButtonTypes, parent=self)
+        self.PxeDev1EnDis = EnumTypeField(None,PxeDev1EnDisTypes, parent=self)
+        self.PxeDev1Interface = StringField(None, parent=self)
+        self.PxeDev1Protocol = EnumTypeField(None,PxeDev1ProtocolTypes, parent=self)
+        self.PxeDev1VlanEnDis = EnumTypeField(None,PxeDev1VlanEnDisTypes, parent=self)
+        self.PxeDev1VlanId = IntField(None, parent=self)
+        self.PxeDev1VlanPriority = IntField(None, parent=self)
+        self.PxeDev2EnDis = EnumTypeField(None,PxeDev2EnDisTypes, parent=self)
+        self.PxeDev2Interface = StringField(None, parent=self)
+        self.PxeDev2Protocol = EnumTypeField(None,PxeDev2ProtocolTypes, parent=self)
+        self.PxeDev2VlanEnDis = EnumTypeField(None,PxeDev2VlanEnDisTypes, parent=self)
+        self.PxeDev2VlanId = IntField(None, parent=self)
+        self.PxeDev2VlanPriority = IntField(None, parent=self)
+        self.PxeDev3EnDis = EnumTypeField(None,PxeDev3EnDisTypes, parent=self)
+        self.PxeDev3Interface = StringField(None, parent=self)
+        self.PxeDev3Protocol = EnumTypeField(None,PxeDev3ProtocolTypes, parent=self)
+        self.PxeDev3VlanEnDis = EnumTypeField(None,PxeDev3VlanEnDisTypes, parent=self)
+        self.PxeDev3VlanId = IntField(None, parent=self)
+        self.PxeDev3VlanPriority = IntField(None, parent=self)
+        self.PxeDev4EnDis = EnumTypeField(None,PxeDev4EnDisTypes, parent=self)
+        self.PxeDev4Interface = StringField(None, parent=self)
+        self.PxeDev4Protocol = EnumTypeField(None,PxeDev4ProtocolTypes, parent=self)
+        self.PxeDev4VlanEnDis = EnumTypeField(None,PxeDev4VlanEnDisTypes, parent=self)
+        self.PxeDev4VlanId = IntField(None, parent=self)
+        self.PxeDev4VlanPriority = IntField(None, parent=self)
+        self.QpiBandwidthPriority = EnumTypeField(None,QpiBandwidthPriorityTypes, parent=self)
+        self.QpiSpeed = EnumTypeField(None,QpiSpeedTypes, parent=self)
+        self.RebootTestCount = IntField(None, parent=self)
+        self.RebootTestMode = EnumTypeField(None,RebootTestModeTypes, parent=self)
+        self.RebootTestPoint = EnumTypeField(None,RebootTestPointTypes, parent=self)
+        self.RedirAfterBoot = EnumTypeField(None,RedirAfterBootTypes, parent=self)
+        self.RedundantMem = EnumTypeField(None,RedundantMemTypes, parent=self)
+        self.RedundantMemCfgValid = EnumTypeField(None,RedundantMemCfgValidTypes, parent=self)
+        self.RedundantMemInUse = EnumTypeField(None,RedundantMemInUseTypes, parent=self)
+        self.RedundantOsBoot = EnumTypeField(None,RedundantOsBootTypes, parent=self)
+        self.RedundantOsLocation = EnumTypeField(None,RedundantOsLocationTypes, parent=self)
+        self.RedundantOsState = EnumTypeField(None,RedundantOsStateTypes, parent=self)
+        self.ReportKbdErr = EnumTypeField(None,ReportKbdErrTypes, parent=self)
+        self.RipsPresence = EnumTypeField(None,RipsPresenceTypes, parent=self)
+        self.RtidSetting = EnumTypeField(None,RtidSettingTypes, parent=self)
+        self.S4SupportDebug = EnumTypeField(None,S4SupportDebugTypes, parent=self)
+        self.SHA256SetupPassword = StringField(None, parent=self)
+        self.SHA256SetupPasswordSalt = StringField(None, parent=self)
+        self.SHA256SystemPassword = StringField(None, parent=self)
+        self.SHA256SystemPasswordSalt = StringField(None, parent=self)
+        self.SNC = EnumTypeField(None,SNCTypes, parent=self)
+        self.SataPortA = EnumTypeField(None,SataPortATypes, parent=self)
+        self.SataPortACapacity = StringField(None, parent=self)
+        self.SataPortADriveType = StringField(None, parent=self)
+        self.SataPortAModel = StringField(None, parent=self)
+        self.SataPortB = EnumTypeField(None,SataPortBTypes, parent=self)
+        self.SataPortBCapacity = StringField(None, parent=self)
+        self.SataPortBDriveType = StringField(None, parent=self)
+        self.SataPortBModel = StringField(None, parent=self)
+        self.SataPortC = EnumTypeField(None,SataPortCTypes, parent=self)
+        self.SataPortCCapacity = StringField(None, parent=self)
+        self.SataPortCDriveType = StringField(None, parent=self)
+        self.SataPortCModel = StringField(None, parent=self)
+        self.SataPortD = EnumTypeField(None,SataPortDTypes, parent=self)
+        self.SataPortDCapacity = StringField(None, parent=self)
+        self.SataPortDDriveType = StringField(None, parent=self)
+        self.SataPortDModel = StringField(None, parent=self)
+        self.SataPortE = EnumTypeField(None,SataPortETypes, parent=self)
+        self.SataPortECapacity = StringField(None, parent=self)
+        self.SataPortEDriveType = StringField(None, parent=self)
+        self.SataPortEModel = StringField(None, parent=self)
+        self.SataPortF = EnumTypeField(None,SataPortFTypes, parent=self)
+        self.SataPortFCapacity = StringField(None, parent=self)
+        self.SataPortFDriveType = StringField(None, parent=self)
+        self.SataPortFModel = StringField(None, parent=self)
+        self.SataPortG = EnumTypeField(None,SataPortGTypes, parent=self)
+        self.SataPortGCapacity = StringField(None, parent=self)
+        self.SataPortGDriveType = StringField(None, parent=self)
+        self.SataPortGModel = StringField(None, parent=self)
+        self.SataPortH = EnumTypeField(None,SataPortHTypes, parent=self)
+        self.SataPortHCapacity = StringField(None, parent=self)
+        self.SataPortHDriveType = StringField(None, parent=self)
+        self.SataPortHModel = StringField(None, parent=self)
+        self.SataPortI = EnumTypeField(None,SataPortITypes, parent=self)
+        self.SataPortICapacity = EnumTypeField(None,SataPortICapacityTypes, parent=self)
+        self.SataPortIDriveType = EnumTypeField(None,SataPortIDriveTypeTypes, parent=self)
+        self.SataPortIModel = EnumTypeField(None,SataPortIModelTypes, parent=self)
+        self.SataPortJ = EnumTypeField(None,SataPortJTypes, parent=self)
+        self.SataPortJCapacity = EnumTypeField(None,SataPortJCapacityTypes, parent=self)
+        self.SataPortJDriveType = EnumTypeField(None,SataPortJDriveTypeTypes, parent=self)
+        self.SataPortJModel = EnumTypeField(None,SataPortJModelTypes, parent=self)
+        self.SataPortK = EnumTypeField(None,SataPortKTypes, parent=self)
+        self.SataPortKCapacity = StringField(None, parent=self)
+        self.SataPortKDriveType = StringField(None, parent=self)
+        self.SataPortKModel = StringField(None, parent=self)
+        self.SataPortL = EnumTypeField(None,SataPortLTypes, parent=self)
+        self.SataPortLCapacity = StringField(None, parent=self)
+        self.SataPortLDriveType = EnumTypeField(None,SataPortLDriveTypeTypes, parent=self)
+        self.SataPortLModel = StringField(None, parent=self)
+        self.SataPortM = EnumTypeField(None,SataPortMTypes, parent=self)
+        self.SataPortMCapacity = StringField(None, parent=self)
+        self.SataPortMDriveType = StringField(None, parent=self)
+        self.SataPortMModel = EnumTypeField(None,SataPortMModelTypes, parent=self)
+        self.SataPortN = EnumTypeField(None,SataPortNTypes, parent=self)
+        self.SataPortNCapacity = StringField(None, parent=self)
+        self.SataPortNDriveType = StringField(None, parent=self)
+        self.SataPortNModel = EnumTypeField(SataPortNModelTypes.SATA_MODEL,SataPortNModelTypes, parent=self)
+        self.SccDebugEnabled = EnumTypeField(None,SccDebugEnabledTypes, parent=self)
+        self.SecureBoot = EnumTypeField(None,SecureBootTypes, parent=self)
+        self.SecureBootMode = EnumTypeField(SecureBootModeTypes.UserMode,SecureBootModeTypes, parent=self)
+        self.SecureBootPolicy = EnumTypeField(None,SecureBootPolicyTypes, parent=self)
+        self.SecurityFreezeLock = EnumTypeField(None,SecurityFreezeLockTypes, parent=self)
+        self.SerialComm = EnumTypeField(None,SerialCommTypes, parent=self)
+        self.SerialPortAddress = EnumTypeField(None,SerialPortAddressTypes, parent=self)
+        self.SetBootOrderFqdd1 = StringField(None, parent=self)
+        self.SetBootOrderFqdd10 = StringField(None, parent=self)
+        self.SetBootOrderFqdd11 = StringField(None, parent=self)
+        self.SetBootOrderFqdd12 = StringField(None, parent=self)
+        self.SetBootOrderFqdd13 = StringField(None, parent=self)
+        self.SetBootOrderFqdd14 = StringField(None, parent=self)
+        self.SetBootOrderFqdd15 = StringField(None, parent=self)
+        self.SetBootOrderFqdd16 = StringField(None, parent=self)
+        self.SetBootOrderFqdd2 = StringField(None, parent=self)
+        self.SetBootOrderFqdd3 = StringField(None, parent=self)
+        self.SetBootOrderFqdd4 = StringField(None, parent=self)
+        self.SetBootOrderFqdd5 = StringField(None, parent=self)
+        self.SetBootOrderFqdd6 = StringField(None, parent=self)
+        self.SetBootOrderFqdd7 = StringField(None, parent=self)
+        self.SetBootOrderFqdd8 = StringField(None, parent=self)
+        self.SetBootOrderFqdd9 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd1 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd10 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd11 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd12 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd13 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd14 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd15 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd16 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd2 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd3 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd4 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd5 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd6 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd7 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd8 = StringField(None, parent=self)
+        self.SetLegacyHddOrderFqdd9 = StringField(None, parent=self)
+        self.SetupPassword = StringField(None, parent=self)
+        self.SignedFirmwareUpdate = EnumTypeField(None,SignedFirmwareUpdateTypes, parent=self)
+        self.Slot1 = EnumTypeField(None,Slot1Types, parent=self)
+        self.Slot10 = EnumTypeField(None,Slot10Types, parent=self)
+        self.Slot10Bif = EnumTypeField(None,Slot10BifTypes, parent=self)
+        self.Slot11 = EnumTypeField(None,Slot11Types, parent=self)
+        self.Slot11Bif = EnumTypeField(None,Slot11BifTypes, parent=self)
+        self.Slot12 = EnumTypeField(None,Slot12Types, parent=self)
+        self.Slot12Bif = EnumTypeField(None,Slot12BifTypes, parent=self)
+        self.Slot13 = EnumTypeField(None,Slot13Types, parent=self)
+        self.Slot13Bif = EnumTypeField(None,Slot13BifTypes, parent=self)
+        self.Slot14Bif = EnumTypeField(None,Slot14BifTypes, parent=self)
+        self.Slot1Bif = EnumTypeField(None,Slot1BifTypes, parent=self)
+        self.Slot2 = EnumTypeField(None,Slot2Types, parent=self)
+        self.Slot2Bif = EnumTypeField(None,Slot2BifTypes, parent=self)
+        self.Slot3 = EnumTypeField(None,Slot3Types, parent=self)
+        self.Slot3Bif = EnumTypeField(None,Slot3BifTypes, parent=self)
+        self.Slot4 = EnumTypeField(None,Slot4Types, parent=self)
+        self.Slot4Bif = EnumTypeField(None,Slot4BifTypes, parent=self)
+        self.Slot5 = EnumTypeField(None,Slot5Types, parent=self)
+        self.Slot5Bif = EnumTypeField(None,Slot5BifTypes, parent=self)
+        self.Slot6 = EnumTypeField(None,Slot6Types, parent=self)
+        self.Slot6Bif = EnumTypeField(None,Slot6BifTypes, parent=self)
+        self.Slot7 = EnumTypeField(None,Slot7Types, parent=self)
+        self.Slot7Bif = EnumTypeField(None,Slot7BifTypes, parent=self)
+        self.Slot8 = EnumTypeField(None,Slot8Types, parent=self)
+        self.Slot8Bif = EnumTypeField(None,Slot8BifTypes, parent=self)
+        self.Slot9 = EnumTypeField(None,Slot9Types, parent=self)
+        self.Slot9Bif = EnumTypeField(None,Slot9BifTypes, parent=self)
+        self.SnoopFilter = EnumTypeField(None,SnoopFilterTypes, parent=self)
+        self.SnoopMode = EnumTypeField(None,SnoopModeTypes, parent=self)
+        self.SrefProgramming = EnumTypeField(None,SrefProgrammingTypes, parent=self)
+        self.SriovGlobalEnable = EnumTypeField(None,SriovGlobalEnableTypes, parent=self)
+        self.SubNumaCluster = EnumTypeField(None,SubNumaClusterTypes, parent=self)
+        self.SysMemSize = StringField(None, parent=self)
+        self.SysMemSpeed = StringField(None, parent=self)
+        self.SysMemType = StringField(None, parent=self)
+        self.SysMemVolt = StringField(None, parent=self)
+        self.SysMfrContactInfo = StringField(None, parent=self)
+        self.SysMgmtNVByte1 = IntField(None, parent=self)
+        self.SysMgmtNVByte2 = IntField(None, parent=self)
+        self.SysPassword = StringField(None, parent=self)
+        self.SysProfile = EnumTypeField(None,SysProfileTypes, parent=self)
+        self.SystemBiosVersion = StringField(None, parent=self)
+        self.SystemCpldVersion = StringField(None, parent=self)
+        self.SystemManufacturer = StringField(None, parent=self)
+        self.SystemMeVersion = StringField(None, parent=self)
+        self.SystemMemoryModel = EnumTypeField(SystemMemoryModelTypes.Quadrant,SystemMemoryModelTypes, parent=self)
+        self.SystemModelName = StringField(None, parent=self)
+        self.SystemServiceTag = StringField(None, parent=self)
+        self.SystemUefiShell = EnumTypeField(None,SystemUefiShellTypes, parent=self)
+        self.TXEQWA = EnumTypeField(None,TXEQWATypes, parent=self)
+        self.TcmActivation = EnumTypeField(None,TcmActivationTypes, parent=self)
+        self.TcmClear = EnumTypeField(None,TcmClearTypes, parent=self)
+        self.TcmSecurity = EnumTypeField(None,TcmSecurityTypes, parent=self)
+        self.Tpm2Algorithm = EnumTypeField(None,Tpm2AlgorithmTypes, parent=self)
+        self.Tpm2Hierarchy = EnumTypeField(None,Tpm2HierarchyTypes, parent=self)
+        self.TpmActivation = EnumTypeField(None,TpmActivationTypes, parent=self)
+        self.TpmBindingReset = EnumTypeField(None,TpmBindingResetTypes, parent=self)
+        self.TpmClear = EnumTypeField(None,TpmClearTypes, parent=self)
+        self.TpmCommand = EnumTypeField(None,TpmCommandTypes, parent=self)
+        self.TpmFirmware = StringField(None, parent=self)
+        self.TpmInfo = StringField(None, parent=self)
+        self.TpmPpiBypassClear = EnumTypeField(None,TpmPpiBypassClearTypes, parent=self)
+        self.TpmPpiBypassProvision = EnumTypeField(None,TpmPpiBypassProvisionTypes, parent=self)
+        self.TpmSecurity = EnumTypeField(None,TpmSecurityTypes, parent=self)
+        self.TpmStatus = StringField(None, parent=self)
+        self.TraceHubDebug = EnumTypeField(None,TraceHubDebugTypes, parent=self)
+        self.UefiBootSeq = StringField(None, parent=self)
+        self.UefiComplianceVersion = StringField(None, parent=self)
+        self.UefiPxeIpVersion = EnumTypeField(None,UefiPxeIpVersionTypes, parent=self)
+        self.UefiVariableAccess = EnumTypeField(None,UefiVariableAccessTypes, parent=self)
+        self.UncoreFrequency = EnumTypeField(None,UncoreFrequencyTypes, parent=self)
+        self.UnusedPcieClk = EnumTypeField(None,UnusedPcieClkTypes, parent=self)
+        self.Usb3Setting = EnumTypeField(None,Usb3SettingTypes, parent=self)
+        self.UsbManagedPort  = EnumTypeField(UsbManagedPortTypes.On,UsbManagedPortTypes, parent=self)
+        self.UsbPorts = EnumTypeField(None,UsbPortsTypes, parent=self)
+        self.UserLcdStr = StringField(None, parent=self)
+        self.VideoMem = StringField(None, parent=self)
+        self.WorkloadProfile = EnumTypeField(None,WorkloadProfileTypes, parent=self)
+        self.WriteCache = EnumTypeField(None,WriteCacheTypes, parent=self)
+        self.WriteDataCrc = EnumTypeField(None,WriteDataCrcTypes, parent=self)
+        self.eSataPort1 = EnumTypeField(None,eSataPort1Types, parent=self)
+        self.eSataPort1Capacity = StringField(None, parent=self)
+        self.eSataPort1DriveType = StringField(None, parent=self)
+        self.eSataPort1Model = StringField(None, parent=self)
+        self.commit()
 

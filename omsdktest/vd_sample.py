@@ -4,7 +4,7 @@ sys.path.append(os.getcwd())
 
 counter = 1
 from omsdk.sdkprint import PrettyPrint
-from omsdk.omlog.Logger import LogManager
+from omsdk.omlogs.Logger import LogManager
 from omdrivers.enums.iDRAC.iDRACEnums import *
 
 #LogManager.setup_logging()

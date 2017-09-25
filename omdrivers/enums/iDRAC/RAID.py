@@ -81,6 +81,7 @@ RAIDNegotiatedSpeedTypes = EnumWrapper("RAIDNegotiatedSpeedTypes", {
     "T_1_5_GBS" : "1_5_GBS",
     "T_3_GBS" : "3_GBS",
     "T_6_GBS" : "6_GBS",
+    "T_None" : "None",
 }).enum_type
 
 RAIDPDStateTypes = EnumWrapper("RAIDPDStateTypes", {
