@@ -1,0 +1,106 @@
+{
+    "LifecycleController" : {
+        "pattern" : "LifecycleController.Embedded.1",
+        "registry" : "iDRAC",
+        "groups" : ["LCAttributes"]
+    },
+    "System" : {
+        "pattern" : "System.Embedded.1",
+        "registry" : "iDRAC",
+        "groups" : [
+            "LCD",
+            "ThermalConfig",
+            "ServerPwr", 
+            "ServerTopology", 
+            "ServerOS"
+        ]
+    },
+    "iDRAC" : {
+        "pattern" : "iDRAC.Embedded.1",
+        "registry" : "iDRAC",
+        "firmware_pattern" : "(iDRAC|OSCollector|USC)\\..*",
+        "excl_groups" : [
+            "LCD",
+            "ThermalConfig",
+            "ServerPwr", 
+            "ServerTopology", 
+            "ServerOS"
+        ]
+    },
+    "FC" : {
+        "pattern" : "FC\\.Slot\\..*",
+        "firmware_pattern" : "FC\\.Slot\\..*",
+        "registry" : "FCHBA",
+        "nogroup" : true
+    },
+    "NIC" : {
+        "pattern" : "NIC\\..*",
+        "firmware_pattern" : "NIC\\..*",
+        "registry" : "NIC",
+        "nogroup" : true
+    },
+    "Controller" : {
+        "pattern" : "^RAID\\.*",
+        "firmware_pattern" : "^RAID\\.*",
+        "registry" : "RAID",
+        "groups" : [ "Controller" ],
+        "nogroup" : true
+    },
+    "Enclosure" : {
+        "pattern" : "^[^:]+:RAID\\..*",
+        "firmware_pattern" : "^[^:]+:RAID\\..*",
+        "registry" : "RAID",
+        "groups" : [ "Enclosure" ],
+        "nogroup" : true
+    },
+    "PhysicalDisk" : {
+        "pattern" : "^Disk.*",
+        "firmware_pattern" : "^Disk.*",
+        "registry" : "RAID",
+        "groups" : [ "PhysicalDisk" ],
+        "nogroup" : true
+    },
+    "VirtualDisk" : {
+        "pattern" : "Disk\\.Virtual\\..*",
+        "registry" : "RAID",
+        "groups" : [ "VirtualDisk" ],
+        "nogroup" : true
+    },
+    "BIOS" : {
+        "pattern" : "BIOS\\..*",
+        "firmware_pattern" : "BIOS\\..*",
+        "registry" : "BIOS",
+        "groups" : [  ],
+        "nogroup" : true
+    },
+    "DriverPack" : {
+        "firmware_pattern" : "DriverPack\\..*",
+        "registry" : null,
+        "groups" : [  ],
+        "nogroup" : true
+    },
+    "PowerSupply" : {
+        "firmware_pattern" : "(PSU)\\..*",
+        "registry" : null,
+        "groups" : [  ],
+        "nogroup" : true
+    },
+    "Diags" : {
+        "firmware_pattern" : "(Diagnostics)\\..*",
+        "registry" : null,
+        "groups" : [  ],
+        "nogroup" : true
+    },
+    "CPLD" : {
+        "firmware_pattern" : "CPLD\\..*",
+        "registry" : null,
+        "groups" : [  ],
+        "nogroup" : true
+    },
+    "CMC" : {
+        "firmware_pattern" : "CMC\\..*",
+        "registry" : null,
+        "groups" : [  ],
+        "nogroup" : true
+    }
+}

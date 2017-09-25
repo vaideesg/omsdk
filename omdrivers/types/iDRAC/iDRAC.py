@@ -2889,6 +2889,17 @@ class vFlashSD(ClassType):
         self.WriteProtect_vFlashSD = EnumTypeField(None,WriteProtect_vFlashSDTypes, parent=self)
         self.commit()
 
+class System(ClassType):
+
+    def __init__(self, parent = None):
+        super().__init__("Component", None, parent)
+        self.LCD = LCD(parent=self)
+        self.ServerOS = ServerOS(parent=self)
+        self.ServerPwr = ServerPwr(parent=self)
+        self.ServerTopology = ServerTopology(parent=self)
+        self.ThermalConfig = ThermalConfig(parent=self)
+        self.commit()
+
 class iDRAC(ClassType):
 
     def __init__(self, parent = None):
@@ -2973,7 +2984,6 @@ class iDRAC(ClassType):
         self.InletTemp = InletTemp(parent=self)
         self.IntegratedDatacenter = IntegratedDatacenter(parent=self)
         self.LCAttributes = LCAttributes(parent=self)
-        self.LCD = LCD(parent=self)
         self.LDAP = LDAP(parent=self)
         self.LDAPRoleGroup = LDAPRoleGroup(parent=self)
         self.LocalSecurity = LocalSecurity(parent=self)
@@ -3029,10 +3039,7 @@ class iDRAC(ClassType):
         self.SerialRedirection = SerialRedirection(parent=self)
         self.ServerBoot = ServerBoot(parent=self)
         self.ServerInfo = ServerInfo(parent=self)
-        self.ServerOS = ServerOS(parent=self)
-        self.ServerPwr = ServerPwr(parent=self)
         self.ServerPwrMon = ServerPwrMon(parent=self)
-        self.ServerTopology = ServerTopology(parent=self)
         self.ServiceModule = ServiceModule(parent=self)
         self.SledInterposer = SledInterposer(parent=self)
         self.SledSlot = SledSlot(parent=self)
@@ -3044,7 +3051,6 @@ class iDRAC(ClassType):
         self.SysInfo = SysInfo(parent=self)
         self.SysLog = SysLog(parent=self)
         self.Telnet = Telnet(parent=self)
-        self.ThermalConfig = ThermalConfig(parent=self)
         self.ThermalHealthIndicator = ThermalHealthIndicator(parent=self)
         self.ThermalHistorical = ThermalHistorical(parent=self)
         self.ThermalSettings = ThermalSettings(parent=self)
@@ -3062,5 +3068,12 @@ class iDRAC(ClassType):
         self._STP_ = _STP_(parent=self)
         self.vFlashPartition = vFlashPartition(parent=self)
         self.vFlashSD = vFlashSD(parent=self)
+        self.commit()
+
+class LifecycleController(ClassType):
+
+    def __init__(self, parent = None):
+        super().__init__("Component", None, parent)
+        self.LCAttributes = LCAttributes(parent=self)
         self.commit()
 

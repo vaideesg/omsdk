@@ -17,7 +17,7 @@ class AttribRegistry(object):
         typName = re.sub('^(^[0-9])', 'E_\\1', typName)
         typName = re.sub('[[]([^]:]+)[^]]*[]]', '\\1', typName)
         typName = re.sub('[?]', '', typName)
-        typName = re.sub('-.', '_', typName)
+        typName = re.sub('[-.]', '_', typName)
         typName = re.sub('^[ \t]+', '', typName)
         return typName
     def __init__(self, file_name):
@@ -251,50 +251,69 @@ class AttribRegistry(object):
             tval = re.sub('^(^[0-9])', 'T_\\1', tval)
         return tval
 
-    def _print(self, out, props):
-        cls_props = {}
-        md_props = {}
-        desc_props = {}
-        unedit_props = {}
-        for i in props:
-            modDeleteAllowed = True
+    def _print(self, out, props, group, dconfig):
 
-            unedit_props[i] = False
+        # build groups!!
+        new_prop_def = {}
+        # group
+        #   fldname
+        #    ::pytype
+        #        modDeleteAllowed
+        #        uneditable
+        #        doc
+        #        type
+        #        default
+        #        alias
+        FieldTypeMap = {
+                'enum' : 'EnumTypeField',
+                'str' : 'StringField',
+                'int' : 'IntField',
+                'bool' : 'BooleanField',
+                'enum' : 'EnumTypeField',
+                'list' : 'StringField', # TODO
+        }
+
+        for i in props:
+            if group: gname = props[i]['qualifier']
+            else: gname = self.comp
+            if not gname in new_prop_def:
+                new_prop_def[gname] = {}
+            if not i in new_prop_def[gname]:
+                new_prop_def[gname][i] = {}
+
+            # readonly, unediable 
+            new_prop_def[gname][i]['modDeleteAllowed'] = True
+            new_prop_def[gname][i]['uneditable'] = False
             if 'readonly' in props[i] and \
                 props[i]['readonly'].lower() in ['true']:
 
                 if 'longDescription' in props[i] and \
                     'Configurable via XML' not in props[i]['longDescription']:
-                    unedit_props[i] = True
+                    new_prop_def[gname][i]['uneditable'] = True
 
-                modDeleteAllowed = False
+                new_prop_def[gname][i]['modDeleteAllowed'] = False
 
-            if 'default' not in props[i]:
-                props[i]['default'] = None
-            cls_props[i] = props[i]['default']
-            md_props[i] = modDeleteAllowed
+            # Pydoc description
             desc = i
             if 'longDescription' in props[i]:
                 desc = props[i]['longDescription']
             desc = re.sub('[ \t\v\b]+', ' ', desc)
             desc = re.sub('[^[A-Za-z0-9;,.<>/:!()]" -]', "", desc)
-            desc_props[i] = desc.replace('"', "'")
+            desc = desc.replace('"', "'")
+            new_prop_def[gname][i]['doc'] = desc
 
+            # python type
+            f_pytype = FieldTypeMap[props[i]['baseType']]
 
-        s_cls_props = sorted([i for i in cls_props])
-        for i in s_cls_props:
-            if '[Partition:n]' in i:
-                continue
-            defval = cls_props[i]
+            # Default processing
+            if 'default' not in props[i]:
+                props[i]['default'] = None
 
-            typnames = { 'enum' : 'EnumTypeField',
-               'str' : 'StringField',
-               'int' : 'IntField',
-               'bool' : 'BooleanField',
-               'enum' : 'EnumTypeField',
-               'list' : 'StringField', # TODO
-            }
-            f_pytype = typnames[props[i]['baseType']]
+            # type and default values
+            new_prop_def[gname][i]['type'] = None
+            new_prop_def[gname][i]['default'] = props[i]['default']
+            defval = new_prop_def[gname][i]['default']
+
             if defval:
                 typename = None
                 if 'type' in props[i]:
@@ -314,44 +333,99 @@ class AttribRegistry(object):
                         elif f_pytype not in ['EnumTypeField']:
                             #print(props[i]['baseType']+" wrong enum:" + i)
                             f_pytype = 'EnumTypeField'
+
             if f_pytype in ['EnumTypeField']:
                 if 'type' not in props[i]:
                     #print(i + " is wrong typed as enum. switching to enum!")
                     f_pytype = 'StringField'
+
+            #if o_pytype != f_pytype:
+            #    print("{0} => original({1}), new({2})".format(i, o_pytype, f_pytype))
 
             if f_pytype in ['EnumTypeField']:
                 if defval:
                     defval = props[i]['type'] + '.' + self._sanitize(defval)
                 else:
                     defval = str(defval)
-                field_spec = defval + ',' + props[i]['type']
+                new_prop_def[gname][i]['type'] = props[i]['type']
             else:
                 if defval:
                     defval = '"' + defval + '"'
                 else:
                     defval = str(defval)
                 field_spec = defval
-            field_spec +=  ", parent=self"
-            if not md_props[i]:
-                field_spec += ", modifyAllowed = False, deleteAllowed = False"
-                if unedit_props[i]:
-                    out.write('        # readonly attribute populated by iDRAC\n')
-                else:
-                    out.write('        # readonly attribute\n')
-            #out.write('        """\n')
-            #out.write('        ' + desc_props[i] + '\n')
-            #out.write('        """\n')
-            fld_name = self._sanitize_name(i, '')
-            out.write('        self.{0} = {1}({2})\n'.format(fld_name, f_pytype, field_spec))
-        out.write('        self.commit()\n')
-        out.write('\n')
+            new_prop_def[gname][i]['default'] = defval
+            new_prop_def[gname][i]['pytype'] = f_pytype
 
-    def save_types(self, directory = None, filename = None):
-        # BIOS, FCHBA
-        # iDRAC??
+            # alias:
+            new_prop_def[gname][i]['alias'] = None
+            new_prop_def[gname][i]['fldname'] = self._sanitize_name(i, '')
+            if new_prop_def[gname][i]['fldname'] != i.strip():
+                new_prop_def[gname][i]['alias'] = i
+
+        for grp in sorted(new_prop_def.keys()):
+            cls_props = list(new_prop_def[grp].keys())
+            s_cls_props = sorted([i for i in cls_props])
+            ngrp = self._sanitize(grp)
+            out.write('class {0}(ClassType):\n'.format(ngrp))
+            out.write('\n')
+            out.write('    def __init__(self, parent = None):\n')
+            if grp == self.comp:
+                out.write('        super().__init__("Component", None, parent)\n')
+            else:
+                out.write('        super().__init__(None, "'+grp+'", parent)\n')
+            for i in s_cls_props:
+                if '[Partition:n]' in i:
+                    continue
+                field_spec = "        self.{0} = ".format(new_prop_def[grp][i]['fldname'])
+                field_spec  += "{0}({1}".format(new_prop_def[grp][i]['pytype'], new_prop_def[grp][i]['default'])
+                if new_prop_def[grp][i]['type']:
+                    field_spec  += ",{0}".format(new_prop_def[grp][i]['type'])
+                if new_prop_def[grp][i]['alias']:
+                    field_spec += ', alias="{0}"'.format(new_prop_def[grp][i]['alias'])
+                field_spec += ', parent=self'
+                if not new_prop_def[grp][i]['modDeleteAllowed']:
+                    field_spec += ", modifyAllowed = False"
+                    field_spec += ", deleteAllowed = False"
+                if new_prop_def[grp][i]['uneditable']:
+                    out.write('        # readonly attribute populated by iDRAC\n')
+                elif not new_prop_def[grp][i]['modDeleteAllowed']:
+                    out.write('        # readonly attribute\n')
+                out.write(field_spec + ')\n')
+            out.write('        self.commit()\n')
+            out.write('\n')
+        if group:
+            js = { self.comp : { "groups" : sorted(new_prop_def.keys()) }}
+            config_spec = os.path.join(dconfig, self.comp + '.comp_spec')
+            if os.path.exists(config_spec):
+                with open(config_spec) as f:
+                    js = json.load(f)
+            for comp in js:
+                if js[comp]['registry'] != self.comp:
+                    continue
+                if 'groups' not in js[comp]:
+                    js[comp]['groups'] = []
+                if 'excl_groups' in js[comp]:
+                    grps = set(js[comp]['groups']+ list(new_prop_def.keys()))
+                    grps = grps - set(js[comp]['excl_groups'])
+                    js[comp]['groups'] = grps
+                if len(js[comp]['groups']) <= 0:
+                    continue
+                out.write('class {0}(ClassType):\n'.format(comp))
+                out.write('\n')
+                out.write('    def __init__(self, parent = None):\n')
+                out.write('        super().__init__("Component", None, parent)\n')
+                for grp in sorted(js[comp]['groups']):
+                    ngrp = self._sanitize(grp)
+                    out.write('        self.{0} = {0}(parent=self)\n'.format(ngrp))
+
+                out.write('        self.commit()\n')
+                out.write('\n')
+
+    def save_types(self, directory, dconfig, group):
         if self.comp == 'EventFilters': return
         if not directory: directory = self.direct
-        if not filename: filename = self.comp + ".py"
+        filename = self.comp + ".py"
         dest_file = os.path.join(directory, filename)
         print('Saving to :' + dest_file)
         self.device = 'iDRAC'
@@ -366,20 +440,18 @@ class AttribRegistry(object):
             out.write('\n')
             out.write('logger = logging.getLogger(__name__)\n')
             out.write('\n')
-            out.write('class {0}(ClassType):\n'.format(self.comp))
-            out.write('\n')
-            out.write('    def __init__(self, parent = None):\n')
-            out.write('        super().__init__("Component", None, parent)\n')
-            out.write('\n')
 
-            self._print(out, props)
+            self._print(out, props, group, dconfig)
 
 if __name__ == "__main__":
     driver_dir = os.path.join('omdrivers', 'iDRAC')
     for file1 in glob.glob(os.path.join(driver_dir, "xml", "*.xml")):
         if file1.endswith('EventFilters.xml') is True: continue
+        grp = file1.endswith('iDRAC.xml')
         ar= AttribRegistry(file1)
         ar.save_file(directory=os.path.join(driver_dir, 'Config'))
-        ar.save_types(directory=os.path.join('omdrivers', 'types', 'iDRAC'))
+        ar.save_types(directory=os.path.join('omdrivers', 'types', 'iDRAC'),
+                      dconfig =os.path.join(driver_dir, 'Config'),
+                      group=grp)
         # types would have added unknown enumerations!
         ar.save_enums(directory=os.path.join('omdrivers', 'enums', 'iDRAC'))
