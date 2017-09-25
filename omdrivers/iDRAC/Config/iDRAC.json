@@ -132,7 +132,7 @@
             ],
             "type": "enumeration"
         },
-        "AdminState_OS_MCTypes": {
+        "AdminState_OS_BMCTypes": {
             "enum": [
                 "Disabled",
                 "Enabled"
@@ -2956,7 +2956,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ACADM_LI_PMLicensingTypes": {
+        "LM_AUTO_DISCOVERY_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -2969,7 +2969,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ACKUP_ESTORE_PMLicensingTypes": {
+        "LM_AUTO_UPDATE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -2982,7 +2982,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ART_EPLACEMENT_PMLicensingTypes": {
+        "LM_AVOTON_4CORE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -2995,7 +2995,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ASE_PMI_UI_PMLicensingTypes": {
+        "LM_AVOTON_8CORE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3008,7 +3008,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ASIC_EMOTE_NVENTORY_XPORT_PMLicensingTypes": {
+        "LM_BACKUP_RESTORE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3021,7 +3021,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_AST_RASH_CREEN_APTURE_PMLicensingTypes": {
+        "LM_BASE_IPMI_GUI_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3034,7 +3034,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_AST_RASH_IDEO_APTURE_PMLicensingTypes": {
+        "LM_BASIC_REMOTE_INVENTORY_EXPORT_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3047,7 +3047,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_CONSOLE_HAT_PMLicensingTypes": {
+        "LM_BMC_PLUS_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3060,7 +3060,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_CONSOLE_PMLicensingTypes": {
+        "LM_BOOT_CAPTURE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3073,7 +3073,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_CONSOLE_TML5_CCESS_PMLicensingTypes": {
+        "LM_CONNECTION_VIEW_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3086,7 +3086,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_CS_UI_PMLicensingTypes": {
+        "LM_CONSOLE_COLLABORATION_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3099,7 +3099,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_C_I_PMLicensingTypes": {
+        "LM_DCS_GUI_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3112,7 +3112,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_DRAC_NTERPRISE_PMLicensingTypes": {
+        "LM_DEDICATED_NIC_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3125,16 +3125,20 @@
             ],
             "type": "enumeration"
         },
-        "LM_DRAC_XPRESS_LADES_PMLicensingTypes": {
+        "LM_DEVICE_MONITORING_PMLicensingTypes": {
             "enum": [
+                "0",
+                "1",
                 "0xFF"
             ],
             "enumDescriptions": [
+                "0",
+                "1",
                 "0xFF"
             ],
             "type": "enumeration"
         },
-        "LM_DRAC_XPRESS_PMLicensingTypes": {
+        "LM_DHCP_CONFIGURE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3147,7 +3151,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ECURITY_OCKOUT_PMLicensingTypes": {
+        "LM_DIRECTORY_SERVICES_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3160,7 +3164,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_EDFISH_PMLicensingTypes": {
+        "LM_DYNAMIC_DNS_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3173,7 +3177,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_EDICATED_IC_PMLicensingTypes": {
+        "LM_EMAIL_ALERTING_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3186,7 +3190,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ELNET_PMLicensingTypes": {
+        "LM_FULL_UI_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3199,7 +3203,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_EMOTE_ILE_HARE_PMLicensingTypes": {
+        "LM_GROUP_MANAGER_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3212,7 +3216,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_EMOTE_IRWARE_PDATE_PMLicensingTypes": {
+        "LM_IDRAC_ENTERPRISE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3221,11 +3225,20 @@
             "enumDescriptions": [
                 "0",
                 "1",
+                "0xFF"
+            ],
+            "type": "enumeration"
+        },
+        "LM_IDRAC_EXPRESS_BLADES_PMLicensingTypes": {
+            "enum": [
+                "0xFF"
+            ],
+            "enumDescriptions": [
                 "0xFF"
             ],
             "type": "enumeration"
         },
-        "LM_EMOTE_ONFIGURATION_PMLicensingTypes": {
+        "LM_IDRAC_EXPRESS_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3238,7 +3251,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_EMOTE_SSET_NVENTORY_PMLicensingTypes": {
+        "LM_INBAND_FIRMWARE_UPDATE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3251,7 +3264,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_EMOTE_S_EPLOYMENT_PMLicensingTypes": {
+        "LM_IPV6_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3264,7 +3277,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_EMOTE_YSLOG_PMLicensingTypes": {
+        "LM_LAST_CRASH_SCREEN_CAPTURE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3277,7 +3290,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ESTORE_PMLicensingTypes": {
+        "LM_LAST_CRASH_VIDEO_CAPTURE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3290,7 +3303,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_EVICE_ONITORING_PMLicensingTypes": {
+        "LM_LC_UI_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3303,7 +3316,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_FOLDER_PMLicensingTypes": {
+        "LM_LICENSE_UI_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3316,7 +3329,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_HCP_ONFIGURE_PMLicensingTypes": {
+        "LM_LOCKDOWN_MODE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3329,7 +3342,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ICENSE_I_PMLicensingTypes": {
+        "LM_NTP_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3342,7 +3355,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_IRECTORY_ERVICES_PMLicensingTypes": {
+        "LM_OME_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3355,7 +3368,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_IRTUAL_LASH_ARTITIONS_PMLicensingTypes": {
+        "LM_OOB_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3368,7 +3381,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_MAIL_LERTING_PMLicensingTypes": {
+        "LM_PART_REPLACEMENT_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3381,7 +3394,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_MASH_LP_PMLicensingTypes": {
+        "LM_POWER_BUDGETING_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3394,7 +3407,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_MC_LUS_PMLicensingTypes": {
+        "LM_POWER_MONITORING_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3407,7 +3420,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_MEDIA_PMLicensingTypes": {
+        "LM_QUALITY_BANDWIDTH_CONTROL_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3420,7 +3433,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ME_PMLicensingTypes": {
+        "LM_RACADM_CLI_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3433,7 +3446,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_NBAND_IRMWARE_PDATE_PMLicensingTypes": {
+        "LM_REDFISH_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3446,7 +3459,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_NC_PMLicensingTypes": {
+        "LM_REMOTE_ASSET_INVENTORY_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3459,7 +3472,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_NMP_ET_PMLicensingTypes": {
+        "LM_REMOTE_CONFIGURATION_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3472,7 +3485,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_OB_PMLicensingTypes": {
+        "LM_REMOTE_FILE_SHARE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3485,7 +3498,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_OCKDOWN_ODE_PMLicensingTypes": {
+        "LM_REMOTE_FIRWARE_UPDATE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3498,7 +3511,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ONNECTION_IEW_PMLicensingTypes": {
+        "LM_REMOTE_OS_DEPLOYMENT_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3511,7 +3524,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ONSOLE_OLLABORATION_PMLicensingTypes": {
+        "LM_REMOTE_SYSLOG_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3524,7 +3537,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_OOT_APTURE_PMLicensingTypes": {
+        "LM_RESTORE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3537,7 +3550,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_OWER_ONITORING_PMLicensingTypes": {
+        "LM_SECURITY_LOCKOUT_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3550,7 +3563,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_OWER_UDGETING_PMLicensingTypes": {
+        "LM_SMASH_CLP_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3563,7 +3576,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_PDATE_ROM_EPO_PMLicensingTypes": {
+        "LM_SNMP_GET_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3576,7 +3589,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_PV6_PMLicensingTypes": {
+        "LM_SSH_PK_AUTHEN_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3589,7 +3602,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ROUP_ANAGER_PMLicensingTypes": {
+        "LM_SSH_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3602,7 +3615,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_SC_EVICE_ONFIGURATION_PMLicensingTypes": {
+        "LM_SSO_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3615,7 +3628,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_SC_IRMWARE_PDATE_PMLicensingTypes": {
+        "LM_STORAGE_MONITORING_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3628,7 +3641,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_SC_MBEDDED_IAGNOSTICS_PMLicensingTypes": {
+        "LM_TELNET_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3641,7 +3654,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_SC_SSISTED_S_EPLOYEMENT_PMLicensingTypes": {
+        "LM_TWO_FACTOR_AUTHEN_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3654,7 +3667,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_SH_K_UTHEN_PMLicensingTypes": {
+        "LM_UPDATE_FROM_REPO_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3667,7 +3680,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_SH_PMLicensingTypes": {
+        "LM_USC_ASSISTED_OS_DEPLOYEMENT_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3680,7 +3693,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_SMAN_PMLicensingTypes": {
+        "LM_USC_DEVICE_CONFIGURATION_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3693,7 +3706,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_SO_PMLicensingTypes": {
+        "LM_USC_EMBEDDED_DIAGNOSTICS_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3706,7 +3719,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_TORAGE_ONITORING_PMLicensingTypes": {
+        "LM_USC_FIRMWARE_UPDATE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3719,7 +3732,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_TP_PMLicensingTypes": {
+        "LM_VCONSOLE_CHAT_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3732,7 +3745,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_UALITY_ANDWIDTH_ONTROL_PMLicensingTypes": {
+        "LM_VCONSOLE_HTML5_ACCESS_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3745,7 +3758,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_ULL_I_PMLicensingTypes": {
+        "LM_VCONSOLE_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3758,7 +3771,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_UTO_ISCOVERY_PMLicensingTypes": {
+        "LM_VFOLDER_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3771,7 +3784,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_UTO_PDATE_PMLicensingTypes": {
+        "LM_VIRTUAL_FLASH_PARTITIONS_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3784,7 +3797,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_VOTON_CORE_PMLicensingTypes": {
+        "LM_VMEDIA_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3797,7 +3810,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_WO_ACTOR_UTHEN_PMLicensingTypes": {
+        "LM_VNC_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -3810,7 +3823,7 @@
             ],
             "type": "enumeration"
         },
-        "LM_YNAMIC_NS_PMLicensingTypes": {
+        "LM_WSMAN_PMLicensingTypes": {
             "enum": [
                 "0",
                 "1",
@@ -4799,7 +4812,7 @@
             ],
             "type": "enumeration"
         },
-        "PTCapability_OS_MCTypes": {
+        "PTCapability_OS_BMCTypes": {
             "enum": [
                 "Not Capable",
                 "Capable",
@@ -4812,7 +4825,7 @@
             ],
             "type": "enumeration"
         },
-        "PTMode_OS_MCTypes": {
+        "PTMode_OS_BMCTypes": {
             "enum": [
                 "lom-p2p",
                 "usb-p2p"
@@ -5414,7 +5427,7 @@
             ],
             "type": "enumeration"
         },
-        "SCFWUpdateState_SC_MCTypes": {
+        "SCFWUpdateState_SC_BMCTypes": {
             "enum": [
                 "Not in progress",
                 "Downloaded",
@@ -9229,7 +9242,7 @@
                     "name": "AdminState",
                     "qualifier": "OS-BMC",
                     "readonly": "FALSE",
-                    "type": "AdminState_OS_MCTypes"
+                    "type": "AdminState_OS_BMCTypes"
                 },
                 "AgentCommunity_SNMP": {
                     "baseType": "str",
@@ -14405,7 +14418,7 @@
                     "name": "LM-AUTO-DISCOVERY",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_UTO_ISCOVERY_PMLicensingTypes"
+                    "type": "LM_AUTO_DISCOVERY_PMLicensingTypes"
                 },
                 "LM-AUTO-UPDATE_PMLicensing": {
                     "baseType": "enum",
@@ -14414,7 +14427,7 @@
                     "name": "LM-AUTO-UPDATE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_UTO_PDATE_PMLicensingTypes"
+                    "type": "LM_AUTO_UPDATE_PMLicensingTypes"
                 },
                 "LM-AVOTON-4CORE_PMLicensing": {
                     "baseType": "enum",
@@ -14423,7 +14436,7 @@
                     "name": "LM-AVOTON-4CORE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_VOTON_CORE_PMLicensingTypes"
+                    "type": "LM_AVOTON_4CORE_PMLicensingTypes"
                 },
                 "LM-AVOTON-8CORE_PMLicensing": {
                     "baseType": "enum",
@@ -14432,7 +14445,7 @@
                     "name": "LM-AVOTON-8CORE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_VOTON_CORE_PMLicensingTypes"
+                    "type": "LM_AVOTON_8CORE_PMLicensingTypes"
                 },
                 "LM-BACKUP-RESTORE_PMLicensing": {
                     "baseType": "enum",
@@ -14441,7 +14454,7 @@
                     "name": "LM-BACKUP-RESTORE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ACKUP_ESTORE_PMLicensingTypes"
+                    "type": "LM_BACKUP_RESTORE_PMLicensingTypes"
                 },
                 "LM-BASE-IPMI-GUI_PMLicensing": {
                     "baseType": "enum",
@@ -14450,7 +14463,7 @@
                     "name": "LM-BASE-IPMI-GUI",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ASE_PMI_UI_PMLicensingTypes"
+                    "type": "LM_BASE_IPMI_GUI_PMLicensingTypes"
                 },
                 "LM-BASIC-REMOTE-INVENTORY-EXPORT_PMLicensing": {
                     "baseType": "enum",
@@ -14459,7 +14472,7 @@
                     "name": "LM-BASIC-REMOTE-INVENTORY-EXPORT",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ASIC_EMOTE_NVENTORY_XPORT_PMLicensingTypes"
+                    "type": "LM_BASIC_REMOTE_INVENTORY_EXPORT_PMLicensingTypes"
                 },
                 "LM-BMC-PLUS_PMLicensing": {
                     "baseType": "enum",
@@ -14468,7 +14481,7 @@
                     "name": "LM-BMC-PLUS",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_MC_LUS_PMLicensingTypes"
+                    "type": "LM_BMC_PLUS_PMLicensingTypes"
                 },
                 "LM-BOOT-CAPTURE_PMLicensing": {
                     "baseType": "enum",
@@ -14477,7 +14490,7 @@
                     "name": "LM-BOOT-CAPTURE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_OOT_APTURE_PMLicensingTypes"
+                    "type": "LM_BOOT_CAPTURE_PMLicensingTypes"
                 },
                 "LM-CONNECTION-VIEW_PMLicensing": {
                     "baseType": "enum",
@@ -14486,7 +14499,7 @@
                     "name": "LM-CONNECTION-VIEW",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ONNECTION_IEW_PMLicensingTypes"
+                    "type": "LM_CONNECTION_VIEW_PMLicensingTypes"
                 },
                 "LM-CONSOLE-COLLABORATION_PMLicensing": {
                     "baseType": "enum",
@@ -14495,7 +14508,7 @@
                     "name": "LM-CONSOLE-COLLABORATION",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ONSOLE_OLLABORATION_PMLicensingTypes"
+                    "type": "LM_CONSOLE_COLLABORATION_PMLicensingTypes"
                 },
                 "LM-DCS-GUI_PMLicensing": {
                     "baseType": "enum",
@@ -14504,7 +14517,7 @@
                     "name": "LM-DCS-GUI",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_CS_UI_PMLicensingTypes"
+                    "type": "LM_DCS_GUI_PMLicensingTypes"
                 },
                 "LM-DEDICATED-NIC_PMLicensing": {
                     "baseType": "enum",
@@ -14513,7 +14526,7 @@
                     "name": "LM-DEDICATED-NIC",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_EDICATED_IC_PMLicensingTypes"
+                    "type": "LM_DEDICATED_NIC_PMLicensingTypes"
                 },
                 "LM-DEVICE-MONITORING_PMLicensing": {
                     "baseType": "enum",
@@ -14522,7 +14535,7 @@
                     "name": "LM-DEVICE-MONITORING",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_EVICE_ONITORING_PMLicensingTypes"
+                    "type": "LM_DEVICE_MONITORING_PMLicensingTypes"
                 },
                 "LM-DHCP-CONFIGURE_PMLicensing": {
                     "baseType": "enum",
@@ -14531,7 +14544,7 @@
                     "name": "LM-DHCP-CONFIGURE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_HCP_ONFIGURE_PMLicensingTypes"
+                    "type": "LM_DHCP_CONFIGURE_PMLicensingTypes"
                 },
                 "LM-DIRECTORY-SERVICES_PMLicensing": {
                     "baseType": "enum",
@@ -14540,7 +14553,7 @@
                     "name": "LM-DIRECTORY-SERVICES",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_IRECTORY_ERVICES_PMLicensingTypes"
+                    "type": "LM_DIRECTORY_SERVICES_PMLicensingTypes"
                 },
                 "LM-DYNAMIC-DNS_PMLicensing": {
                     "baseType": "enum",
@@ -14549,7 +14562,7 @@
                     "name": "LM-DYNAMIC-DNS",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_YNAMIC_NS_PMLicensingTypes"
+                    "type": "LM_DYNAMIC_DNS_PMLicensingTypes"
                 },
                 "LM-EMAIL-ALERTING_PMLicensing": {
                     "baseType": "enum",
@@ -14558,7 +14571,7 @@
                     "name": "LM-EMAIL-ALERTING",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_MAIL_LERTING_PMLicensingTypes"
+                    "type": "LM_EMAIL_ALERTING_PMLicensingTypes"
                 },
                 "LM-FULL-UI_PMLicensing": {
                     "baseType": "enum",
@@ -14567,7 +14580,7 @@
                     "name": "LM-FULL-UI",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ULL_I_PMLicensingTypes"
+                    "type": "LM_FULL_UI_PMLicensingTypes"
                 },
                 "LM-GROUP-MANAGER_PMLicensing": {
                     "baseType": "enum",
@@ -14576,7 +14589,7 @@
                     "name": "LM-GROUP-MANAGER",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ROUP_ANAGER_PMLicensingTypes"
+                    "type": "LM_GROUP_MANAGER_PMLicensingTypes"
                 },
                 "LM-IDRAC-ENTERPRISE_PMLicensing": {
                     "baseType": "enum",
@@ -14585,7 +14598,7 @@
                     "name": "LM-IDRAC-ENTERPRISE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_DRAC_NTERPRISE_PMLicensingTypes"
+                    "type": "LM_IDRAC_ENTERPRISE_PMLicensingTypes"
                 },
                 "LM-IDRAC-EXPRESS-BLADES_PMLicensing": {
                     "baseType": "enum",
@@ -14594,7 +14607,7 @@
                     "name": "LM-IDRAC-EXPRESS-BLADES",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_DRAC_XPRESS_LADES_PMLicensingTypes"
+                    "type": "LM_IDRAC_EXPRESS_BLADES_PMLicensingTypes"
                 },
                 "LM-IDRAC-EXPRESS_PMLicensing": {
                     "baseType": "enum",
@@ -14603,7 +14616,7 @@
                     "name": "LM-IDRAC-EXPRESS",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_DRAC_XPRESS_PMLicensingTypes"
+                    "type": "LM_IDRAC_EXPRESS_PMLicensingTypes"
                 },
                 "LM-INBAND-FIRMWARE-UPDATE_PMLicensing": {
                     "baseType": "enum",
@@ -14612,7 +14625,7 @@
                     "name": "LM-INBAND-FIRMWARE-UPDATE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_NBAND_IRMWARE_PDATE_PMLicensingTypes"
+                    "type": "LM_INBAND_FIRMWARE_UPDATE_PMLicensingTypes"
                 },
                 "LM-IPV6_PMLicensing": {
                     "baseType": "enum",
@@ -14621,7 +14634,7 @@
                     "name": "LM-IPV6",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_PV6_PMLicensingTypes"
+                    "type": "LM_IPV6_PMLicensingTypes"
                 },
                 "LM-LAST-CRASH-SCREEN-CAPTURE_PMLicensing": {
                     "baseType": "enum",
@@ -14630,7 +14643,7 @@
                     "name": "LM-LAST-CRASH-SCREEN-CAPTURE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_AST_RASH_CREEN_APTURE_PMLicensingTypes"
+                    "type": "LM_LAST_CRASH_SCREEN_CAPTURE_PMLicensingTypes"
                 },
                 "LM-LAST-CRASH-VIDEO-CAPTURE_PMLicensing": {
                     "baseType": "enum",
@@ -14639,7 +14652,7 @@
                     "name": "LM-LAST-CRASH-VIDEO-CAPTURE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_AST_RASH_IDEO_APTURE_PMLicensingTypes"
+                    "type": "LM_LAST_CRASH_VIDEO_CAPTURE_PMLicensingTypes"
                 },
                 "LM-LC-UI_PMLicensing": {
                     "baseType": "enum",
@@ -14648,7 +14661,7 @@
                     "name": "LM-LC-UI",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_C_I_PMLicensingTypes"
+                    "type": "LM_LC_UI_PMLicensingTypes"
                 },
                 "LM-LICENSE-UI_PMLicensing": {
                     "baseType": "enum",
@@ -14657,7 +14670,7 @@
                     "name": "LM-LICENSE-UI",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ICENSE_I_PMLicensingTypes"
+                    "type": "LM_LICENSE_UI_PMLicensingTypes"
                 },
                 "LM-LOCKDOWN-MODE_PMLicensing": {
                     "baseType": "enum",
@@ -14666,7 +14679,7 @@
                     "name": "LM-LOCKDOWN-MODE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_OCKDOWN_ODE_PMLicensingTypes"
+                    "type": "LM_LOCKDOWN_MODE_PMLicensingTypes"
                 },
                 "LM-NTP_PMLicensing": {
                     "baseType": "enum",
@@ -14675,7 +14688,7 @@
                     "name": "LM-NTP",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_TP_PMLicensingTypes"
+                    "type": "LM_NTP_PMLicensingTypes"
                 },
                 "LM-OME_PMLicensing": {
                     "baseType": "enum",
@@ -14684,7 +14697,7 @@
                     "name": "LM-OME",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ME_PMLicensingTypes"
+                    "type": "LM_OME_PMLicensingTypes"
                 },
                 "LM-OOB_PMLicensing": {
                     "baseType": "enum",
@@ -14693,7 +14706,7 @@
                     "name": "LM-OOB",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_OB_PMLicensingTypes"
+                    "type": "LM_OOB_PMLicensingTypes"
                 },
                 "LM-PART-REPLACEMENT_PMLicensing": {
                     "baseType": "enum",
@@ -14702,7 +14715,7 @@
                     "name": "LM-PART-REPLACEMENT",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ART_EPLACEMENT_PMLicensingTypes"
+                    "type": "LM_PART_REPLACEMENT_PMLicensingTypes"
                 },
                 "LM-POWER-BUDGETING_PMLicensing": {
                     "baseType": "enum",
@@ -14711,7 +14724,7 @@
                     "name": "LM-POWER-BUDGETING",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_OWER_UDGETING_PMLicensingTypes"
+                    "type": "LM_POWER_BUDGETING_PMLicensingTypes"
                 },
                 "LM-POWER-MONITORING_PMLicensing": {
                     "baseType": "enum",
@@ -14720,7 +14733,7 @@
                     "name": "LM-POWER-MONITORING",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_OWER_ONITORING_PMLicensingTypes"
+                    "type": "LM_POWER_MONITORING_PMLicensingTypes"
                 },
                 "LM-QUALITY-BANDWIDTH-CONTROL_PMLicensing": {
                     "baseType": "enum",
@@ -14729,7 +14742,7 @@
                     "name": "LM-QUALITY-BANDWIDTH-CONTROL",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_UALITY_ANDWIDTH_ONTROL_PMLicensingTypes"
+                    "type": "LM_QUALITY_BANDWIDTH_CONTROL_PMLicensingTypes"
                 },
                 "LM-RACADM-CLI_PMLicensing": {
                     "baseType": "enum",
@@ -14738,7 +14751,7 @@
                     "name": "LM-RACADM-CLI",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ACADM_LI_PMLicensingTypes"
+                    "type": "LM_RACADM_CLI_PMLicensingTypes"
                 },
                 "LM-REDFISH_PMLicensing": {
                     "baseType": "enum",
@@ -14747,7 +14760,7 @@
                     "name": "LM-REDFISH",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_EDFISH_PMLicensingTypes"
+                    "type": "LM_REDFISH_PMLicensingTypes"
                 },
                 "LM-REMOTE-ASSET-INVENTORY_PMLicensing": {
                     "baseType": "enum",
@@ -14756,7 +14769,7 @@
                     "name": "LM-REMOTE-ASSET-INVENTORY",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_EMOTE_SSET_NVENTORY_PMLicensingTypes"
+                    "type": "LM_REMOTE_ASSET_INVENTORY_PMLicensingTypes"
                 },
                 "LM-REMOTE-CONFIGURATION_PMLicensing": {
                     "baseType": "enum",
@@ -14765,7 +14778,7 @@
                     "name": "LM-REMOTE-CONFIGURATION",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_EMOTE_ONFIGURATION_PMLicensingTypes"
+                    "type": "LM_REMOTE_CONFIGURATION_PMLicensingTypes"
                 },
                 "LM-REMOTE-FILE-SHARE_PMLicensing": {
                     "baseType": "enum",
@@ -14774,7 +14787,7 @@
                     "name": "LM-REMOTE-FILE-SHARE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_EMOTE_ILE_HARE_PMLicensingTypes"
+                    "type": "LM_REMOTE_FILE_SHARE_PMLicensingTypes"
                 },
                 "LM-REMOTE-FIRWARE-UPDATE_PMLicensing": {
                     "baseType": "enum",
@@ -14783,7 +14796,7 @@
                     "name": "LM-REMOTE-FIRWARE-UPDATE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_EMOTE_IRWARE_PDATE_PMLicensingTypes"
+                    "type": "LM_REMOTE_FIRWARE_UPDATE_PMLicensingTypes"
                 },
                 "LM-REMOTE-OS-DEPLOYMENT_PMLicensing": {
                     "baseType": "enum",
@@ -14792,7 +14805,7 @@
                     "name": "LM-REMOTE-OS-DEPLOYMENT",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_EMOTE_S_EPLOYMENT_PMLicensingTypes"
+                    "type": "LM_REMOTE_OS_DEPLOYMENT_PMLicensingTypes"
                 },
                 "LM-REMOTE-SYSLOG_PMLicensing": {
                     "baseType": "enum",
@@ -14801,7 +14814,7 @@
                     "name": "LM-REMOTE-SYSLOG",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_EMOTE_YSLOG_PMLicensingTypes"
+                    "type": "LM_REMOTE_SYSLOG_PMLicensingTypes"
                 },
                 "LM-RESTORE_PMLicensing": {
                     "baseType": "enum",
@@ -14810,7 +14823,7 @@
                     "name": "LM-RESTORE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ESTORE_PMLicensingTypes"
+                    "type": "LM_RESTORE_PMLicensingTypes"
                 },
                 "LM-SECURITY-LOCKOUT_PMLicensing": {
                     "baseType": "enum",
@@ -14819,7 +14832,7 @@
                     "name": "LM-SECURITY-LOCKOUT",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ECURITY_OCKOUT_PMLicensingTypes"
+                    "type": "LM_SECURITY_LOCKOUT_PMLicensingTypes"
                 },
                 "LM-SMASH-CLP_PMLicensing": {
                     "baseType": "enum",
@@ -14828,7 +14841,7 @@
                     "name": "LM-SMASH-CLP",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_MASH_LP_PMLicensingTypes"
+                    "type": "LM_SMASH_CLP_PMLicensingTypes"
                 },
                 "LM-SNMP-GET_PMLicensing": {
                     "baseType": "enum",
@@ -14837,7 +14850,7 @@
                     "name": "LM-SNMP-GET",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_NMP_ET_PMLicensingTypes"
+                    "type": "LM_SNMP_GET_PMLicensingTypes"
                 },
                 "LM-SSH-PK-AUTHEN_PMLicensing": {
                     "baseType": "enum",
@@ -14846,7 +14859,7 @@
                     "name": "LM-SSH-PK-AUTHEN",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_SH_K_UTHEN_PMLicensingTypes"
+                    "type": "LM_SSH_PK_AUTHEN_PMLicensingTypes"
                 },
                 "LM-SSH_PMLicensing": {
                     "baseType": "enum",
@@ -14855,7 +14868,7 @@
                     "name": "LM-SSH",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_SH_PMLicensingTypes"
+                    "type": "LM_SSH_PMLicensingTypes"
                 },
                 "LM-SSO_PMLicensing": {
                     "baseType": "enum",
@@ -14864,7 +14877,7 @@
                     "name": "LM-SSO",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_SO_PMLicensingTypes"
+                    "type": "LM_SSO_PMLicensingTypes"
                 },
                 "LM-STORAGE-MONITORING_PMLicensing": {
                     "baseType": "enum",
@@ -14873,7 +14886,7 @@
                     "name": "LM-STORAGE-MONITORING",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_TORAGE_ONITORING_PMLicensingTypes"
+                    "type": "LM_STORAGE_MONITORING_PMLicensingTypes"
                 },
                 "LM-TELNET_PMLicensing": {
                     "baseType": "enum",
@@ -14882,7 +14895,7 @@
                     "name": "LM-TELNET",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_ELNET_PMLicensingTypes"
+                    "type": "LM_TELNET_PMLicensingTypes"
                 },
                 "LM-TWO-FACTOR-AUTHEN_PMLicensing": {
                     "baseType": "enum",
@@ -14891,7 +14904,7 @@
                     "name": "LM-TWO-FACTOR-AUTHEN",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_WO_ACTOR_UTHEN_PMLicensingTypes"
+                    "type": "LM_TWO_FACTOR_AUTHEN_PMLicensingTypes"
                 },
                 "LM-UPDATE-FROM-REPO_PMLicensing": {
                     "baseType": "enum",
@@ -14900,7 +14913,7 @@
                     "name": "LM-UPDATE-FROM-REPO",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_PDATE_ROM_EPO_PMLicensingTypes"
+                    "type": "LM_UPDATE_FROM_REPO_PMLicensingTypes"
                 },
                 "LM-USC-ASSISTED-OS-DEPLOYEMENT_PMLicensing": {
                     "baseType": "enum",
@@ -14909,7 +14922,7 @@
                     "name": "LM-USC-ASSISTED-OS-DEPLOYEMENT",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_SC_SSISTED_S_EPLOYEMENT_PMLicensingTypes"
+                    "type": "LM_USC_ASSISTED_OS_DEPLOYEMENT_PMLicensingTypes"
                 },
                 "LM-USC-DEVICE-CONFIGURATION_PMLicensing": {
                     "baseType": "enum",
@@ -14918,7 +14931,7 @@
                     "name": "LM-USC-DEVICE-CONFIGURATION",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_SC_EVICE_ONFIGURATION_PMLicensingTypes"
+                    "type": "LM_USC_DEVICE_CONFIGURATION_PMLicensingTypes"
                 },
                 "LM-USC-EMBEDDED-DIAGNOSTICS_PMLicensing": {
                     "baseType": "enum",
@@ -14927,7 +14940,7 @@
                     "name": "LM-USC-EMBEDDED-DIAGNOSTICS",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_SC_MBEDDED_IAGNOSTICS_PMLicensingTypes"
+                    "type": "LM_USC_EMBEDDED_DIAGNOSTICS_PMLicensingTypes"
                 },
                 "LM-USC-FIRMWARE-UPDATE_PMLicensing": {
                     "baseType": "enum",
@@ -14936,7 +14949,7 @@
                     "name": "LM-USC-FIRMWARE-UPDATE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_SC_IRMWARE_PDATE_PMLicensingTypes"
+                    "type": "LM_USC_FIRMWARE_UPDATE_PMLicensingTypes"
                 },
                 "LM-VCONSOLE-CHAT_PMLicensing": {
                     "baseType": "enum",
@@ -14945,7 +14958,7 @@
                     "name": "LM-VCONSOLE-CHAT",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_CONSOLE_HAT_PMLicensingTypes"
+                    "type": "LM_VCONSOLE_CHAT_PMLicensingTypes"
                 },
                 "LM-VCONSOLE-HTML5-ACCESS_PMLicensing": {
                     "baseType": "enum",
@@ -14954,7 +14967,7 @@
                     "name": "LM-VCONSOLE-HTML5-ACCESS",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_CONSOLE_TML5_CCESS_PMLicensingTypes"
+                    "type": "LM_VCONSOLE_HTML5_ACCESS_PMLicensingTypes"
                 },
                 "LM-VCONSOLE_PMLicensing": {
                     "baseType": "enum",
@@ -14963,7 +14976,7 @@
                     "name": "LM-VCONSOLE",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_CONSOLE_PMLicensingTypes"
+                    "type": "LM_VCONSOLE_PMLicensingTypes"
                 },
                 "LM-VFOLDER_PMLicensing": {
                     "baseType": "enum",
@@ -14972,7 +14985,7 @@
                     "name": "LM-VFOLDER",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_FOLDER_PMLicensingTypes"
+                    "type": "LM_VFOLDER_PMLicensingTypes"
                 },
                 "LM-VIRTUAL-FLASH-PARTITIONS_PMLicensing": {
                     "baseType": "enum",
@@ -14981,7 +14994,7 @@
                     "name": "LM-VIRTUAL-FLASH-PARTITIONS",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_IRTUAL_LASH_ARTITIONS_PMLicensingTypes"
+                    "type": "LM_VIRTUAL_FLASH_PARTITIONS_PMLicensingTypes"
                 },
                 "LM-VMEDIA_PMLicensing": {
                     "baseType": "enum",
@@ -14990,7 +15003,7 @@
                     "name": "LM-VMEDIA",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_MEDIA_PMLicensingTypes"
+                    "type": "LM_VMEDIA_PMLicensingTypes"
                 },
                 "LM-VNC_PMLicensing": {
                     "baseType": "enum",
@@ -14999,7 +15012,7 @@
                     "name": "LM-VNC",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_NC_PMLicensingTypes"
+                    "type": "LM_VNC_PMLicensingTypes"
                 },
                 "LM-WSMAN_PMLicensing": {
                     "baseType": "enum",
@@ -15008,7 +15021,7 @@
                     "name": "LM-WSMAN",
                     "qualifier": "PMLicensing",
                     "readonly": "FALSE",
-                    "type": "LM_SMAN_PMLicensingTypes"
+                    "type": "LM_WSMAN_PMLicensingTypes"
                 },
                 "LMFeatureBitsCheckSum_PMLicensing": {
                     "baseType": "str",
@@ -16827,7 +16840,7 @@
                     "name": "PTCapability",
                     "qualifier": "OS-BMC",
                     "readonly": "TRUE",
-                    "type": "PTCapability_OS_MCTypes"
+                    "type": "PTCapability_OS_BMCTypes"
                 },
                 "PTMode_OS-BMC": {
                     "baseType": "enum",
@@ -16836,7 +16849,7 @@
                     "name": "PTMode",
                     "qualifier": "OS-BMC",
                     "readonly": "FALSE",
-                    "type": "PTMode_OS_MCTypes"
+                    "type": "PTMode_OS_BMCTypes"
                 },
                 "PWDIVKey2_IPMIUserEncryptIVKey": {
                     "baseType": "str",
@@ -18095,7 +18108,7 @@
                     "name": "SCFWUpdateState",
                     "qualifier": "SC-BMC",
                     "readonly": "0",
-                    "type": "SCFWUpdateState_SC_MCTypes"
+                    "type": "SCFWUpdateState_SC_BMCTypes"
                 },
                 "SCPwrMonitoringCapable_PlatformCapability": {
                     "baseType": "enum",
