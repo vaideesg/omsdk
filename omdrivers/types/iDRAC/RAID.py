@@ -20,23 +20,23 @@ class RAID(ClassType):
         # readonly attribute
         self.EncryptionMode = EnumTypeField(None,EncryptionModeTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
-        self.IncludedPhysicalDiskID = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.IncludedPhysicalDiskID = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
-        self.KeyID = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.KeyID = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
         self.LockStatus = EnumTypeField(None,LockStatusTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Name = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Name = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
-        self.NewControllerKey = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.NewControllerKey = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
-        self.OldControllerKey = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.OldControllerKey = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.PCIeSSDSecureErase = EnumTypeField(PCIeSSDSecureEraseTypes.T_False,PCIeSSDSecureEraseTypes, parent=self)
         # readonly attribute populated by iDRAC
-        self.RAIDAssetTag = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.RAIDAssetTag = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.RAIDControllerBootMode = EnumTypeField(None,RAIDControllerBootModeTypes, parent=self)
         # readonly attribute populated by iDRAC
-        self.RAIDEffectiveSASAddress = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.RAIDEffectiveSASAddress = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.RAIDEnclosureCurrentCfgMode = EnumTypeField(None,RAIDEnclosureCurrentCfgModeTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.RAIDEnclosureRequestedCfgMode = EnumTypeField(RAIDEnclosureRequestedCfgModeTypes.T_None,RAIDEnclosureRequestedCfgModeTypes, parent=self)

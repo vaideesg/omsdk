@@ -2,6 +2,7 @@ import io
 from omsdk.sdkprint import PrettyPrint
 from omsdk.typemgr.FieldType import FieldType
 from omsdk.typemgr.ClassType import ClassType
+from omsdk.typemgr.BuiltinTypes import RootClassType
 from omsdk.typemgr.ArrayType import ArrayType
 from omsdk.sdkcenum import TypeHelper
 
@@ -14,13 +15,13 @@ class FormatterTemplate(object):
     def _emit(self, output, value):
         return 0
 
-    def _init(self, output, obj, array=False):
+    def _init(self, output, obj, space, array=False):
         return None
 
-    def _close(self, output, obj):
+    def _close(self, output, obj, space):
         pass
 
-    def _write(self, output, attr_name, value):
+    def _write(self, output, attr_name, value, space):
         pass
 
     def _get_str(self):
@@ -28,13 +29,13 @@ class FormatterTemplate(object):
 
     def format_type(self, obj):
         if obj:
-            self._format_recurse(self.target, obj)
+            self._format_recurse(self.target, obj, space='')
         return self
 
-    def _format_recurse(self, output_obj, obj):
+    def _format_recurse(self, output_obj, obj, space):
         if isinstance(obj, FieldType):
             return self._emit(output_obj, obj)
-        opobj = self._init(output_obj, obj, isinstance(obj, ArrayType))
+        opobj = self._init(output_obj, obj, space, isinstance(obj, ArrayType))
         props = obj.Properties
         for i in props:
             if isinstance(i, str):
@@ -49,14 +50,14 @@ class FormatterTemplate(object):
                     attr_name = obj.__dict__[i]._alias
                 if obj._fname is None:
                     attr_name = obj._alias + "." + str(obj.__dict__[i]._index) + "#" + attr_name
-                self._write(opobj, attr_name, obj.__dict__[i])
+                self._write(opobj, attr_name, obj.__dict__[i], space)
             else:
                 if not self.everything and not i.is_changed():
                     continue
                 entry = self._create_array_entry(opobj)
-                entry = self._format_recurse(entry, i)
+                entry = self._format_recurse(entry, i, space + '  ')
                 entry = self._close_array_entry(opobj, entry)
-        self._close(opobj, obj)
+        self._close(opobj, obj, space)
         return opobj
 
     def printx(self):
@@ -70,7 +71,7 @@ class JSONFormatter(FormatterTemplate):
     def _emit(self, output, value):
         return value
 
-    def _init(self, output, obj, array=False):
+    def _init(self, output, obj, space, array=False):
         data = {}
         if array: data = []
         if obj._fname:
@@ -88,8 +89,8 @@ class JSONFormatter(FormatterTemplate):
         opobj.append(obj)
         return {}
 
-    def _write(self, output, attr_name, value):
-        output[attr_name] = self._format_recurse(output, value)
+    def _write(self, output, attr_name, value, space):
+        output[attr_name] = self._format_recurse(output, value, space)
 
     def _get_str(self):
         return PrettyPrint.prettify_json(self.target)
@@ -105,14 +106,17 @@ class XMLFormatter(FormatterTemplate):
         if val: output.write(str(val))
         return 0
 
-    def _init(self, output, obj, array=False):
+    def _init(self, output, obj, space, array=False):
         if obj._fname:
-            output.write('<{0}>\n'.format(obj._fname))
+            output.write(space + '<{0}'.format(obj._fname))
+            for i in obj._attribs:
+                output.write(' {0}="{1}"'.format(i, obj._attribs[i])) 
+            output.write('>\n') 
         return output
 
-    def _close(self, output, obj):
+    def _close(self, output, obj, space):
         if obj._fname:
-            output.write('</{0}>\n'.format(obj._fname))
+            output.write(space +'</{0}>\n'.format(obj._fname))
 
     def _create_array_entry(self, output):
         return output
@@ -120,12 +124,12 @@ class XMLFormatter(FormatterTemplate):
     def _close_array_entry(self, opobj, obj):
         return 
 
-    def _write(self, output, attr_name, value):
+    def _write(self, output, attr_name, value, space):
         if value._fname:
-            output.write('<{0} name="{1}">'.  format(value._fname, attr_name))
+            output.write(space+'<{0} name="{1}">'.  format(value._fname, attr_name))
             if not isinstance(value, FieldType):
                 output.write('\n')
-        self._format_recurse(output, value)
+        self._format_recurse(output, value, space + '  ')
         if value._fname:
             output.write('</{0}>\n'.format(value._fname))
 
@@ -142,7 +146,7 @@ class StringFormatter(FormatterTemplate):
         if val: output.write(str(val))
         return 0
 
-    def _init(self, output, obj):
+    def _init(self, output, obj, space):
         if obj._fname:
             output.write('{0}=['.format(obj._fname))
         return output
@@ -151,7 +155,7 @@ class StringFormatter(FormatterTemplate):
         if obj._fname:
             output.write(']\n'.format(obj._fname))
 
-    def _write(self, output, attr_name, value):
+    def _write(self, output, attr_name, value, space):
         if value._fname:
             output.write('{1}='.  format(value._fname, attr_name))
         self._format_recurse(output, value)

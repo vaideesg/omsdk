@@ -126,6 +126,10 @@ class FieldType(TypeBase):
             print(type(value))
             raise ValueError(msg)
 
+        # same value - no change
+        if name in self.__dict__ and self._value == value:
+            return
+
         # modify the value
         self.__dict__[name] = value
         if self._state in [TypeState.UnInitialized, TypeState.Precommit, TypeState.Initializing]:
@@ -175,7 +179,7 @@ class FieldType(TypeBase):
 
     # State APIs:
     def is_changed(self):
-        return self._state in [TypeState.Initializing, TypeState.Precommit, TypeState.Changing]
+        return self._state in [TypeState.Initializing, TypeState.Changing]
 
     # State : to Committed
     # allowed even during freeze

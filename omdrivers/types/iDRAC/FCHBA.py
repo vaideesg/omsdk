@@ -14,11 +14,11 @@ class FCHBA(ClassType):
         # readonly attribute
         self.BusDeviceFunction = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
-        self.ChipMdl = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.ChipMdl = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.DeviceName = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.DeviceName = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
-        self.EFIVersion = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.EFIVersion = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.FCTape = EnumTypeField(FCTapeTypes.Disabled,FCTapeTypes, parent=self)
         self.FabricLoginRetryCount = IntField("3", parent=self)
         self.FabricLoginTimeout = IntField("3000", parent=self)
@@ -32,7 +32,7 @@ class FCHBA(ClassType):
         self.LinkDownTimeout = IntField("3000", parent=self)
         self.LoopResetDelay = IntField("5", parent=self)
         # readonly attribute
-        self.PCIDeviceID = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.PCIDeviceID = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.PortDownRetryCount = IntField(None, parent=self)
         self.PortDownTimeout = IntField("3000", parent=self)
         self.PortLoginRetryCount = IntField("3", parent=self)

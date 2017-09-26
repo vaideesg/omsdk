@@ -1,4 +1,5 @@
 from omsdk.typemgr.FieldType import FieldType
+from omsdk.typemgr.ClassType import ClassType
 
 class CompositeFieldType(FieldType):
     def __init__(self, *parts):
@@ -8,6 +9,10 @@ class CompositeFieldType(FieldType):
 
     def clone(self, parent=None):
         return type(self)(*self.__dict__['_value'])
+
+class RootClassType(ClassType):
+    def __init__(self, fname, alias, parent = None):
+        super().__init__(fname, alias, parent)
 
 class CloneableFieldType(FieldType):
     def clone(self, parent=None):
