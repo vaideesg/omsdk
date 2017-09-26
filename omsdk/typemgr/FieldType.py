@@ -82,7 +82,7 @@ class FieldType(TypeBase):
 
         # value is None, object was committed; ==> no change
         if value is None and \
-            self._state in [TypeState.Committed, TypeState.Changing]:
+            self._state in [TypeState.Committed, TypeState.Precommit, TypeState.Changing]:
             return 
 
         # Validate value and convert it if needed
@@ -128,7 +128,7 @@ class FieldType(TypeBase):
 
         # modify the value
         self.__dict__[name] = value
-        if self._state in [TypeState.UnInitialized, TypeState.Initializing]:
+        if self._state in [TypeState.UnInitialized, TypeState.Precommit, TypeState.Initializing]:
             self.__dict__['_state'] = TypeState.Initializing
         elif self._state in [TypeState.Committed, TypeState.Changing]:
             if self._orig_value == self._value:
@@ -175,15 +175,18 @@ class FieldType(TypeBase):
 
     # State APIs:
     def is_changed(self):
-        return self._state in [TypeState.Initializing, TypeState.Changing]
+        return self._state in [TypeState.Initializing, TypeState.Precommit, TypeState.Changing]
 
     # State : to Committed
     # allowed even during freeze
-    def commit(self):
+    def commit(self, loading_from_scp = False):
         if self.is_changed():
             if not self._composite:
                 self.__dict__['_orig_value'] = self._value
-            self.__dict__['_state'] = TypeState.Committed
+            if loading_from_scp:
+                self.__dict__['_state'] = TypeState.Precommit
+            else:
+                self.__dict__['_state'] = TypeState.Committed
         return True
 
     # State : to Committed

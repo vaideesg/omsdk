@@ -407,8 +407,7 @@ class AttribRegistry(object):
 
                 if 'alias' in js and grp in js['alias']:
                     if i in js['alias'][grp]:
-                        print(">>>>>" + i)
-                        out.write('        self.{0} = {1}\n'.format(
+                        out.write('        self.{0} = self.{1}\n'.format(
                                 js['alias'][grp][i],
                                 new_prop_def[grp][i]['fldname']))
 
@@ -421,7 +420,7 @@ class AttribRegistry(object):
                         comma = ", "
                     out.write('        self.{0} = CompositeFieldType({1})\n'.format(field, fmsg))
 
-            out.write('        if not loading_from_scp: self.commit()\n')
+            out.write('        self.commit(loading_from_scp)\n')
             out.write('\n')
             if 'arrays' in js and grp in js['arrays']:
                 ent = js['arrays'][grp]
@@ -475,7 +474,7 @@ class AttribRegistry(object):
                     else:
                         out.write('        self.{0} = {0}(parent=self, loading_from_scp=loading_from_scp)\n'.format(ngrp))
 
-                out.write('        if not loading_from_scp: self.commit()\n')
+                out.write('        self.commit(loading_from_scp)\n')
                 out.write('\n')
 
     def save_types(self, directory, dconfig, group):

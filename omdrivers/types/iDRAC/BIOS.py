@@ -622,5 +622,5 @@ class BIOS(ClassType):
         self.eSataPort1Capacity = StringField(None, parent=self)
         self.eSataPort1DriveType = StringField(None, parent=self)
         self.eSataPort1Model = StringField(None, parent=self)
-        if not loading_from_scp: self.commit()
+        self.commit(loading_from_scp)
 

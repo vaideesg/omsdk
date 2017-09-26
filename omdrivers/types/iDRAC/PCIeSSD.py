@@ -44,5 +44,5 @@ class PCIeSSD(ClassType):
         self.State = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.Version = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        if not loading_from_scp: self.commit()
+        self.commit(loading_from_scp)
 

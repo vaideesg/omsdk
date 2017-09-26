@@ -436,5 +436,5 @@ class NIC(ClassType):
         # readonly attribute populated by iDRAC
         self.iSCSIOffloadSupport = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.iScsiOffloadMode = EnumTypeField(iScsiOffloadModeTypes.Disabled,iScsiOffloadModeTypes, parent=self)
-        if not loading_from_scp: self.commit()
+        self.commit(loading_from_scp)
 

@@ -100,7 +100,7 @@ class ArrayType(TypeBase):
 
     # State : to Committed
     # allowed even during freeze
-    def commit(self):
+    def commit(self, loading_from_scp = False):
         if self.is_changed():
             if not self._composite:
                 self._copy_state(source = self._entries,
@@ -109,8 +109,11 @@ class ArrayType(TypeBase):
                     sorted(self.__dict__['_orig_value'], key = lambda entry: entry.Index)
                 # update _keys
                 for entry in self._entries:
-                    entry.commit()
-            self.__dict__['_state'] = TypeState.Committed
+                    entry.commit(loading_from_scp)
+            if loading_from_scp:
+                self.__dict__['_state'] = TypeState.Precommit
+            else:
+                self.__dict__['_state'] = TypeState.Committed
         return True
 
     # State : to Committed
@@ -136,7 +139,7 @@ class ArrayType(TypeBase):
 
     # Does not have children - so not implemented
     def child_state_changed(self, child, child_state):
-        if child_state in [TypeState.Initializing, TypeState.Changing]:
+        if child_state in [TypeState.Initializing, TypeState.Precommit, TypeState.Changing]:
             if self._state == TypeState.UnInitialized:
                 self.__dict__['_state'] = TypeState.Initializing
             elif self._state == TypeState.Committed:
@@ -186,7 +189,7 @@ class ArrayType(TypeBase):
 
     # State APIs:
     def is_changed(self):
-        return self._state in [TypeState.Initializing, TypeState.Changing]
+        return self._state in [TypeState.Initializing, TypeState.Precommit, TypeState.Changing]
 
     def new(self, index=None, **kwargs):
         if len(self._indexes_free) <= 0:
@@ -273,7 +276,7 @@ class ArrayType(TypeBase):
             del self._keys[str(i.Key)]
         self._sort()
 
-        if self._state in [TypeState.UnInitialized, TypeState.Initializing]:
+        if self._state in [TypeState.UnInitialized, TypeState.Precommit, TypeState.Initializing]:
             self.__dict__['_state'] = TypeState.Initializing
         elif self._state in [TypeState.Committed, TypeState.Changing]:
             if self._values_changed(self._entries, self.__dict__['_orig_value']):

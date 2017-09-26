@@ -107,7 +107,7 @@ class ClassType(TypeBase):
         else:
             raise ValueError('value does not belong to FieldType')
 
-        if self._state in [TypeState.UnInitialized, TypeState.Initializing]:
+        if self._state in [TypeState.UnInitialized, TypeState.Precommit, TypeState.Initializing]:
             self.__dict__['_state'] = TypeState.Initializing
         elif self._state in [TypeState.Committed, TypeState.Changing]:
             if self._values_changed(self.__dict__, self.__dict__['_orig_value']):
@@ -134,7 +134,7 @@ class ClassType(TypeBase):
         if name in self.__dict__:
             del self.__dict__[name]
 
-        if self._state in [TypeState.UnInitialized, TypeState.Initializing]:
+        if self._state in [TypeState.UnInitialized, TypeState.Precommit, TypeState.Initializing]:
             self.__dict__['_state'] = TypeState.Initializing
         elif self._state in [TypeState.Committed, TypeState.Changing]:
             if self._values_changed(self.__dict__, self.__dict__['_orig_value']):
@@ -150,7 +150,7 @@ class ClassType(TypeBase):
 
     # State APIs:
     def is_changed(self):
-        return self._state in [TypeState.Initializing, TypeState.Changing]
+        return self._state in [TypeState.Initializing, TypeState.Precommit, TypeState.Changing]
 
     def _copy_state(self, source, dest):
         for i in source:
@@ -177,7 +177,7 @@ class ClassType(TypeBase):
 
     # State : to Committed
     # allowed even during freeze
-    def commit(self):
+    def commit(self, loading_from_scp = False):
         if self.is_changed():
             if not self._composite:
                 if '_orig_value' not in self.__dict__:
@@ -185,8 +185,11 @@ class ClassType(TypeBase):
                 self._copy_state(source = self.__dict__,
                                  dest = self.__dict__['_orig_value'])
                 for i in self.Properties:
-                    self.__dict__[i].commit()
-            self.__dict__['_state'] = TypeState.Committed
+                    self.__dict__[i].commit(loading_from_scp)
+            if loading_from_scp:
+                self.__dict__['_state'] = TypeState.Precommit
+            else:
+                self.__dict__['_state'] = TypeState.Committed
         return True
 
     # State : to Committed
@@ -208,8 +211,8 @@ class ClassType(TypeBase):
 
     # Does not have children - so not implemented
     def child_state_changed(self, child, child_state):
-        if child_state in [TypeState.Initializing, TypeState.Changing]:
-            if self._state == TypeState.UnInitialized:
+        if child_state in [TypeState.Initializing, TypeState.Precommit, TypeState.Changing]:
+            if self._state in [TypeState.UnInitialized, TypeState.Precommit]:
                 self.__dict__['_state'] = TypeState.Initializing
             elif self._state == TypeState.Committed:
                 self.__dict__['_state'] = TypeState.Changing

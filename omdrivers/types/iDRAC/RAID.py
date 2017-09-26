@@ -96,5 +96,5 @@ class RAID(ClassType):
         # readonly attribute
         self.StripeSize = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.T10PIStatus = EnumTypeField(None,T10PIStatusTypes, parent=self)
-        if not loading_from_scp: self.commit()
+        self.commit(loading_from_scp)
 

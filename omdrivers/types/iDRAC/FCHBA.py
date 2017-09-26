@@ -48,5 +48,5 @@ class FCHBA(ClassType):
         self.WWN = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.WWPN = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        if not loading_from_scp: self.commit()
+        self.commit(loading_from_scp)
 
