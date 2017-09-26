@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class BIOS(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__("Component", None, parent)
         self.AcPwrRcvry = EnumTypeField(None,AcPwrRcvryTypes, parent=self)
         self.AcPwrRcvryDelay = EnumTypeField(None,AcPwrRcvryDelayTypes, parent=self)
@@ -622,5 +622,5 @@ class BIOS(ClassType):
         self.eSataPort1Capacity = StringField(None, parent=self)
         self.eSataPort1DriveType = StringField(None, parent=self)
         self.eSataPort1Model = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 

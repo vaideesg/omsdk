@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 class NIC(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__("Component", None, parent)
         # readonly attribute populated by iDRAC
         self.AddressingMode = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -436,5 +436,5 @@ class NIC(ClassType):
         # readonly attribute populated by iDRAC
         self.iSCSIOffloadSupport = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.iScsiOffloadMode = EnumTypeField(iScsiOffloadModeTypes.Disabled,iScsiOffloadModeTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 

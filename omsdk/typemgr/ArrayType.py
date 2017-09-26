@@ -30,13 +30,14 @@ from omsdk.typemgr.TypeState import TypeState,TypeBase
 # def get_root(self)
 
 class ArrayType(TypeBase):
-    def __init__(self, clsname, parent=None, min_index=1, max_index=2):
+    def __init__(self, clsname, parent=None, min_index=1, max_index=2, loading_from_scp=False):
         self._alias = None
         self._fname = clsname.__name__
         self._volatile = False
         self._parent = parent
         self._composite = False
         self._index = 1
+        self._loading_from_scp = loading_from_scp
         #self._modifyAllowed = True
 
         self._cls = clsname
@@ -106,7 +107,6 @@ class ArrayType(TypeBase):
                                  dest = self.__dict__['_orig_value'])
                 self.__dict__['_orig_value'] = \
                     sorted(self.__dict__['_orig_value'], key = lambda entry: entry.Index)
-                # update _indexes_free
                 # update _keys
                 for entry in self._entries:
                     entry.commit()
@@ -126,6 +126,11 @@ class ArrayType(TypeBase):
                                  dest = self._entries)
                     for entry in self._entries:
                         entry.reject()
+                    self._indexes_free = [i for i in \
+                                 range(min_index, max_index+1)]
+                    for i in self._entries:
+                        self._indexes_free.remove(i.Index)
+                        self._keys[str(i.Key)] = i
                 self.__dict__['_state'] = TypeState.Committed
         return True
 
@@ -183,22 +188,27 @@ class ArrayType(TypeBase):
     def is_changed(self):
         return self._state in [TypeState.Initializing, TypeState.Changing]
 
-    def new(self, **kwargs):
+    def new(self, index=None, **kwargs):
         if len(self._indexes_free) <= 0:
             raise AttributeError('no more entries in array')
-        entry = self._cls(parent=self)
+        entry = self._cls(parent=self, loading_from_scp=self._loading_from_scp)
         for i in kwargs:
             entry.__setattr__(i, kwargs[i])
-        if entry.Key is None:
+        if index is None and entry.Key is None:
             raise ValueError('key not provided')
-
-        index = self._indexes_free[0]
-        self._indexes_free.remove(index)
+        if entry.Key and str(entry.Key) in self._keys:
+            raise ValueError(self._cls.__name__ +" key " + str(entry.Key) +' already exists')
+            
+        if index is None:
+            index = self._indexes_free[0]
+        else:
+            index = int(index)
         entry._set_index(index)
+        self._indexes_free.remove(index)
         self._entries.append(entry)
-        self._keys[str(entry.Key)] = (index, entry)
         self._sort()
 
+        # set state!
         if self._state in [TypeState.UnInitialized, TypeState.Initializing]:
             self.__dict__['_state'] = TypeState.Initializing
         elif self._state in [TypeState.Committed, TypeState.Changing]:
@@ -213,6 +223,29 @@ class ArrayType(TypeBase):
             self._parent.child_state_changed(self, self._state)
         return entry
 
+    def _clear_duplicates(self):
+        keys = {}
+        toremove = []
+        for entry in self._entries:
+            if entry.Key is None:
+                #print("Removing none key: " + str(entry._index) + " in " + self._cls.__name__)
+                toremove.append(entry)
+            strkey = str(entry.Key)
+            if strkey in ["", "()"]:
+                #print("Removing emptykey: " + str(entry._index) + " in " + self._cls.__name__)
+                toremove.append(entry)
+            elif strkey in keys:
+                #print("ERROR: Duplicate Entry found: " + strkey + " in " + self._cls.__name__)
+                toremove.append(entry)
+            keys[strkey] = entry
+
+        for entry in toremove:
+            self._entries.remove(entry)
+            self._indexes_free.append(entry.Index)
+            if str(entry.Key) in self._keys:
+                del self._keys[str(entry.Key)]
+        self._sort()
+
     # returns a list
     def find(self, **kwargs):
         return self._find(True, **kwargs)
@@ -221,14 +254,23 @@ class ArrayType(TypeBase):
     def find_first(self, **kwargs):
         entries = self._find(False, **kwargs)
         if len(entries) > 0:
-            return entries
+            return entries[0]
         return None
+
+    def find_or_create(self, index):
+        if isinstance(index, str):
+            index = int(index)
+        for entry in self._entries:
+            if entry._index == index:
+                return entry
+        return self.new(index)
 
     def remove(self, **kwargs):
         entries = self._find(True, **kwargs)
         for i in entries:
             self._entries.remove(i)
             self._indexes_free.append(i.Index)
+            del self._keys[str(i.Key)]
         self._sort()
 
         if self._state in [TypeState.UnInitialized, TypeState.Initializing]:
@@ -248,6 +290,19 @@ class ArrayType(TypeBase):
     def _sort(self):
         self._indexes_free = sorted(self._indexes_free)
         self._entries = sorted(self._entries, key = lambda entry: entry.Index)
+
+    def _find(self, all_entries = True, **kwargs):
+        output = []
+        for entry in self._entries:
+            found = True
+            for field in kwargs:
+                if entry.__dict__[field]._value != kwargs[field]:
+                    found = False
+                    break
+            if found:
+                output.append(entry)
+                if not all_entries: break
+        return output
 
     def _find(self, all_entries = True, **kwargs):
         output = []

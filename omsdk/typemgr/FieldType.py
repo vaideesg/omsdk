@@ -81,7 +81,8 @@ class FieldType(TypeBase):
             raise AttributeError('composite objects cannot be modified')
 
         # value is None, object was committed; ==> no change
-        if value is None and self._state in [TypeState.Committed, TypeState.Changing]:
+        if value is None and \
+            self._state in [TypeState.Committed, TypeState.Changing]:
             return 
 
         # Validate value and convert it if needed
@@ -103,8 +104,9 @@ class FieldType(TypeBase):
                 valid = True
             # expected value is enumeration
             elif isinstance(self._type, type(Enum)):
-                value = TypeHelper.convert_to_enum(value, self._type)
+                newvalue = TypeHelper.convert_to_enum(value, self._type)
                 if value is not None:
+                    value = newvalue
                     valid = True
                 else:
                     msg = str(value) + " is not " + str(self._type)
@@ -121,6 +123,7 @@ class FieldType(TypeBase):
 
         # if invalid, raise ValueError exception
         if not valid:
+            print(type(value))
             raise ValueError(msg)
 
         # modify the value
@@ -317,6 +320,9 @@ class FieldType(TypeBase):
 
     def json_encode(self):
         return self._value
+
+    def _clear_duplicates(self):
+        pass
 
     def printx(self):
         print(str(type(self._value))+"<>"+str(self._type)+"::"+str(self._value))

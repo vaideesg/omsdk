@@ -116,5 +116,13 @@
         "NTPConfigGroup" : { "NTPServers" : [ "NTP1", "NTP2", "NTP3" ] },
         "IPv4Static" : { "DNSServers" : [ "DNS1", "DNS2" ] },
         "IPv6Static" : { "DNSServers" : [ "DNS1", "DNS2" ] }
+    },
+    "alias": {
+        "Time" : {
+            "Timezone_Time" : "TimeZone_Time",
+            "Timezone" : "TimeZone_Time",
+            "DayLightOffset_Time" : "DaylightOffset_Time",
+            "DayLightOffset" : "DaylightOffset_Time"
+         }
     }
 }

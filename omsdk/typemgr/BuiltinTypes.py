@@ -14,11 +14,13 @@ class CloneableFieldType(FieldType):
         if isinstance(self, EnumTypeField):
             return type(self)(self._value, entype=self._type, alias=self._alias,
                   parent=parent, volatile=self._volatile,
-                  modifyAllowed = self._modifyAllowed, deleteAllowed = self._deleteAllowed)
+                  modifyAllowed = self._modifyAllowed,
+                  deleteAllowed = self._deleteAllowed)
         else:
             return type(self)(self._value, alias=self._alias,
                   parent=parent, volatile=self._volatile,
-                  modifyAllowed = self._modifyAllowed, deleteAllowed = self._deleteAllowed)
+                  modifyAllowed = self._modifyAllowed,
+                  deleteAllowed = self._deleteAllowed)
 
 class PortField(CloneableFieldType):
     def __init__(self, init_value, alias =None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True):

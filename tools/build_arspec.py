@@ -20,7 +20,8 @@ class AttribRegistry(object):
         typName = re.sub('[-.]', '_', typName)
         typName = re.sub('^[ \t]+', '', typName)
         return typName
-    def __init__(self, file_name):
+
+    def __init__(self, file_name, dconfig):
         self.tree = ET.parse(file_name)
         self.root = self.tree.getroot()
         regentry = None
@@ -44,6 +45,11 @@ class AttribRegistry(object):
                 }
             }
         }
+
+        f_config_spec = os.path.join(dconfig, self.comp + '.comp_spec')
+        if os.path.exists(f_config_spec):
+            with open(f_config_spec) as f:
+                self.config_spec = json.load(f)
 
         attmap = {
             'IsReadOnly' : 'readonly',
@@ -375,7 +381,7 @@ class AttribRegistry(object):
             ngrp = self._sanitize(grp)
             out.write('class {0}(ClassType):\n'.format(ngrp))
             out.write('\n')
-            out.write('    def __init__(self, parent = None):\n')
+            out.write('    def __init__(self, parent = None, loading_from_scp=False):\n')
             if grp == self.comp:
                 out.write('        super().__init__("Component", None, parent)\n')
             else:
@@ -398,6 +404,14 @@ class AttribRegistry(object):
                 elif not new_prop_def[grp][i]['modDeleteAllowed']:
                     out.write('        # readonly attribute\n')
                 out.write(field_spec + ')\n')
+
+                if 'alias' in js and grp in js['alias']:
+                    if i in js['alias'][grp]:
+                        print(">>>>>" + i)
+                        out.write('        self.{0} = {1}\n'.format(
+                                js['alias'][grp][i],
+                                new_prop_def[grp][i]['fldname']))
+
             if 'composite' in js and grp in js['composite']:
                 for field in js['composite'][grp]:
                     fmsg = ""
@@ -407,7 +421,7 @@ class AttribRegistry(object):
                         comma = ", "
                     out.write('        self.{0} = CompositeFieldType({1})\n'.format(field, fmsg))
 
-            out.write('        self.commit()\n')
+            out.write('        if not loading_from_scp: self.commit()\n')
             out.write('\n')
             if 'arrays' in js and grp in js['arrays']:
                 ent = js['arrays'][grp]
@@ -449,19 +463,19 @@ class AttribRegistry(object):
                     continue
                 out.write('class {0}(ClassType):\n'.format(comp))
                 out.write('\n')
-                out.write('    def __init__(self, parent = None):\n')
+                out.write('    def __init__(self, parent = None, loading_from_scp=False):\n')
                 out.write('        super().__init__("Component", None, parent)\n')
                 for grp in sorted(js[comp]['groups']):
                     ngrp = self._sanitize(grp)
                     if 'arrays' in js and grp in js['arrays']:
                         ent = js['arrays'][grp]
-                        out.write('        self.{0} = ArrayType({0}, parent=self, min_index={1}, max_index={2})\n'.format(ngrp, ent['min'], ent['max']))
+                        out.write('        self.{0} = ArrayType({0}, parent=self, min_index={1}, max_index={2}, loading_from_scp=loading_from_scp)\n'.format(ngrp, ent['min'], ent['max']))
 
 
                     else:
-                        out.write('        self.{0} = {0}(parent=self)\n'.format(ngrp))
+                        out.write('        self.{0} = {0}(parent=self, loading_from_scp=loading_from_scp)\n'.format(ngrp))
 
-                out.write('        self.commit()\n')
+                out.write('        if not loading_from_scp: self.commit()\n')
                 out.write('\n')
 
     def save_types(self, directory, dconfig, group):
@@ -487,13 +501,13 @@ class AttribRegistry(object):
 
 if __name__ == "__main__":
     driver_dir = os.path.join('omdrivers', 'iDRAC')
+    types_dir = os.path.join('omdrivers', 'types', 'iDRAC')
     for file1 in glob.glob(os.path.join(driver_dir, "xml", "*.xml")):
         if file1.endswith('EventFilters.xml') is True: continue
-        grp = file1.endswith('iDRAC.xml')
-        ar= AttribRegistry(file1)
-        ar.save_file(directory=os.path.join(driver_dir, 'Config'))
-        ar.save_types(directory=os.path.join('omdrivers', 'types', 'iDRAC'),
-                      dconfig =os.path.join(driver_dir, 'Config'),
-                      group=grp)
+        group = file1.endswith('iDRAC.xml')
+        dconfig = os.path.join(driver_dir, 'Config')
+        ar= AttribRegistry(file1, dconfig)
+        ar.save_file(directory=dconfig)
+        ar.save_types(types_dir, dconfig, group)
         # types would have added unknown enumerations!
         ar.save_enums(directory=os.path.join('omdrivers', 'enums', 'iDRAC'))

@@ -8,12 +8,12 @@ logger = logging.getLogger(__name__)
 
 class ADGroup(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ADGroup", parent)
         self.Domain_ADGroup = StringField(None, parent=self)
         self.Name_ADGroup = StringField(None, parent=self)
         self.Privilege_ADGroup = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
     @property
     def Key(self):
@@ -25,14 +25,14 @@ class ADGroup(ClassType):
 
 class ASRConfig(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ASRConfig", parent)
         self.Enable_ASRConfig = EnumTypeField(None,Enable_ASRConfigTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ActiveDirectory(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ActiveDirectory", parent)
         self.AuthTimeout_ActiveDirectory = IntField(None, parent=self)
         self.CertValidationEnable_ActiveDirectory = EnumTypeField(None,CertValidationEnable_ActiveDirectoryTypes, parent=self)
@@ -55,11 +55,11 @@ class ActiveDirectory(ClassType):
         self.RacName_ActiveDirectory = StringField(None, parent=self)
         self.SSOEnable_ActiveDirectory = EnumTypeField(None,SSOEnable_ActiveDirectoryTypes, parent=self)
         self.Schema_ActiveDirectory = EnumTypeField(None,Schema_ActiveDirectoryTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class AutoBackup(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "AutoBackup", parent)
         self.DayofMonth_AutoBackup = StringField(None, parent=self)
         self.DayofWeek_AutoBackup = StringField(None, parent=self)
@@ -75,18 +75,18 @@ class AutoBackup(ClassType):
         self.Time_AutoBackup = StringField(None, parent=self)
         self.UserName_AutoBackup = StringField(None, parent=self)
         self.WeekofMonth_AutoBackup = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class AutoOSLockGroup(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "AutoOSLockGroup", parent)
         self.AutoOSLockState_AutoOSLockGroup = EnumTypeField(None,AutoOSLockState_AutoOSLockGroupTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class AutoUpdate(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "AutoUpdate", parent)
         self.ApplyReboot_AutoUpdate = IntField(None, parent=self)
         self.CatalogID_AutoUpdate = StringField(None, parent=self)
@@ -107,110 +107,110 @@ class AutoUpdate(ClassType):
         self.Time_AutoUpdate = StringField(None, parent=self)
         self.UserName_AutoUpdate = StringField(None, parent=self)
         self.WeekofMonth_AutoUpdate = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Backplane(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Backplane", parent)
         # readonly attribute populated by iDRAC
         self.BackplaneBusMode_Backplane = EnumTypeField(None,BackplaneBusMode_BackplaneTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.BackplaneSplitMode_Backplane = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class BoardPowerConsumption(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "BoardPowerConsumption", parent)
         self.ProbeLocation_BoardPowerConsumption = StringField(None, parent=self)
         self.UNCThreshold_BoardPowerConsumption = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Branding(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Branding", parent)
         self.Type_Branding = EnumTypeField(None,Type_BrandingTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.URI_Branding = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ButtonLCP(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ButtonLCP", parent)
         self.Type_ButtonLCP = EnumTypeField(None,Type_ButtonLCPTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ButtonRCP(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ButtonRCP", parent)
         self.Type_ButtonRCP = EnumTypeField(None,Type_ButtonRCPTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class CMC(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "CMC", parent)
         self.FirmwareVersion_CMC = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class CMCSNMPAlert(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "CMCSNMPAlert", parent)
         self.AlertPort_CMCSNMPAlert = IntField(None, parent=self)
         self.CommunityName_CMCSNMPAlert = StringField(None, parent=self)
         self.TrapFormat_CMCSNMPAlert = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class CMCSNMPTrapIPv6(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "CMCSNMPTrapIPv6", parent)
         self.DestIPv6Address_CMCSNMPTrapIPv6 = StringField(None, parent=self)
         self.State_CMCSNMPTrapIPv6 = EnumTypeField(None,State_CMCSNMPTrapIPv6Types, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class CMCSlot(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "CMCSlot", parent)
         self.Config_CMCSlot = StringField(None, parent=self)
         self.Contains_CMCSlot = StringField(None, parent=self)
         self.Occupied_CMCSlot = EnumTypeField(None,Occupied_CMCSlotTypes, parent=self)
         self.SlotName_CMCSlot = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Certificate(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Certificate", parent)
         self.HardwareIdentityCertStatus_Certificate = EnumTypeField(None,HardwareIdentityCertStatus_CertificateTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ChassisControl(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ChassisControl", parent)
         self.ChassisManagementMonitoring_ChassisControl = EnumTypeField(None,ChassisManagementMonitoring_ChassisControlTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.ChassisManagementatServer_ChassisControl = EnumTypeField(None,ChassisManagementatServer_ChassisControlTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ChassisHealthIndicator(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ChassisHealthIndicator", parent)
         self.ID_ChassisHealthIndicator = StringField(None, parent=self)
         self.IndicatorColor_ChassisHealthIndicator = EnumTypeField(None,IndicatorColor_ChassisHealthIndicatorTypes, parent=self)
         self.IndicatorState_ChassisHealthIndicator = EnumTypeField(None,IndicatorState_ChassisHealthIndicatorTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ChassisInfo(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ChassisInfo", parent)
         self.Description_ChassisInfo = StringField(None, alias="?Description_ChassisInfo", parent=self)
         # readonly attribute populated by iDRAC
@@ -260,11 +260,11 @@ class ChassisInfo(ClassType):
         self.SledPowerOnInterval_ChassisInfo = IntField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.SystemID_ChassisInfo = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ChassisPower(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ChassisPower", parent)
         self.ActivePowerCapVal_ChassisPower = IntField(None, parent=self)
         self.DisablePowerButton_ChassisPower = EnumTypeField(None,DisablePowerButton_ChassisPowerTypes, parent=self)
@@ -291,18 +291,18 @@ class ChassisPower(ClassType):
         self.SystemInputMaxPowerCapacity_ChassisPower = IntField(None, parent=self)
         self.UnderVoltageCLSTOverride_ChassisPower = EnumTypeField(None,UnderVoltageCLSTOverride_ChassisPowerTypes, parent=self)
         self.UpperThresholdCritical_ChassisPower = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ChassisPwrState(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ChassisPwrState", parent)
         self.ChassisLEDState_ChassisPwrState = EnumTypeField(None,ChassisLEDState_ChassisPwrStateTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ChassisTopology(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ChassisTopology", parent)
         self.AisleName_ChassisTopology = StringField(None, parent=self)
         self.DataCenterName_ChassisTopology = StringField(None, parent=self)
@@ -310,11 +310,11 @@ class ChassisTopology(ClassType):
         self.RackName_ChassisTopology = StringField(None, parent=self)
         self.RackSlot_ChassisTopology = IntField(None, parent=self)
         self.RoomName_ChassisTopology = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class CurrentIPv4(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "CurrentIPv4", parent)
         # readonly attribute populated by iDRAC
         self.Address_CurrentIPv4 = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -332,11 +332,11 @@ class CurrentIPv4(ClassType):
         self.Gateway_CurrentIPv4 = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.Netmask_CurrentIPv4 = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class CurrentIPv6(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "CurrentIPv6", parent)
         # readonly attribute populated by iDRAC
         self.Address10_CurrentIPv6 = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -386,11 +386,11 @@ class CurrentIPv6(ClassType):
         self.LinkLocalAddress_CurrentIPv6 = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.PrefixLength_CurrentIPv6 = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class CurrentNIC(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "CurrentNIC", parent)
         # readonly attribute populated by iDRAC
         self.ActiveNIC_CurrentNIC = EnumTypeField(None,ActiveNIC_CurrentNICTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -452,56 +452,56 @@ class CurrentNIC(ClassType):
         self.VLanSetting_CurrentNIC = EnumTypeField(None,VLanSetting_CurrentNICTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.vmediabufsize_CurrentNIC = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class DCMIThermal(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "DCMIThermal", parent)
         self.DCMIControl_DCMIThermal = IntField(None, parent=self)
         self.ExceptionAction_DCMIThermal = IntField(None, parent=self)
         self.ExceptionTime_DCMIThermal = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class DCSCustom(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "DCSCustom", parent)
         self.BackplaneCable0ErrorMask_DCSCustom = IntField(None, parent=self)
         self.BackplaneCable1ErrorMask_DCSCustom = IntField(None, parent=self)
         self.BackplaneCable2ErrorMask_DCSCustom = IntField(None, parent=self)
         self.CustomUI_DCSCustom = EnumTypeField(None,CustomUI_DCSCustomTypes, parent=self)
         self.KeepPhyLinkUp_DCSCustom = EnumTypeField(None,KeepPhyLinkUp_DCSCustomTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class DCSResetCtlr(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "DCSResetCtlr", parent)
         self.DCSCtlr1Reset_DCSResetCtlr = StringField(None, parent=self)
         self.DCSCtlr1Status_DCSResetCtlr = StringField(None, parent=self)
         self.DCSCtlr2Reset_DCSResetCtlr = StringField(None, parent=self)
         self.DCSCtlr2Status_DCSResetCtlr = StringField(None, parent=self)
         self.DCSCtlrSync_DCSResetCtlr = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class DIMMInfo(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "DIMMInfo", parent)
         self.LocationMemoryInfo_DIMMInfo = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class DefaultCredentialMitigationConfigGroup(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "DefaultCredentialMitigationConfigGroup", parent)
         self.DefaultCredentialMitigation_DefaultCredentialMitigationConfigGroup = EnumTypeField(None,DefaultCredentialMitigation_DefaultCredentialMitigationConfigGroupTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class DefaultFactoryPassword(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "DefaultFactoryPassword", parent)
         # readonly attribute populated by iDRAC
         self.Password_DefaultFactoryPassword = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -509,34 +509,34 @@ class DefaultFactoryPassword(ClassType):
         self.SHA256_DefaultFactoryPassword = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.SHA512_DefaultFactoryPassword = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Diagnostics(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Diagnostics", parent)
         # readonly attribute
         self.OSAppCollectionTime_Diagnostics = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class EC(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "EC", parent)
         # readonly attribute populated by iDRAC
         self.ClusterState_EC = EnumTypeField(None,ClusterState_ECTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.SlotNumber_EC = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class EmailAlert(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "EmailAlert", parent)
         self.Address_EmailAlert = StringField(None, parent=self)
         self.CustomMsg_EmailAlert = StringField(None, parent=self)
         self.Enable_EmailAlert = EnumTypeField(None,Enable_EmailAlertTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
     @property
     def Key(self):
@@ -548,7 +548,7 @@ class EmailAlert(ClassType):
 
 class FPGAFWInventory(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "FPGAFWInventory", parent)
         # readonly attribute populated by iDRAC
         self.Description_FPGAFWInventory = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -572,11 +572,11 @@ class FPGAFWInventory(ClassType):
         self.VersionSequence_FPGAFWInventory = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.Version_FPGAFWInventory = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class FReDFWInventory(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "FReDFWInventory", parent)
         # readonly attribute populated by iDRAC
         self.Description_FReDFWInventory = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -598,11 +598,11 @@ class FReDFWInventory(ClassType):
         self.VersionSequence_FReDFWInventory = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.Version_FReDFWInventory = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class FWInventory(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "FWInventory", parent)
         # readonly attribute populated by iDRAC
         self.Description_FWInventory = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -624,11 +624,11 @@ class FWInventory(ClassType):
         self.VersionSequence_FWInventory = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.Version_FWInventory = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class FWUpdateService(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "FWUpdateService", parent)
         # readonly attribute populated by iDRAC
         self.ServiceEnabled_FWUpdateService = EnumTypeField(None,ServiceEnabled_FWUpdateServiceTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -636,11 +636,11 @@ class FWUpdateService(ClassType):
         self.State_FWUpdateService = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.StatusHealth_FWUpdateService = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class FWUpdateTask(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "FWUpdateTask", parent)
         # readonly attribute populated by iDRAC
         self.EndTime_FWUpdateTask = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -668,29 +668,29 @@ class FWUpdateTask(ClassType):
         self.TaskStatus_FWUpdateTask = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TaskType_FWUpdateTask = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class FanSlot(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "FanSlot", parent)
         self.Config_FanSlot = StringField(None, parent=self)
         self.Contains_FanSlot = StringField(None, parent=self)
         self.Occupied_FanSlot = EnumTypeField(None,Occupied_FanSlotTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.SlotName_FanSlot = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class FrontPanel(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "FrontPanel", parent)
         self.ButtonDisable_FrontPanel = EnumTypeField(None,ButtonDisable_FrontPanelTypes, alias="ButtonDisable?_FrontPanel", parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class GBE(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "GBE", parent)
         # readonly attribute populated by iDRAC
         self.ChassisModel_GBE = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -712,18 +712,18 @@ class GBE(ClassType):
         self.ServiceTag_GBE = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.SystemID_GBE = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class GUI(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "GUI", parent)
         self.SecurityPolicyMessage_GUI = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class GpGPUTable(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "GpGPUTable", parent)
         self.CardType_GpGPUTable = IntField(None, parent=self)
         self.Did_GpGPUTable = IntField(None, parent=self)
@@ -738,11 +738,11 @@ class GpGPUTable(ClassType):
         self.ThrottledPower_GpGPUTable = IntField(None, parent=self)
         self.Vid_GpGPUTable = IntField(None, parent=self)
         self.Width_GpGPUTable = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class GroupManager(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "GroupManager", parent)
         self.CloneStatus_GroupManager = EnumTypeField(None,CloneStatus_GroupManagerTypes, parent=self)
         self.ConfigurationUpdateTimeStamp_GroupManager = StringField(None, parent=self)
@@ -777,22 +777,22 @@ class GroupManager(ClassType):
         self.Role_GroupManager = EnumTypeField(None,Role_GroupManagerTypes, parent=self)
         self.ServicePublishInterval_GroupManager = IntField(None, parent=self)
         self.Status_GroupManager = EnumTypeField(None,Status_GroupManagerTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IOIDOpt(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IOIDOpt", parent)
         self.IOIDOptEnable_IOIDOpt = EnumTypeField(None,IOIDOptEnable_IOIDOptTypes, parent=self)
         self.InitiatorPersistencePolicy_IOIDOpt = EnumTypeField(None,InitiatorPersistencePolicy_IOIDOptTypes, parent=self)
         self.StorageTargetPersistencePolicy_IOIDOpt = EnumTypeField(None,StorageTargetPersistencePolicy_IOIDOptTypes, parent=self)
         self.VirtualAddressPersistencePolicyAuxPwrd_IOIDOpt = EnumTypeField(None,VirtualAddressPersistencePolicyAuxPwrd_IOIDOptTypes, parent=self)
         self.VirtualAddressPersistencePolicyNonAuxPwrd_IOIDOpt = EnumTypeField(None,VirtualAddressPersistencePolicyNonAuxPwrd_IOIDOptTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IOMInterposer(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IOMInterposer", parent)
         # readonly attribute populated by iDRAC
         self.Config_IOMInterposer = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -801,29 +801,29 @@ class IOMInterposer(ClassType):
         self.Occupied_IOMInterposer = EnumTypeField(None,Occupied_IOMInterposerTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.SlotName_IOMInterposer = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IOMSlot(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IOMSlot", parent)
         self.Config_IOMSlot = StringField(None, parent=self)
         self.Contains_IOMSlot = StringField(None, parent=self)
         self.Occupied_IOMSlot = EnumTypeField(None,Occupied_IOMSlotTypes, parent=self)
         self.SlotName_IOMSlot = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IOMSlotConfig(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IOMSlotConfig", parent)
         # readonly attribute populated by iDRAC
         self.SubConfigOf_IOMSlotConfig = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPBlocking(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPBlocking", parent)
         self.BlockEnable_IPBlocking = EnumTypeField(None,BlockEnable_IPBlockingTypes, parent=self)
         self.FailCount_IPBlocking = IntField(None, parent=self)
@@ -832,35 +832,35 @@ class IPBlocking(ClassType):
         self.RangeAddr_IPBlocking = StringField(None, parent=self)
         self.RangeEnable_IPBlocking = EnumTypeField(None,RangeEnable_IPBlockingTypes, parent=self)
         self.RangeMask_IPBlocking = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIChassisData(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIChassisData", parent)
         self.ChassisData_IPMIChassisData = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIFireWall(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIFireWall", parent)
         self.ChannelOffset_IPMIFireWall = StringField(None, parent=self)
         self.Header_IPMIFireWall = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIFireWallChannel(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIFireWallChannel", parent)
         self.ChannelEnableCommand_IPMIFireWallChannel = StringField(None, parent=self)
         self.ChannelHeader_IPMIFireWallChannel = StringField(None, parent=self)
         self.ChannelSubFunctionSetting_IPMIFireWallChannel = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIIPConfig(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIIPConfig", parent)
         self.ArpControl_IPMIIPConfig = StringField(None, parent=self)
         self.ArpInterval_IPMIIPConfig = StringField(None, parent=self)
@@ -868,55 +868,55 @@ class IPMIIPConfig(ClassType):
         self.BackupGatewayMac_IPMIIPConfig = StringField(None, parent=self)
         self.DefaultGatewayMAC_IPMIIPConfig = StringField(None, parent=self)
         self.IPHeader_IPMIIPConfig = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMILANConfig(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMILANConfig", parent)
         self.AuthenticationEnables_IPMILANConfig = StringField(None, parent=self)
         self.ChannelAccess_IPMILANConfig = StringField(None, parent=self)
         self.CipherSuitePrivilege_IPMILANConfig = StringField(None, parent=self)
         self.SecurityKeyKR_IPMILANConfig = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMILANPEFConfig(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMILANPEFConfig", parent)
         self.DestinationMACAddress_IPMILANPEFConfig = StringField(None, parent=self)
         self.GatewaySelector_IPMILANPEFConfig = EnumTypeField(None,GatewaySelector_IPMILANPEFConfigTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMILan(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMILan", parent)
         self.AlertEnable_IPMILan = EnumTypeField(None,AlertEnable_IPMILanTypes, parent=self)
         self.CommunityName_IPMILan = StringField(None, parent=self)
         self.Enable_IPMILan = EnumTypeField(None,Enable_IPMILanTypes, parent=self)
         self.EncryptionKey_IPMILan = StringField(None, parent=self)
         self.PrivLimit_IPMILan = EnumTypeField(None,PrivLimit_IPMILanTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIPEFSeldomFilter(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIPEFSeldomFilter", parent)
         self.FilterEntry_IPMIPEFSeldomFilter = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIPefOften(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIPefOften", parent)
         self.BMCRecordID_IPMIPefOften = IntField(None, parent=self)
         self.SoftwareRecordID_IPMIPefOften = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIPefSeldom(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIPefSeldom", parent)
         self.AlertStartupDelay_IPMIPefSeldom = StringField(None, parent=self)
         self.Control_IPMIPefSeldom = StringField(None, parent=self)
@@ -924,41 +924,41 @@ class IPMIPefSeldom(ClassType):
         self.PEFFilterDefaultsSet_IPMIPefSeldom = EnumTypeField(None,PEFFilterDefaultsSet_IPMIPefSeldomTypes, parent=self)
         self.StartupDelay_IPMIPefSeldom = StringField(None, parent=self)
         self.SystemGUID_IPMIPefSeldom = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIPefSeldomAlerts(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIPefSeldomAlerts", parent)
         self.AlertEntry_IPMIPefSeldomAlerts = StringField(None, parent=self)
         self.AlertStringEntry_IPMIPefSeldomAlerts = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIPowerManagement(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIPowerManagement", parent)
         self.PWMdata_IPMIPowerManagement = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMISDR(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMISDR", parent)
         self.SDRAddTimeStamp_IPMISDR = IntField(None, parent=self)
         self.SDRDelTimeStamp_IPMISDR = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMISEL(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMISEL", parent)
         self.SELdata_IPMISEL = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMISOL(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMISOL", parent)
         self.AccumulateInterval_IPMISOL = IntField(None, parent=self)
         self.Authentication_IPMISOL = EnumTypeField(None,Authentication_IPMISOLTypes, parent=self)
@@ -968,11 +968,11 @@ class IPMISOL(ClassType):
         self.MinPrivilege_IPMISOL = EnumTypeField(None,MinPrivilege_IPMISOLTypes, parent=self)
         self.RetryCount_IPMISOL = IntField(None, parent=self)
         self.SendThreshold_IPMISOL = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMISerial(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMISerial", parent)
         self.AuthenticationTypeEnables_IPMISerial = StringField(None, parent=self)
         self.BaudRate_IPMISerial = EnumTypeField(None,BaudRate_IPMISerialTypes, parent=self)
@@ -990,39 +990,39 @@ class IPMISerial(ClassType):
         self.PortAssociation_IPMISerial = IntField(None, parent=self)
         self.SessionTerminalTimeout_IPMISerial = IntField(None, parent=self)
         self.SessionTimeout_IPMISerial = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMISystemParameter(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMISystemParameter", parent)
         self.ControllerIPMBAddress_IPMISystemParameter = StringField(None, parent=self)
         self.DeviceGUID_IPMISystemParameter = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIUserEncryptIVKey(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIUserEncryptIVKey", parent)
         self.NameIVKey2_IPMIUserEncryptIVKey = StringField(None, parent=self)
         self.NameIVKey_IPMIUserEncryptIVKey = StringField(None, parent=self)
         self.PWDIVKey2_IPMIUserEncryptIVKey = StringField(None, parent=self)
         self.PWDIVKey_IPMIUserEncryptIVKey = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPMIUserInfo(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPMIUserInfo", parent)
         self.OEMPayload_IPMIUserInfo = StringField(None, parent=self)
         self.PrivLimit_IPMIUserInfo = StringField(None, parent=self)
         self.StdPayload_IPMIUserInfo = StringField(None, parent=self)
         self.UserChannelAccess_IPMIUserInfo = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPv4(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPv4", parent)
         self.Address_IPv4 = StringField(None, parent=self)
         self.DHCPEnable_IPv4 = EnumTypeField(None,DHCPEnable_IPv4Types, parent=self)
@@ -1032,11 +1032,11 @@ class IPv4(ClassType):
         self.Enable_IPv4 = EnumTypeField(None,Enable_IPv4Types, parent=self)
         self.Gateway_IPv4 = StringField(None, parent=self)
         self.Netmask_IPv4 = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPv4Static(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPv4Static", parent)
         self.Address_IPv4Static = StringField(None, parent=self)
         self.DNS1_IPv4Static = StringField(None, parent=self)
@@ -1045,11 +1045,11 @@ class IPv4Static(ClassType):
         self.Gateway_IPv4Static = StringField(None, parent=self)
         self.Netmask_IPv4Static = StringField(None, parent=self)
         self.DNSServers = CompositeFieldType(self.DNS1_IPv4Static, self.DNS2_IPv4Static)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPv6(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPv6", parent)
         # readonly attribute populated by iDRAC
         self.Address10_IPv6 = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -1093,11 +1093,11 @@ class IPv6(ClassType):
         # readonly attribute populated by iDRAC
         self.LinkLocalAddress_IPv6 = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.PrefixLength_IPv6 = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPv6Static(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPv6Static", parent)
         self.Address1_IPv6Static = StringField(None, parent=self)
         self.Address_IPv6Static = StringField(None, parent=self)
@@ -1108,36 +1108,36 @@ class IPv6Static(ClassType):
         self.Netmask_IPv6Static = StringField(None, parent=self)
         self.PrefixLength_IPv6Static = IntField(None, parent=self)
         self.DNSServers = CompositeFieldType(self.DNS1_IPv6Static, self.DNS2_IPv6Static)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IPv6URL(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPv6URL", parent)
         # readonly attribute populated by iDRAC
         self.URL_IPv6URL = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IdentifyButton(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IdentifyButton", parent)
         self.ID_IdentifyButton = StringField(None, parent=self)
         self.IndicatorColor_IdentifyButton = EnumTypeField(None,IndicatorColor_IdentifyButtonTypes, parent=self)
         self.IndicatorState_IdentifyButton = EnumTypeField(None,IndicatorState_IdentifyButtonTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IndicatorLCP(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IndicatorLCP", parent)
         self.BlinkPattern_IndicatorLCP = EnumTypeField(None,BlinkPattern_IndicatorLCPTypes, parent=self)
         self.Type_IndicatorLCP = EnumTypeField(None,Type_IndicatorLCPTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Info(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Info", parent)
         # readonly attribute populated by iDRAC
         self.AssetTag_Info = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -1272,21 +1272,21 @@ class Info(ClassType):
         self.Type_Info = EnumTypeField(None,Type_InfoTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.Version_Info = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class InletTemp(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "InletTemp", parent)
         self.LNCThreshold_InletTemp = IntField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.ProbeLocation_InletTemp = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.UNCThreshold_InletTemp = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class IntegratedDatacenter(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IntegratedDatacenter", parent)
         self.DiscoveryEnable_IntegratedDatacenter = EnumTypeField(None,DiscoveryEnable_IntegratedDatacenterTypes, parent=self)
         self.Eject_IntegratedDatacenter = EnumTypeField(None,Eject_IntegratedDatacenterTypes, parent=self)
@@ -1295,11 +1295,11 @@ class IntegratedDatacenter(ClassType):
         self.TroubleshootingMode_IntegratedDatacenter = EnumTypeField(None,TroubleshootingMode_IntegratedDatacenterTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.VLan_IntegratedDatacenter = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class LCAttributes(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "LCAttributes", parent)
         self.AutoBackup_LCAttributes = EnumTypeField(None,AutoBackup_LCAttributesTypes, parent=self)
         # readonly attribute populated by iDRAC
@@ -1340,11 +1340,11 @@ class LCAttributes(ClassType):
         self.VirtualAddressManagementApplication_LCAttributes = StringField(None, parent=self)
         self.VirtualAddressManagement_LCAttributes = EnumTypeField(None,VirtualAddressManagement_LCAttributesTypes, parent=self)
         self.VolumeLabel_LCAttributes = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class LCD(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "LCD", parent)
         self.BladeInsertionPrompt_LCD = EnumTypeField(None,BladeInsertionPrompt_LCDTypes, parent=self)
         self.ChassisIdentifyDuration_LCD = IntField(None, parent=self)
@@ -1371,11 +1371,11 @@ class LCD(ClassType):
         self.ViewAssetServiceExpressTag_LCD = EnumTypeField(None,ViewAssetServiceExpressTag_LCDTypes, parent=self)
         self.WizardEnable_LCD = EnumTypeField(None,WizardEnable_LCDTypes, parent=self)
         self.vConsoleIndication_LCD = EnumTypeField(None,vConsoleIndication_LCDTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class LDAP(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "LDAP", parent)
         self.BaseDN_LDAP = StringField(None, parent=self)
         self.BindDN_LDAP = StringField(None, parent=self)
@@ -1390,11 +1390,11 @@ class LDAP(ClassType):
         self.ServerCachePath_LDAP = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.Server_LDAP = StringField(None, parent=self)
         self.UserAttribute_LDAP = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class LDAPRoleGroup(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "LDAPRoleGroup", parent)
         self.DN_1_LDAPRoleGroup = StringField(None, alias="DN.1_LDAPRoleGroup", parent=self)
         self.DN_2_LDAPRoleGroup = StringField(None, alias="DN.2_LDAPRoleGroup", parent=self)
@@ -1407,7 +1407,7 @@ class LDAPRoleGroup(ClassType):
         self.DestinationNum_LDAPRoleGroup = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.Privilege_LDAPRoleGroup = IntField(None, parent=self)
         self.State_LDAPRoleGroup = EnumTypeField(None,State_LDAPRoleGroupTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
     @property
     def Key(self):
@@ -1419,80 +1419,80 @@ class LDAPRoleGroup(ClassType):
 
 class LocalSecurity(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "LocalSecurity", parent)
         self.LocalConfig_LocalSecurity = EnumTypeField(None,LocalConfig_LocalSecurityTypes, parent=self)
         self.PrebootConfig_LocalSecurity = EnumTypeField(None,PrebootConfig_LocalSecurityTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Lockdown(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Lockdown", parent)
         self.SystemLockdown_Lockdown = EnumTypeField(None,SystemLockdown_LockdownTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Logging(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Logging", parent)
         self.SELOEMEventFilterEnable_Logging = EnumTypeField(None,SELOEMEventFilterEnable_LoggingTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class MSM(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "MSM", parent)
         # readonly attribute populated by iDRAC
         self.ClusterState_MSM = EnumTypeField(None,ClusterState_MSMTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.HealthStatus_MSM = EnumTypeField(None,HealthStatus_MSMTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.SlotNumber_MSM = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class MSMConfigBackup(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "MSMConfigBackup", parent)
         # readonly attribute populated by iDRAC
         self.URI_MSMConfigBackup = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class MSMSNMPAlert(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "MSMSNMPAlert", parent)
         self.SNMPv3UserID_MSMSNMPAlert = IntField(None, parent=self)
         self.State_MSMSNMPAlert = EnumTypeField(None,State_MSMSNMPAlertTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class MSMSNMPTrapIPv4(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "MSMSNMPTrapIPv4", parent)
         self.DestIPv4Address_MSMSNMPTrapIPv4 = StringField(None, parent=self)
         self.State_MSMSNMPTrapIPv4 = EnumTypeField(None,State_MSMSNMPTrapIPv4Types, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class MSMSNMPTrapIPv6(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "MSMSNMPTrapIPv6", parent)
         self.DestIPv6Address_MSMSNMPTrapIPv6 = StringField(None, parent=self)
         self.State_MSMSNMPTrapIPv6 = EnumTypeField(None,State_MSMSNMPTrapIPv6Types, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class MachineTrust(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "MachineTrust", parent)
         # readonly attribute populated by iDRAC
         self.PerformFactoryIdentityCertValidation_MachineTrust = EnumTypeField(None,PerformFactoryIdentityCertValidation_MachineTrustTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class MgmtNetworkInterface(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "MgmtNetworkInterface", parent)
         # readonly attribute populated by iDRAC
         self.EnableStatus_MgmtNetworkInterface = EnumTypeField(None,EnableStatus_MgmtNetworkInterfaceTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -1504,11 +1504,11 @@ class MgmtNetworkInterface(ClassType):
         self.MacAddress_MgmtNetworkInterface = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.SubnetMask_MgmtNetworkInterface = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class NIC(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "NIC", parent)
         self.ApplyNICSelection_NIC = EnumTypeField(None,ApplyNICSelection_NICTypes, parent=self)
         self.AutoConfigIPV6_NIC = EnumTypeField(None,AutoConfigIPV6_NICTypes, parent=self)
@@ -1567,19 +1567,19 @@ class NIC(ClassType):
         self.VLanSetting_NIC = EnumTypeField(None,VLanSetting_NICTypes, parent=self)
         self.d9netsettingstate_NIC = EnumTypeField(None,d9netsettingstate_NICTypes, parent=self)
         self.d9netusbsettingstate_NIC = EnumTypeField(None,d9netusbsettingstate_NICTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class NICStatic(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "NICStatic", parent)
         self.DNSDomainFromDHCP_NICStatic = EnumTypeField(None,DNSDomainFromDHCP_NICStaticTypes, parent=self)
         self.DNSDomainName_NICStatic = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class NTPConfigGroup(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "NTPConfigGroup", parent)
         self.NTP1_NTPConfigGroup = StringField(None, parent=self)
         self.NTP2_NTPConfigGroup = StringField(None, parent=self)
@@ -1587,11 +1587,11 @@ class NTPConfigGroup(ClassType):
         self.NTPEnable_NTPConfigGroup = EnumTypeField(None,NTPEnable_NTPConfigGroupTypes, parent=self)
         self.NTPMaxDist_NTPConfigGroup = IntField(None, parent=self)
         self.NTPServers = CompositeFieldType(self.NTP1_NTPConfigGroup, self.NTP2_NTPConfigGroup, self.NTP3_NTPConfigGroup)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class OS_BMC(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "OS-BMC", parent)
         self.AdminState_OS_BMC = EnumTypeField(None,AdminState_OS_BMCTypes, alias="AdminState_OS-BMC", parent=self)
         self.IdracPTEpIpAddr_OS_BMC = StringField(None, alias="IdracPTEpIpAddr_OS-BMC", parent=self)
@@ -1601,11 +1601,11 @@ class OS_BMC(ClassType):
         self.PTMode_OS_BMC = EnumTypeField(None,PTMode_OS_BMCTypes, alias="PTMode_OS-BMC", parent=self)
         self.PrefixLength_OS_BMC = IntField(None, alias="PrefixLength_OS-BMC", parent=self)
         self.UsbNicIpAddress_OS_BMC = StringField(None, alias="UsbNicIpAddress_OS-BMC", parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class PCIeSlotLFM(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "PCIeSlotLFM", parent)
         # readonly attribute populated by iDRAC
         self.E_3rdPartyCard_PCIeSlotLFM = EnumTypeField(None,E_3rdPartyCard_PCIeSlotLFMTypes, alias="3rdPartyCard_PCIeSlotLFM", parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -1619,11 +1619,11 @@ class PCIeSlotLFM(ClassType):
         self.SlotState_PCIeSlotLFM = EnumTypeField(None,SlotState_PCIeSlotLFMTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TargetLFM_PCIeSlotLFM = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class PMLicensing(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "PMLicensing", parent)
         self.DataVersion_PMLicensing = StringField(None, parent=self)
         self.LM_AUTO_DISCOVERY_PMLicensing = EnumTypeField(None,LM_AUTO_DISCOVERY_PMLicensingTypes, alias="LM-AUTO-DISCOVERY_PMLicensing", parent=self)
@@ -1698,11 +1698,11 @@ class PMLicensing(ClassType):
         self.PMAllowableLicenses_PMLicensing = EnumTypeField(None,PMAllowableLicenses_PMLicensingTypes, parent=self)
         self.PMDefaultLicenseFeatures_PMLicensing = EnumTypeField(None,PMDefaultLicenseFeatures_PMLicensingTypes, parent=self)
         self.PMDrivenLicensing_PMLicensing = EnumTypeField(None,PMDrivenLicensing_PMLicensingTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class PSUSlot(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "PSUSlot", parent)
         self.Config_PSUSlot = StringField(None, parent=self)
         self.Contains_PSUSlot = StringField(None, parent=self)
@@ -1710,20 +1710,20 @@ class PSUSlot(ClassType):
         self.SlotName_PSUSlot = StringField(None, parent=self)
         self.config_PSUSlot = StringField(None, parent=self)
         self.contains_PSUSlot = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class PSUSlotSeq(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "PSUSlotSeq", parent)
         # readonly attribute populated by iDRAC
         self.Order_PSUSlotSeq = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.order_PSUSlotSeq = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class PlatformCapability(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "PlatformCapability", parent)
         # readonly attribute populated by iDRAC
         self.E_12GBackplaneon13GCapable_PlatformCapability = EnumTypeField(None,E_12GBackplaneon13GCapable_PlatformCapabilityTypes, alias="12GBackplaneon13GCapable_PlatformCapability", parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -1817,48 +1817,48 @@ class PlatformCapability(ClassType):
         self.iDRACDirectUSBNICCapable_PlatformCapability = EnumTypeField(None,iDRACDirectUSBNICCapable_PlatformCapabilityTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.vFlashCapable_PlatformCapability = EnumTypeField(None,vFlashCapable_PlatformCapabilityTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class PlatformLicense(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "PlatformLicense", parent)
         # readonly attribute populated by iDRAC
         self.AllowableLicenses_PlatformLicense = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.DefaultLicenseFeatures_PlatformLicense = EnumTypeField(None,DefaultLicenseFeatures_PlatformLicenseTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class PowerButton(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "PowerButton", parent)
         self.ID_PowerButton = StringField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.IndicatorColor_PowerButton = EnumTypeField(None,IndicatorColor_PowerButtonTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.IndicatorState_PowerButton = EnumTypeField(None,IndicatorState_PowerButtonTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class PowerHealthIndicator(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "PowerHealthIndicator", parent)
         self.ID_PowerHealthIndicator = StringField(None, parent=self)
         self.IndicatorColor_PowerHealthIndicator = EnumTypeField(None,IndicatorColor_PowerHealthIndicatorTypes, parent=self)
         self.IndicatorState_PowerHealthIndicator = EnumTypeField(None,IndicatorState_PowerHealthIndicatorTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class PowerHistorical(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "PowerHistorical", parent)
         self.IntervalInSeconds_PowerHistorical = IntField(None, parent=self)
         self.StartTime_PowerHistorical = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class PrivateStore(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "PrivateStore", parent)
         self.ACRestoreState_PrivateStore = EnumTypeField(None,ACRestoreState_PrivateStoreTypes, parent=self)
         self.ActiveSATACount_PrivateStore = IntField(None, parent=self)
@@ -1903,11 +1903,11 @@ class PrivateStore(ClassType):
         self.PowerCapState_PrivateStore = EnumTypeField(None,PowerCapState_PrivateStoreTypes, parent=self)
         self.ROMBStatus_PrivateStore = IntField(None, parent=self)
         self.State_PrivateStore = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ProfileTask(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ProfileTask", parent)
         # readonly attribute populated by iDRAC
         self.EndTime_ProfileTask = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -1932,11 +1932,11 @@ class ProfileTask(ClassType):
         self.TaskState_ProfileTask = StringField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.TaskStatus_ProfileTask = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class QuickSync(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "QuickSync", parent)
         self.Access_QuickSync = EnumTypeField(None,Access_QuickSyncTypes, parent=self)
         self.AuthFailureCount_QuickSync = IntField(None, parent=self)
@@ -1950,11 +1950,11 @@ class QuickSync(ClassType):
         # readonly attribute populated by iDRAC
         self.Status_QuickSync = EnumTypeField(None,Status_QuickSyncTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.WifiEnable_QuickSync = EnumTypeField(None,WifiEnable_QuickSyncTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class RFS(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "RFS", parent)
         self.AttachMode_RFS = EnumTypeField(None,AttachMode_RFSTypes, parent=self)
         self.Enable_RFS = EnumTypeField(None,Enable_RFSTypes, parent=self)
@@ -1968,11 +1968,11 @@ class RFS(ClassType):
         self.User_RFS = StringField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.WriteProtected_RFS = EnumTypeField(None,WriteProtected_RFSTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class RSM(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "RSM", parent)
         # readonly attribute populated by iDRAC
         self.ChassisPSUInfoCapability_RSM = EnumTypeField(None,ChassisPSUInfoCapability_RSMTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -1984,53 +1984,53 @@ class RSM(ClassType):
         self.RSMCapability_RSM = EnumTypeField(None,RSMCapability_RSMTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.RSMSetting_RSM = EnumTypeField(None,RSMSetting_RSMTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class RSM_(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "RSM?", parent)
         self.RSMSetting_RSM = EnumTypeField(None,RSMSetting_RSMTypes, alias="RSMSetting_RSM?", parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Racadm(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Racadm", parent)
         self.ActiveSessions_Racadm = IntField(None, parent=self)
         self.Enable_Racadm = EnumTypeField(None,Enable_RacadmTypes, parent=self)
         self.MaxSessions_Racadm = IntField(None, parent=self)
         self.Timeout_Racadm = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Racadm_(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Racadm?", parent)
         self.Enable_Racadm = EnumTypeField(None,Enable_RacadmTypes, alias="Enable_Racadm?", parent=self)
         self.Timeout_Racadm = IntField(None, alias="Timeout_Racadm?", parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Redfish(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Redfish", parent)
         self.Enable_Redfish = EnumTypeField(None,Enable_RedfishTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class RedfishEventing(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "RedfishEventing", parent)
         self.DeliveryRetryAttempts_RedfishEventing = IntField(None, parent=self)
         self.DeliveryRetryIntervalInSeconds_RedfishEventing = IntField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.IgnoreCertificateErrors_RedfishEventing = EnumTypeField(None,IgnoreCertificateErrors_RedfishEventingTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Redundancy(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Redundancy", parent)
         # readonly attribute populated by iDRAC
         self.MaxNumSupported_Redundancy = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2040,11 +2040,11 @@ class Redundancy(ClassType):
         self.Mode_Redundancy = EnumTypeField(None,Mode_RedundancyTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.State_Redundancy = EnumTypeField(None,State_RedundancyTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class RemoteHosts(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "RemoteHosts", parent)
         self.SMTPAuthentication_RemoteHosts = EnumTypeField(None,SMTPAuthentication_RemoteHostsTypes, parent=self)
         self.SMTPPassword_RemoteHosts = StringField(None, parent=self)
@@ -2055,20 +2055,20 @@ class RemoteHosts(ClassType):
         # readonly attribute populated by iDRAC
         self.SMTPStartTLS_RemoteHosts = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.SMTPUserName_RemoteHosts = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SATAInventory(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SATAInventory", parent)
         self.DeviceProp_SATAInventory = StringField(None, parent=self)
         self.SATAFQDDString_SATAInventory = StringField(None, parent=self)
         self.SlotNumber_SATAInventory = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SC_BMC(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SC-BMC", parent)
         self.ChassisInfraPower_SC_BMC = IntField(None, alias="ChassisInfraPower_SC-BMC", parent=self)
         self.ChassisPowerCap_SC_BMC = IntField(None, alias="ChassisPowerCap_SC-BMC", parent=self)
@@ -2079,11 +2079,11 @@ class SC_BMC(ClassType):
         self.EnableSCAttributes_SC_BMC = IntField(None, alias="EnableSCAttributes_SC-BMC", parent=self)
         self.SCFWUpdateState_SC_BMC = EnumTypeField(None,SCFWUpdateState_SC_BMCTypes, alias="SCFWUpdateState_SC-BMC", parent=self)
         self.TaskID_SC_BMC = IntField(None, alias="TaskID_SC-BMC", parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SECONDARYNIC(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SECONDARYNIC", parent)
         # readonly attribute populated by iDRAC
         self.AutoNegotiate_SECONDARYNIC = EnumTypeField(None,AutoNegotiate_SECONDARYNICTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2116,11 +2116,11 @@ class SECONDARYNIC(ClassType):
         self.VLANEnable_SECONDARYNIC = EnumTypeField(None,VLANEnable_SECONDARYNICTypes, parent=self)
         self.VLANID_SECONDARYNIC = IntField(None, parent=self)
         self.VLANPriority_SECONDARYNIC = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SNMP(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SNMP", parent)
         self.AgentCommunity_SNMP = StringField(None, parent=self)
         self.AgentEnable_SNMP = EnumTypeField(None,AgentEnable_SNMPTypes, parent=self)
@@ -2130,11 +2130,11 @@ class SNMP(ClassType):
         self.EngineID_SNMP = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.SNMPProtocol_SNMP = EnumTypeField(None,SNMPProtocol_SNMPTypes, parent=self)
         self.TrapFormat_SNMP = EnumTypeField(None,TrapFormat_SNMPTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SNMPAlert(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SNMPAlert", parent)
         self.Destination_SNMPAlert = StringField(None, alias="? Destination_SNMPAlert", parent=self)
         self.AlertAckInterval_SNMPAlert = IntField(None, parent=self)
@@ -2146,7 +2146,7 @@ class SNMPAlert(ClassType):
         self.SNMPv3UserID_SNMPAlert = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.SNMPv3Username_SNMPAlert = StringField(None, parent=self)
         self.State_SNMPAlert = EnumTypeField(None,State_SNMPAlertTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
     @property
     def Key(self):
@@ -2158,38 +2158,38 @@ class SNMPAlert(ClassType):
 
 class SNMPTrapIPv4(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SNMPTrapIPv4", parent)
         self.DestIPv4Addr_SNMPTrapIPv4 = StringField(None, parent=self)
         # readonly attribute
         self.DestinationNum_SNMPTrapIPv4 = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.State_SNMPTrapIPv4 = EnumTypeField(None,State_SNMPTrapIPv4Types, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SNMPTrapIPv6(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SNMPTrapIPv6", parent)
         self.DestIPv6Addr_SNMPTrapIPv6 = StringField(None, parent=self)
         # readonly attribute
         self.DestinationNum_SNMPTrapIPv6 = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.State_SNMPTrapIPv6 = EnumTypeField(None,State_SNMPTrapIPv6Types, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SSH(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SSH", parent)
         self.Enable_SSH = EnumTypeField(None,Enable_SSHTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.MaxSessions_SSH = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.Port_SSH = IntField(None, parent=self)
         self.Timeout_SSH = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SecureDefaultPassword(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SecureDefaultPassword", parent)
         # readonly attribute populated by iDRAC
         self.AESKey_SecureDefaultPassword = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2199,11 +2199,11 @@ class SecureDefaultPassword(ClassType):
         self.DisplayToeTagError_SecureDefaultPassword = EnumTypeField(None,DisplayToeTagError_SecureDefaultPasswordTypes, parent=self)
         self.Password_SecureDefaultPassword = StringField(None, parent=self)
         self.ResetType_SecureDefaultPassword = EnumTypeField(None,ResetType_SecureDefaultPasswordTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Security(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Security", parent)
         self.CaCertPath_Security = StringField(None, parent=self)
         self.ConfigCertStatus_Security = IntField(None, parent=self)
@@ -2221,11 +2221,11 @@ class Security(ClassType):
         self.MainKeyPath_Security = StringField(None, parent=self)
         self.PendingCSRKeyPath_Security = StringField(None, parent=self)
         self.PendingCSRPath_Security = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SecurityCSC(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SecurityCSC", parent)
         self.CSCCsrBusiness_SecurityCSC = StringField(None, parent=self)
         self.CSCCsrCityName_SecurityCSC = StringField(None, parent=self)
@@ -2234,21 +2234,21 @@ class SecurityCSC(ClassType):
         self.CSCCsrDeptName_SecurityCSC = StringField(None, parent=self)
         self.CSCCsrEmailAddr_SecurityCSC = StringField(None, parent=self)
         self.CSCCsrStateName_SecurityCSC = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SecuritySSL(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SecuritySSL", parent)
         self.CACertificate_SecuritySSL = StringField(None, parent=self)
         self.Certificate_SecuritySSL = StringField(None, parent=self)
         self.Key_SecuritySSL = StringField(None, parent=self)
         self.TemperaryKey_SecuritySSL = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Sensor(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Sensor", parent)
         self.LowerCriticalThreshold_Sensor = IntField(None, parent=self)
         self.LowerWarningThreshold_Sensor = IntField(None, parent=self)
@@ -2256,22 +2256,22 @@ class Sensor(ClassType):
         self.StartTime_Sensor = StringField(None, parent=self)
         self.UpperCriticalThreshold_Sensor = IntField(None, parent=self)
         self.UpperWarningThreshold_Sensor = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SensorThresholds(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SensorThresholds", parent)
         self.LC_SensorThresholds = IntField(None, parent=self)
         self.LNC_SensorThresholds = IntField(None, parent=self)
         self.SensorNumber_SensorThresholds = IntField(None, parent=self)
         self.UC_SensorThresholds = IntField(None, parent=self)
         self.UNC_SensorThresholds = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Serial(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Serial", parent)
         self.BaudRate_Serial = EnumTypeField(None,BaudRate_SerialTypes, parent=self)
         self.Command_Serial = StringField(None, parent=self)
@@ -2279,29 +2279,29 @@ class Serial(ClassType):
         self.HistorySize_Serial = IntField(None, parent=self)
         self.IdleTimeout_Serial = IntField(None, parent=self)
         self.NoAuth_Serial = EnumTypeField(None,NoAuth_SerialTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SerialRedirection(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SerialRedirection", parent)
         self.AutoEnable_SerialRedirection = EnumTypeField(None,AutoEnable_SerialRedirectionTypes, parent=self)
         self.Enable_SerialRedirection = EnumTypeField(None,Enable_SerialRedirectionTypes, parent=self)
         self.QuitKey_SerialRedirection = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ServerBoot(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ServerBoot", parent)
         self.BootOnce_ServerBoot = EnumTypeField(None,BootOnce_ServerBootTypes, parent=self)
         self.FirstBootDevice_ServerBoot = EnumTypeField(None,FirstBootDevice_ServerBootTypes, parent=self)
         self.VflashBootPartition_ServerBoot = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ServerInfo(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ServerInfo", parent)
         self.AssetTagSetByDCMI_ServerInfo = EnumTypeField(None,AssetTagSetByDCMI_ServerInfoTypes, parent=self)
         self.AssetTag_ServerInfo = StringField(None, parent=self)
@@ -2313,11 +2313,11 @@ class ServerInfo(ClassType):
         self.ServiceTag_ServerInfo = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.SledConfig_ServerInfo = EnumTypeField(None,SledConfig_ServerInfoTypes, parent=self)
         self.SysAssetTag_ServerInfo = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ServerOS(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ServerOS", parent)
         self.HostName_ServerOS = StringField(None, parent=self)
         self.OSName_ServerOS = StringField(None, parent=self)
@@ -2325,11 +2325,11 @@ class ServerOS(ClassType):
         self.OSVersion_ServerOS = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.ServerPoweredOnTime_ServerOS = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ServerPwr(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ServerPwr", parent)
         # readonly attribute populated by iDRAC
         self.ActivePolicyName_ServerPwr = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2369,11 +2369,11 @@ class ServerPwr(ClassType):
         self.UpperThresholdCritical_ServerPwr = IntField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.pciePowerAllocation_ServerPwr = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ServerPwrMon(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ServerPwrMon", parent)
         # readonly attribute populated by iDRAC
         self.AccumulativePower_ServerPwrMon = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2392,11 +2392,11 @@ class ServerPwrMon(ClassType):
         # readonly attribute populated by iDRAC
         self.PeakPowerWatts_ServerPwrMon = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.PowerConfigReset_ServerPwrMon = EnumTypeField(None,PowerConfigReset_ServerPwrMonTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ServerTopology(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ServerTopology", parent)
         self.AisleName_ServerTopology = StringField(None, parent=self)
         # readonly attribute populated by iDRAC
@@ -2409,11 +2409,11 @@ class ServerTopology(ClassType):
         self.RoomName_ServerTopology = StringField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.SizeOfManagedSystemInU_ServerTopology = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ServiceModule(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ServiceModule", parent)
         self.HostSNMPAlert_ServiceModule = EnumTypeField(None,HostSNMPAlert_ServiceModuleTypes, parent=self)
         self.LCLReplication_ServiceModule = EnumTypeField(None,LCLReplication_ServiceModuleTypes, parent=self)
@@ -2434,11 +2434,11 @@ class ServiceModule(ClassType):
         self.WatchdogResetTime_ServiceModule = IntField(None, parent=self)
         self.WatchdogState_ServiceModule = EnumTypeField(None,WatchdogState_ServiceModuleTypes, parent=self)
         self.iDRACHardReset_ServiceModule = EnumTypeField(None,iDRACHardReset_ServiceModuleTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SledInterposer(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SledInterposer", parent)
         # readonly attribute populated by iDRAC
         self.Config_SledInterposer = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2447,11 +2447,11 @@ class SledInterposer(ClassType):
         self.Occupied_SledInterposer = EnumTypeField(None,Occupied_SledInterposerTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.SlotName_SledInterposer = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SledSlot(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SledSlot", parent)
         # readonly attribute populated by iDRAC
         self.Config_SledSlot = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2460,11 +2460,11 @@ class SledSlot(ClassType):
         self.Occupied_SledSlot = EnumTypeField(None,Occupied_SledSlotTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.SlotName_SledSlot = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SlotConfig(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SlotConfig", parent)
         # readonly attribute populated by iDRAC
         self.Columns_SlotConfig = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2482,27 +2482,27 @@ class SlotConfig(ClassType):
         self.Rows_SlotConfig = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.Type_SlotConfig = EnumTypeField(None,Type_SlotConfigTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SmartCard(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SmartCard", parent)
         self.SmartCardCRLEnable_SmartCard = EnumTypeField(None,SmartCardCRLEnable_SmartCardTypes, parent=self)
         self.SmartCardLogonEnable_SmartCard = EnumTypeField(None,SmartCardLogonEnable_SmartCardTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Storage(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Storage", parent)
         self.AvailableSpareAlertThreshold_Storage = IntField(None, parent=self)
         self.RemainingRatedWriteEnduranceAlertThreshold_Storage = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SupportAssist(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SupportAssist", parent)
         self.Action_SupportAssist = StringField(None, parent=self)
         self.DefaultIPAddress_SupportAssist = StringField(None, parent=self)
@@ -2554,18 +2554,18 @@ class SupportAssist(ClassType):
         self.SupportAssistEULAAcceptedViaiDRACIntf_SupportAssist = StringField(None, parent=self)
         self.SupportAssistEULAAccepted_SupportAssist = EnumTypeField(None,SupportAssistEULAAccepted_SupportAssistTypes, parent=self)
         self.SupportAssistEnableState_SupportAssist = EnumTypeField(None,SupportAssistEnableState_SupportAssistTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SwitchConnectionView(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SwitchConnectionView", parent)
         self.Enable_SwitchConnectionView = EnumTypeField(None,Enable_SwitchConnectionViewTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SysInfo(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SysInfo", parent)
         self.AcSysRecovery_SysInfo = StringField(None, parent=self)
         self.BIOSFeature_SysInfo = StringField(None, parent=self)
@@ -2604,11 +2604,11 @@ class SysInfo(ClassType):
         self.SystemModel_SysInfo = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.SystemRev_SysInfo = IntField(None, parent=self)
         self.iDRACRev_SysInfo = EnumTypeField(None,iDRACRev_SysInfoTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class SysLog(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SysLog", parent)
         self.Port_SysLog = IntField(None, parent=self)
         self.PowerLogEnable_SysLog = EnumTypeField(None,PowerLogEnable_SysLogTypes, parent=self)
@@ -2618,22 +2618,22 @@ class SysLog(ClassType):
         self.Server3_SysLog = StringField(None, parent=self)
         self.SysLogEnable_SysLog = EnumTypeField(None,SysLogEnable_SysLogTypes, parent=self)
         self.Servers = CompositeFieldType(self.Server1_SysLog, self.Server2_SysLog, self.Server3_SysLog)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Telnet(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Telnet", parent)
         self.Enable_Telnet = EnumTypeField(None,Enable_TelnetTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.MaxSessions_Telnet = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.Port_Telnet = IntField(None, parent=self)
         self.Timeout_Telnet = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ThermalConfig(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ThermalConfig", parent)
         self.CriticalEventGenerationInterval_ThermalConfig = IntField(None, parent=self)
         self.EventGenerationInterval_ThermalConfig = IntField(None, parent=self)
@@ -2641,28 +2641,28 @@ class ThermalConfig(ClassType):
         self.FreshAirCompliantConfiguration_ThermalConfig = EnumTypeField(None,FreshAirCompliantConfiguration_ThermalConfigTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.RedundancyEnabled_ThermalConfig = EnumTypeField(None,RedundancyEnabled_ThermalConfigTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ThermalHealthIndicator(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ThermalHealthIndicator", parent)
         self.ID_ThermalHealthIndicator = StringField(None, parent=self)
         self.IndicatorColor_ThermalHealthIndicator = EnumTypeField(None,IndicatorColor_ThermalHealthIndicatorTypes, parent=self)
         self.IndicatorState_ThermalHealthIndicator = EnumTypeField(None,IndicatorState_ThermalHealthIndicatorTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ThermalHistorical(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ThermalHistorical", parent)
         self.IntervalInSeconds_ThermalHistorical = IntField(None, parent=self)
         self.StartTime_ThermalHistorical = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ThermalSettings(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ThermalSettings", parent)
         # readonly attribute populated by iDRAC
         self.AirExhaustTempSupport_ThermalSettings = EnumTypeField(None,AirExhaustTempSupport_ThermalSettingsTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2690,11 +2690,11 @@ class ThermalSettings(ClassType):
         # readonly attribute populated by iDRAC
         self.ThermalProfileValueSet_ThermalSettings = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.ThermalProfile_ThermalSettings = EnumTypeField(None,ThermalProfile_ThermalSettingsTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class ThermalWatermarks(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "ThermalWatermarks", parent)
         # readonly attribute populated by iDRAC
         self.MinTemperatureTimestamp_ThermalWatermarks = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2705,22 +2705,24 @@ class ThermalWatermarks(ClassType):
         # readonly attribute populated by iDRAC
         self.PeakTemperature_ThermalWatermarks = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.StartTime_ThermalWatermarks = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Time(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Time", parent)
         self.DayLightOffset_Time = IntField(None, parent=self)
+        self.DaylightOffset_Time = DayLightOffset_Time
         self.TimeZoneAbbreviation_Time = StringField(None, parent=self)
         self.TimeZoneOffset_Time = IntField(None, parent=self)
         self.Time_Time = IntField(None, parent=self)
         self.Timezone_Time = StringField(None, parent=self)
-        self.commit()
+        self.TimeZone_Time = Timezone_Time
+        if not loading_from_scp: self.commit()
 
 class USB(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "USB", parent)
         self.ConfigurationXML_USB = EnumTypeField(None,ConfigurationXML_USBTypes, parent=self)
         self.HostFrontPortStatus_USB = EnumTypeField(None,HostFrontPortStatus_USBTypes, parent=self)
@@ -2730,11 +2732,11 @@ class USB(ClassType):
         self.ManagementPortMode_USB = EnumTypeField(None,ManagementPortMode_USBTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.PortStatus_USB = EnumTypeField(None,PortStatus_USBTypes, parent=self)
         self.ZipPassword_USB = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class Update(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Update", parent)
         self.Begin_Update = EnumTypeField(None,Begin_UpdateTypes, parent=self)
         self.EnableSharedCompUpdate_Update = EnumTypeField(None,EnableSharedCompUpdate_UpdateTypes, parent=self)
@@ -2746,11 +2748,11 @@ class Update(ClassType):
         self.Status_Update = IntField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.TFTPTimeout_Update = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class UpdateTask(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "UpdateTask", parent)
         # readonly attribute populated by iDRAC
         self.FwupdatePart_UpdateTask = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2762,14 +2764,14 @@ class UpdateTask(ClassType):
         self.PCStandbyEC_UpdateTask = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.fwupdateflow_UpdateTask = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class UserDomain(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "UserDomain", parent)
         self.Name_UserDomain = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
     @property
     def Key(self):
@@ -2781,7 +2783,7 @@ class UserDomain(ClassType):
 
 class Users(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Users", parent)
         self.AuthenticationProtocol_Users = EnumTypeField(None,AuthenticationProtocol_UsersTypes, parent=self)
         # readonly attribute populated by iDRAC
@@ -2801,7 +2803,7 @@ class Users(ClassType):
         self.SolEnable_Users = EnumTypeField(None,SolEnable_UsersTypes, parent=self)
         self.UserName_Users = StringField(None, parent=self)
         self.UserPayloadAccess_Users = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
     @property
     def Key(self):
@@ -2813,7 +2815,7 @@ class Users(ClassType):
 
 class VNCServer(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "VNCServer", parent)
         # readonly attribute populated by iDRAC
         self.ActiveSessions_VNCServer = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2824,11 +2826,11 @@ class VNCServer(ClassType):
         self.Port_VNCServer = IntField(None, parent=self)
         self.SSLEncryptionBitLength_VNCServer = EnumTypeField(None,SSLEncryptionBitLength_VNCServerTypes, parent=self)
         self.Timeout_VNCServer = IntField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class VirtualConsole(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "VirtualConsole", parent)
         self.AccessPrivilege_VirtualConsole = EnumTypeField(None,AccessPrivilege_VirtualConsoleTypes, parent=self)
         self.AttachState_VirtualConsole = EnumTypeField(None,AttachState_VirtualConsoleTypes, parent=self)
@@ -2862,11 +2864,11 @@ class VirtualConsole(ClassType):
         self.Timeout_VirtualConsole = IntField(None, parent=self)
         self.VideoCaptureEnable_VirtualConsole = EnumTypeField(None,VideoCaptureEnable_VirtualConsoleTypes, parent=self)
         self.VideoCaptureFileExtension_VirtualConsole = StringField(None, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class VirtualMedia(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "VirtualMedia", parent)
         self.ActiveSessions_VirtualMedia = IntField(None, parent=self)
         self.Attached_VirtualMedia = EnumTypeField(None,Attached_VirtualMediaTypes, parent=self)
@@ -2879,11 +2881,11 @@ class VirtualMedia(ClassType):
         self.KeyEnable_VirtualMedia = EnumTypeField(None,KeyEnable_VirtualMediaTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.MaxSessions_VirtualMedia = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class WebServer(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "WebServer", parent)
         self.ControlCollaboration_WebServer = IntField(None, parent=self)
         self.ControlVFLoder_WebServer = IntField(None, parent=self)
@@ -2900,18 +2902,18 @@ class WebServer(ClassType):
         self.Timeout_WebServer = IntField(None, parent=self)
         self.TitleBarOptionCustom_WebServer = StringField(None, parent=self)
         self.TitleBarOption_WebServer = EnumTypeField(None,TitleBarOption_WebServerTypes, parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class _STP_(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "[STP]", parent)
         self.Enabled_STP = EnumTypeField(None,Enabled_STPTypes, alias="Enabled_[STP]", parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class vFlashPartition(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "vFlashPartition", parent)
         self.AccessType_vFlashPartition = EnumTypeField(None,AccessType_vFlashPartitionTypes, parent=self)
         self.AttachState_vFlashPartition = EnumTypeField(None,AttachState_vFlashPartitionTypes, parent=self)
@@ -2921,11 +2923,11 @@ class vFlashPartition(ClassType):
         self.Size_vFlashPartition = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.VolumeLabel_vFlashPartition = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class vFlashSD(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "vFlashSD", parent)
         # readonly attribute populated by iDRAC
         self.AvailableSize_vFlashSD = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2939,193 +2941,193 @@ class vFlashSD(ClassType):
         # readonly attribute populated by iDRAC
         self.Size_vFlashSD = StringField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.WriteProtect_vFlashSD = EnumTypeField(None,WriteProtect_vFlashSDTypes, parent=self)
-        self.commit()
-
-class LifecycleController(ClassType):
-
-    def __init__(self, parent = None):
-        super().__init__("Component", None, parent)
-        self.LCAttributes = LCAttributes(parent=self)
-        self.commit()
+        if not loading_from_scp: self.commit()
 
 class System(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__("Component", None, parent)
-        self.LCD = LCD(parent=self)
-        self.ServerOS = ServerOS(parent=self)
-        self.ServerPwr = ServerPwr(parent=self)
-        self.ServerTopology = ServerTopology(parent=self)
-        self.ThermalConfig = ThermalConfig(parent=self)
-        self.commit()
+        self.LCD = LCD(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerOS = ServerOS(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerPwr = ServerPwr(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerTopology = ServerTopology(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalConfig = ThermalConfig(parent=self, loading_from_scp=loading_from_scp)
+        if not loading_from_scp: self.commit()
+
+class LifecycleController(ClassType):
+
+    def __init__(self, parent = None, loading_from_scp=False):
+        super().__init__("Component", None, parent)
+        self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
+        if not loading_from_scp: self.commit()
 
 class iDRAC(ClassType):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent = None, loading_from_scp=False):
         super().__init__("Component", None, parent)
-        self.ADGroup = ArrayType(ADGroup, parent=self, min_index=1, max_index=5)
-        self.ASRConfig = ASRConfig(parent=self)
-        self.ActiveDirectory = ActiveDirectory(parent=self)
-        self.AutoBackup = AutoBackup(parent=self)
-        self.AutoOSLockGroup = AutoOSLockGroup(parent=self)
-        self.AutoUpdate = AutoUpdate(parent=self)
-        self.Backplane = Backplane(parent=self)
-        self.BoardPowerConsumption = BoardPowerConsumption(parent=self)
-        self.Branding = Branding(parent=self)
-        self.ButtonLCP = ButtonLCP(parent=self)
-        self.ButtonRCP = ButtonRCP(parent=self)
-        self.CMC = CMC(parent=self)
-        self.CMCSNMPAlert = CMCSNMPAlert(parent=self)
-        self.CMCSNMPTrapIPv6 = CMCSNMPTrapIPv6(parent=self)
-        self.CMCSlot = CMCSlot(parent=self)
-        self.Certificate = Certificate(parent=self)
-        self.ChassisControl = ChassisControl(parent=self)
-        self.ChassisHealthIndicator = ChassisHealthIndicator(parent=self)
-        self.ChassisInfo = ChassisInfo(parent=self)
-        self.ChassisPower = ChassisPower(parent=self)
-        self.ChassisPwrState = ChassisPwrState(parent=self)
-        self.ChassisTopology = ChassisTopology(parent=self)
-        self.CurrentIPv4 = CurrentIPv4(parent=self)
-        self.CurrentIPv6 = CurrentIPv6(parent=self)
-        self.CurrentNIC = CurrentNIC(parent=self)
-        self.DCMIThermal = DCMIThermal(parent=self)
-        self.DCSCustom = DCSCustom(parent=self)
-        self.DCSResetCtlr = DCSResetCtlr(parent=self)
-        self.DIMMInfo = DIMMInfo(parent=self)
-        self.DefaultCredentialMitigationConfigGroup = DefaultCredentialMitigationConfigGroup(parent=self)
-        self.DefaultFactoryPassword = DefaultFactoryPassword(parent=self)
-        self.Diagnostics = Diagnostics(parent=self)
-        self.EC = EC(parent=self)
-        self.EmailAlert = ArrayType(EmailAlert, parent=self, min_index=1, max_index=4)
-        self.FPGAFWInventory = FPGAFWInventory(parent=self)
-        self.FReDFWInventory = FReDFWInventory(parent=self)
-        self.FWInventory = FWInventory(parent=self)
-        self.FWUpdateService = FWUpdateService(parent=self)
-        self.FWUpdateTask = FWUpdateTask(parent=self)
-        self.FanSlot = FanSlot(parent=self)
-        self.FrontPanel = FrontPanel(parent=self)
-        self.GBE = GBE(parent=self)
-        self.GUI = GUI(parent=self)
-        self.GpGPUTable = GpGPUTable(parent=self)
-        self.GroupManager = GroupManager(parent=self)
-        self.IOIDOpt = IOIDOpt(parent=self)
-        self.IOMInterposer = IOMInterposer(parent=self)
-        self.IOMSlot = IOMSlot(parent=self)
-        self.IOMSlotConfig = IOMSlotConfig(parent=self)
-        self.IPBlocking = IPBlocking(parent=self)
-        self.IPMIChassisData = IPMIChassisData(parent=self)
-        self.IPMIFireWall = IPMIFireWall(parent=self)
-        self.IPMIFireWallChannel = IPMIFireWallChannel(parent=self)
-        self.IPMIIPConfig = IPMIIPConfig(parent=self)
-        self.IPMILANConfig = IPMILANConfig(parent=self)
-        self.IPMILANPEFConfig = IPMILANPEFConfig(parent=self)
-        self.IPMILan = IPMILan(parent=self)
-        self.IPMIPEFSeldomFilter = IPMIPEFSeldomFilter(parent=self)
-        self.IPMIPefOften = IPMIPefOften(parent=self)
-        self.IPMIPefSeldom = IPMIPefSeldom(parent=self)
-        self.IPMIPefSeldomAlerts = IPMIPefSeldomAlerts(parent=self)
-        self.IPMIPowerManagement = IPMIPowerManagement(parent=self)
-        self.IPMISDR = IPMISDR(parent=self)
-        self.IPMISEL = IPMISEL(parent=self)
-        self.IPMISOL = IPMISOL(parent=self)
-        self.IPMISerial = IPMISerial(parent=self)
-        self.IPMISystemParameter = IPMISystemParameter(parent=self)
-        self.IPMIUserEncryptIVKey = IPMIUserEncryptIVKey(parent=self)
-        self.IPMIUserInfo = IPMIUserInfo(parent=self)
-        self.IPv4 = IPv4(parent=self)
-        self.IPv4Static = IPv4Static(parent=self)
-        self.IPv6 = IPv6(parent=self)
-        self.IPv6Static = IPv6Static(parent=self)
-        self.IPv6URL = IPv6URL(parent=self)
-        self.IdentifyButton = IdentifyButton(parent=self)
-        self.IndicatorLCP = IndicatorLCP(parent=self)
-        self.Info = Info(parent=self)
-        self.InletTemp = InletTemp(parent=self)
-        self.IntegratedDatacenter = IntegratedDatacenter(parent=self)
-        self.LCAttributes = LCAttributes(parent=self)
-        self.LDAP = LDAP(parent=self)
-        self.LDAPRoleGroup = ArrayType(LDAPRoleGroup, parent=self, min_index=1, max_index=5)
-        self.LocalSecurity = LocalSecurity(parent=self)
-        self.Lockdown = Lockdown(parent=self)
-        self.Logging = Logging(parent=self)
-        self.MSM = MSM(parent=self)
-        self.MSMConfigBackup = MSMConfigBackup(parent=self)
-        self.MSMSNMPAlert = MSMSNMPAlert(parent=self)
-        self.MSMSNMPTrapIPv4 = MSMSNMPTrapIPv4(parent=self)
-        self.MSMSNMPTrapIPv6 = MSMSNMPTrapIPv6(parent=self)
-        self.MachineTrust = MachineTrust(parent=self)
-        self.MgmtNetworkInterface = MgmtNetworkInterface(parent=self)
-        self.NIC = NIC(parent=self)
-        self.NICStatic = NICStatic(parent=self)
-        self.NTPConfigGroup = NTPConfigGroup(parent=self)
-        self.OS_BMC = OS_BMC(parent=self)
-        self.PCIeSlotLFM = PCIeSlotLFM(parent=self)
-        self.PMLicensing = PMLicensing(parent=self)
-        self.PSUSlot = PSUSlot(parent=self)
-        self.PSUSlotSeq = PSUSlotSeq(parent=self)
-        self.PlatformCapability = PlatformCapability(parent=self)
-        self.PlatformLicense = PlatformLicense(parent=self)
-        self.PowerButton = PowerButton(parent=self)
-        self.PowerHealthIndicator = PowerHealthIndicator(parent=self)
-        self.PowerHistorical = PowerHistorical(parent=self)
-        self.PrivateStore = PrivateStore(parent=self)
-        self.ProfileTask = ProfileTask(parent=self)
-        self.QuickSync = QuickSync(parent=self)
-        self.RFS = RFS(parent=self)
-        self.RSM = RSM(parent=self)
-        self.RSM_ = RSM_(parent=self)
-        self.Racadm = Racadm(parent=self)
-        self.Racadm_ = Racadm_(parent=self)
-        self.Redfish = Redfish(parent=self)
-        self.RedfishEventing = RedfishEventing(parent=self)
-        self.Redundancy = Redundancy(parent=self)
-        self.RemoteHosts = RemoteHosts(parent=self)
-        self.SATAInventory = SATAInventory(parent=self)
-        self.SC_BMC = SC_BMC(parent=self)
-        self.SECONDARYNIC = SECONDARYNIC(parent=self)
-        self.SNMP = SNMP(parent=self)
-        self.SNMPAlert = ArrayType(SNMPAlert, parent=self, min_index=1, max_index=8)
-        self.SNMPTrapIPv4 = SNMPTrapIPv4(parent=self)
-        self.SNMPTrapIPv6 = SNMPTrapIPv6(parent=self)
-        self.SSH = SSH(parent=self)
-        self.SecureDefaultPassword = SecureDefaultPassword(parent=self)
-        self.Security = Security(parent=self)
-        self.SecurityCSC = SecurityCSC(parent=self)
-        self.SecuritySSL = SecuritySSL(parent=self)
-        self.Sensor = Sensor(parent=self)
-        self.SensorThresholds = SensorThresholds(parent=self)
-        self.Serial = Serial(parent=self)
-        self.SerialRedirection = SerialRedirection(parent=self)
-        self.ServerBoot = ServerBoot(parent=self)
-        self.ServerInfo = ServerInfo(parent=self)
-        self.ServerPwrMon = ServerPwrMon(parent=self)
-        self.ServiceModule = ServiceModule(parent=self)
-        self.SledInterposer = SledInterposer(parent=self)
-        self.SledSlot = SledSlot(parent=self)
-        self.SlotConfig = SlotConfig(parent=self)
-        self.SmartCard = SmartCard(parent=self)
-        self.Storage = Storage(parent=self)
-        self.SupportAssist = SupportAssist(parent=self)
-        self.SwitchConnectionView = SwitchConnectionView(parent=self)
-        self.SysInfo = SysInfo(parent=self)
-        self.SysLog = SysLog(parent=self)
-        self.Telnet = Telnet(parent=self)
-        self.ThermalHealthIndicator = ThermalHealthIndicator(parent=self)
-        self.ThermalHistorical = ThermalHistorical(parent=self)
-        self.ThermalSettings = ThermalSettings(parent=self)
-        self.ThermalWatermarks = ThermalWatermarks(parent=self)
-        self.Time = Time(parent=self)
-        self.USB = USB(parent=self)
-        self.Update = Update(parent=self)
-        self.UpdateTask = UpdateTask(parent=self)
-        self.UserDomain = ArrayType(UserDomain, parent=self, min_index=1, max_index=40)
-        self.Users = ArrayType(Users, parent=self, min_index=1, max_index=16)
-        self.VNCServer = VNCServer(parent=self)
-        self.VirtualConsole = VirtualConsole(parent=self)
-        self.VirtualMedia = VirtualMedia(parent=self)
-        self.WebServer = WebServer(parent=self)
-        self._STP_ = _STP_(parent=self)
-        self.vFlashPartition = vFlashPartition(parent=self)
-        self.vFlashSD = vFlashSD(parent=self)
-        self.commit()
+        self.ADGroup = ArrayType(ADGroup, parent=self, min_index=1, max_index=5, loading_from_scp=loading_from_scp)
+        self.ASRConfig = ASRConfig(parent=self, loading_from_scp=loading_from_scp)
+        self.ActiveDirectory = ActiveDirectory(parent=self, loading_from_scp=loading_from_scp)
+        self.AutoBackup = AutoBackup(parent=self, loading_from_scp=loading_from_scp)
+        self.AutoOSLockGroup = AutoOSLockGroup(parent=self, loading_from_scp=loading_from_scp)
+        self.AutoUpdate = AutoUpdate(parent=self, loading_from_scp=loading_from_scp)
+        self.Backplane = Backplane(parent=self, loading_from_scp=loading_from_scp)
+        self.BoardPowerConsumption = BoardPowerConsumption(parent=self, loading_from_scp=loading_from_scp)
+        self.Branding = Branding(parent=self, loading_from_scp=loading_from_scp)
+        self.ButtonLCP = ButtonLCP(parent=self, loading_from_scp=loading_from_scp)
+        self.ButtonRCP = ButtonRCP(parent=self, loading_from_scp=loading_from_scp)
+        self.CMC = CMC(parent=self, loading_from_scp=loading_from_scp)
+        self.CMCSNMPAlert = CMCSNMPAlert(parent=self, loading_from_scp=loading_from_scp)
+        self.CMCSNMPTrapIPv6 = CMCSNMPTrapIPv6(parent=self, loading_from_scp=loading_from_scp)
+        self.CMCSlot = CMCSlot(parent=self, loading_from_scp=loading_from_scp)
+        self.Certificate = Certificate(parent=self, loading_from_scp=loading_from_scp)
+        self.ChassisControl = ChassisControl(parent=self, loading_from_scp=loading_from_scp)
+        self.ChassisHealthIndicator = ChassisHealthIndicator(parent=self, loading_from_scp=loading_from_scp)
+        self.ChassisInfo = ChassisInfo(parent=self, loading_from_scp=loading_from_scp)
+        self.ChassisPower = ChassisPower(parent=self, loading_from_scp=loading_from_scp)
+        self.ChassisPwrState = ChassisPwrState(parent=self, loading_from_scp=loading_from_scp)
+        self.ChassisTopology = ChassisTopology(parent=self, loading_from_scp=loading_from_scp)
+        self.CurrentIPv4 = CurrentIPv4(parent=self, loading_from_scp=loading_from_scp)
+        self.CurrentIPv6 = CurrentIPv6(parent=self, loading_from_scp=loading_from_scp)
+        self.CurrentNIC = CurrentNIC(parent=self, loading_from_scp=loading_from_scp)
+        self.DCMIThermal = DCMIThermal(parent=self, loading_from_scp=loading_from_scp)
+        self.DCSCustom = DCSCustom(parent=self, loading_from_scp=loading_from_scp)
+        self.DCSResetCtlr = DCSResetCtlr(parent=self, loading_from_scp=loading_from_scp)
+        self.DIMMInfo = DIMMInfo(parent=self, loading_from_scp=loading_from_scp)
+        self.DefaultCredentialMitigationConfigGroup = DefaultCredentialMitigationConfigGroup(parent=self, loading_from_scp=loading_from_scp)
+        self.DefaultFactoryPassword = DefaultFactoryPassword(parent=self, loading_from_scp=loading_from_scp)
+        self.Diagnostics = Diagnostics(parent=self, loading_from_scp=loading_from_scp)
+        self.EC = EC(parent=self, loading_from_scp=loading_from_scp)
+        self.EmailAlert = ArrayType(EmailAlert, parent=self, min_index=1, max_index=4, loading_from_scp=loading_from_scp)
+        self.FPGAFWInventory = FPGAFWInventory(parent=self, loading_from_scp=loading_from_scp)
+        self.FReDFWInventory = FReDFWInventory(parent=self, loading_from_scp=loading_from_scp)
+        self.FWInventory = FWInventory(parent=self, loading_from_scp=loading_from_scp)
+        self.FWUpdateService = FWUpdateService(parent=self, loading_from_scp=loading_from_scp)
+        self.FWUpdateTask = FWUpdateTask(parent=self, loading_from_scp=loading_from_scp)
+        self.FanSlot = FanSlot(parent=self, loading_from_scp=loading_from_scp)
+        self.FrontPanel = FrontPanel(parent=self, loading_from_scp=loading_from_scp)
+        self.GBE = GBE(parent=self, loading_from_scp=loading_from_scp)
+        self.GUI = GUI(parent=self, loading_from_scp=loading_from_scp)
+        self.GpGPUTable = GpGPUTable(parent=self, loading_from_scp=loading_from_scp)
+        self.GroupManager = GroupManager(parent=self, loading_from_scp=loading_from_scp)
+        self.IOIDOpt = IOIDOpt(parent=self, loading_from_scp=loading_from_scp)
+        self.IOMInterposer = IOMInterposer(parent=self, loading_from_scp=loading_from_scp)
+        self.IOMSlot = IOMSlot(parent=self, loading_from_scp=loading_from_scp)
+        self.IOMSlotConfig = IOMSlotConfig(parent=self, loading_from_scp=loading_from_scp)
+        self.IPBlocking = IPBlocking(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIChassisData = IPMIChassisData(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIFireWall = IPMIFireWall(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIFireWallChannel = IPMIFireWallChannel(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIIPConfig = IPMIIPConfig(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMILANConfig = IPMILANConfig(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMILANPEFConfig = IPMILANPEFConfig(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMILan = IPMILan(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIPEFSeldomFilter = IPMIPEFSeldomFilter(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIPefOften = IPMIPefOften(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIPefSeldom = IPMIPefSeldom(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIPefSeldomAlerts = IPMIPefSeldomAlerts(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIPowerManagement = IPMIPowerManagement(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMISDR = IPMISDR(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMISEL = IPMISEL(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMISOL = IPMISOL(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMISerial = IPMISerial(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMISystemParameter = IPMISystemParameter(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIUserEncryptIVKey = IPMIUserEncryptIVKey(parent=self, loading_from_scp=loading_from_scp)
+        self.IPMIUserInfo = IPMIUserInfo(parent=self, loading_from_scp=loading_from_scp)
+        self.IPv4 = IPv4(parent=self, loading_from_scp=loading_from_scp)
+        self.IPv4Static = IPv4Static(parent=self, loading_from_scp=loading_from_scp)
+        self.IPv6 = IPv6(parent=self, loading_from_scp=loading_from_scp)
+        self.IPv6Static = IPv6Static(parent=self, loading_from_scp=loading_from_scp)
+        self.IPv6URL = IPv6URL(parent=self, loading_from_scp=loading_from_scp)
+        self.IdentifyButton = IdentifyButton(parent=self, loading_from_scp=loading_from_scp)
+        self.IndicatorLCP = IndicatorLCP(parent=self, loading_from_scp=loading_from_scp)
+        self.Info = Info(parent=self, loading_from_scp=loading_from_scp)
+        self.InletTemp = InletTemp(parent=self, loading_from_scp=loading_from_scp)
+        self.IntegratedDatacenter = IntegratedDatacenter(parent=self, loading_from_scp=loading_from_scp)
+        self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
+        self.LDAP = LDAP(parent=self, loading_from_scp=loading_from_scp)
+        self.LDAPRoleGroup = ArrayType(LDAPRoleGroup, parent=self, min_index=1, max_index=5, loading_from_scp=loading_from_scp)
+        self.LocalSecurity = LocalSecurity(parent=self, loading_from_scp=loading_from_scp)
+        self.Lockdown = Lockdown(parent=self, loading_from_scp=loading_from_scp)
+        self.Logging = Logging(parent=self, loading_from_scp=loading_from_scp)
+        self.MSM = MSM(parent=self, loading_from_scp=loading_from_scp)
+        self.MSMConfigBackup = MSMConfigBackup(parent=self, loading_from_scp=loading_from_scp)
+        self.MSMSNMPAlert = MSMSNMPAlert(parent=self, loading_from_scp=loading_from_scp)
+        self.MSMSNMPTrapIPv4 = MSMSNMPTrapIPv4(parent=self, loading_from_scp=loading_from_scp)
+        self.MSMSNMPTrapIPv6 = MSMSNMPTrapIPv6(parent=self, loading_from_scp=loading_from_scp)
+        self.MachineTrust = MachineTrust(parent=self, loading_from_scp=loading_from_scp)
+        self.MgmtNetworkInterface = MgmtNetworkInterface(parent=self, loading_from_scp=loading_from_scp)
+        self.NIC = NIC(parent=self, loading_from_scp=loading_from_scp)
+        self.NICStatic = NICStatic(parent=self, loading_from_scp=loading_from_scp)
+        self.NTPConfigGroup = NTPConfigGroup(parent=self, loading_from_scp=loading_from_scp)
+        self.OS_BMC = OS_BMC(parent=self, loading_from_scp=loading_from_scp)
+        self.PCIeSlotLFM = PCIeSlotLFM(parent=self, loading_from_scp=loading_from_scp)
+        self.PMLicensing = PMLicensing(parent=self, loading_from_scp=loading_from_scp)
+        self.PSUSlot = PSUSlot(parent=self, loading_from_scp=loading_from_scp)
+        self.PSUSlotSeq = PSUSlotSeq(parent=self, loading_from_scp=loading_from_scp)
+        self.PlatformCapability = PlatformCapability(parent=self, loading_from_scp=loading_from_scp)
+        self.PlatformLicense = PlatformLicense(parent=self, loading_from_scp=loading_from_scp)
+        self.PowerButton = PowerButton(parent=self, loading_from_scp=loading_from_scp)
+        self.PowerHealthIndicator = PowerHealthIndicator(parent=self, loading_from_scp=loading_from_scp)
+        self.PowerHistorical = PowerHistorical(parent=self, loading_from_scp=loading_from_scp)
+        self.PrivateStore = PrivateStore(parent=self, loading_from_scp=loading_from_scp)
+        self.ProfileTask = ProfileTask(parent=self, loading_from_scp=loading_from_scp)
+        self.QuickSync = QuickSync(parent=self, loading_from_scp=loading_from_scp)
+        self.RFS = RFS(parent=self, loading_from_scp=loading_from_scp)
+        self.RSM = RSM(parent=self, loading_from_scp=loading_from_scp)
+        self.RSM_ = RSM_(parent=self, loading_from_scp=loading_from_scp)
+        self.Racadm = Racadm(parent=self, loading_from_scp=loading_from_scp)
+        self.Racadm_ = Racadm_(parent=self, loading_from_scp=loading_from_scp)
+        self.Redfish = Redfish(parent=self, loading_from_scp=loading_from_scp)
+        self.RedfishEventing = RedfishEventing(parent=self, loading_from_scp=loading_from_scp)
+        self.Redundancy = Redundancy(parent=self, loading_from_scp=loading_from_scp)
+        self.RemoteHosts = RemoteHosts(parent=self, loading_from_scp=loading_from_scp)
+        self.SATAInventory = SATAInventory(parent=self, loading_from_scp=loading_from_scp)
+        self.SC_BMC = SC_BMC(parent=self, loading_from_scp=loading_from_scp)
+        self.SECONDARYNIC = SECONDARYNIC(parent=self, loading_from_scp=loading_from_scp)
+        self.SNMP = SNMP(parent=self, loading_from_scp=loading_from_scp)
+        self.SNMPAlert = ArrayType(SNMPAlert, parent=self, min_index=1, max_index=8, loading_from_scp=loading_from_scp)
+        self.SNMPTrapIPv4 = SNMPTrapIPv4(parent=self, loading_from_scp=loading_from_scp)
+        self.SNMPTrapIPv6 = SNMPTrapIPv6(parent=self, loading_from_scp=loading_from_scp)
+        self.SSH = SSH(parent=self, loading_from_scp=loading_from_scp)
+        self.SecureDefaultPassword = SecureDefaultPassword(parent=self, loading_from_scp=loading_from_scp)
+        self.Security = Security(parent=self, loading_from_scp=loading_from_scp)
+        self.SecurityCSC = SecurityCSC(parent=self, loading_from_scp=loading_from_scp)
+        self.SecuritySSL = SecuritySSL(parent=self, loading_from_scp=loading_from_scp)
+        self.Sensor = Sensor(parent=self, loading_from_scp=loading_from_scp)
+        self.SensorThresholds = SensorThresholds(parent=self, loading_from_scp=loading_from_scp)
+        self.Serial = Serial(parent=self, loading_from_scp=loading_from_scp)
+        self.SerialRedirection = SerialRedirection(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerBoot = ServerBoot(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerInfo = ServerInfo(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerPwrMon = ServerPwrMon(parent=self, loading_from_scp=loading_from_scp)
+        self.ServiceModule = ServiceModule(parent=self, loading_from_scp=loading_from_scp)
+        self.SledInterposer = SledInterposer(parent=self, loading_from_scp=loading_from_scp)
+        self.SledSlot = SledSlot(parent=self, loading_from_scp=loading_from_scp)
+        self.SlotConfig = SlotConfig(parent=self, loading_from_scp=loading_from_scp)
+        self.SmartCard = SmartCard(parent=self, loading_from_scp=loading_from_scp)
+        self.Storage = Storage(parent=self, loading_from_scp=loading_from_scp)
+        self.SupportAssist = SupportAssist(parent=self, loading_from_scp=loading_from_scp)
+        self.SwitchConnectionView = SwitchConnectionView(parent=self, loading_from_scp=loading_from_scp)
+        self.SysInfo = SysInfo(parent=self, loading_from_scp=loading_from_scp)
+        self.SysLog = SysLog(parent=self, loading_from_scp=loading_from_scp)
+        self.Telnet = Telnet(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalHealthIndicator = ThermalHealthIndicator(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalHistorical = ThermalHistorical(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalSettings = ThermalSettings(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalWatermarks = ThermalWatermarks(parent=self, loading_from_scp=loading_from_scp)
+        self.Time = Time(parent=self, loading_from_scp=loading_from_scp)
+        self.USB = USB(parent=self, loading_from_scp=loading_from_scp)
+        self.Update = Update(parent=self, loading_from_scp=loading_from_scp)
+        self.UpdateTask = UpdateTask(parent=self, loading_from_scp=loading_from_scp)
+        self.UserDomain = ArrayType(UserDomain, parent=self, min_index=1, max_index=40, loading_from_scp=loading_from_scp)
+        self.Users = ArrayType(Users, parent=self, min_index=1, max_index=16, loading_from_scp=loading_from_scp)
+        self.VNCServer = VNCServer(parent=self, loading_from_scp=loading_from_scp)
+        self.VirtualConsole = VirtualConsole(parent=self, loading_from_scp=loading_from_scp)
+        self.VirtualMedia = VirtualMedia(parent=self, loading_from_scp=loading_from_scp)
+        self.WebServer = WebServer(parent=self, loading_from_scp=loading_from_scp)
+        self._STP_ = _STP_(parent=self, loading_from_scp=loading_from_scp)
+        self.vFlashPartition = vFlashPartition(parent=self, loading_from_scp=loading_from_scp)
+        self.vFlashSD = vFlashSD(parent=self, loading_from_scp=loading_from_scp)
+        if not loading_from_scp: self.commit()
 

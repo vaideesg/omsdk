@@ -54,6 +54,7 @@ class ClassType(TypeBase):
         self._freeze = False
 
         self.__dict__['_state'] = TypeState.UnInitialized
+        self.__dict__['_attribs'] = {}
 
     # Value APIs
     def __getattr__(self, name):
@@ -75,7 +76,7 @@ class ClassType(TypeBase):
         # should we allow updates to  '_type', '_alias', '_fname'?
         if name in [ '_alias', '_fname', '_volatile', '_parent',
                      '_composite', '_index', '_freeze',
-                     '_modifyAllowed', '_deleteAllowed']:
+                     '_modifyAllowed', '_deleteAllowed', '_attribs']:
             self.__dict__[name] = value
             return
 
@@ -343,6 +344,7 @@ class ClassType(TypeBase):
         return self.__dict__['_freeze']
 
     def _set_index(self, index=1):
+        self._index = index
         for i in self.Properties:
             self.__dict__[i]._index = index
 
@@ -390,6 +392,13 @@ class ClassType(TypeBase):
             return {k: v for k,v in obj.iteritems() if not k.startswith('_')}
         if PY3:
             return {k: v for k,v in obj.items() if not k.startswith('_')}
+
+    def _clear_duplicates(self):
+        for i in self.Properties:
+            self.__dict__[i]._clear_duplicates()
+
+    def add_attribute(self, name, value):
+        self.__dict__['_attribs'][name] = value
 
     def json_encode(self):
         return str(self)
