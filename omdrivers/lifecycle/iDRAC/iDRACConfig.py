@@ -646,7 +646,7 @@ iDRACWsManCmds = {
         },
         "Parameters" : [
                 ('IPAddress', "share", 'remote_ipaddr', type("10.20.40.50"), None),
-                ('ShareName', "share", 'remote_share_name', type("\\test"), None),
+                ('ShareName', "share", 'remote_folder_name', type("\\test"), None),
                 ('ShareType', "share", 'remote_share_type', Share.ShareType, None),
                 ('ImageName',  "share", 'remote_file_name', type("filename"), None),
                 ("Username",  "creds", 'username', type("user"), None),

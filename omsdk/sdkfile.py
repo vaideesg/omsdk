@@ -130,6 +130,11 @@ class _PathObject(object):
                 self.share_name = psep.join(shpatharr[0:-1])
                 self.file_name = shpatharr[-1]
                 self.share_path = psep.join(self.full_path.split(psep)[0:-1])
+
+            if self.share_type in [Share.ShareType.CIFS, Share.LocalFolderType.Windows]:
+                self.folder_name = self.share_name
+            else:
+                self.folder_name = self._get_folder_name(self.paths[:-1])
         else:
             if len(args) <= 0: args = [""]
             self.mountable_path = args[0]
@@ -171,6 +176,14 @@ class _PathObject(object):
 
         return self._get_share_path(fname, paths)
 
+    def _get_folder_name(self, paths):
+        fname = ""
+
+        if 'rpath_sep' in Share._ShareSpec[self.share_type]:
+            fname += Share._ShareSpec[self.share_type]['rpath_sep']
+
+        return self._get_share_path(fname, paths)
+
     def get_full_path_with(self, npaths):
         if not isinstance(npaths, list):
             npaths = [npaths]
@@ -186,6 +199,7 @@ class _PathObject(object):
         print("  " + sname + " Full Path " + str(self.full_path))
         print("  " + sname + " Mountable Path " + str(self.mountable_path))
         print("  " + sname + " Share Path " + str(self.share_path))
+        print("  " + sname + " Folder Name " + str(self.folder_name))
 
 class RemotePath(_PathObject):
     def __init__(self, share_type, isFolder, ipaddr, *args):
@@ -613,11 +627,19 @@ class FileOnShare(Share):
        return self.remote.share_name
 
     @property
+    def remote_folder_name(self):
+       return self.remote.folder_name
+
+    @property
     def remote_file_name(self):
        return self.remote.file_name
 
     @property
     def remote_folder_path(self):
+       return self.remote.share_path
+
+    @property
+    def remote_folder(self):
        return self.remote.share_path
 
     @property
