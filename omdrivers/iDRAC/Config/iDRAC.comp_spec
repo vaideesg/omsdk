@@ -2,7 +2,8 @@
     "LifecycleController" : {
         "pattern" : "LifecycleController.Embedded.1",
         "registry" : "iDRAC",
-        "groups" : ["LCAttributes"]
+        "groups" : ["LCAttributes"],
+        "entries" : 1
     },
     "System" : {
         "pattern" : "System.Embedded.1",
@@ -16,7 +17,8 @@
             "ServerPwr", 
             "ServerTopology", 
             "ServerOS"
-        ]
+        ],
+        "entries" : 1
     },
     "iDRAC" : {
         "pattern" : "iDRAC.Embedded.1",
@@ -28,26 +30,30 @@
             "ServerPwr", 
             "ServerTopology", 
             "ServerOS"
-        ]
+        ],
+        "entries" : 1
     },
-    "FC" : {
+    "FCHBA" : {
         "pattern" : "FC\\.Slot\\..*",
         "firmware_pattern" : "FC\\.Slot\\..*",
         "registry" : "FCHBA",
-        "nogroup" : true
+        "nogroup" : true,
+        "entries" : "multiple"
     },
     "NIC" : {
         "pattern" : "NIC\\..*",
         "firmware_pattern" : "NIC\\..*",
         "registry" : "NIC",
-        "nogroup" : true
+        "nogroup" : true,
+        "entries" : "multiple"
     },
     "Controller" : {
         "pattern" : "^RAID\\.*",
         "firmware_pattern" : "^RAID\\.*",
         "registry" : "RAID",
         "groups" : [ "Controller" ],
-        "nogroup" : true
+        "nogroup" : true,
+        "entries" : "multiple"
     },
     "Enclosure" : {
         "pattern" : "^[^:]+:RAID\\..*",
@@ -74,7 +80,8 @@
         "firmware_pattern" : "BIOS\\..*",
         "registry" : "BIOS",
         "groups" : [  ],
-        "nogroup" : true
+        "nogroup" : true,
+        "entries" : 1
     },
     "DriverPack" : {
         "firmware_pattern" : "DriverPack\\..*",
@@ -127,5 +134,16 @@
             "DayLightOffset_Time" : "DaylightOffset_Time",
             "DayLightOffset" : "DaylightOffset_Time"
          }
+    },
+    "tree" : {
+        "SystemConfiguration" : [
+            "LifecycleController",
+            "System",
+            "iDRAC",
+            "FCHBA",
+            "NIC",
+            "BIOS",
+            "#Controller"
+        ]
     }
 }
