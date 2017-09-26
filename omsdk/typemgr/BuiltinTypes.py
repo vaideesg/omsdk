@@ -58,6 +58,27 @@ class IPv4AddressField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
         super().__init__(init_value, entype, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
+    def my_accept_value(self, value):
+        if isinstance(value, str):
+            if not re.match('^\d+(\.\d+){3}$', value):
+                return False
+            for n in t.split('.'):
+                if int(n) > 255:
+                    return False
+            return True
+        else:
+            return False
+
 class IPv6AddressField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
         super().__init__(init_value, entype, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
+
+
+class MacAddressField(CloneableFieldType):
+    def __init__(self, init_value, alias=None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        super().__init__(init_value, entype, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
+    def my_accept_value(self, value):
+        if isinstance(value, str):
+            return re.match('^[0-9a-f]{2}(:[0-9a-f]{2}){5}$', value, re.I) is not None
+        else:
+            return False
