@@ -1,10 +1,10 @@
 from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.ArrayType import ArrayType
 from omsdk.typemgr.BuiltinTypes import RootClassType
-from omdrivers.types.iDRAC.iDRAC import *
-from omdrivers.types.iDRAC.NIC import *
 from omdrivers.types.iDRAC.RAID import *
+from omdrivers.types.iDRAC.NIC import *
 from omdrivers.types.iDRAC.FCHBA import *
+from omdrivers.types.iDRAC.iDRAC import *
 from omdrivers.types.iDRAC.BIOS import *
 import logging
 

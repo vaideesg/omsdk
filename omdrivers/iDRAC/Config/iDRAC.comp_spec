@@ -145,5 +145,19 @@
             "BIOS",
             "#Controller"
         ]
+    },
+    "reboot": {
+        "BIOS": [
+            "BootMode",
+            "BiosBootSeq",
+            "HddSeq"
+        ],
+        "LifecycleController": [ "CollectSystemInventoryOnRestart" ],
+        "Controller" : [
+            "RAIDresetConfig"
+        ],
+        "VirtualDisk" : [
+            "RAIDaction"
+        ]
     }
 }

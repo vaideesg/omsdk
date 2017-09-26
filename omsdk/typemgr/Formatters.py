@@ -1,4 +1,5 @@
 import io
+import re
 from omsdk.sdkprint import PrettyPrint
 from omsdk.typemgr.FieldType import FieldType
 from omsdk.typemgr.ClassType import ClassType
@@ -48,6 +49,7 @@ class FormatterTemplate(object):
                 attr_name = i
                 if obj.__dict__[i]._alias is not None:
                     attr_name = obj.__dict__[i]._alias
+                attr_name = re.sub('_.*', '', attr_name)
                 if obj._fname is None:
                     attr_name = obj._alias + "." + str(obj.__dict__[i]._index) + "#" + attr_name
                 self._write(opobj, attr_name, obj.__dict__[i], space)
@@ -107,7 +109,7 @@ class XMLFormatter(FormatterTemplate):
         return 0
 
     def _init(self, output, obj, space, array=False):
-        if obj._fname:
+        if obj._fname and not array:
             output.write(space + '<{0}'.format(obj._fname))
             for i in obj._attribs:
                 output.write(' {0}="{1}"'.format(i, obj._attribs[i])) 

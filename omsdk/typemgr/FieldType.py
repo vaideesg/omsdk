@@ -30,7 +30,7 @@ from omsdk.typemgr.TypeState import TypeState, TypeBase
 
 class FieldType(TypeBase):
 
-    def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False, modifyAllowed = True, deleteAllowed = True):
+    def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False, modifyAllowed = True, deleteAllowed = True, rebootRequired=False):
         self._type  = typename
         self._alias = alias
         self._fname = fname
@@ -40,6 +40,7 @@ class FieldType(TypeBase):
         self._index = 1
         self._modifyAllowed = modifyAllowed
         self._deleteAllowed = deleteAllowed
+        self._rebootRequired = rebootRequired
 
         self._freeze = False
 
@@ -180,6 +181,9 @@ class FieldType(TypeBase):
     # State APIs:
     def is_changed(self):
         return self._state in [TypeState.Initializing, TypeState.Changing]
+
+    def reboot_required(self):
+        return self.is_changed() and self._rebootRequired
 
     # State : to Committed
     # allowed even during freeze

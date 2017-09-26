@@ -191,6 +191,12 @@ class ArrayType(TypeBase):
     def is_changed(self):
         return self._state in [TypeState.Initializing, TypeState.Precommit, TypeState.Changing]
 
+    def reboot_required(self):
+        for i in self._entries:
+            if i.reboot_required():
+                return True
+        return False
+
     def new(self, index=None, **kwargs):
         if len(self._indexes_free) <= 0:
             raise AttributeError('no more entries in array')

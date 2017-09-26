@@ -279,11 +279,10 @@ class AttribRegistry(object):
                 'list' : 'StringField', # TODO
         }
         js = { self.comp : { "groups" : sorted(new_prop_def.keys()) }}
-        if group:
-            config_spec = os.path.join(dconfig, self.comp + '.comp_spec')
-            if os.path.exists(config_spec):
-                with open(config_spec) as f:
-                    js = json.load(f)
+        config_spec = os.path.join(dconfig, 'iDRAC.comp_spec')
+        if os.path.exists(config_spec):
+            with open(config_spec) as f:
+                js = json.load(f)
 
         for i in props:
             if group: gname = props[i]['qualifier']
@@ -366,6 +365,8 @@ class AttribRegistry(object):
                 else:
                     defval = str(defval)
                 field_spec = defval
+            if defval is None and f_pytype in ['StringField']:
+                defval = ''
             new_prop_def[gname][i]['default'] = defval
             new_prop_def[gname][i]['pytype'] = f_pytype
 
@@ -390,6 +391,8 @@ class AttribRegistry(object):
                 if '[Partition:n]' in i:
                     continue
                 field_spec = "        self.{0} = ".format(new_prop_def[grp][i]['fldname'])
+                if new_prop_def[grp][i]['pytype'] in ['StringField']:
+                    new_prop_def[grp][i]['default'] = '""'
                 field_spec  += "{0}({1}".format(new_prop_def[grp][i]['pytype'], new_prop_def[grp][i]['default'])
                 if new_prop_def[grp][i]['type']:
                     field_spec  += ",{0}".format(new_prop_def[grp][i]['type'])
@@ -403,6 +406,9 @@ class AttribRegistry(object):
                     out.write('        # readonly attribute populated by iDRAC\n')
                 elif not new_prop_def[grp][i]['modDeleteAllowed']:
                     out.write('        # readonly attribute\n')
+                if 'reboot' in js and grp in js['reboot']:
+                    if i in js['reboot'][grp]:
+                        field_spec += ", rebootRequired = True"
                 out.write(field_spec + ')\n')
 
                 if 'alias' in js and grp in js['alias']:
@@ -498,15 +504,66 @@ class AttribRegistry(object):
 
             self._print(out, props, group, dconfig)
 
+def save_tree(directory, dconfig, device):
+    if not directory: directory = self.direct
+    f_config_spec = os.path.join(dconfig, device + '.comp_spec')
+    config_spec = {}
+    if os.path.exists(f_config_spec):
+        with open(f_config_spec) as f:
+            config_spec = json.load(f)
+    if 'tree' not in config_spec:
+        print("No tree found in config spec")
+        return
+    for elem in config_spec['tree']:
+        filename = elem + ".py"
+        dest_file = os.path.join(directory, filename)
+        print('Saving to :' + dest_file)
+        registries = []
+        for i in config_spec:
+            if 'registry' in config_spec[i] and config_spec[i]['registry']:
+                registries.append(config_spec[i]['registry'])
+        registries = set(registries)
+        comps = config_spec['tree'][elem]
+
+        with open(dest_file, 'w') as out:
+            out.write('from omsdk.typemgr.ClassType import ClassType\n')
+            out.write('from omsdk.typemgr.ArrayType import ArrayType\n')
+            out.write('from omsdk.typemgr.BuiltinTypes import RootClassType\n')
+            for i in registries:
+                out.write('from omdrivers.types.{0}.{1} import *\n'.format(device, i))
+            out.write('import logging\n')
+            out.write('\n')
+            out.write('logger = logging.getLogger(__name__)\n')
+            out.write('\n')
+
+            out.write('class {0}(RootClassType):\n'.format(elem))
+            out.write('\n')
+            out.write('    def __init__(self, parent = None, loading_from_scp=False):\n')
+            out.write('        super().__init__("{0}", None, parent)\n'.format(elem))
+
+            for comp in comps:
+                if comp not in config_spec or \
+                   'entries' not in config_spec[comp]:
+                    continue
+                if config_spec[comp]['entries'] == 1:
+                    out.write('        self.{0} = {0}(parent=self, loading_from_scp=loading_from_scp)\n'.format(comp))
+                else:
+                    out.write('        self.{0} = ArrayType({0}, parent=self, loading_from_scp=loading_from_scp)\n'.format(comp))
+
+            out.write('        self.commit(loading_from_scp)\n')
+            out.write('\n')
+
 if __name__ == "__main__":
-    driver_dir = os.path.join('omdrivers', 'iDRAC')
-    types_dir = os.path.join('omdrivers', 'types', 'iDRAC')
+    device = 'iDRAC'
+    driver_dir = os.path.join('omdrivers', device)
+    types_dir = os.path.join('omdrivers', 'types', device)
+    dconfig = os.path.join(driver_dir, 'Config')
     for file1 in glob.glob(os.path.join(driver_dir, "xml", "*.xml")):
         if file1.endswith('EventFilters.xml') is True: continue
         group = file1.endswith('iDRAC.xml')
-        dconfig = os.path.join(driver_dir, 'Config')
         ar= AttribRegistry(file1, dconfig)
         ar.save_file(directory=dconfig)
         ar.save_types(types_dir, dconfig, group)
         # types would have added unknown enumerations!
         ar.save_enums(directory=os.path.join('omdrivers', 'enums', 'iDRAC'))
+    save_tree(types_dir, dconfig, device)

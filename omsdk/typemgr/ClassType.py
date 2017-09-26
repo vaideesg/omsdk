@@ -403,5 +403,11 @@ class ClassType(TypeBase):
     def add_attribute(self, name, value):
         self.__dict__['_attribs'][name] = value
 
+    def reboot_required(self):
+        for i in self.Properties:
+            if self.__dict__[i].reboot_required():
+                return True
+        return False
+
     def json_encode(self):
         return str(self)

@@ -2943,13 +2943,6 @@ class vFlashSD(ClassType):
         self.WriteProtect_vFlashSD = EnumTypeField(None,WriteProtect_vFlashSDTypes, parent=self)
         self.commit(loading_from_scp)
 
-class LifecycleController(ClassType):
-
-    def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__("Component", None, parent)
-        self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
-        self.commit(loading_from_scp)
-
 class System(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
@@ -2962,6 +2955,13 @@ class System(ClassType):
         self.ServerTopology = ServerTopology(parent=self, loading_from_scp=loading_from_scp)
         self.ThermalConfig = ThermalConfig(parent=self, loading_from_scp=loading_from_scp)
         self.ThermalSettings = ThermalSettings(parent=self, loading_from_scp=loading_from_scp)
+        self.commit(loading_from_scp)
+
+class LifecycleController(ClassType):
+
+    def __init__(self, parent = None, loading_from_scp=False):
+        super().__init__("Component", None, parent)
+        self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 
 class iDRAC(ClassType):
