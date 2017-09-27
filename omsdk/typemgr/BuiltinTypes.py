@@ -1,5 +1,7 @@
+import re
 from omsdk.typemgr.FieldType import FieldType
 from omsdk.typemgr.ClassType import ClassType
+
 
 class CompositeFieldType(FieldType):
     def __init__(self, *parts):
@@ -30,8 +32,10 @@ class CloneableFieldType(FieldType):
                   rebootRequired = self._rebootRequired)
 
 class PortField(CloneableFieldType):
-    def __init__(self, init_value, alias =None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
-        super().__init__(init_value, int, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
+    def __init__(self, init_value, alias =None, parent=None, volatile=False,
+                 modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        super().__init__(init_value, int, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
     def my_accept_value(self, value):
         if not isinstance(value, int) or value <= 0:
@@ -39,26 +43,39 @@ class PortField(CloneableFieldType):
         return True
         
 class IntField(CloneableFieldType):
-    def __init__(self, init_value, alias =None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
-        super().__init__(init_value, int, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
+    def __init__(self, init_value, alias =None, parent=None, volatile=False,
+                 modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        super().__init__(init_value, int, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
 class BooleanField(CloneableFieldType):
-    def __init__(self, init_value, alias=None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
-        super().__init__(init_value, bool, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
+    def __init__(self, init_value, alias=None, parent=None, volatile=False,
+                 modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        super().__init__(init_value, bool, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
 class StringField(CloneableFieldType):
-    def __init__(self, init_value, alias=None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
-        super().__init__(init_value, str, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
+    def __init__(self, init_value, alias=None, parent=None, volatile=False,
+                 modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        super().__init__(init_value, str, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
 class EnumTypeField(CloneableFieldType):
-    def __init__(self, init_value, entype, alias=None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
-        super().__init__(init_value, entype, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
+    def __init__(self, init_value, entype, alias=None, parent=None,
+                 volatile=False, modifyAllowed=True, deleteAllowed=True,
+                 rebootRequired=False):
+        super().__init__(init_value, entype, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
 class IPv4AddressField(CloneableFieldType):
-    def __init__(self, init_value, alias=None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
-        super().__init__(init_value, entype, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
+    def __init__(self, init_value, alias=None, parent=None, volatile=False,
+                modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        super().__init__(init_value, str, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
     def my_accept_value(self, value):
+        if value is None:
+            return True
         if isinstance(value, str):
             if not re.match('^\d+(\.\d+){3}$', value):
                 return False
@@ -70,15 +87,43 @@ class IPv4AddressField(CloneableFieldType):
             return False
 
 class IPv6AddressField(CloneableFieldType):
-    def __init__(self, init_value, alias=None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
-        super().__init__(init_value, entype, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
+    def __init__(self, init_value, alias=None, parent=None, volatile=False,
+                modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        super().__init__(init_value, str, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
+class IPAddressField(CloneableFieldType):
+    def __init__(self, init_value, alias=None, parent=None, volatile=False,
+                modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        super().__init__(init_value, str, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
+
+    # Accepts both IPv4 and IPv6
 
 class MacAddressField(CloneableFieldType):
-    def __init__(self, init_value, alias=None, parent=None, volatile=False, modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
-        super().__init__(init_value, entype, 'Attribute', alias, parent, volatile, modifyAllowed, deleteAllowed, rebootRequired)
+    def __init__(self, init_value, alias=None, parent=None, volatile=False,
+                modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        super().__init__(init_value, str, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
+
     def my_accept_value(self, value):
+        if value is None:
+            return True
+        ret = None
         if isinstance(value, str):
-            return re.match('^[0-9a-f]{2}(:[0-9a-f]{2}){5}$', value, re.I) is not None
-        else:
-            return False
+            ret = re.match('^[0-9a-f]{2}(:[0-9a-f]{2}){5}$', value, re.I)
+        return ret is not None
+
+class WWPNAddressField(CloneableFieldType):
+    def __init__(self, init_value, alias=None, parent=None, volatile=False,
+                modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        super().__init__(init_value, str, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
+
+    def my_accept_value(self, value):
+        if value is None:
+            return True
+        ret = None
+        if isinstance(value, str):
+            ret = re.match('^[0-9a-f]{2}(:[0-9a-f]{2}){7}$', value, re.I)
+        return ret is not None

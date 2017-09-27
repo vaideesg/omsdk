@@ -124,7 +124,6 @@ class FieldType(TypeBase):
 
         # if invalid, raise ValueError exception
         if not valid:
-            print(type(value))
             raise ValueError(msg)
 
         # same value - no change

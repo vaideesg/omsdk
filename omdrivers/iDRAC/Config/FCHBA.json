@@ -154,7 +154,7 @@
                     "readonly": "FALSE"
                 },
                 "FirstFCTargetWWPN": {
-                    "baseType": "int",
+                    "baseType": "WWPNAddressField",
                     "description": "First FC Target World Wide Port Name",
                     "longDescription": "Specifies the World Wide Port Name of the first Fibre Channel boot target",
                     "name": "FirstFCTargetWWPN",
@@ -279,7 +279,7 @@
                     "readonly": "FALSE"
                 },
                 "SecondFCTargetWWPN": {
-                    "baseType": "int",
+                    "baseType": "WWPNAddressField",
                     "description": "Second FC Target World Wide Port Name",
                     "longDescription": "Specifies the World Wide Port Name of the second Fibre Channel boot target",
                     "name": "SecondFCTargetWWPN",
@@ -288,7 +288,7 @@
                     "readonly": "FALSE"
                 },
                 "VirtualWWN": {
-                    "baseType": "int",
+                    "baseType": "WWPNAddressField",
                     "description": "Virtual World Wide Node Name",
                     "longDescription": "Virtual Fibre Channel World Wide Node Name is used instead of the permanent World Wide Node Name when its value is different",
                     "name": "VirtualWWN",
@@ -297,7 +297,7 @@
                     "readonly": "FALSE"
                 },
                 "VirtualWWPN": {
-                    "baseType": "int",
+                    "baseType": "WWPNAddressField",
                     "description": "Virtual World Wide Port Name",
                     "longDescription": "Virtual Fibre Channel World Wide Port Name of the port is used instead of the permanent World Wide Port Name when its value is different",
                     "name": "VirtualWWPN",
@@ -306,7 +306,7 @@
                     "readonly": "FALSE"
                 },
                 "WWN": {
-                    "baseType": "int",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Node Name",
                     "longDescription": "Permanent Fibre Channel World Wide Node Name assigned during manufacturing.",
                     "name": "WWN",
@@ -315,7 +315,7 @@
                     "readonly": "TRUE"
                 },
                 "WWPN": {
-                    "baseType": "int",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name",
                     "longDescription": "Permanent Fibre Channel World Wide Port Name assigned to the port during manufacturing",
                     "name": "WWPN",

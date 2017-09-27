@@ -21,6 +21,21 @@ class AttribRegistry(object):
         typName = re.sub('^[ \t]+', '', typName)
         return typName
 
+    def get_type(self, origtype, entry):
+        if 'types' not in self.config_spec:
+            return origtype
+        types_in = self.config_spec['types']
+        for field_type in types_in:
+            if self.comp not in types_in[field_type]:
+                return origtype
+            for ent in types_in[field_type][self.comp]:
+                if ent[0] is None or 'GroupName' not in entry \
+                   or ent[0] != entry['GroupName']:
+                   continue
+                if ent[1] == entry['AttributeName']:
+                    return field_type
+        return origtype
+
     def __init__(self, file_name, dconfig):
         self.tree = ET.parse(file_name)
         self.root = self.tree.getroot()
@@ -46,7 +61,8 @@ class AttribRegistry(object):
             }
         }
 
-        f_config_spec = os.path.join(dconfig, self.comp + '.comp_spec')
+        f_config_spec = os.path.join(dconfig, 'iDRAC.comp_spec')
+        self.config_spec = {}
         if os.path.exists(f_config_spec):
             with open(f_config_spec) as f:
                 self.config_spec = json.load(f)
@@ -71,7 +87,12 @@ class AttribRegistry(object):
             'password' : 'str',
             'binary' : 'str',
             'minmaxrange' : 'int',
-            'range' : 'int'
+            'range' : 'int',
+            'IPv4AddressField' : 'IPv4AddressField',
+            'IPAddressField' : 'IPAddressField',
+            'IPv6AddressField' : 'IPv6AddressField',
+            'MacAddressField' : 'MacAddressField',
+            'WWPNAddressField' : 'WWPNAddressField',
         }
         attrx_group = {}
         all_entries = []
@@ -145,7 +166,8 @@ class AttribRegistry(object):
             for fld in attmap:
                 if fld in entry:
                     if attmap[fld] in ['baseType']:
-                        ntype = typemaps[entry[fld].lower()]
+                        otype = typemaps[entry[fld].lower()]
+                        ntype = self.get_type(otype, entry)
                         tt[fld_name][attmap[fld]] = ntype
                     else:
                         tt[fld_name][attmap[fld]] = entry[fld]
@@ -277,6 +299,11 @@ class AttribRegistry(object):
                 'bool' : 'BooleanField',
                 'enum' : 'EnumTypeField',
                 'list' : 'StringField', # TODO
+                'IPv4AddressField' : 'IPv4AddressField',
+                'IPAddressField' : 'IPAddressField',
+                'IPv6AddressField' : 'IPv6AddressField',
+                'MacAddressField' : 'MacAddressField',
+                'WWPNAddressField' : 'WWPNAddressField',
         }
         js = { self.comp : { "groups" : sorted(new_prop_def.keys()) }}
         config_spec = os.path.join(dconfig, 'iDRAC.comp_spec')

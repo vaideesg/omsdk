@@ -111,15 +111,15 @@ class NIC(ClassType):
         # readonly attribute populated by iDRAC
         self.EighteenthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.EighteenthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.EighteenthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.EighthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.EighthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.EighthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.EleventhFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.EleventhFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.EleventhFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.EnergyEfficientEthernet = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -144,14 +144,14 @@ class NIC(ClassType):
         # readonly attribute populated by iDRAC
         self.FifteenthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.FifteenthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.FifteenthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.FifthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.FifthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.FifthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.FirstFCoEBootTargetLUN = IntField(None, parent=self)
         self.FirstFCoEFCFVLANID = IntField(None, parent=self)
-        self.FirstFCoEWWPNTarget = StringField("", parent=self)
+        self.FirstFCoEWWPNTarget = WWPNAddressField(None, parent=self)
         self.FirstHddTarget = EnumTypeField(FirstHddTargetTypes.Disabled,FirstHddTargetTypes, parent=self)
         self.FirstTgtBootLun = IntField(None, parent=self)
         self.FirstTgtChapId = StringField("", parent=self)
@@ -166,11 +166,11 @@ class NIC(ClassType):
         # readonly attribute populated by iDRAC
         self.FourteenthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.FourteenthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.FourteenthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.FourthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.FourthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.FourthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.HairpinMode = EnumTypeField(HairpinModeTypes.Disabled,HairpinModeTypes, parent=self)
         self.HideSetupPrompt = EnumTypeField(HideSetupPromptTypes.Disabled,HideSetupPromptTypes, parent=self)
         self.IpAutoConfig = EnumTypeField(IpAutoConfigTypes.Disabled,IpAutoConfigTypes, parent=self)
@@ -243,11 +243,11 @@ class NIC(ClassType):
         # readonly attribute populated by iDRAC
         self.NineteenthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.NineteenthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.NineteenthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.NinthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.NinthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.NinthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.NumberPCIFunctionsEnabled = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -301,7 +301,7 @@ class NIC(ClassType):
         # readonly attribute populated by iDRAC
         self.SecondFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.SecondFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.SecondFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.SecondTgtBootLun = IntField(None, parent=self)
         self.SecondTgtChapId = StringField("", parent=self)
         self.SecondTgtChapPwd = StringField("", parent=self)
@@ -313,19 +313,19 @@ class NIC(ClassType):
         # readonly attribute populated by iDRAC
         self.SeventeenthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.SeventeenthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.SeventeenthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.SeventhFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.SeventhFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.SeventhFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.SixteenthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.SixteenthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.SixteenthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.SixthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.SixthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.SixthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.SwitchDepPartitioningSupport = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -341,72 +341,72 @@ class NIC(ClassType):
         # readonly attribute populated by iDRAC
         self.TenthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TenthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TenthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.ThirdFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.ThirdFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.ThirdFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.ThirteenthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.ThirteenthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.ThirteenthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.ThirtyFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.ThirtyFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.ThirtyFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.ThirtyFirstFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.ThirtyFirstFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.ThirtyFirstFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.ThirtySecondFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.ThirtySecondFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.ThirtySecondFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.TotalNumberLogicalPorts = EnumTypeField(TotalNumberLogicalPortsTypes.T_2,TotalNumberLogicalPortsTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.TwelfthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwelfthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwelfthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TwentiethFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwentiethFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwentiethFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TwentyEighthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwentyEighthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwentyEighthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TwentyFifthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwentyFifthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwentyFifthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TwentyFirstFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwentyFirstFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwentyFirstFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TwentyFourthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwentyFourthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwentyFourthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TwentyNinthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwentyNinthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwentyNinthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TwentySecondFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwentySecondFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwentySecondFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TwentySeventhFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwentySeventhFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwentySeventhFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TwentySixthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwentySixthFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwentySixthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.TwentyThirdFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.TwentyThirdFCoEWWPNTarget = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.TwentyThirdFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.UseIndTgtName = EnumTypeField(UseIndTgtNameTypes.Disabled,UseIndTgtNameTypes, parent=self)
         self.UseIndTgtPortal = EnumTypeField(UseIndTgtPortalTypes.Disabled,UseIndTgtPortalTypes, parent=self)
         # readonly attribute populated by iDRAC
@@ -419,13 +419,13 @@ class NIC(ClassType):
         self.VirtFIPMacAddr = StringField("", parent=self)
         self.VirtIscsiMacAddr = StringField("", parent=self)
         self.VirtMacAddr = StringField("", parent=self)
-        self.VirtWWN = StringField("", parent=self)
-        self.VirtWWPN = StringField("", parent=self)
+        self.VirtWWN = WWPNAddressField("00:00:00:00:00:00:00:00", parent=self)
+        self.VirtWWPN = WWPNAddressField("00:00:00:00:00:00:00:00", parent=self)
         self.VirtualizationMode = EnumTypeField(VirtualizationModeTypes.NONE,VirtualizationModeTypes, parent=self)
         # readonly attribute populated by iDRAC
-        self.WWN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.WWN = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.WWPN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.WWPN = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.WakeOnLan = EnumTypeField(None,WakeOnLanTypes, parent=self)
         self.WakeOnLanLnkSpeed = EnumTypeField(WakeOnLanLnkSpeedTypes.AutoNeg,WakeOnLanLnkSpeedTypes, parent=self)
         self.WinHbaBootMode = EnumTypeField(WinHbaBootModeTypes.Disabled,WinHbaBootModeTypes, parent=self)

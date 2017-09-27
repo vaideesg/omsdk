@@ -1404,7 +1404,7 @@
                     "readonly": "TRUE"
                 },
                 "EighteenthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the eighteenth FCoE storage target.",
                     "name": "EighteenthFCoEWWPNTarget",
@@ -1420,7 +1420,7 @@
                     "readonly": "TRUE"
                 },
                 "EighthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the eighth FCoE storage target.",
                     "name": "EighthFCoEWWPNTarget",
@@ -1436,7 +1436,7 @@
                     "readonly": "TRUE"
                 },
                 "EleventhFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the eleventh FCoE storage target.",
                     "name": "EleventhFCoEWWPNTarget",
@@ -1595,7 +1595,7 @@
                     "readonly": "TRUE"
                 },
                 "FifteenthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the fifteenth FCoE storage target.",
                     "name": "FifteenthFCoEWWPNTarget",
@@ -1611,7 +1611,7 @@
                     "readonly": "TRUE"
                 },
                 "FifthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the fifth FCoE storage target.",
                     "name": "FifthFCoEWWPNTarget",
@@ -1635,7 +1635,7 @@
                     "readonly": "FALSE"
                 },
                 "FirstFCoEWWPNTarget": {
-                    "baseType": "str",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the first FCoE storage target.",
                     "name": "FirstFCoEWWPNTarget",
@@ -1738,7 +1738,7 @@
                     "readonly": "TRUE"
                 },
                 "FourteenthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the fourteenth FCoE storage target.",
                     "name": "FourteenthFCoEWWPNTarget",
@@ -1754,7 +1754,7 @@
                     "readonly": "TRUE"
                 },
                 "FourthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the fourth FCoE storage target.",
                     "name": "FourthFCoEWWPNTarget",
@@ -2276,7 +2276,7 @@
                     "readonly": "TRUE"
                 },
                 "NineteenthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the nineteenth FCoE storage target.",
                     "name": "NineteenthFCoEWWPNTarget",
@@ -2292,7 +2292,7 @@
                     "readonly": "TRUE"
                 },
                 "NinthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the ninth FCoE storage target.",
                     "name": "NinthFCoEWWPNTarget",
@@ -2680,7 +2680,7 @@
                     "readonly": "TRUE"
                 },
                 "SecondFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the second FCoE storage target.",
                     "name": "SecondFCoEWWPNTarget",
@@ -2762,7 +2762,7 @@
                     "readonly": "TRUE"
                 },
                 "SeventeenthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the seventeenth FCoE storage target.",
                     "name": "SeventeenthFCoEWWPNTarget",
@@ -2778,7 +2778,7 @@
                     "readonly": "TRUE"
                 },
                 "SeventhFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the seventh FCoE storage target.",
                     "name": "SeventhFCoEWWPNTarget",
@@ -2794,7 +2794,7 @@
                     "readonly": "TRUE"
                 },
                 "SixteenthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the sixteenth FCoE storage target.",
                     "name": "SixteenthFCoEWWPNTarget",
@@ -2810,7 +2810,7 @@
                     "readonly": "TRUE"
                 },
                 "SixthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the sixth FCoE storage target.",
                     "name": "SixthFCoEWWPNTarget",
@@ -2891,7 +2891,7 @@
                     "readonly": "TRUE"
                 },
                 "TenthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the tenth FCoE storage target.",
                     "name": "TenthFCoEWWPNTarget",
@@ -2907,7 +2907,7 @@
                     "readonly": "TRUE"
                 },
                 "ThirdFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the third FCoE storage target.",
                     "name": "ThirdFCoEWWPNTarget",
@@ -2923,7 +2923,7 @@
                     "readonly": "TRUE"
                 },
                 "ThirteenthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the thirteenth FCoE storage target.",
                     "name": "ThirteenthFCoEWWPNTarget",
@@ -2939,7 +2939,7 @@
                     "readonly": "TRUE"
                 },
                 "ThirtyFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the thirty FCoE storage target.",
                     "name": "ThirtyFCoEWWPNTarget",
@@ -2955,7 +2955,7 @@
                     "readonly": "TRUE"
                 },
                 "ThirtyFirstFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the thirty first FCoE storage target.",
                     "name": "ThirtyFirstFCoEWWPNTarget",
@@ -2971,7 +2971,7 @@
                     "readonly": "TRUE"
                 },
                 "ThirtySecondFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the thirty second FCoE storage target.",
                     "name": "ThirtySecondFCoEWWPNTarget",
@@ -2997,7 +2997,7 @@
                     "readonly": "TRUE"
                 },
                 "TwelfthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twelfth FCoE storage target.",
                     "name": "TwelfthFCoEWWPNTarget",
@@ -3013,7 +3013,7 @@
                     "readonly": "TRUE"
                 },
                 "TwentiethFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twentieth FCoE storage target.",
                     "name": "TwentiethFCoEWWPNTarget",
@@ -3029,7 +3029,7 @@
                     "readonly": "TRUE"
                 },
                 "TwentyEighthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty eighth FCoE storage target.",
                     "name": "TwentyEighthFCoEWWPNTarget",
@@ -3045,7 +3045,7 @@
                     "readonly": "TRUE"
                 },
                 "TwentyFifthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty fifth FCoE storage target.",
                     "name": "TwentyFifthFCoEWWPNTarget",
@@ -3061,7 +3061,7 @@
                     "readonly": "TRUE"
                 },
                 "TwentyFirstFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty first FCoE storage target.",
                     "name": "TwentyFirstFCoEWWPNTarget",
@@ -3077,7 +3077,7 @@
                     "readonly": "TRUE"
                 },
                 "TwentyFourthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty fourth FCoE storage target.",
                     "name": "TwentyFourthFCoEWWPNTarget",
@@ -3093,7 +3093,7 @@
                     "readonly": "TRUE"
                 },
                 "TwentyNinthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty ninth FCoE storage target.",
                     "name": "TwentyNinthFCoEWWPNTarget",
@@ -3109,7 +3109,7 @@
                     "readonly": "TRUE"
                 },
                 "TwentySecondFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty second FCoE storage target.",
                     "name": "TwentySecondFCoEWWPNTarget",
@@ -3125,7 +3125,7 @@
                     "readonly": "TRUE"
                 },
                 "TwentySeventhFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty seventh FCoE storage target.",
                     "name": "TwentySeventhFCoEWWPNTarget",
@@ -3141,7 +3141,7 @@
                     "readonly": "TRUE"
                 },
                 "TwentySixthFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty sixth FCoE storage target.",
                     "name": "TwentySixthFCoEWWPNTarget",
@@ -3157,7 +3157,7 @@
                     "readonly": "TRUE"
                 },
                 "TwentyThirdFCoEWWPNTarget": {
-                    "baseType": "enum",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name Target",
                     "longDescription": "Specify the World Wide Port Name (WWPN) of the twenty third FCoE storage target.",
                     "name": "TwentyThirdFCoEWWPNTarget",
@@ -3282,7 +3282,7 @@
                     "readonly": "FALSE"
                 },
                 "VirtWWN": {
-                    "baseType": "str",
+                    "baseType": "WWPNAddressField",
                     "default": "00:00:00:00:00:00:00:00",
                     "description": "Virtual World Wide Node Name",
                     "longDescription": "Programmatically assignable Fibre Channel World Wide Node Name identifier for FCoE.",
@@ -3291,7 +3291,7 @@
                     "readonly": "FALSE"
                 },
                 "VirtWWN[Partition:n]": {
-                    "baseType": "str",
+                    "baseType": "WWPNAddressField",
                     "default": "00:00:00:00:00:00:00:00",
                     "description": "Virtual World Wide Node Name",
                     "longDescription": "Programmatically assignable Fibre Channel World Wide Node Name identifier for partition FCoE.",
@@ -3300,7 +3300,7 @@
                     "readonly": "FALSE"
                 },
                 "VirtWWPN": {
-                    "baseType": "str",
+                    "baseType": "WWPNAddressField",
                     "default": "00:00:00:00:00:00:00:00",
                     "description": "Virtual World Wide Port Name",
                     "longDescription": "Programmatically assignable Fibre Channel World Wide Port Name identifier for FCoE.",
@@ -3309,7 +3309,7 @@
                     "readonly": "FALSE"
                 },
                 "VirtWWPN[Partition:n]": {
-                    "baseType": "str",
+                    "baseType": "WWPNAddressField",
                     "default": "00:00:00:00:00:00:00:00",
                     "description": "Virtual World Wide Port Name",
                     "longDescription": "Programmatically assignable Fibre Channel World Wide Port Name identifier for partition FCoE.",
@@ -3328,7 +3328,7 @@
                     "type": "VirtualizationModeTypes"
                 },
                 "WWN": {
-                    "baseType": "str",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Node Name",
                     "longDescription": "Fibre Channel World Wide Node Name identifier for FCoE\n",
                     "name": "WWN",
@@ -3336,7 +3336,7 @@
                     "readonly": "TRUE"
                 },
                 "WWN[Partition:n]": {
-                    "baseType": "str",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Node Name",
                     "longDescription": "Fibre Channel World Wide Node Name identifier for FCoE. Replace n with the number of the partition.",
                     "name": "WWN[Partition:n]",
@@ -3344,7 +3344,7 @@
                     "readonly": "TRUE"
                 },
                 "WWPN": {
-                    "baseType": "str",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name",
                     "longDescription": "Fibre Channel World Wide Port Name identifier for FCoE.",
                     "name": "WWPN",
@@ -3352,7 +3352,7 @@
                     "readonly": "TRUE"
                 },
                 "WWPN[Partition:n]": {
-                    "baseType": "str",
+                    "baseType": "WWPNAddressField",
                     "description": "World Wide Port Name",
                     "longDescription": "Fibre Channel World Wide Port Name identifier for FCoE assigned during manufacturing.  Replace n with the number of the partition.",
                     "name": "WWPN[Partition:n]",

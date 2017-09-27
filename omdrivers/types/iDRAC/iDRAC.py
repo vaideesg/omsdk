@@ -2943,27 +2943,6 @@ class vFlashSD(ClassType):
         self.WriteProtect_vFlashSD = EnumTypeField(None,WriteProtect_vFlashSDTypes, parent=self)
         self.commit(loading_from_scp)
 
-class System(ClassType):
-
-    def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__("Component", None, parent)
-        self.ChassisControl = ChassisControl(parent=self, loading_from_scp=loading_from_scp)
-        self.ChassisPwrState = ChassisPwrState(parent=self, loading_from_scp=loading_from_scp)
-        self.LCD = LCD(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerOS = ServerOS(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerPwr = ServerPwr(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerTopology = ServerTopology(parent=self, loading_from_scp=loading_from_scp)
-        self.ThermalConfig = ThermalConfig(parent=self, loading_from_scp=loading_from_scp)
-        self.ThermalSettings = ThermalSettings(parent=self, loading_from_scp=loading_from_scp)
-        self.commit(loading_from_scp)
-
-class LifecycleController(ClassType):
-
-    def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__("Component", None, parent)
-        self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
-        self.commit(loading_from_scp)
-
 class iDRAC(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
@@ -3132,5 +3111,26 @@ class iDRAC(ClassType):
         self._STP_ = _STP_(parent=self, loading_from_scp=loading_from_scp)
         self.vFlashPartition = vFlashPartition(parent=self, loading_from_scp=loading_from_scp)
         self.vFlashSD = vFlashSD(parent=self, loading_from_scp=loading_from_scp)
+        self.commit(loading_from_scp)
+
+class System(ClassType):
+
+    def __init__(self, parent = None, loading_from_scp=False):
+        super().__init__("Component", None, parent)
+        self.ChassisControl = ChassisControl(parent=self, loading_from_scp=loading_from_scp)
+        self.ChassisPwrState = ChassisPwrState(parent=self, loading_from_scp=loading_from_scp)
+        self.LCD = LCD(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerOS = ServerOS(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerPwr = ServerPwr(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerTopology = ServerTopology(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalConfig = ThermalConfig(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalSettings = ThermalSettings(parent=self, loading_from_scp=loading_from_scp)
+        self.commit(loading_from_scp)
+
+class LifecycleController(ClassType):
+
+    def __init__(self, parent = None, loading_from_scp=False):
+        super().__init__("Component", None, parent)
+        self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 

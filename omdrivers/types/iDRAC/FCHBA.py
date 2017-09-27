@@ -25,7 +25,7 @@ class FCHBA(ClassType):
         # readonly attribute
         self.FamilyVersion = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.FirstFCTargetLUN = IntField(None, parent=self)
-        self.FirstFCTargetWWPN = IntField(None, parent=self)
+        self.FirstFCTargetWWPN = WWPNAddressField(None, parent=self)
         self.FramePayloadSize = EnumTypeField(FramePayloadSizeTypes.Auto,FramePayloadSizeTypes, parent=self)
         self.HardZone = EnumTypeField(HardZoneTypes.Disabled,HardZoneTypes, parent=self)
         self.HardZoneAddress = IntField("0", parent=self)
@@ -41,12 +41,12 @@ class FCHBA(ClassType):
         self.PortNumber = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.PortSpeed = EnumTypeField(PortSpeedTypes.Auto,PortSpeedTypes, parent=self)
         self.SecondFCTargetLUN = IntField(None, parent=self)
-        self.SecondFCTargetWWPN = IntField(None, parent=self)
-        self.VirtualWWN = IntField(None, parent=self)
-        self.VirtualWWPN = IntField(None, parent=self)
+        self.SecondFCTargetWWPN = WWPNAddressField(None, parent=self)
+        self.VirtualWWN = WWPNAddressField(None, parent=self)
+        self.VirtualWWPN = WWPNAddressField(None, parent=self)
         # readonly attribute populated by iDRAC
-        self.WWN = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.WWN = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.WWPN = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.WWPN = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.commit(loading_from_scp)
 
