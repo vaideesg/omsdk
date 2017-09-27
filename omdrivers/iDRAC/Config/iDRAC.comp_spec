@@ -161,210 +161,288 @@
         ]
     },
     "types" : {
-        "IPAddressField" : {
-            "iDRAC" : [
-                [ "AutoBackup", "IPAddress" ],
-                [ "AutoUpdate", "IPAddress" ],
-                [ "IPMIIPConfig", "BackupGatewayIP" ],
-                [ "LCAttributes", "CMCIP" ],
-                [ "LCAttributes", "IPAddress" ],
-                [ "OS-BMC", "IdracPTEpIpAddr" ],
-                [ "OS-BMC", "OsIpAddress" ],
-                [ "OS-BMC", "UsbNicIpAddress " ],
-                [ "RemoteHosts", "SMTPServerIPAddress" ],
-                [ "SECONDARYNIC", "DNSServer1" ],
-                [ "SupportAssist", "DefaultIPAddress" ],
-                [ "Update", "FwUpdateIPAddr" ]
+    "iDRAC": {
+        "IPAddressField": {
+            "AutoBackup": [
+                "IPAddress"
+            ],
+            "AutoUpdate": [
+                "IPAddress"
+            ],
+            "IPMIIPConfig": [
+                "BackupGatewayIP"
+            ],
+            "LCAttributes": [
+                "CMCIP",
+                "IPAddress"
+            ],
+            "OS-BMC": [
+                "IdracPTEpIpAddr",
+                "OsIpAddress",
+                "UsbNicIpAddress"
+            ],
+            "RemoteHosts": [
+                "SMTPServerIPAddress"
+            ],
+            "SECONDARYNIC": [
+                "DNSServer1"
+            ],
+            "SupportAssist": [
+                "DefaultIPAddress"
+            ],
+            "Update": [
+                "FwUpdateIPAddr"
             ]
         },
-        "IPv4AddressField" : {
-            "NIC" : [
-                [ null, "IscsiInitiatorIpAddr"],
-                [ null, "IscsiInitiatorSubnet"],
-                [ null, "IscsiInitiatorGateway"],
-                [ null, "IscsiInitiatorPrimDns"],
-                [ null, "IscsiInitiatorSecDns"],
-                [ null, "FirstTgtIpAddress"],
-                [ null, "SecondTgtIpAddress"],
-                [ null, "IscsiInitiatorIpv4Addr"],
-                [ null, "IscsiInitiatorIpv4Gateway"],
-                [ null, "IscsiInitiatorIpv4PrimDns"],
-                [ null, "IscsiInitiatorIpv4SecDns"]
+        "IPv4AddressField": {
+            "CMCSNMPTrapIPv4": [
+                "DestIPv4Address"
             ],
-            "iDRAC" : [
-                [ "CMCSNMPTrapIPv4", "DestIPv4Address" ],
-                [ "CurrentIPv4", "Address" ],
-                [ "CurrentIPv4", "DNS1" ],
-                [ "CurrentIPv4", "DNS2" ],
-                [ "CurrentIPv4", "Gateway" ],
-                [ "CurrentIPv4", "Netmask" ],
-                [ "GBE", "NeighborMgmtIPv4" ],
-                [ "IPv4", "Address" ],
-                [ "IPv4", "DNS1" ],
-                [ "IPv4", "DNS2" ],
-                [ "IPv4", "Gateway" ],
-                [ "IPv4", "Netmask" ],
-                [ "IPv4Static", "Address" ],
-                [ "IPv4Static", "DNS1" ],
-                [ "IPv4Static", "DNS2" ],
-                [ "IPv4Static", "Gateway" ],
-                [ "IPv4Static", "Netmask" ],
-                [ "MgmtNetworkInterface", "IPv4" ],
-                [ "MSMSNMPTrapIPv4", "DestIPv4Address" ],
-                [ "SECONDARYNIC", "DNSServer1" ],
-                [ "SECONDARYNIC", "DNSServer2" ],
-                [ "SECONDARYNIC", "IPV4Address" ],
-                [ "SECONDARYNIC", "IPV4Gateway" ],
-                [ "SECONDARYNIC", "IPV4NetMask" ],
-                [ "SNMPTrapIPv4", "DestIPv4Addr" ]
+            "CurrentIPv4": [
+                "Address",
+                "DNS1",
+                "DNS2",
+                "Gateway",
+                "Netmask"
+            ],
+            "GBE": [
+                "NeighborMgmtIPv4"
+            ],
+            "IPv4": [
+                "Address",
+                "DNS1",
+                "DNS2",
+                "Gateway",
+                "Netmask"
+            ],
+            "IPv4Static": [
+                "Address",
+                "DNS1",
+                "DNS2",
+                "Gateway",
+                "Netmask"
+            ],
+            "MSMSNMPTrapIPv4": [
+                "DestIPv4Address"
+            ],
+            "MgmtNetworkInterface": [
+                "IPv4"
+            ],
+            "SECONDARYNIC": [
+                "DNSServer1",
+                "DNSServer2",
+                "IPV4Address",
+                "IPV4Gateway",
+                "IPV4NetMask"
+            ],
+            "SNMPTrapIPv4": [
+                "DestIPv4Addr"
             ]
         },
-        "IPv6AddressField" : {
-            "NIC" : [
-                [ null, "IscsiInitiatorIpv6Addr"],
-                [ null, "IscsiInitiatorIpv6Gateway"],
-                [ null, "IscsiInitiatorIpv6PrimDns"],
-                [ null, "IscsiInitiatorIpv6SecDns"]
+        "IPv6AddressField": {
+            "CMCSNMPTrapIPv6": [
+                "DestIPv6Address"
             ],
-            "iDRAC" : [
-                [ "CMCSNMPTrapIPv6", "DestIPv6Address" ],
-                [ "CurrentIPv6", "DNS2" ],
-                [ "CurrentIPv6", "Address1" ],
-                [ "CurrentIPv6", "Address10" ],
-                [ "CurrentIPv6", "Address11" ],
-                [ "CurrentIPv6", "Address12" ],
-                [ "CurrentIPv6", "Address13" ],
-                [ "CurrentIPv6", "Address14" ],
-                [ "CurrentIPv6", "Address15" ],
-                [ "CurrentIPv6", "Address2" ],
-                [ "CurrentIPv6", "Address3" ],
-                [ "CurrentIPv6", "Address4" ],
-                [ "CurrentIPv6", "Address5" ],
-                [ "CurrentIPv6", "Address6" ],
-                [ "CurrentIPv6", "Address7" ],
-                [ "CurrentIPv6", "Address8" ],
-                [ "CurrentIPv6", "Address9" ],
-                [ "CurrentIPv6", "DNS1" ],
-                [ "CurrentIPv6", "Gateway" ],
-                [ "CurrentIPv6", "LinkLocalAddress" ],
-                [ "GBE", "NeighborMgmtIPv6" ],
-                [ "IPv6", "Address1" ],
-                [ "IPv6", "Address10" ],
-                [ "IPv6", "Address11" ],
-                [ "IPv6", "Address12" ],
-                [ "IPv6", "Address13" ],
-                [ "IPv6", "Address14" ],
-                [ "IPv6", "Address15" ],
-                [ "IPv6", "Address2" ],
-                [ "IPv6", "Address3" ],
-                [ "IPv6", "Address4" ],
-                [ "IPv6", "Address5" ],
-                [ "IPv6", "Address6" ],
-                [ "IPv6", "Address7" ],
-                [ "IPv6", "Address8" ],
-                [ "IPv6", "Address9" ],
-                [ "IPv6", "DNS1" ],
-                [ "IPv6", "DNS2" ],
-                [ "IPv6", "Gateway" ],
-                [ "IPv6", "LinkLocalAddress" ],
-                [ "IPv6Static", "Address1" ],
-                [ "IPv6Static", "DNS1" ],
-                [ "IPv6Static", "DNS2" ],
-                [ "IPv6Static", "Gateway" ],
-                [ "LDAPRoleGroup ", "DestIPv6Addr" ],
-                [ "MSMSNMPTrapIPv6", "DestIPv6Address" ],
-                [ "SECONDARYNIC", "DNSServer1" ],
-                [ "SECONDARYNIC", "DNSServer2" ],
-                [ "SNMPTrapIPv4", "DestIPv4Addr" ],
-                [ "SNMPTrapIPv6", "DestIPv6Addr" ],
-                [ "SupportAssist", "DefaultIPAddress" ],
-                [ "SysInfo", "CMCIPv6Info" ],
-                [ "SysInfo", "OSIPV6" ]
+            "CurrentIPv6": [
+                "Address1",
+                "Address10",
+                "Address11",
+                "Address12",
+                "Address13",
+                "Address14",
+                "Address15",
+                "Address2",
+                "Address3",
+                "Address4",
+                "Address5",
+                "Address6",
+                "Address7",
+                "Address8",
+                "Address9",
+                "DNS1",
+                "DNS2",
+                "Gateway",
+                "LinkLocalAddress"
+            ],
+            "GBE": [
+                "NeighborMgmtIPv6"
+            ],
+            "IPv6": [
+                "Address1",
+                "Address10",
+                "Address11",
+                "Address12",
+                "Address13",
+                "Address14",
+                "Address15",
+                "Address2",
+                "Address3",
+                "Address4",
+                "Address5",
+                "Address6",
+                "Address7",
+                "Address8",
+                "Address9",
+                "DNS1",
+                "DNS2",
+                "Gateway",
+                "LinkLocalAddress"
+            ],
+            "IPv6Static": [
+                "Address1",
+                "DNS1",
+                "DNS2",
+                "Gateway"
+            ],
+            "LDAPRoleGroup ": [
+                "DestIPv6Addr"
+            ],
+            "MSMSNMPTrapIPv6": [
+                "DestIPv6Address"
+            ],
+            "SECONDARYNIC": [
+                "DNSServer1",
+                "DNSServer2"
+            ],
+            "SNMPTrapIPv4": [
+                "DestIPv4Addr"
+            ],
+            "SNMPTrapIPv6": [
+                "DestIPv6Addr"
+            ],
+            "SupportAssist": [
+                "DefaultIPAddress"
+            ],
+            "SysInfo": [
+                "CMCIPv6Info",
+                "OSIPV6"
             ]
         },
-        "MacAddressField" : {
-            "NIC" : [
-                [ null, "VirtMacAddr" ],
-                [ null, "VirtIscsiMacAddr" ],
-                [ null, "VirtFIPMacAddr" ],
-                [ null, "FIPMacAddr" ],
-                [ null, "FIPMacAddr[Partition:n]" ],
-                [ null, "IscsiMacAddr" ],
-                [ null, "IscsiMacAddr[Partition:n]" ],
-                [ null, "MacAddr" ],
-                [ null, "MacAddr[Partition:n]" ],
-                [ null, "SecondaryDeviceMacAddr" ],
-                [ null, "VirtFIPMacAddr" ],
-                [ null, "VirtFIPMacAddr[Partition:n]" ],
-                [ null, "VirtIscsiMacAddr" ],
-                [ null, "VirtIscsiMacAddr[Partition:n]" ],
-                [ null, "VirtMacAddr" ],
-                [ null, "VirtMacAddr[Partition:n]" ]
+        "MacAddressField": {
+            "CurrentNIC": [
+                "MACAddress",
+                "FactoryMAC",
+                "MACAddress2"
             ],
-            "iDRAC" : [
-                [ "NIC", "MACAddress" ],
-                [ "CurrentNIC", "MACAddress" ],
-                [ "SECONDARYNIC", "MACAddress" ],
-                [ "Info", "MACAddress" ],
-                [ "NIC", "MACAddress" ],
-                [ "SysInfo", "EmbeddedNICMAC" ],
-                [ "CurrentNIC", "MACAddress2" ],
-                [ "MgmtNetworkInterface", "MacAddress" ],
-                [ "NIC", "MACAddressCount" ],
-                [ "CurrentNIC", "FactoryMAC" ]
-            ]
-        },
-        "WWPNAddressField" : {
-           "NIC" : [ 
-                [ "FCoEConfiguration", "EighteenthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "EighthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "EleventhFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "FifteenthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "FifthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "FirstFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "FourteenthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "FourthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "NineteenthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "NinthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "SecondFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "SeventeenthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "SeventhFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "SixteenthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "SixthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TenthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "ThirdFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "ThirteenthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "ThirtyFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "ThirtyFirstFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "ThirtySecondFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwelfthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwentiethFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwentyEighthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwentyFifthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwentyFirstFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwentyFourthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwentyNinthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwentySecondFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwentySeventhFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwentySixthFCoEWWPNTarget"],
-                [ "FCoEConfiguration", "TwentyThirdFCoEWWPNTarget"],
-                [ "VndrConfigPage", "VirtWWN"],
-                [ "ConfigureFormn", "VirtWWN[Partition:n]"],
-                [ "VndrConfigPage", "VirtWWPN"],
-                [ "ConfigureFormn", "VirtWWPN[Partition:n]"],
-                [ "VndrConfigPage", "WWN"],
-                [ "ConfigureFormn", "WWN[Partition:n]"],
-                [ "VndrConfigPage", "WWPN"],
-                [ "ConfigureFormn", "WWPN[Partition:n]"]
+            "Info": [
+                "MACAddress"
             ],
-            "FCHBA" : [
-                [ "PortConfig", "WWN"],
-                [ "PortConfig", "VirtualWWN"],
-                [ "PortConfig", "WWPN"],
-                [ "PortConfig", "VirtualWWPN"],
-                [ "FCTarget", "FirstFCTargetWWPN"],
-                [ "FCTarget", "SecondFCTargetWWPN"]
+            "MgmtNetworkInterface": [
+                "MacAddress"
+            ],
+            "NIC": [
+                "MACAddress"
+            ],
+            "SECONDARYNIC": [
+                "MACAddress"
+            ],
+            "SysInfo": [
+                "EmbeddedNICMAC"
             ]
         }
+    },
+    "NIC": {
+        "IPv4AddressField": {
+            "NA": [
+                "FirstTgtIpAddress",
+                "IscsiInitiatorIpAddr",
+                "IscsiInitiatorSubnet",
+                "IscsiInitiatorGateway",
+                "IscsiInitiatorPrimDns",
+                "IscsiInitiatorSecDns",
+                "IscsiInitiatorIpv4Addr",
+                "IscsiInitiatorIpv4Gateway",
+                "IscsiInitiatorIpv4PrimDns",
+                "IscsiInitiatorIpv4SecDns",
+                "SecondTgtIpAddress"
+            ]
+        },
+        "IPv6AddressField": {
+            "NA": [
+                "IscsiInitiatorIpv6Addr",
+                "IscsiInitiatorIpv6Gateway",
+                "IscsiInitiatorIpv6PrimDns",
+                "IscsiInitiatorIpv6SecDns"
+            ]
+        },
+        "MacAddressField": {
+            "NA": [
+                "VirtMacAddr",
+                "VirtIscsiMacAddr",
+                "VirtFIPMacAddr",
+                "FIPMacAddr",
+                "FIPMacAddr[Partition:n]",
+                "IscsiMacAddr",
+                "IscsiMacAddr[Partition:n]",
+                "MacAddr",
+                "MacAddr[Partition:n]",
+                "SecondaryDeviceMacAddr",
+                "VirtFIPMacAddr",
+                "VirtFIPMacAddr[Partition:n]",
+                "VirtIscsiMacAddr",
+                "VirtIscsiMacAddr[Partition:n]",
+                "VirtMacAddr",
+                "VirtMacAddr[Partition:n]"
+            ]
+        },
+        "WWPNAddressField": {
+            "NA" : [
+                "EighteenthFCoEWWPNTarget",
+                "EighthFCoEWWPNTarget",
+                "EleventhFCoEWWPNTarget",
+                "FifteenthFCoEWWPNTarget",
+                "FifthFCoEWWPNTarget",
+                "FirstFCoEWWPNTarget",
+                "FourteenthFCoEWWPNTarget",
+                "FourthFCoEWWPNTarget",
+                "NineteenthFCoEWWPNTarget",
+                "NinthFCoEWWPNTarget",
+                "SecondFCoEWWPNTarget",
+                "SeventeenthFCoEWWPNTarget",
+                "SeventhFCoEWWPNTarget",
+                "SixteenthFCoEWWPNTarget",
+                "SixthFCoEWWPNTarget",
+                "TenthFCoEWWPNTarget",
+                "ThirdFCoEWWPNTarget",
+                "ThirteenthFCoEWWPNTarget",
+                "ThirtyFCoEWWPNTarget",
+                "ThirtyFirstFCoEWWPNTarget",
+                "ThirtySecondFCoEWWPNTarget",
+                "TwelfthFCoEWWPNTarget",
+                "TwentiethFCoEWWPNTarget",
+                "TwentyEighthFCoEWWPNTarget",
+                "TwentyFifthFCoEWWPNTarget",
+                "TwentyFirstFCoEWWPNTarget",
+                "TwentyFourthFCoEWWPNTarget",
+                "TwentyNinthFCoEWWPNTarget",
+                "TwentySecondFCoEWWPNTarget",
+                "TwentySeventhFCoEWWPNTarget",
+                "TwentySixthFCoEWWPNTarget",
+                "TwentyThirdFCoEWWPNTarget",
+                "VirtWWN",
+                "VirtWWN[Partition:n]",
+                "VirtWWPN",
+                "VirtWWPN[Partition:n]",
+                "WWN",
+                "WWN[Partition:n]",
+                "WWPN",
+                "WWPN[Partition:n]"
+            ]
+        }
+    },
+    "FCHBA": {
+        "WWPNAddressField": {
+            "FCTarget": [
+                "FirstFCTargetWWPN",
+                "SecondFCTargetWWPN"
+            ],
+            "PortConfig": [
+                "WWN",
+                "VirtualWWN",
+                "WWPN",
+                "VirtualWWPN"
+            ]
+        }
+    }
     }
 }
