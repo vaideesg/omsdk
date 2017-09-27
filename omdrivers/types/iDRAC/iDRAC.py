@@ -1396,11 +1396,16 @@ class LDAPRoleGroup(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "LDAPRoleGroup", parent)
-        self.DN_1_LDAPRoleGroup = StringField("", alias="DN.1_LDAPRoleGroup", parent=self)
-        self.DN_2_LDAPRoleGroup = StringField("", alias="DN.2_LDAPRoleGroup", parent=self)
-        self.DN_3_LDAPRoleGroup = StringField("", alias="DN.3_LDAPRoleGroup", parent=self)
-        self.DN_4_LDAPRoleGroup = StringField("", alias="DN.4_LDAPRoleGroup", parent=self)
-        self.DN_5_LDAPRoleGroup = StringField("", alias="DN.5_LDAPRoleGroup", parent=self)
+        # readonly attribute populated by iDRAC
+        self.DN_1_LDAPRoleGroup = StringField("", alias="DN.1_LDAPRoleGroup", parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.DN_2_LDAPRoleGroup = StringField("", alias="DN.2_LDAPRoleGroup", parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.DN_3_LDAPRoleGroup = StringField("", alias="DN.3_LDAPRoleGroup", parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.DN_4_LDAPRoleGroup = StringField("", alias="DN.4_LDAPRoleGroup", parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.DN_5_LDAPRoleGroup = StringField("", alias="DN.5_LDAPRoleGroup", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.DN_LDAPRoleGroup = StringField("", parent=self)
         self.DestIPv6Addr_LDAPRoleGroup = StringField("", parent=self)
         # readonly attribute populated by iDRAC
@@ -1532,8 +1537,10 @@ class NIC(ClassType):
         self.DNSRacName_NIC = StringField("", parent=self)
         self.DNSRegister_NIC = EnumTypeField(None,DNSRegister_NICTypes, parent=self)
         self.DedicatedNICScanTime_NIC = IntField(None, parent=self)
-        self.DummySwitchConnection_NIC = StringField("", parent=self)
-        self.DummySwitchPortConnection_NIC = StringField("", parent=self)
+        # readonly attribute populated by iDRAC
+        self.DummySwitchConnection_NIC = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.DummySwitchPortConnection_NIC = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.Duplex_NIC = EnumTypeField(None,Duplex_NICTypes, parent=self)
         self.EmbeddedNICBIBInfo_NIC = StringField("", parent=self)
         self.Enable_NIC = EnumTypeField(None,Enable_NICTypes, parent=self)
@@ -1545,7 +1552,7 @@ class NIC(ClassType):
         # readonly attribute populated by iDRAC
         self.LinkStatus_NIC = EnumTypeField(None,LinkStatus_NICTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.MACAddressCount_NIC = MacAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.MACAddressCount_NIC = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.MACAddress_NIC = MacAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.MTU_NIC = IntField(None, parent=self)
@@ -1600,7 +1607,7 @@ class OS_BMC(ClassType):
         self.PTCapability_OS_BMC = EnumTypeField(None,PTCapability_OS_BMCTypes, alias="PTCapability_OS-BMC", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.PTMode_OS_BMC = EnumTypeField(None,PTMode_OS_BMCTypes, alias="PTMode_OS-BMC", parent=self)
         self.PrefixLength_OS_BMC = IntField(None, alias="PrefixLength_OS-BMC", parent=self)
-        self.UsbNicIpAddress_OS_BMC = StringField("", alias="UsbNicIpAddress_OS-BMC", parent=self)
+        self.UsbNicIpAddress_OS_BMC = IPAddressField(None, alias="UsbNicIpAddress_OS-BMC", parent=self)
         self.commit(loading_from_scp)
 
 class PCIeSlotLFM(ClassType):
@@ -2075,10 +2082,13 @@ class SC_BMC(ClassType):
         self.ChassisServiceTagCRC_SC_BMC = IntField(None, alias="ChassisServiceTagCRC_SC-BMC", parent=self)
         self.ChassisServiceTagLen_SC_BMC = IntField(None, alias="ChassisServiceTagLen_SC-BMC", parent=self)
         self.ChassisServiceTagSet_SC_BMC = IntField(None, alias="ChassisServiceTagSet_SC-BMC", parent=self)
-        self.ChassisServiceTag_SC_BMC = StringField("", alias="ChassisServiceTag_SC-BMC", parent=self)
+        # readonly attribute populated by iDRAC
+        self.ChassisServiceTag_SC_BMC = StringField("", alias="ChassisServiceTag_SC-BMC", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.EnableSCAttributes_SC_BMC = IntField(None, alias="EnableSCAttributes_SC-BMC", parent=self)
-        self.SCFWUpdateState_SC_BMC = EnumTypeField(None,SCFWUpdateState_SC_BMCTypes, alias="SCFWUpdateState_SC-BMC", parent=self)
-        self.TaskID_SC_BMC = IntField(None, alias="TaskID_SC-BMC", parent=self)
+        # readonly attribute populated by iDRAC
+        self.SCFWUpdateState_SC_BMC = EnumTypeField(None,SCFWUpdateState_SC_BMCTypes, alias="SCFWUpdateState_SC-BMC", parent=self, modifyAllowed = False, deleteAllowed = False)
+        # readonly attribute populated by iDRAC
+        self.TaskID_SC_BMC = IntField(None, alias="TaskID_SC-BMC", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.commit(loading_from_scp)
 
 class SECONDARYNIC(ClassType):
@@ -2090,8 +2100,8 @@ class SECONDARYNIC(ClassType):
         self.DHCPEnable_SECONDARYNIC = EnumTypeField(None,DHCPEnable_SECONDARYNICTypes, parent=self)
         self.DNSDRACName_SECONDARYNIC = StringField("", parent=self)
         self.DNSFromDHCP_SECONDARYNIC = EnumTypeField(None,DNSFromDHCP_SECONDARYNICTypes, parent=self)
-        self.DNSServer1_SECONDARYNIC = IPAddressField(None, parent=self)
-        self.DNSServer2_SECONDARYNIC = IPv6AddressField(None, parent=self)
+        self.DNSServer1_SECONDARYNIC = IPv4AddressField(None, parent=self)
+        self.DNSServer2_SECONDARYNIC = IPv4AddressField(None, parent=self)
         self.DomainNameDHCP_SECONDARYNIC = EnumTypeField(None,DomainNameDHCP_SECONDARYNICTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.Duplex_SECONDARYNIC = EnumTypeField(None,Duplex_SECONDARYNICTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2160,7 +2170,7 @@ class SNMPTrapIPv4(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SNMPTrapIPv4", parent)
-        self.DestIPv4Addr_SNMPTrapIPv4 = IPv6AddressField(None, parent=self)
+        self.DestIPv4Addr_SNMPTrapIPv4 = IPv4AddressField(None, parent=self)
         # readonly attribute
         self.DestinationNum_SNMPTrapIPv4 = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.State_SNMPTrapIPv4 = EnumTypeField(None,State_SNMPTrapIPv4Types, parent=self)
@@ -2505,7 +2515,7 @@ class SupportAssist(ClassType):
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SupportAssist", parent)
         self.Action_SupportAssist = StringField("", parent=self)
-        self.DefaultIPAddress_SupportAssist = IPAddressField(None, parent=self)
+        self.DefaultIPAddress_SupportAssist = IPv6AddressField(None, parent=self)
         self.DefaultLocalPathName_SupportAssist = StringField("", parent=self)
         self.DefaultPassword_SupportAssist = StringField("", parent=self)
         self.DefaultProtocol_SupportAssist = EnumTypeField(None,DefaultProtocol_SupportAssistTypes, parent=self)
@@ -2739,7 +2749,8 @@ class Update(ClassType):
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "Update", parent)
         self.Begin_Update = EnumTypeField(None,Begin_UpdateTypes, parent=self)
-        self.EnableSharedCompUpdate_Update = EnumTypeField(None,EnableSharedCompUpdate_UpdateTypes, parent=self)
+        # readonly attribute populated by iDRAC
+        self.EnableSharedCompUpdate_Update = EnumTypeField(None,EnableSharedCompUpdate_UpdateTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.FwUpdateIPAddr_Update = IPAddressField(None, parent=self)
         self.FwUpdatePath_Update = StringField("", parent=self)
         self.FwUpdateTFTPEnable_Update = EnumTypeField(None,FwUpdateTFTPEnable_UpdateTypes, parent=self)
@@ -2943,13 +2954,6 @@ class vFlashSD(ClassType):
         self.WriteProtect_vFlashSD = EnumTypeField(None,WriteProtect_vFlashSDTypes, parent=self)
         self.commit(loading_from_scp)
 
-class LifecycleController(ClassType):
-
-    def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__("Component", None, parent)
-        self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
-        self.commit(loading_from_scp)
-
 class iDRAC(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
@@ -3118,6 +3122,13 @@ class iDRAC(ClassType):
         self._STP_ = _STP_(parent=self, loading_from_scp=loading_from_scp)
         self.vFlashPartition = vFlashPartition(parent=self, loading_from_scp=loading_from_scp)
         self.vFlashSD = vFlashSD(parent=self, loading_from_scp=loading_from_scp)
+        self.commit(loading_from_scp)
+
+class LifecycleController(ClassType):
+
+    def __init__(self, parent = None, loading_from_scp=False):
+        super().__init__("Component", None, parent)
+        self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 
 class System(ClassType):

@@ -432,11 +432,9 @@
     },
     "FCHBA": {
         "WWPNAddressField": {
-            "FCTarget": [
+            "NA": [
                 "FirstFCTargetWWPN",
-                "SecondFCTargetWWPN"
-            ],
-            "PortConfig": [
+                "SecondFCTargetWWPN",
                 "WWN",
                 "VirtualWWN",
                 "WWPN",

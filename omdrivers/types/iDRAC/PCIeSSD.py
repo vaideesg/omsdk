@@ -16,7 +16,8 @@ class PCIeSSD(ClassType):
         self.BusProtocolVersion = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.CapableSpeed = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.CryptographicErase = EnumTypeField(None,CryptographicEraseTypes, parent=self)
+        # readonly attribute populated by iDRAC
+        self.CryptographicErase = EnumTypeField(None,CryptographicEraseTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.DeviceProtocol = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -33,7 +34,8 @@ class PCIeSSD(ClassType):
         self.PcieNegotiatedLinkWidth = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.RemainingRatedWriteEndurance = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.SecureErase = EnumTypeField(None,SecureEraseTypes, parent=self)
+        # readonly attribute populated by iDRAC
+        self.SecureErase = EnumTypeField(None,SecureEraseTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.SerialNumber = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC

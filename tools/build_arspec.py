@@ -4,11 +4,20 @@ import json
 import logging
 import sys, os
 import glob
+import threading
 
 logger = logging.getLogger(__name__)
 
 # Attribute Registry Convertor
 #   .xml to .json file converter
+class maj:
+    def __init__(self):
+        self.cntr = 0
+        self.ids = 0
+    def incr(self):
+        self.cntr += 1
+    def ids(self):
+        self.ids += 1
 
 class AttribRegistry(object):
 
@@ -21,81 +30,21 @@ class AttribRegistry(object):
         typName = re.sub('^[ \t]+', '', typName)
         return typName
 
-    def get_type(self, origtype, entry):
-        if 'types' not in self.config_spec:
+    def get_type(self, config_spec, origtype, fname):
+        types_in = config_spec['types']
+        if self.comp not in types_in:
             return origtype
-        types_in = self.config_spec['types']
-        for field_type in types_in:
-            if self.comp not in types_in[field_type]:
-                return origtype
-            for ent in types_in[field_type][self.comp]:
-                if ent[0] is None or 'GroupName' not in entry \
-                   or ent[0] != entry['GroupName']:
-                   continue
-                if ent[1] == entry['AttributeName']:
+        for field_type in types_in[self.comp]:
+            if '_' in fname:
+                (field_name, group_name) = fname.split('_')
+            else:
+                (field_name, group_name) = (fname, 'NA')
+            if group_name in types_in[self.comp][field_type] and \
+                field_name in types_in[self.comp][field_type][group_name]:
                     return field_type
         return origtype
 
-    def __init__(self, file_name, dconfig):
-        self.tree = ET.parse(file_name)
-        self.root = self.tree.getroot()
-        regentry = None
-        for regent in self.root:
-            if regent.tag == "REGISTRY_ENTRIES":
-                regentry = regent
-                break
-        self.comp = re.sub("^.*[\\\\]", "", file_name)
-        self.comp = re.sub("\..*$", "", self.comp)
-        self.addGroup = re.match('iDRAC', self.comp)
-        self.direct = re.sub("[^\\\\]+$", "", file_name)
-        self.attr_json = {
-            "$schema" : file_name,
-            "title" : file_name,
-            "$ref" : "#/definitions/" + self.comp,
-            "definitions" : {
-                self.comp : {
-                    "config_groups" : {},
-                    "type" : "object",
-                    "properties" : {}
-                }
-            }
-        }
-
-        f_config_spec = os.path.join(dconfig, 'iDRAC.comp_spec')
-        self.config_spec = {}
-        if os.path.exists(f_config_spec):
-            with open(f_config_spec) as f:
-                self.config_spec = json.load(f)
-
-        attmap = {
-            'IsReadOnly' : 'readonly',
-            'DisplayName' : 'description',
-            'HelpText' : 'longDescription',
-            'Partition' : 'partition',
-            'RegEx' : 'pattern',
-            'GroupName' : 'qualifier',
-            'AttributeName' : 'name',
-            'AttributeType' : 'baseType',
-            'DefaultValue' : 'default',
-        }
-        typemaps = {
-            'integer' : 'int',
-            'string' : 'str',
-            'enumeration' : 'enum',
-
-            'orderlistseq' : 'list',
-            'password' : 'str',
-            'binary' : 'str',
-            'minmaxrange' : 'int',
-            'range' : 'int',
-            'IPv4AddressField' : 'IPv4AddressField',
-            'IPAddressField' : 'IPAddressField',
-            'IPv6AddressField' : 'IPv6AddressField',
-            'MacAddressField' : 'MacAddressField',
-            'WWPNAddressField' : 'WWPNAddressField',
-        }
-        attrx_group = {}
-        all_entries = []
+    def build_attrentry(self, regentry, all_entries, attrx_group):
         for attr in regentry:
             myentry = {}
             for attrfield in attr:
@@ -144,6 +93,8 @@ class AttribRegistry(object):
                 else:
                     logger.debug("WARN: Unknown!!" + attrfield.tag)
             all_entries.append(myentry)
+
+    def build_groups(self, attrx_group):
         for group in attrx_group:
             tt = self.attr_json["definitions"][self.comp]["config_groups"]
             tt[group] = []
@@ -153,12 +104,37 @@ class AttribRegistry(object):
                     fld_name += "_" + group
                 tt[group].append(fld_name)
 
+    def load_json(self, all_entries, comp, MAJ):
+        attmap = {
+            'IsReadOnly' : 'readonly',
+            'DisplayName' : 'description',
+            'HelpText' : 'longDescription',
+            'Partition' : 'partition',
+            'RegEx' : 'pattern',
+            'GroupName' : 'qualifier',
+            'AttributeName' : 'name',
+            'AttributeType' : 'baseType',
+            'DefaultValue' : 'default',
+        }
+        typemaps = {
+            'integer' : 'int',
+            'string' : 'str',
+            'enumeration' : 'enum',
+
+            'orderlistseq' : 'list',
+            'password' : 'str',
+            'binary' : 'str',
+            'minmaxrange' : 'int',
+            'range' : 'int',
+        }
+
         for entry in all_entries:
-            tt = self.attr_json["definitions"][self.comp]["properties"]
+            tt = self.attr_json["definitions"][comp]["properties"]
             if entry['AttributeType'].lower() in [
                 'form title', 'form ref', 'checkbox', 'formset title'
             ]: continue
 
+            MAJ.ids += 1
             fld_name = entry["AttributeName"]
             if self.addGroup and "GroupName" in entry:
                 fld_name = fld_name + "_" + entry["GroupName"]
@@ -166,11 +142,21 @@ class AttribRegistry(object):
             for fld in attmap:
                 if fld in entry:
                     if attmap[fld] in ['baseType']:
-                        otype = typemaps[entry[fld].lower()]
-                        ntype = self.get_type(otype, entry)
+                        ntype = typemaps[entry[fld].lower()]
                         tt[fld_name][attmap[fld]] = ntype
                     else:
+                        if entry[fld] == "FALSE": entry[fld] = False
+                        if entry[fld] == "TRUE": entry[fld] = True
                         tt[fld_name][attmap[fld]] = entry[fld]
+
+            tt[fld_name]['modDeleteAllowed'] = True
+            tt[fld_name]['uneditable'] = False
+            if 'readonly' in tt[fld_name] and tt[fld_name]['readonly'] in ['true']:
+                if 'longDescription' in tt[fld_name] and \
+                    'Configurable via XML' not in tt[fld_name]['longDescription']:
+                    tt[fld_name]['uneditable'] = True
+                tt[fld_name]['modDeleteAllowed'] = False
+
             attr_type = 'string'
             if "AttributeType" in entry:
                 attr_type = entry["AttributeType"].lower()
@@ -182,6 +168,52 @@ class AttribRegistry(object):
                     "enumDescriptions" : entry["enumDescriptions"],
                     "type" : attr_type,
                 }
+
+    def update_type(self, comp, config_spec, MAJ):
+        tt = self.attr_json["definitions"][comp]["properties"]
+        for fld_name in self.attr_json["definitions"][comp]["properties"]:
+            ntype = self.get_type(config_spec, tt[fld_name]['baseType'], fld_name)
+            if tt[fld_name]['baseType'] != ntype:
+                MAJ.incr()
+                tt[fld_name]['baseType'] = ntype
+
+    def __init__(self, file_name, dconfig, config_spec, MAJ):
+        self.lock = threading.Lock()
+        self.tree = ET.parse(file_name)
+        self.root = self.tree.getroot()
+        regentry = None
+        for regent in self.root:
+            if regent.tag == "REGISTRY_ENTRIES":
+                regentry = regent
+                break
+        self.comp = re.sub("^.*[\\\\]", "", file_name)
+        self.comp = re.sub("\..*$", "", self.comp)
+        self.addGroup = (self.comp == 'iDRAC')
+        self.direct = re.sub("[^\\\\]+$", "", file_name)
+        self.attr_json = {
+            "$schema" : file_name,
+            "title" : file_name,
+            "$ref" : "#/definitions/" + self.comp,
+            "definitions" : {
+                self.comp : {
+                    "config_groups" : {},
+                    "type" : "object",
+                    "properties" : {}
+                }
+            }
+        }
+        self.config_spec = config_spec
+
+        attrx_group = {}
+        all_entries = []
+        with self.lock:
+            self.build_attrentry(regentry, all_entries, attrx_group)
+        with self.lock:
+            self.build_groups(attrx_group)
+        with self.lock:
+            self.load_json(all_entries, self.comp,MAJ)
+        with self.lock:
+            self.update_type(self.comp, config_spec, MAJ)
 
         props = self.attr_json["definitions"][self.comp]["properties"]
         if 'StripeSize' in props:
@@ -205,6 +237,7 @@ class AttribRegistry(object):
                 ],
                 "type": "string"
             }
+
     def save_file(self, directory = None, filename = None):
         if not directory: directory = self.direct
         if not filename: filename = self.comp + ".json"
@@ -305,11 +338,6 @@ class AttribRegistry(object):
                 'MacAddressField' : 'MacAddressField',
                 'WWPNAddressField' : 'WWPNAddressField',
         }
-        js = { self.comp : { "groups" : sorted(new_prop_def.keys()) }}
-        config_spec = os.path.join(dconfig, 'iDRAC.comp_spec')
-        if os.path.exists(config_spec):
-            with open(config_spec) as f:
-                js = json.load(f)
 
         for i in props:
             if group: gname = props[i]['qualifier']
@@ -322,8 +350,7 @@ class AttribRegistry(object):
             # readonly, unediable 
             new_prop_def[gname][i]['modDeleteAllowed'] = True
             new_prop_def[gname][i]['uneditable'] = False
-            if 'readonly' in props[i] and \
-                props[i]['readonly'].lower() in ['true']:
+            if 'readonly' in props[i] and props[i]['readonly'] :
 
                 if 'longDescription' in props[i] and \
                     'Configurable via XML' not in props[i]['longDescription']:
@@ -433,30 +460,30 @@ class AttribRegistry(object):
                     out.write('        # readonly attribute populated by iDRAC\n')
                 elif not new_prop_def[grp][i]['modDeleteAllowed']:
                     out.write('        # readonly attribute\n')
-                if 'reboot' in js and grp in js['reboot']:
-                    if i in js['reboot'][grp]:
+                if 'reboot' in self.config_spec and grp in self.config_spec['reboot']:
+                    if i in self.config_spec['reboot'][grp]:
                         field_spec += ", rebootRequired = True"
                 out.write(field_spec + ')\n')
 
-                if 'alias' in js and grp in js['alias']:
-                    if i in js['alias'][grp]:
+                if 'alias' in self.config_spec and grp in self.config_spec['alias']:
+                    if i in self.config_spec['alias'][grp]:
                         out.write('        self.{0} = self.{1}\n'.format(
-                                js['alias'][grp][i],
+                                self.config_spec['alias'][grp][i],
                                 new_prop_def[grp][i]['fldname']))
 
-            if 'composite' in js and grp in js['composite']:
-                for field in js['composite'][grp]:
+            if 'composite' in self.config_spec and grp in self.config_spec['composite']:
+                for field in self.config_spec['composite'][grp]:
                     fmsg = ""
                     comma = ""
-                    for ent in  js['composite'][grp][field]:
+                    for ent in  self.config_spec['composite'][grp][field]:
                         fmsg +=  comma + 'self.' + ent + '_' + grp
                         comma = ", "
                     out.write('        self.{0} = CompositeFieldType({1})\n'.format(field, fmsg))
 
             out.write('        self.commit(loading_from_scp)\n')
             out.write('\n')
-            if 'arrays' in js and grp in js['arrays']:
-                ent = js['arrays'][grp]
+            if 'arrays' in self.config_spec and grp in self.config_spec['arrays']:
+                ent = self.config_spec['arrays'][grp]
                 if 'key' not in ent:
                     print("ERROR: Key is not present for "+ grp)
                     ent['key'] = [ grp ]
@@ -476,31 +503,26 @@ class AttribRegistry(object):
                 out.write('        return self.{0}_{1}._index\n'.format(ent['key'][0], grp))
                 out.write('\n')
         if group:
-            js = { self.comp : { "groups" : sorted(new_prop_def.keys()) }}
-            config_spec = os.path.join(dconfig, self.comp + '.comp_spec')
-            if os.path.exists(config_spec):
-                with open(config_spec) as f:
-                    js = json.load(f)
-            for comp in js:
-                if 'registry' not in js[comp] or \
-                   js[comp]['registry'] != self.comp:
+            for comp in self.config_spec:
+                if 'registry' not in self.config_spec[comp] or \
+                   self.config_spec[comp]['registry'] != self.comp:
                     continue
-                if 'groups' not in js[comp]:
-                    js[comp]['groups'] = []
-                if 'excl_groups' in js[comp]:
-                    grps = set(js[comp]['groups']+ list(new_prop_def.keys()))
-                    grps = grps - set(js[comp]['excl_groups'])
-                    js[comp]['groups'] = grps
-                if len(js[comp]['groups']) <= 0:
+                if 'groups' not in self.config_spec[comp]:
+                    self.config_spec[comp]['groups'] = []
+                if 'excl_groups' in self.config_spec[comp]:
+                    grps = set(self.config_spec[comp]['groups']+ list(new_prop_def.keys()))
+                    grps = grps - set(self.config_spec[comp]['excl_groups'])
+                    self.config_spec[comp]['groups'] = grps
+                if len(self.config_spec[comp]['groups']) <= 0:
                     continue
                 out.write('class {0}(ClassType):\n'.format(comp))
                 out.write('\n')
                 out.write('    def __init__(self, parent = None, loading_from_scp=False):\n')
                 out.write('        super().__init__("Component", None, parent)\n')
-                for grp in sorted(js[comp]['groups']):
+                for grp in sorted(self.config_spec[comp]['groups']):
                     ngrp = self._sanitize(grp)
-                    if 'arrays' in js and grp in js['arrays']:
-                        ent = js['arrays'][grp]
+                    if 'arrays' in self.config_spec and grp in self.config_spec['arrays']:
+                        ent = self.config_spec['arrays'][grp]
                         out.write('        self.{0} = ArrayType({0}, parent=self, min_index={1}, max_index={2}, loading_from_scp=loading_from_scp)\n'.format(ngrp, ent['min'], ent['max']))
 
 
@@ -533,11 +555,6 @@ class AttribRegistry(object):
 
 def save_tree(directory, dconfig, device):
     if not directory: directory = self.direct
-    f_config_spec = os.path.join(dconfig, device + '.comp_spec')
-    config_spec = {}
-    if os.path.exists(f_config_spec):
-        with open(f_config_spec) as f:
-            config_spec = json.load(f)
     if 'tree' not in config_spec:
         print("No tree found in config spec")
         return
@@ -580,17 +597,28 @@ def save_tree(directory, dconfig, device):
             out.write('        self.commit(loading_from_scp)\n')
             out.write('\n')
 
+def do_dump(file1, dconfig, config_spec, group, MAJ):
+    ar= AttribRegistry(file1, dconfig, config_spec, MAJ)
+    ar.save_file(directory=dconfig)
+    ar.save_types(types_dir, dconfig, group)
+    # types would have added unknown enumerations!
+    ar.save_enums(directory=os.path.join('omdrivers', 'enums', 'iDRAC'))
+
 if __name__ == "__main__":
+    MAJ = maj()
     device = 'iDRAC'
     driver_dir = os.path.join('omdrivers', device)
     types_dir = os.path.join('omdrivers', 'types', device)
     dconfig = os.path.join(driver_dir, 'Config')
+    f_config_spec = os.path.join(dconfig, 'iDRAC.comp_spec')
+    config_spec = {}
+    if os.path.exists(f_config_spec):
+        with open(f_config_spec) as f:
+            config_spec = json.load(f)
     for file1 in glob.glob(os.path.join(driver_dir, "xml", "*.xml")):
+        print("Processing: " + file1)
         if file1.endswith('EventFilters.xml') is True: continue
-        group = file1.endswith('iDRAC.xml')
-        ar= AttribRegistry(file1, dconfig)
-        ar.save_file(directory=dconfig)
-        ar.save_types(types_dir, dconfig, group)
-        # types would have added unknown enumerations!
-        ar.save_enums(directory=os.path.join('omdrivers', 'enums', 'iDRAC'))
+        do_dump(file1, dconfig, config_spec, file1.endswith('iDRAC.xml'), MAJ)
     save_tree(types_dir, dconfig, device)
+    print(str(MAJ.cntr) + " objects have special types")
+    print(str(MAJ.ids) + " attributes created!")

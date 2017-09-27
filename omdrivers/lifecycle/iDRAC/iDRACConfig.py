@@ -1712,12 +1712,6 @@ class iDRACConfig(iBaseConfigApi):
         self._job_mgr = entity.job_mgr
         self.config = ConfigFactory.get_config(entity.config_dir, iDRACConfigCompSpec)
         self.entity.configCompSpec = iDRACConfigCompSpec
-        self.entity.eResetToFactoryPreserveEnum = ResetToFactoryPreserveEnum
-        self.entity.eResetForceEnum = ResetForceEnum
-        self.entity.eBIOSPasswordTypeEnum = BIOSPasswordTypeEnum
-        self.entity.eConfigStateEnum = ConfigStateEnum
-        self.entity.eBootModeEnum = BootModeEnum
-        self.entity.eRAIDLevelsEnum = RAIDLevelsEnum
         self.liason_share = None
         self._config_entries = ConfigEntries(iDRACConfigKeyFields)
         self._raid_tree = None
