@@ -187,7 +187,7 @@ class FieldType(TypeBase):
     # State : to Committed
     # allowed even during freeze
     def commit(self, loading_from_scp = False):
-        if self.is_changed():
+        if self.is_changed() or self._state == TypeState.Precommit:
             if not self._composite:
                 self.__dict__['_orig_value'] = self._value
             if loading_from_scp:

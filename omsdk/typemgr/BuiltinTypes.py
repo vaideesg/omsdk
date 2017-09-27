@@ -77,9 +77,10 @@ class IPv4AddressField(CloneableFieldType):
         if value is None:
             return True
         if isinstance(value, str):
-            if not re.match('^\d+(\.\d+){3}$', value):
+            if not re.match('^\d+\.\d+\.\d+\.\d+$', value):
+                print("here")
                 return False
-            for n in t.split('.'):
+            for n in value.split('.'):
                 if int(n) > 255:
                     return False
             return True

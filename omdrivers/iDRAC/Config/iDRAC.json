@@ -9188,7 +9188,7 @@
                     "type": "AddressState_IPv6Types"
                 },
                 "Address_CurrentIPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "IPv4 Address",
                     "longDescription": "The current IPv4 address assigned to the iDRAC",
                     "name": "Address",
@@ -9204,7 +9204,7 @@
                     "readonly": "FALSE"
                 },
                 "Address_IPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "IPv4 Address",
                     "longDescription": "[Required to fill]",
                     "name": "Address",
@@ -9212,7 +9212,7 @@
                     "readonly": "FALSE"
                 },
                 "Address_IPv4Static": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "IPv4 Address",
                     "longDescription": "iDRAC static IPv4 address (can be configured even when DHCP is enabled)",
                     "name": "Address",
@@ -11366,7 +11366,7 @@
                     "readonly": "0"
                 },
                 "DNS1_CurrentIPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "DNS Server 1",
                     "longDescription": "IPv4 address for DNS server 1",
                     "name": "DNS1",
@@ -11382,7 +11382,7 @@
                     "readonly": "TRUE"
                 },
                 "DNS1_IPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "DNS Server 1",
                     "longDescription": "[Required to fill]",
                     "name": "DNS1",
@@ -11390,7 +11390,7 @@
                     "readonly": "FALSE"
                 },
                 "DNS1_IPv4Static": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "DNS Server 1",
                     "longDescription": "Statically configurable DNS Server 1",
                     "name": "DNS1",
@@ -11414,7 +11414,7 @@
                     "readonly": "FALSE"
                 },
                 "DNS2_CurrentIPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "DNS Server 2",
                     "longDescription": "IPv4 address for DNS Server 2",
                     "name": "DNS2",
@@ -11430,7 +11430,7 @@
                     "readonly": "TRUE"
                 },
                 "DNS2_IPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "DNS Server 2",
                     "longDescription": "[Required to fill]",
                     "name": "DNS2",
@@ -11438,7 +11438,7 @@
                     "readonly": "FALSE"
                 },
                 "DNS2_IPv4Static": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "DNS Server 2",
                     "longDescription": "Statically configurable DNS Server 2",
                     "name": "DNS2",
@@ -11627,7 +11627,7 @@
                     "type": "DNSRegister_NICTypes"
                 },
                 "DNSServer1_SECONDARYNIC": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "DNS Server 1",
                     "longDescription": "SecondaryNIC IPV4 DNS Server 1",
                     "name": "DNSServer1",
@@ -11635,7 +11635,7 @@
                     "readonly": "FALSE"
                 },
                 "DNSServer2_SECONDARYNIC": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "DNS Server 2",
                     "longDescription": "SecondaryNIC IPV4 DNS Server 2",
                     "name": "DNSServer2",
@@ -11913,7 +11913,7 @@
                     "readonly": "TRUE"
                 },
                 "DestIPv4Addr_SNMPTrapIPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Destination IPv4 Address",
                     "longDescription": "See SNMPAlert.1-4.Destination",
                     "name": "DestIPv4Addr",
@@ -11921,7 +11921,7 @@
                     "readonly": "FALSE"
                 },
                 "DestIPv4Address_MSMSNMPTrapIPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Internal alert forwarding of IPv4 address",
                     "longDescription": "MSM internal alert forwarding IPv4 Destination address",
                     "name": "DestIPv4Address",
@@ -12324,7 +12324,7 @@
                     "readonly": "FALSE"
                 },
                 "EmbeddedNICMAC_SysInfo": {
-                    "baseType": "str",
+                    "baseType": "MacAddressField",
                     "description": "Embedded NIC MAC address",
                     "longDescription": "[To be filled]",
                     "name": "EmbeddedNICMAC",
@@ -12836,7 +12836,7 @@
                     "readonly": "FALSE"
                 },
                 "FactoryMAC_CurrentNIC": {
-                    "baseType": "str",
+                    "baseType": "MacAddressField",
                     "description": "Factory MAC Address",
                     "longDescription": "The MAC Address of the iDRAC",
                     "name": "FactoryMAC",
@@ -13175,7 +13175,7 @@
                     "type": "GatewaySelector_IPMILANPEFConfigTypes"
                 },
                 "Gateway_CurrentIPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Gateway",
                     "longDescription": "The gateway for the iDRAC IPv4 address",
                     "name": "Gateway",
@@ -13191,7 +13191,7 @@
                     "readonly": "TRUE"
                 },
                 "Gateway_IPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Gateway",
                     "longDescription": "[Required to fill]",
                     "name": "Gateway",
@@ -13199,7 +13199,7 @@
                     "readonly": "FALSE"
                 },
                 "Gateway_IPv4Static": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Gateway",
                     "longDescription": "Chassis static IPv4 gateway (can be configured even when DHCP is enabled)",
                     "name": "Gateway",
@@ -13798,7 +13798,7 @@
                     "readonly": "TRUE"
                 },
                 "IPV4Address_SECONDARYNIC": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "IPv4 Address",
                     "longDescription": "SecondaryNIC IPV4 Address",
                     "name": "IPV4Address",
@@ -13806,7 +13806,7 @@
                     "readonly": "FALSE"
                 },
                 "IPV4Gateway_SECONDARYNIC": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Gateway",
                     "longDescription": "SecondaryNIC IPV4 Gate way",
                     "name": "IPV4Gateway",
@@ -13814,7 +13814,7 @@
                     "readonly": "FALSE"
                 },
                 "IPV4NetMask_SECONDARYNIC": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Net Mask",
                     "longDescription": "SecondaryNIC IPV4 Net mask",
                     "name": "IPV4NetMask",
@@ -13855,7 +13855,7 @@
                     "type": "IPv4Enable_SECONDARYNICTypes"
                 },
                 "IPv4_MgmtNetworkInterface": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "IPv4 Address",
                     "longDescription": "[To be filled]",
                     "name": "IPv4",
@@ -15323,7 +15323,7 @@
                     "readonly": "FALSE"
                 },
                 "MACAddress2_CurrentNIC": {
-                    "baseType": "str",
+                    "baseType": "MacAddressField",
                     "description": "MAC Address 2",
                     "longDescription": "[To be filled]",
                     "name": "MACAddress2",
@@ -15331,7 +15331,7 @@
                     "readonly": "TRUE"
                 },
                 "MACAddressCount_NIC": {
-                    "baseType": "int",
+                    "baseType": "MacAddressField",
                     "description": "MAC Address Count",
                     "longDescription": "Number of MAC Addresses of chassis",
                     "name": "MACAddressCount",
@@ -15339,7 +15339,7 @@
                     "readonly": "TRUE"
                 },
                 "MACAddress_CurrentNIC": {
-                    "baseType": "str",
+                    "baseType": "MacAddressField",
                     "description": "MAC Address",
                     "longDescription": "The MAC Address of the iDRAC",
                     "name": "MACAddress",
@@ -15347,7 +15347,7 @@
                     "readonly": "TRUE"
                 },
                 "MACAddress_Info": {
-                    "baseType": "str",
+                    "baseType": "MacAddressField",
                     "description": "Management MAC Address",
                     "longDescription": "[To be filled]",
                     "name": "MACAddress",
@@ -15355,7 +15355,7 @@
                     "readonly": "TRUE"
                 },
                 "MACAddress_NIC": {
-                    "baseType": "str",
+                    "baseType": "MacAddressField",
                     "description": "MAC Address",
                     "longDescription": "The MAC Address of chassis",
                     "name": "MACAddress",
@@ -15363,7 +15363,7 @@
                     "readonly": "TRUE"
                 },
                 "MACAddress_SECONDARYNIC": {
-                    "baseType": "str",
+                    "baseType": "MacAddressField",
                     "description": "MAC Address",
                     "longDescription": "SecondaryNIC Mac Address",
                     "name": "MACAddress",
@@ -15437,7 +15437,7 @@
                     "readonly": "TRUE"
                 },
                 "MacAddress_MgmtNetworkInterface": {
-                    "baseType": "str",
+                    "baseType": "MacAddressField",
                     "description": "Mac Address",
                     "longDescription": "[To be filled]",
                     "name": "MacAddress",
@@ -16284,7 +16284,7 @@
                     "readonly": "TRUE"
                 },
                 "NeighborMgmtIPv4_GBE": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Neighbor Management IPv4",
                     "longDescription": "[To be filled]",
                     "name": "NeighborMgmtIPv4",
@@ -16308,7 +16308,7 @@
                     "readonly": "TRUE"
                 },
                 "Netmask_CurrentIPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Net Mask",
                     "longDescription": "The subnet mask used for the iDRAC IPv4  address",
                     "name": "Netmask",
@@ -16316,7 +16316,7 @@
                     "readonly": "TRUE"
                 },
                 "Netmask_IPv4": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Net Mask",
                     "longDescription": "[Required to fill]",
                     "name": "Netmask",
@@ -16324,7 +16324,7 @@
                     "readonly": "FALSE"
                 },
                 "Netmask_IPv4Static": {
-                    "baseType": "str",
+                    "baseType": "IPv4AddressField",
                     "description": "Net Mask",
                     "longDescription": "Chassis static IPv4 subnet mask (can be configured even when DHCP is enabled)",
                     "name": "Netmask",
