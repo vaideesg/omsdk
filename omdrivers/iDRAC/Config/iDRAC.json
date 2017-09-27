@@ -8931,7 +8931,7 @@
                     "type": "ActiveSharedLOM_CurrentNICTypes"
                 },
                 "Address10_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 10",
                     "longDescription": "iDRAC IPv6 tenth address",
                     "name": "Address10",
@@ -8939,7 +8939,7 @@
                     "readonly": "TRUE"
                 },
                 "Address10_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 10",
                     "longDescription": "iDRAC IPv6 tenth address",
                     "name": "Address10",
@@ -8947,7 +8947,7 @@
                     "readonly": "TRUE"
                 },
                 "Address11_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 11",
                     "longDescription": "iDRAC IPv6 eleventh address",
                     "name": "Address11",
@@ -8955,7 +8955,7 @@
                     "readonly": "TRUE"
                 },
                 "Address11_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 11",
                     "longDescription": "iDRAC IPv6 eleventh address",
                     "name": "Address11",
@@ -8963,7 +8963,7 @@
                     "readonly": "TRUE"
                 },
                 "Address12_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 12",
                     "longDescription": "iDRAC IPv6 twelfth address",
                     "name": "Address12",
@@ -8971,7 +8971,7 @@
                     "readonly": "TRUE"
                 },
                 "Address12_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 12",
                     "longDescription": "iDRAC IPv6 twelfth address",
                     "name": "Address12",
@@ -8979,7 +8979,7 @@
                     "readonly": "TRUE"
                 },
                 "Address13_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 13",
                     "longDescription": "iDRAC IPv6 thirteenth address",
                     "name": "Address13",
@@ -8987,7 +8987,7 @@
                     "readonly": "TRUE"
                 },
                 "Address13_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 13",
                     "longDescription": "iDRAC IPv6 thirteenth address",
                     "name": "Address13",
@@ -8995,7 +8995,7 @@
                     "readonly": "TRUE"
                 },
                 "Address14_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 14",
                     "longDescription": "iDRAC IPv6 fourteenth address",
                     "name": "Address14",
@@ -9003,7 +9003,7 @@
                     "readonly": "TRUE"
                 },
                 "Address14_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 14",
                     "longDescription": "iDRAC IPv6 fourteenth address",
                     "name": "Address14",
@@ -9011,7 +9011,7 @@
                     "readonly": "TRUE"
                 },
                 "Address15_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 15",
                     "longDescription": "iDRAC IPv6 fifteenth address",
                     "name": "Address15",
@@ -9019,7 +9019,7 @@
                     "readonly": "TRUE"
                 },
                 "Address15_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 15",
                     "longDescription": "iDRAC IPv6 fifteenth address",
                     "name": "Address15",
@@ -9027,7 +9027,7 @@
                     "readonly": "TRUE"
                 },
                 "Address1_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 1",
                     "longDescription": "iDRAC IPv6 Address",
                     "name": "Address1",
@@ -9035,7 +9035,7 @@
                     "readonly": "TRUE"
                 },
                 "Address1_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 1",
                     "longDescription": "iDRAC IPv6 Address",
                     "name": "Address1",
@@ -9043,7 +9043,7 @@
                     "readonly": "FALSE"
                 },
                 "Address1_IPv6Static": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPv6 Address 1",
                     "longDescription": "iDRAC static IPv6 address",
                     "name": "Address1",
@@ -9051,7 +9051,7 @@
                     "readonly": "FALSE"
                 },
                 "Address2_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 2",
                     "longDescription": "iDRAC IPv6 second address",
                     "name": "Address2",
@@ -9059,7 +9059,7 @@
                     "readonly": "TRUE"
                 },
                 "Address2_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 2",
                     "longDescription": "iDRAC IPv6 second address",
                     "name": "Address2",
@@ -9067,7 +9067,7 @@
                     "readonly": "TRUE"
                 },
                 "Address3_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 3",
                     "longDescription": "iDRAC IPv6 third address",
                     "name": "Address3",
@@ -9075,7 +9075,7 @@
                     "readonly": "TRUE"
                 },
                 "Address3_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 3",
                     "longDescription": "iDRAC IPv6 third address",
                     "name": "Address3",
@@ -9083,7 +9083,7 @@
                     "readonly": "TRUE"
                 },
                 "Address4_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 4",
                     "longDescription": "iDRAC IPv6 fourth address",
                     "name": "Address4",
@@ -9091,7 +9091,7 @@
                     "readonly": "TRUE"
                 },
                 "Address4_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 4",
                     "longDescription": "iDRAC IPv6 fourth address",
                     "name": "Address4",
@@ -9099,7 +9099,7 @@
                     "readonly": "TRUE"
                 },
                 "Address5_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 5",
                     "longDescription": "iDRAC IPv6 fifth address",
                     "name": "Address5",
@@ -9107,7 +9107,7 @@
                     "readonly": "TRUE"
                 },
                 "Address5_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 5",
                     "longDescription": "iDRAC IPv6 fifth address",
                     "name": "Address5",
@@ -9115,7 +9115,7 @@
                     "readonly": "TRUE"
                 },
                 "Address6_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 6",
                     "longDescription": "iDRAC IPv6 sixth address",
                     "name": "Address6",
@@ -9123,7 +9123,7 @@
                     "readonly": "TRUE"
                 },
                 "Address6_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 6",
                     "longDescription": "iDRAC IPv6 sixth address",
                     "name": "Address6",
@@ -9131,7 +9131,7 @@
                     "readonly": "TRUE"
                 },
                 "Address7_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 7",
                     "longDescription": "iDRAC IPv6 seventh address",
                     "name": "Address7",
@@ -9139,7 +9139,7 @@
                     "readonly": "TRUE"
                 },
                 "Address7_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 7",
                     "longDescription": "iDRAC IPv6 seventh address",
                     "name": "Address7",
@@ -9147,7 +9147,7 @@
                     "readonly": "TRUE"
                 },
                 "Address8_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 8",
                     "longDescription": "iDRAC IPv6 eighth address",
                     "name": "Address8",
@@ -9155,7 +9155,7 @@
                     "readonly": "TRUE"
                 },
                 "Address8_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 8",
                     "longDescription": "iDRAC IPv6 eighth address",
                     "name": "Address8",
@@ -9163,7 +9163,7 @@
                     "readonly": "TRUE"
                 },
                 "Address9_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 9",
                     "longDescription": "iDRAC IPv6 ninth address",
                     "name": "Address9",
@@ -9171,7 +9171,7 @@
                     "readonly": "TRUE"
                 },
                 "Address9_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Address 9",
                     "longDescription": "iDRAC IPv6 ninth address",
                     "name": "Address9",
@@ -9792,7 +9792,7 @@
                     "readonly": "FALSE"
                 },
                 "BackupGatewayIP_IPMIIPConfig": {
-                    "baseType": "str",
+                    "baseType": "IPAddressField",
                     "description": "Backup Gateway IP",
                     "longDescription": "[To be filled]",
                     "name": "BackupGatewayIP",
@@ -10205,7 +10205,7 @@
                     "type": "CIPHERSuiteDisable_PrivateStoreTypes"
                 },
                 "CMCIP_LCAttributes": {
-                    "baseType": "str",
+                    "baseType": "IPAddressField",
                     "description": "CMC IP Address",
                     "longDescription": "CMC IP address",
                     "name": "CMCIP",
@@ -10213,7 +10213,7 @@
                     "readonly": "TRUE"
                 },
                 "CMCIPv6Info_SysInfo": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "CMC IPv6 Info",
                     "longDescription": "[To be filled]",
                     "name": "CMCIPv6Info",
@@ -11374,7 +11374,7 @@
                     "readonly": "TRUE"
                 },
                 "DNS1_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 DNS Server1",
                     "longDescription": "IPv6 DNS Server 1 Address",
                     "name": "DNS1",
@@ -11398,7 +11398,7 @@
                     "readonly": "FALSE"
                 },
                 "DNS1_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 DNS Server1",
                     "longDescription": "IPv6 DNS Server 1 Address",
                     "name": "DNS1",
@@ -11406,7 +11406,7 @@
                     "readonly": "FALSE"
                 },
                 "DNS1_IPv6Static": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "DNS Server 1",
                     "longDescription": "Statically configurable DNS Server 1",
                     "name": "DNS1",
@@ -11422,7 +11422,7 @@
                     "readonly": "TRUE"
                 },
                 "DNS2_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 DNS Server2",
                     "longDescription": "IPv6 DNS Server 2 Address",
                     "name": "DNS2",
@@ -11446,7 +11446,7 @@
                     "readonly": "FALSE"
                 },
                 "DNS2_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 DNS Server2",
                     "longDescription": "IPv6 DNS Server 1 Address",
                     "name": "DNS2",
@@ -11454,7 +11454,7 @@
                     "readonly": "FALSE"
                 },
                 "DNS2_IPv6Static": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "DNS Server 2",
                     "longDescription": "Statically configurable DNS Server 2",
                     "name": "DNS2",
@@ -11627,7 +11627,7 @@
                     "type": "DNSRegister_NICTypes"
                 },
                 "DNSServer1_SECONDARYNIC": {
-                    "baseType": "IPv4AddressField",
+                    "baseType": "IPAddressField",
                     "description": "DNS Server 1",
                     "longDescription": "SecondaryNIC IPV4 DNS Server 1",
                     "name": "DNSServer1",
@@ -11635,7 +11635,7 @@
                     "readonly": "FALSE"
                 },
                 "DNSServer2_SECONDARYNIC": {
-                    "baseType": "IPv4AddressField",
+                    "baseType": "IPv6AddressField",
                     "description": "DNS Server 2",
                     "longDescription": "SecondaryNIC IPV4 DNS Server 2",
                     "name": "DNSServer2",
@@ -11770,7 +11770,7 @@
                     "readonly": "FALSE"
                 },
                 "DefaultIPAddress_SupportAssist": {
-                    "baseType": "str",
+                    "baseType": "IPAddressField",
                     "description": "Default IP Address",
                     "longDescription": "Default IP address for saving SupportAssist collections to network share.",
                     "name": "DefaultIPAddress",
@@ -11913,7 +11913,7 @@
                     "readonly": "TRUE"
                 },
                 "DestIPv4Addr_SNMPTrapIPv4": {
-                    "baseType": "IPv4AddressField",
+                    "baseType": "IPv6AddressField",
                     "description": "Destination IPv4 Address",
                     "longDescription": "See SNMPAlert.1-4.Destination",
                     "name": "DestIPv4Addr",
@@ -11937,7 +11937,7 @@
                     "readonly": "FALSE"
                 },
                 "DestIPv6Addr_SNMPTrapIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "Destination IPv6 Address",
                     "longDescription": "See SNMPAlert.5-8.Destination",
                     "name": "DestIPv6Addr",
@@ -11945,7 +11945,7 @@
                     "readonly": "FALSE"
                 },
                 "DestIPv6Address_CMCSNMPTrapIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "Dest IPv6 Address",
                     "longDescription": "Specifies Trap IPV6 destination address",
                     "name": "DestIPv6Address",
@@ -11953,7 +11953,7 @@
                     "readonly": "FALSE"
                 },
                 "DestIPv6Address_MSMSNMPTrapIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "Internal alert forwarding of IPv6 address",
                     "longDescription": "MSM internal alert forwarding IPv6 Destination address",
                     "name": "DestIPv6Address",
@@ -13099,7 +13099,7 @@
                     "type": "FrontPanelUSBCapable_PlatformCapabilityTypes"
                 },
                 "FwUpdateIPAddr_Update": {
-                    "baseType": "str",
+                    "baseType": "IPAddressField",
                     "description": "Firmware Update IP Address",
                     "longDescription": "Specifies the TFTP server address to be used for iDRAC firmware update operations",
                     "name": "FwUpdateIPAddr",
@@ -13183,7 +13183,7 @@
                     "readonly": "TRUE"
                 },
                 "Gateway_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Gateway",
                     "longDescription": "iDRAC IPv6 Gateway",
                     "name": "Gateway",
@@ -13207,7 +13207,7 @@
                     "readonly": "FALSE"
                 },
                 "Gateway_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Gateway",
                     "longDescription": "Chassis IPv6 Gateway",
                     "name": "Gateway",
@@ -13215,7 +13215,7 @@
                     "readonly": "FALSE"
                 },
                 "Gateway_IPv6Static": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPv6 Gateway",
                     "longDescription": "iDRAC static IPv6 gateway",
                     "name": "Gateway",
@@ -13741,7 +13741,7 @@
                     "readonly": "TRUE"
                 },
                 "IPAddress_AutoBackup": {
-                    "baseType": "str",
+                    "baseType": "IPAddressField",
                     "description": "IPAddress",
                     "longDescription": "IP Address of the network share",
                     "name": "IPAddress",
@@ -13749,7 +13749,7 @@
                     "readonly": "FALSE"
                 },
                 "IPAddress_AutoUpdate": {
-                    "baseType": "str",
+                    "baseType": "IPAddressField",
                     "description": "IPAddress",
                     "longDescription": "IP Address of the network share",
                     "name": "IPAddress",
@@ -13757,7 +13757,7 @@
                     "readonly": "FALSE"
                 },
                 "IPAddress_LCAttributes": {
-                    "baseType": "str",
+                    "baseType": "IPAddressField",
                     "description": "IPAddress",
                     "longDescription": "IP Address of the network share",
                     "name": "IPAddress",
@@ -13895,7 +13895,7 @@
                     "readonly": "FALSE"
                 },
                 "IdracPTEpIpAddr_OS-BMC": {
-                    "baseType": "str",
+                    "baseType": "IPAddressField",
                     "description": "IDRAC PTE IP Address",
                     "longDescription": "IDRAC PTE IP Address",
                     "name": "IdracPTEpIpAddr",
@@ -15169,7 +15169,7 @@
                     "type": "LineEdit_IPMISerialTypes"
                 },
                 "LinkLocalAddress_CurrentIPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Link Local Address",
                     "longDescription": "iDRAC IPv6 Link Local Address",
                     "name": "LinkLocalAddress",
@@ -15177,7 +15177,7 @@
                     "readonly": "TRUE"
                 },
                 "LinkLocalAddress_IPv6": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "IPV6 Link Local Address",
                     "longDescription": "iDRAC IPv6 Link Local Address",
                     "name": "LinkLocalAddress",
@@ -16292,7 +16292,7 @@
                     "readonly": "TRUE"
                 },
                 "NeighborMgmtIPv6_GBE": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "Neighbor Chassis IPv6",
                     "longDescription": "[To be filled]",
                     "name": "NeighborMgmtIPv6",
@@ -16440,7 +16440,7 @@
                     "readonly": "FALSE"
                 },
                 "OSIPV6_SysInfo": {
-                    "baseType": "str",
+                    "baseType": "IPv6AddressField",
                     "description": "OS IPV6 String Volatile",
                     "longDescription": "[To be filled]",
                     "name": "OSIPV6",
@@ -16590,7 +16590,7 @@
                     "type": "Orientation_SlotConfigTypes"
                 },
                 "OsIpAddress_OS-BMC": {
-                    "baseType": "str",
+                    "baseType": "IPAddressField",
                     "description": "OS-BMC PT HOST IP Address",
                     "longDescription": "OS-BMC Passthrough Host IP Address",
                     "name": "OsIpAddress",
@@ -18287,7 +18287,7 @@
                     "readonly": "TRUE"
                 },
                 "SMTPServerIPAddress_RemoteHosts": {
-                    "baseType": "str",
+                    "baseType": "IPAddressField",
                     "description": "SMTP Server IP Address",
                     "longDescription": "Address of the network SMTP server",
                     "name": "SMTPServerIPAddress",

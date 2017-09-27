@@ -64,7 +64,7 @@ class AutoBackup(ClassType):
         self.DayofMonth_AutoBackup = StringField("", parent=self)
         self.DayofWeek_AutoBackup = StringField("", parent=self)
         self.Domain_AutoBackup = StringField("", parent=self)
-        self.IPAddress_AutoBackup = StringField("", parent=self)
+        self.IPAddress_AutoBackup = IPAddressField(None, parent=self)
         self.ImageName_AutoBackup = StringField("", parent=self)
         self.MaxNumberOfBackupArchives_AutoBackup = IntField(None, parent=self)
         self.Passphrase_AutoBackup = StringField("", parent=self)
@@ -94,7 +94,7 @@ class AutoUpdate(ClassType):
         self.DayofMonth_AutoUpdate = StringField("", parent=self)
         self.DayofWeek_AutoUpdate = StringField("", parent=self)
         self.Domain_AutoUpdate = StringField("", parent=self)
-        self.IPAddress_AutoUpdate = StringField("", parent=self)
+        self.IPAddress_AutoUpdate = IPAddressField(None, parent=self)
         self.Password_AutoUpdate = StringField("", parent=self)
         self.ProxyHostName_AutoUpdate = StringField("", parent=self)
         self.ProxyPassword_AutoUpdate = StringField("", parent=self)
@@ -169,7 +169,7 @@ class CMCSNMPTrapIPv6(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "CMCSNMPTrapIPv6", parent)
-        self.DestIPv6Address_CMCSNMPTrapIPv6 = StringField("", parent=self)
+        self.DestIPv6Address_CMCSNMPTrapIPv6 = IPv6AddressField(None, parent=self)
         self.State_CMCSNMPTrapIPv6 = EnumTypeField(None,State_CMCSNMPTrapIPv6Types, parent=self)
         self.commit(loading_from_scp)
 
@@ -339,51 +339,51 @@ class CurrentIPv6(ClassType):
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "CurrentIPv6", parent)
         # readonly attribute populated by iDRAC
-        self.Address10_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address10_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address11_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address11_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address12_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address12_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address13_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address13_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address14_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address14_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address15_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address15_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address1_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address1_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address2_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address2_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address3_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address3_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address4_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address4_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address5_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address5_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address6_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address6_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address7_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address7_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address8_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address8_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address9_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address9_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.AutoConfig_CurrentIPv6 = EnumTypeField(None,AutoConfig_CurrentIPv6Types, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.DNS1_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.DNS1_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.DNS2_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.DNS2_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.DNSFromDHCP6_CurrentIPv6 = EnumTypeField(None,DNSFromDHCP6_CurrentIPv6Types, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.Enable_CurrentIPv6 = EnumTypeField(None,Enable_CurrentIPv6Types, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Gateway_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Gateway_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.IPV6NumOfExtAddress_CurrentIPv6 = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.LinkLocalAddress_CurrentIPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.LinkLocalAddress_CurrentIPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.PrefixLength_CurrentIPv6 = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.commit(loading_from_scp)
@@ -705,7 +705,7 @@ class GBE(ClassType):
         # readonly attribute populated by iDRAC
         self.NeighborMgmtIPv4_GBE = IPv4AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.NeighborMgmtIPv6_GBE = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.NeighborMgmtIPv6_GBE = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.NeighborPortName_GBE = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -864,7 +864,7 @@ class IPMIIPConfig(ClassType):
         super().__init__(None, "IPMIIPConfig", parent)
         self.ArpControl_IPMIIPConfig = StringField("", parent=self)
         self.ArpInterval_IPMIIPConfig = StringField("", parent=self)
-        self.BackupGatewayIP_IPMIIPConfig = StringField("", parent=self)
+        self.BackupGatewayIP_IPMIIPConfig = IPAddressField(None, parent=self)
         self.BackupGatewayMac_IPMIIPConfig = StringField("", parent=self)
         self.DefaultGatewayMAC_IPMIIPConfig = StringField("", parent=self)
         self.IPHeader_IPMIIPConfig = StringField("", parent=self)
@@ -1052,46 +1052,46 @@ class IPv6(ClassType):
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPv6", parent)
         # readonly attribute populated by iDRAC
-        self.Address10_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address10_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address11_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address11_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address12_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address12_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address13_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address13_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address14_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address14_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address15_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.Address1_IPv6 = StringField("", parent=self)
+        self.Address15_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address1_IPv6 = IPv6AddressField(None, parent=self)
         # readonly attribute populated by iDRAC
-        self.Address2_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address2_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address3_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address3_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address4_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address4_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address5_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address5_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address6_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address6_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address7_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address7_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address8_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address8_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.Address9_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.Address9_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.AddressState_IPv6 = EnumTypeField(None,AddressState_IPv6Types, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.Address_IPv6 = StringField("", parent=self)
         self.AutoConfig_IPv6 = EnumTypeField(None,AutoConfig_IPv6Types, parent=self)
-        self.DNS1_IPv6 = StringField("", parent=self)
-        self.DNS2_IPv6 = StringField("", parent=self)
+        self.DNS1_IPv6 = IPv6AddressField(None, parent=self)
+        self.DNS2_IPv6 = IPv6AddressField(None, parent=self)
         self.DNSFromDHCP6_IPv6 = EnumTypeField(None,DNSFromDHCP6_IPv6Types, parent=self)
         self.Enable_IPv6 = EnumTypeField(None,Enable_IPv6Types, parent=self)
-        self.Gateway_IPv6 = StringField("", parent=self)
+        self.Gateway_IPv6 = IPv6AddressField(None, parent=self)
         self.IPV6NumOfExtAddress_IPv6 = IntField(None, parent=self)
         # readonly attribute populated by iDRAC
-        self.LinkLocalAddress_IPv6 = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.LinkLocalAddress_IPv6 = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.PrefixLength_IPv6 = IntField(None, parent=self)
         self.commit(loading_from_scp)
 
@@ -1099,12 +1099,12 @@ class IPv6Static(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "IPv6Static", parent)
-        self.Address1_IPv6Static = StringField("", parent=self)
+        self.Address1_IPv6Static = IPv6AddressField(None, parent=self)
         self.Address_IPv6Static = StringField("", parent=self)
-        self.DNS1_IPv6Static = StringField("", parent=self)
-        self.DNS2_IPv6Static = StringField("", parent=self)
+        self.DNS1_IPv6Static = IPv6AddressField(None, parent=self)
+        self.DNS2_IPv6Static = IPv6AddressField(None, parent=self)
         self.DNSFromDHCP6_IPv6Static = EnumTypeField(None,DNSFromDHCP6_IPv6StaticTypes, parent=self)
-        self.Gateway_IPv6Static = StringField("", parent=self)
+        self.Gateway_IPv6Static = IPv6AddressField(None, parent=self)
         self.Netmask_IPv6Static = StringField("", parent=self)
         self.PrefixLength_IPv6Static = IntField(None, parent=self)
         self.DNSServers = CompositeFieldType(self.DNS1_IPv6Static, self.DNS2_IPv6Static)
@@ -1309,13 +1309,13 @@ class LCAttributes(ClassType):
         self.BIOSRTDRequested_LCAttributes = EnumTypeField(None,BIOSRTDRequested_LCAttributesTypes, parent=self)
         self.BootToMaser_LCAttributes = EnumTypeField(None,BootToMaser_LCAttributesTypes, parent=self)
         # readonly attribute populated by iDRAC
-        self.CMCIP_LCAttributes = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.CMCIP_LCAttributes = IPAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.CSIORLaunched_LCAttributes = EnumTypeField(None,CSIORLaunched_LCAttributesTypes, parent=self)
         self.CollectSystemInventoryOnRestart_LCAttributes = EnumTypeField(None,CollectSystemInventoryOnRestart_LCAttributesTypes, parent=self)
         self.DiagsJobScheduled_LCAttributes = EnumTypeField(None,DiagsJobScheduled_LCAttributesTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.DiscoveryFactoryDefaults_LCAttributes = EnumTypeField(None,DiscoveryFactoryDefaults_LCAttributesTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.IPAddress_LCAttributes = StringField("", parent=self)
+        self.IPAddress_LCAttributes = IPAddressField(None, parent=self)
         self.IPChangeNotifyPS_LCAttributes = EnumTypeField(None,IPChangeNotifyPS_LCAttributesTypes, parent=self)
         self.IgnoreCertWarning_LCAttributes = EnumTypeField(None,IgnoreCertWarning_LCAttributesTypes, parent=self)
         self.LCDriveEnable_LCAttributes = EnumTypeField(None,LCDriveEnable_LCAttributesTypes, parent=self)
@@ -1478,7 +1478,7 @@ class MSMSNMPTrapIPv6(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "MSMSNMPTrapIPv6", parent)
-        self.DestIPv6Address_MSMSNMPTrapIPv6 = StringField("", parent=self)
+        self.DestIPv6Address_MSMSNMPTrapIPv6 = IPv6AddressField(None, parent=self)
         self.State_MSMSNMPTrapIPv6 = EnumTypeField(None,State_MSMSNMPTrapIPv6Types, parent=self)
         self.commit(loading_from_scp)
 
@@ -1594,8 +1594,8 @@ class OS_BMC(ClassType):
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "OS-BMC", parent)
         self.AdminState_OS_BMC = EnumTypeField(None,AdminState_OS_BMCTypes, alias="AdminState_OS-BMC", parent=self)
-        self.IdracPTEpIpAddr_OS_BMC = StringField("", alias="IdracPTEpIpAddr_OS-BMC", parent=self)
-        self.OsIpAddress_OS_BMC = StringField("", alias="OsIpAddress_OS-BMC", parent=self)
+        self.IdracPTEpIpAddr_OS_BMC = IPAddressField(None, alias="IdracPTEpIpAddr_OS-BMC", parent=self)
+        self.OsIpAddress_OS_BMC = IPAddressField(None, alias="OsIpAddress_OS-BMC", parent=self)
         # readonly attribute populated by iDRAC
         self.PTCapability_OS_BMC = EnumTypeField(None,PTCapability_OS_BMCTypes, alias="PTCapability_OS-BMC", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.PTMode_OS_BMC = EnumTypeField(None,PTMode_OS_BMCTypes, alias="PTMode_OS-BMC", parent=self)
@@ -2051,7 +2051,7 @@ class RemoteHosts(ClassType):
         self.SMTPPort_RemoteHosts = IntField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.SMTPSASL_RemoteHosts = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.SMTPServerIPAddress_RemoteHosts = StringField("", parent=self)
+        self.SMTPServerIPAddress_RemoteHosts = IPAddressField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.SMTPStartTLS_RemoteHosts = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.SMTPUserName_RemoteHosts = StringField("", parent=self)
@@ -2090,8 +2090,8 @@ class SECONDARYNIC(ClassType):
         self.DHCPEnable_SECONDARYNIC = EnumTypeField(None,DHCPEnable_SECONDARYNICTypes, parent=self)
         self.DNSDRACName_SECONDARYNIC = StringField("", parent=self)
         self.DNSFromDHCP_SECONDARYNIC = EnumTypeField(None,DNSFromDHCP_SECONDARYNICTypes, parent=self)
-        self.DNSServer1_SECONDARYNIC = IPv4AddressField(None, parent=self)
-        self.DNSServer2_SECONDARYNIC = IPv4AddressField(None, parent=self)
+        self.DNSServer1_SECONDARYNIC = IPAddressField(None, parent=self)
+        self.DNSServer2_SECONDARYNIC = IPv6AddressField(None, parent=self)
         self.DomainNameDHCP_SECONDARYNIC = EnumTypeField(None,DomainNameDHCP_SECONDARYNICTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.Duplex_SECONDARYNIC = EnumTypeField(None,Duplex_SECONDARYNICTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -2160,7 +2160,7 @@ class SNMPTrapIPv4(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SNMPTrapIPv4", parent)
-        self.DestIPv4Addr_SNMPTrapIPv4 = IPv4AddressField(None, parent=self)
+        self.DestIPv4Addr_SNMPTrapIPv4 = IPv6AddressField(None, parent=self)
         # readonly attribute
         self.DestinationNum_SNMPTrapIPv4 = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.State_SNMPTrapIPv4 = EnumTypeField(None,State_SNMPTrapIPv4Types, parent=self)
@@ -2170,7 +2170,7 @@ class SNMPTrapIPv6(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SNMPTrapIPv6", parent)
-        self.DestIPv6Addr_SNMPTrapIPv6 = StringField("", parent=self)
+        self.DestIPv6Addr_SNMPTrapIPv6 = IPv6AddressField(None, parent=self)
         # readonly attribute
         self.DestinationNum_SNMPTrapIPv6 = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.State_SNMPTrapIPv6 = EnumTypeField(None,State_SNMPTrapIPv6Types, parent=self)
@@ -2505,7 +2505,7 @@ class SupportAssist(ClassType):
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SupportAssist", parent)
         self.Action_SupportAssist = StringField("", parent=self)
-        self.DefaultIPAddress_SupportAssist = StringField("", parent=self)
+        self.DefaultIPAddress_SupportAssist = IPAddressField(None, parent=self)
         self.DefaultLocalPathName_SupportAssist = StringField("", parent=self)
         self.DefaultPassword_SupportAssist = StringField("", parent=self)
         self.DefaultProtocol_SupportAssist = EnumTypeField(None,DefaultProtocol_SupportAssistTypes, parent=self)
@@ -2574,7 +2574,7 @@ class SysInfo(ClassType):
         self.BladeSlotInfo_SysInfo = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.BrdRevision_SysInfo = StringField("", parent=self)
         # readonly attribute populated by iDRAC
-        self.CMCIPv6Info_SysInfo = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.CMCIPv6Info_SysInfo = IPv6AddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.CMCIPv6Url_SysInfo = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -2591,7 +2591,7 @@ class SysInfo(ClassType):
         self.ISInfos_SysInfo = StringField("", parent=self)
         self.LocalConsoleLockOut_SysInfo = IntField(None, parent=self)
         self.OSIPV4_SysInfo = StringField("", parent=self)
-        self.OSIPV6_SysInfo = StringField("", parent=self)
+        self.OSIPV6_SysInfo = IPv6AddressField(None, parent=self)
         self.OSNameBinary_SysInfo = StringField("", parent=self)
         self.OSNameVolatile_SysInfo = StringField("", parent=self)
         self.OSVersionBinary_SysInfo = StringField("", parent=self)
@@ -2740,7 +2740,7 @@ class Update(ClassType):
         super().__init__(None, "Update", parent)
         self.Begin_Update = EnumTypeField(None,Begin_UpdateTypes, parent=self)
         self.EnableSharedCompUpdate_Update = EnumTypeField(None,EnableSharedCompUpdate_UpdateTypes, parent=self)
-        self.FwUpdateIPAddr_Update = StringField("", parent=self)
+        self.FwUpdateIPAddr_Update = IPAddressField(None, parent=self)
         self.FwUpdatePath_Update = StringField("", parent=self)
         self.FwUpdateTFTPEnable_Update = EnumTypeField(None,FwUpdateTFTPEnable_UpdateTypes, parent=self)
         # readonly attribute populated by iDRAC
@@ -2950,20 +2950,6 @@ class LifecycleController(ClassType):
         self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 
-class System(ClassType):
-
-    def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__("Component", None, parent)
-        self.ChassisControl = ChassisControl(parent=self, loading_from_scp=loading_from_scp)
-        self.ChassisPwrState = ChassisPwrState(parent=self, loading_from_scp=loading_from_scp)
-        self.LCD = LCD(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerOS = ServerOS(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerPwr = ServerPwr(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerTopology = ServerTopology(parent=self, loading_from_scp=loading_from_scp)
-        self.ThermalConfig = ThermalConfig(parent=self, loading_from_scp=loading_from_scp)
-        self.ThermalSettings = ThermalSettings(parent=self, loading_from_scp=loading_from_scp)
-        self.commit(loading_from_scp)
-
 class iDRAC(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
@@ -3132,5 +3118,19 @@ class iDRAC(ClassType):
         self._STP_ = _STP_(parent=self, loading_from_scp=loading_from_scp)
         self.vFlashPartition = vFlashPartition(parent=self, loading_from_scp=loading_from_scp)
         self.vFlashSD = vFlashSD(parent=self, loading_from_scp=loading_from_scp)
+        self.commit(loading_from_scp)
+
+class System(ClassType):
+
+    def __init__(self, parent = None, loading_from_scp=False):
+        super().__init__("Component", None, parent)
+        self.ChassisControl = ChassisControl(parent=self, loading_from_scp=loading_from_scp)
+        self.ChassisPwrState = ChassisPwrState(parent=self, loading_from_scp=loading_from_scp)
+        self.LCD = LCD(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerOS = ServerOS(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerPwr = ServerPwr(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerTopology = ServerTopology(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalConfig = ThermalConfig(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalSettings = ThermalSettings(parent=self, loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 
