@@ -1,11 +1,11 @@
 from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.ArrayType import ArrayType
 from omsdk.typemgr.BuiltinTypes import RootClassType
+from omdrivers.types.iDRAC.BIOS import *
+from omdrivers.types.iDRAC.FCHBA import *
 from omdrivers.types.iDRAC.iDRAC import *
 from omdrivers.types.iDRAC.NIC import *
 from omdrivers.types.iDRAC.RAID import *
-from omdrivers.types.iDRAC.FCHBA import *
-from omdrivers.types.iDRAC.BIOS import *
 import logging
 
 logger = logging.getLogger(__name__)
@@ -20,5 +20,6 @@ class SystemConfiguration(RootClassType):
         self.FCHBA = ArrayType(FCHBA, parent=self, loading_from_scp=loading_from_scp)
         self.NIC = ArrayType(NIC, parent=self, loading_from_scp=loading_from_scp)
         self.BIOS = BIOS(parent=self, loading_from_scp=loading_from_scp)
+        #self.Controller = ArrayType(Controller, parent=self, loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 

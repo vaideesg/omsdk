@@ -658,7 +658,7 @@ class Config:
         if cfg._sysconfig.BIOS.BootMode == BootMode.Uefi:
             cfg._sysconfig.BIOS.UefiBootSeq = ','.join(boot_seq_list)
             cfg._sysconfig.BIOS.UefiHddSeq = ','.join(hdd_seq)
-        else
+        else:
             cfg._sysconfig.BIOS.BootSeq = ','.join(boot_seq_list)
             cfg._sysconfig.BIOS.HddSeq = ','.join(hdd_seq)
 

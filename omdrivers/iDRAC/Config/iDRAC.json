@@ -12502,7 +12502,7 @@
                     "uneditable": false
                 },
                 "DefaultIPAddress_SupportAssist": {
-                    "baseType": "IPv6AddressField",
+                    "baseType": "IPAddressField",
                     "description": "Default IP Address",
                     "longDescription": "Default IP address for saving SupportAssist collections to network share.",
                     "modDeleteAllowed": true,

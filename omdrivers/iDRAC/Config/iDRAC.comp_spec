@@ -143,7 +143,7 @@
             "FCHBA",
             "NIC",
             "BIOS",
-            "#Controller"
+            "Controller"
         ]
     },
     "reboot": {
@@ -183,9 +183,6 @@
             ],
             "RemoteHosts": [
                 "SMTPServerIPAddress"
-            ],
-            "SECONDARYNIC": [
-                "DNSServer1"
             ],
             "SupportAssist": [
                 "DefaultIPAddress"
@@ -299,13 +296,6 @@
             ],
             "MSMSNMPTrapIPv6": [
                 "DestIPv6Address"
-            ],
-            "SECONDARYNIC": [
-                "DNSServer1",
-                "DNSServer2"
-            ],
-            "SNMPTrapIPv4": [
-                "DestIPv4Addr"
             ],
             "SNMPTrapIPv6": [
                 "DestIPv6Addr"

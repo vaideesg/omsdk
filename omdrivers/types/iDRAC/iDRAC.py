@@ -2515,7 +2515,7 @@ class SupportAssist(ClassType):
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__(None, "SupportAssist", parent)
         self.Action_SupportAssist = StringField("", parent=self)
-        self.DefaultIPAddress_SupportAssist = IPv6AddressField(None, parent=self)
+        self.DefaultIPAddress_SupportAssist = IPAddressField(None, parent=self)
         self.DefaultLocalPathName_SupportAssist = StringField("", parent=self)
         self.DefaultPassword_SupportAssist = StringField("", parent=self)
         self.DefaultProtocol_SupportAssist = EnumTypeField(None,DefaultProtocol_SupportAssistTypes, parent=self)
@@ -2954,6 +2954,20 @@ class vFlashSD(ClassType):
         self.WriteProtect_vFlashSD = EnumTypeField(None,WriteProtect_vFlashSDTypes, parent=self)
         self.commit(loading_from_scp)
 
+class System(ClassType):
+
+    def __init__(self, parent = None, loading_from_scp=False):
+        super().__init__("Component", None, parent)
+        self.ChassisControl = ChassisControl(parent=self, loading_from_scp=loading_from_scp)
+        self.ChassisPwrState = ChassisPwrState(parent=self, loading_from_scp=loading_from_scp)
+        self.LCD = LCD(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerOS = ServerOS(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerPwr = ServerPwr(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerTopology = ServerTopology(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalConfig = ThermalConfig(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalSettings = ThermalSettings(parent=self, loading_from_scp=loading_from_scp)
+        self.commit(loading_from_scp)
+
 class iDRAC(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
@@ -3129,19 +3143,5 @@ class LifecycleController(ClassType):
     def __init__(self, parent = None, loading_from_scp=False):
         super().__init__("Component", None, parent)
         self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
-        self.commit(loading_from_scp)
-
-class System(ClassType):
-
-    def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__("Component", None, parent)
-        self.ChassisControl = ChassisControl(parent=self, loading_from_scp=loading_from_scp)
-        self.ChassisPwrState = ChassisPwrState(parent=self, loading_from_scp=loading_from_scp)
-        self.LCD = LCD(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerOS = ServerOS(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerPwr = ServerPwr(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerTopology = ServerTopology(parent=self, loading_from_scp=loading_from_scp)
-        self.ThermalConfig = ThermalConfig(parent=self, loading_from_scp=loading_from_scp)
-        self.ThermalSettings = ThermalSettings(parent=self, loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 
