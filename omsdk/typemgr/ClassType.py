@@ -356,35 +356,48 @@ class ClassType(TypeBase):
             return self
         return self._parent.get_root()
 
-    def _clone_parent(self):
-        parent_list = []
-        obj = self
-        if not obj._parent:
-            return (None, None)
-        while obj._parent:
-            field_name = None
-            for prop_name in obj._parent.Properties:
-                if obj._parent.__dict__[prop_name] == obj:
-                    field_name = prop_name
-                    break
-            parent_list.insert(0, (obj._parent, field_name))
-            obj = obj._parent
-        new_list = [None]
-        for (parent, field) in parent_list:
-            #print(type(parent).__name__ + "." + field)
-            new_list.append(type(parent)(new_list[-1]))
-            if new_list[-2]:
-                new_list[-2].__dict__[field] = new_list[-1]
-        return (new_list[1], parent_list[-1][1])
+    # Does not have children - so not implemented
+    def _clone_update(self, child, child_state):
+        if child_state in [TypeState.Initializing, TypeState.Precommit, TypeState.Changing]:
+            if self._state in [TypeState.UnInitialized, TypeState.Precommit]:
+                self.__dict__['_state'] = TypeState.Initializing
+            elif self._state == TypeState.Committed:
+                self.__dict__['_state'] = TypeState.Changing
+        if self.is_changed() and self._parent:
+            self._parent._clone_update(self, self._state)
 
-    def clone(self, parent=None):
-        if parent is None:
-            (parent, field) = self._clone_parent()
-        cloneobj = type(self)(parent)
-        for i in self.Properties:
-            cloneobj.__dict__[i] = self.__dict__[i].clone(cloneobj)
-        if parent: parent.__dict__[field] = cloneobj
+    def _clone_parent(self, commit):
+        parent = None
+        if self._parent:
+            parent = self._parent._clone_parent(commit)
+        return self._clone_shallow(parent, commit)
+
+    def _clone_shallow(self, parent, commit):
+        #print('cloning shallow myself: ' + type(self).__name__)
+        cloneobj = type(self)(parent = parent, loading_from_scp = not commit)
+        cloneobj._index = self._index
+        for i in self._attribs:
+            cloneobj._attribs[i] = self._attribs[i]
+        if cloneobj.is_changed() and cloneobj._parent:
+            cloneobj._parent._clone_update(cloneobj, cloneobj._state)
         return cloneobj
+
+    def _clone_deep(self, parent, commit):
+        #print('cloning deep myself: ' + type(self).__name__)
+        cloneobj = type(self)(parent = parent, loading_from_scp = not commit)
+        cloneobj._index = self._index
+        for i in self._attribs:
+            cloneobj._attribs[i] = self._attribs[i]
+        for i in self.Properties:
+            cloneobj.__dict__[i] = self.__dict__[i]
+        if cloneobj.is_changed() and cloneobj._parent:
+            cloneobj._parent._clone_update(cloneobj, cloneobj._state)
+        return cloneobj
+
+    def clone(self, parent=None, commit=True):
+        if parent is None:
+            parent = self._parent._clone_parent(commit)
+        return self._clone_deep(parent, commit)
 
     @property
     def Properties(self):

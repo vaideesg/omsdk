@@ -30,20 +30,26 @@ class RootClassType(ClassType):
     def __init__(self, fname, alias, parent = None):
         super().__init__(fname, alias, parent)
 
+class CloneableClassType(ClassType):
+    def clone(self, parent=None, commit=False):
+        return type(self)(parent=parent, loading_from_scp=not commit)
+
 class CloneableFieldType(FieldType):
-    def clone(self, parent=None):
+    def clone(self, parent=None, commit=False):
         if isinstance(self, EnumTypeField):
             return type(self)(self._value, entype=self._type, alias=self._alias,
                   parent=parent, volatile=self._volatile,
                   modifyAllowed = self._modifyAllowed,
                   deleteAllowed = self._deleteAllowed,
-                  rebootRequired = self._rebootRequired)
+                  rebootRequired = self._rebootRequired,
+                  loading_from_scp=not commit)
         else:
             return type(self)(self._value, alias=self._alias,
                   parent=parent, volatile=self._volatile,
                   modifyAllowed = self._modifyAllowed,
                   deleteAllowed = self._deleteAllowed,
-                  rebootRequired = self._rebootRequired)
+                  rebootRequired = self._rebootRequired,
+                  loading_from_scp=not commit)
 
 class PortField(CloneableFieldType):
     def __init__(self, init_value, alias =None, parent=None, volatile=False,
