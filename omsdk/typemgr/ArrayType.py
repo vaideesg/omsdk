@@ -30,7 +30,7 @@ from omsdk.typemgr.TypeState import TypeState,TypeBase
 # def get_root(self)
 
 class ArrayType(TypeBase):
-    def __init__(self, clsname, parent=None, min_index=1, max_index=2, loading_from_scp=False):
+    def __init__(self, clsname, parent=None, min_index=1, max_index=20, loading_from_scp=False):
         self._alias = None
         self._fname = clsname.__name__
         self._volatile = False
@@ -78,26 +78,35 @@ class ArrayType(TypeBase):
 
         return True
 
+    def _get_key(self, entry):
+        if hasattr(entry, 'Key'):
+            key = entry.Key._value
+            if key: key = str(key)
+            return key
+        else:
+            return entry._index
+
     def _values_changed(self, source, dest):
         source_idx = []
         for entry in source:
-            source_idx.append(str(entry.Key))
+            source_idx.append(self._get_key(entry))
         for entry in dest:
-            if str(entry.Key) not in source_idx:
+            if self._get_key(entry) not in source_idx:
                 return False
-            source_idx.remove(str(entry.Key))
+            source_idx.remove(self._get_key(entry))
         return (len(source_idx) <= 0)
 
     def values_deleted(self):
         source_idx = []
         dest_idx = []
         for entry in self._entries:
-            source_idx.append(str(entry.Key))
+            source_idx.append(self._get_key(entry))
         for entry in self.__dict__['_orig_value']:
-            if str(entry.Key) not in source_idx:
-                dest_idx.append(str(entry.Key))
+            key = self._get_key(entry)
+            if key not in source_idx:
+                dest_idx.append(key)
                 continue
-            source_idx.remove(str(entry.Key))
+            source_idx.remove(key)
         return dest_idx
 
     # State : to Committed
@@ -108,7 +117,7 @@ class ArrayType(TypeBase):
                 self._copy_state(source = self._entries,
                                  dest = self.__dict__['_orig_value'])
                 self.__dict__['_orig_value'] = \
-                    sorted(self.__dict__['_orig_value'], key = lambda entry: entry.Index)
+                    sorted(self.__dict__['_orig_value'], key = lambda entry: entry._index)
                 # update _keys
                 for entry in self._entries:
                     entry.commit(loading_from_scp)
@@ -134,8 +143,8 @@ class ArrayType(TypeBase):
                     self._indexes_free = [i for i in \
                                  range(min_index, max_index+1)]
                     for i in self._entries:
-                        self._indexes_free.remove(i.Index)
-                        self._keys[str(i.Key)] = i
+                        self._indexes_free.remove(i._index)
+                        self._keys[self._get_key(i)] = i
                 self.__dict__['_state'] = TypeState.Committed
         return True
 
@@ -205,11 +214,12 @@ class ArrayType(TypeBase):
         entry = self._cls(parent=self, loading_from_scp=self._loading_from_scp)
         for i in kwargs:
             entry.__setattr__(i, kwargs[i])
-        if index is None and entry.Key is None:
+        if index is None and self._get_key(entry) is None:
             raise ValueError('key not provided')
-        if entry.Key and str(entry.Key) in self._keys:
-            raise ValueError(self._cls.__name__ +" key " + str(entry.Key) +' already exists')
-            
+        key = self._get_key(entry)
+        if key and key in self._keys:
+            raise ValueError(self._cls.__name__ +" key "+key+' already exists')
+
         if index is None:
             index = self._indexes_free[0]
         else:
@@ -238,23 +248,21 @@ class ArrayType(TypeBase):
         keys = {}
         toremove = []
         for entry in self._entries:
-            if entry.Key is None:
-                #print("Removing none key: " + str(entry._index) + " in " + self._cls.__name__)
+            strkey = self._get_key(entry)
+            if strkey is None:
                 toremove.append(entry)
-            strkey = str(entry.Key)
             if strkey in ["", "()"]:
-                #print("Removing emptykey: " + str(entry._index) + " in " + self._cls.__name__)
                 toremove.append(entry)
             elif strkey in keys:
-                #print("ERROR: Duplicate Entry found: " + strkey + " in " + self._cls.__name__)
                 toremove.append(entry)
             keys[strkey] = entry
 
         for entry in toremove:
             self._entries.remove(entry)
-            self._indexes_free.append(entry.Index)
-            if str(entry.Key) in self._keys:
-                del self._keys[str(entry.Key)]
+            self._indexes_free.append(entry._index)
+            strkey = self._get_key(entry)
+            if strkey in self._keys:
+                del self._keys[strkey]
         self._sort()
 
     # returns a list
@@ -280,9 +288,10 @@ class ArrayType(TypeBase):
         entries = self._find(True, **kwargs)
         for i in entries:
             self._entries.remove(i)
-            self._indexes_free.append(i.Index)
-            if str(i.Key) in self._keys:
-                del self._keys[str(i.Key)]
+            self._indexes_free.append(i._index)
+            key = self._get_key(i)
+            if key in self._keys:
+                del self._keys[key]
         self._sort()
 
         if self._state in [TypeState.UnInitialized, TypeState.Precommit, TypeState.Initializing]:
@@ -301,7 +310,7 @@ class ArrayType(TypeBase):
 
     def _sort(self):
         self._indexes_free = sorted(self._indexes_free)
-        self._entries = sorted(self._entries, key = lambda entry: entry.Index)
+        self._entries = sorted(self._entries, key = lambda entry: entry._index)
 
     def _find(self, all_entries = True, **kwargs):
         output = []
@@ -332,3 +341,34 @@ class ArrayType(TypeBase):
     @property
     def Properties(self):
         return self._entries
+
+    @property
+    def Json(self):
+        output = []
+        for entry in self:
+            output.append(entry.Json)
+        return output
+
+    def __iter__(self):
+        return ArrayTypeIterator(self)
+
+class ArrayTypeIterator:
+    def __init__(self, array):
+        self.array = array
+        self.current = -1
+        self.high = len(self.array._entries)
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        return self.__next__()
+
+    def __next__(self):
+        if self.current >= self.high:
+            raise StopIteration
+        else:
+           self.current += 1
+           if self.current >= self.high:
+               raise StopIteration
+           return self.array._entries[self.current]

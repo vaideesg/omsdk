@@ -171,11 +171,7 @@ class FieldType(TypeBase):
 
     # Representation APIs
     def __str__(self):
-        return str(self._value)
-
-    # Representation APIs
-    def __repr__(self):
-        return str(self._value)
+        return str(self._value) if self._value else None
 
     # Representation APIs
     def sanitized_value(self):

@@ -2,6 +2,7 @@ from omsdk.sdkcenum import TypeHelper
 from omsdk.typemgr.FieldType import FieldType
 from omsdk.typemgr.TypeState import TypeState, TypeBase
 import sys
+import re
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -378,6 +379,25 @@ class ClassType(TypeBase):
             if self.__dict__[i].reboot_required():
                 return True
         return False
+
+    @property
+    def Json(self):
+        output = {}
+        for i in self._attribs:
+            output[i] = self._attribs[i]
+        output['_index'] = self._index
+        output['_attributes'] = list(self._attribs.keys())
+
+        for i in self.Properties:
+            attr_name = i
+            if self.__dict__[i]._alias is not None:
+                attr_name = self.__dict__[i]._alias
+            attr_name = re.sub('_.*', '', attr_name)
+            if isinstance(self.__dict__[i], FieldType):
+                output[attr_name] = TypeHelper.resolve(self.__dict__[i]._value)
+            else:
+                output[attr_name] = self.__dict__[i].Json
+        return output
 
     def json_encode(self):
         return str(self)

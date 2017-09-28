@@ -79,41 +79,6 @@ class FormatterTemplate(object):
     def printx(self):
         print(self._get_str())
 
-class JSONFormatter(FormatterTemplate):
-    def __init__(self, everything):
-        super().__init__(everything)
-        self.target = {}
-
-    def _emit(self, output, value):
-        return value
-
-    def _init(self, output, obj, space, array=False):
-        data = {}
-        if array: data = []
-        if obj._fname:
-            output[obj._fname] = data
-            return output[obj._fname]
-        elif obj._alias and isinstance(obj, ClassType):
-            output[obj._alias] = data
-            return output[obj._alias]
-        return output
-
-    def _create_array_entry(self, opobj):
-        return {}
-
-    def _close_array_entry(self, opobj, obj):
-        opobj.append(obj)
-        return {}
-
-    def _write_start(self, output, attr_name, value, space):
-        pass
-
-    def _write_end(self, output, attr_name, value, data, space):
-        output[attr_name] = data
-
-    def _get_str(self):
-        return PrettyPrint.prettify_json(self.target)
-
 class XMLFormatter(FormatterTemplate):
     def __init__(self, everything):
         super().__init__(everything)

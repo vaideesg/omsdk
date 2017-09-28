@@ -120,7 +120,7 @@ class XMLParser(object):
             parent = None
             if isinstance(entry, ArrayType):
                 parent = entry
-                entry = parent._cls(loading_from_scp=True)
+                entry = parent.find_or_create(len(parent._entries)+1)
     
             for attrib in subnode.attrib:
                 entry.add_attribute(attrib, subnode.attrib[attrib])

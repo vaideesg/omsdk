@@ -14,7 +14,7 @@ class SCPSimulator(object):
         if self.idrac._sysconfig is not None:
             return { 'Status' : 'Success' }
 
-        self.idrac._sysconfig = self.idrac.xmlp.parse_scp('dd\\fact_100.96.25.121_20170922_175638.xml')
+        self.idrac._sysconfig = self.idrac.xmlp.parse_scp('dd\\test.xml')
         self.idrac._sysconfig.commit()
         return { 'Status' : 'Success' }
 
@@ -630,6 +630,37 @@ class Config:
             self.xmlp.save_scp('', newobj)
             self._sysconfig.iDRAC.Users.remove(UserName_Users = username)
             self.apply_changes()
+
+    def configure_boot_sequence(*boot_devices):
+        boot_seq_list = []
+        hdd_seq = []
+        for bdevice in boot_devices:
+            if bdevice == 'CDROM':
+                boot_seq_list.append('Optical.SATAEmbedded.E-1')
+            elif bdevice == 'NIC':
+                for nic in cfg._sysconfig.NIC:
+                    if nic.LegacyBootProto not in [LegacyBootProtoTypes.NONE]:
+                        boot_seq_list.append(nic._attribs['FQDD'])
+            elif bdevice == 'FCHBA':
+                for fc in cfg._sysconfig.FCHBA:
+                    boot_seq_list.append(fc._FQDD)
+            elif bdevice == 'SDCard':
+                if cfg._sysconfig.BIOS.InternalSdCardPrimaryCard == 'SdCard1':
+                    boot_seq_list.append('Disk.SDInternal.1-1')
+            #else:
+            #    for controller in cfg._sysconfig.Controller:
+            #        vd = idrac.config_mgr.get_virtual_disk(bdevice)
+            #        if vd is None:
+            #            vd = bdevice
+            #        hdd_seq.append(bdevice)
+            #        if 'HardDisk.List.1-1' not in boot_seq_list:
+            #            boot_seq_list.append('HardDisk.List.1-1')
+        if cfg._sysconfig.BIOS.BootMode == BootMode.Uefi:
+            cfg._sysconfig.BIOS.UefiBootSeq = ','.join(boot_seq_list)
+            cfg._sysconfig.BIOS.UefiHddSeq = ','.join(hdd_seq)
+        else
+            cfg._sysconfig.BIOS.BootSeq = ','.join(boot_seq_list)
+            cfg._sysconfig.BIOS.HddSeq = ','.join(hdd_seq)
 
     def print_data(self, obj):
         if obj:
