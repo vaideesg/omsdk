@@ -30,27 +30,26 @@ class XMLParser(object):
                         return sysconfig.__dict__[i]
         return None
 
-    def _load_attrib(self, node, entry):
-        for attrib in node:
-            if attrib.tag == 'Component':
-                subnode = self._get_entry(attrib.get('FQDD'), entry)
+    def _load_child(self, node, entry):
+        for child in node:
+            if child.tag == 'Component':
+                subnode = self._get_entry(child.get('FQDD'), entry)
                 if subnode is None:
-                    logger.warning('No component spec found for ' + attrib.get('FQDD'))
+                    logger.warning('No component spec found for ' + child.get('FQDD'))
                     continue
-                print(subnode)
                 parent = None
-                if isinstance(entry, ArrayType):
-                    parent = entry
+                subentry = subnode
+                if isinstance(subnode, ArrayType):
+                    parent = subnode
                     subentry = parent.find_or_create(len(parent._entries)+1)
-        
-                if subnode.attrib:
-                    for attr in subnode.attrib:
-                        subentry.add_attribute(attr, subnode.attrib[attr])
+
+                for attr in child.attrib:
+                    subentry.add_attribute(attr, child.attrib[attr])
     
-                _load_attrib(subnode, subentry)
+                self._load_child(child, subentry)
                 continue
     
-            attrname = attrib.get("Name")
+            attrname = child.get("Name")
             if attrname is None:
                 logging.error("ERROR: No attribute found!!")
                 continue
@@ -58,17 +57,17 @@ class XMLParser(object):
             if '.' not in attrname:
                 # plain attribute
                 if attrname not in entry.__dict__:
-                    entry.__setattr__(attrname, StringField(attrib.text, parent=entry))
+                    entry.__setattr__(attrname, StringField(child.text, parent=entry))
                     logging.warning(attrname + ' not found in ' + type(entry).__name__)
                     logging.warning("Ensure the attribute registry is updated.")
                     continue
     
-                if attrib.text is None or attrib.text.strip() == '':
+                if child.text is None or child.text.strip() == '':
                     # empty - what to do?
                     if entry.__dict__[attrname]._type == str:
                         entry.__dict__[attrname]._value = ""
                 else:
-                    entry.__dict__[attrname]._value = attrib.text.strip()
+                    entry.__dict__[attrname]._value = child.text.strip()
                 continue
     
             match = re.match('(.*)\.([0-9]+)#(.*)', attrname)
@@ -87,17 +86,17 @@ class XMLParser(object):
                 if field not in subentry.__dict__:
                     field = field + '_' + group
                 if field not in subentry.__dict__:
-                    subentry.__dict__[field] = StringField(attrib.text, parent=subentry)
+                    subentry.__dict__[field] = StringField(child.text, parent=subentry)
                     logging.warning(field+' not found in '+type(subentry).__name__)
                     logging.warning("Ensure the attribute registry is updated.")
                     continue
-                if attrib.text is None or attrib.text.strip() == '':
+                if child.text is None or child.text.strip() == '':
                     # empty - what to do?
                     if subentry.__dict__[field]._type == str:
                         subentry.__dict__[field]._value = ""
                 else:
                     try:
-                        subentry.__dict__[field]._value = attrib.text.strip()
+                        subentry.__dict__[field]._value = child.text.strip()
                     except Exception as ex:
                         print(group + "..." + field)
                         print(subentry._state)
@@ -126,7 +125,7 @@ class XMLParser(object):
             for attrib in subnode.attrib:
                 entry.add_attribute(attrib, subnode.attrib[attrib])
     
-            self._load_attrib(subnode, entry)
+            self._load_child(subnode, entry)
     
     def parse_scp(self, fname):
         tree= ET.parse(fname)

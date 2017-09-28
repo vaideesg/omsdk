@@ -59,6 +59,7 @@ class Controller(ClassType):
         self.RAIDsupportedDiskProt = EnumTypeField(None,RAIDsupportedDiskProtTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.Enclosure = ArrayType(Enclosure, parent=self, min_index=1, max_index=100, loading_from_scp=loading_from_scp)
         self.VirtualDisk = ArrayType(VirtualDisk, parent=self, min_index=1, max_index=100, loading_from_scp=loading_from_scp)
+        self.PhysicalDisk = ArrayType(PhysicalDisk, parent=self, min_index=1, max_index=100, loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 
 class Enclosure(ClassType):

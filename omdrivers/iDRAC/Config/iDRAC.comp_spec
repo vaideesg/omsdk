@@ -94,10 +94,10 @@
             "CurrentControllerMode",
             "BackplaneType"
         ],
-        "children" : [ "Enclosure", "VirtualDisk" ]
+        "children" : [ "Enclosure", "VirtualDisk", "PhysicalDisk" ]
     },
     "Enclosure" : {
-        "pattern" : "^[^:]+:RAID\\..*",
+        "pattern" : "^[^D][^:]+:RAID\\..*",
         "firmware_pattern" : "^[^:]+:RAID\\..*",
         "registry" : "RAID",
         "groups" : [ ],
@@ -110,7 +110,7 @@
         "children" : [ "PhysicalDisk" ]
     },
     "PhysicalDisk" : {
-        "pattern" : "^Disk.*",
+        "pattern" : "^Disk\\.[^V]*",
         "firmware_pattern" : "^Disk.*",
         "registry" : "RAID",
         "groups" : [ ],
