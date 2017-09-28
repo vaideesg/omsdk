@@ -37,10 +37,11 @@ class XMLParser(object):
                 if subnode is None:
                     logger.warning('No component spec found for ' + attrib.get('FQDD'))
                     continue
+                print(subnode)
                 parent = None
                 if isinstance(entry, ArrayType):
                     parent = entry
-                    subentry = parent._cls(loading_from_scp=True)
+                    subentry = parent.find_or_create(len(parent._entries)+1)
         
                 if subnode.attrib:
                     for attr in subnode.attrib:

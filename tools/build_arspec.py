@@ -208,6 +208,19 @@ class AttribRegistry(object):
         all_entries = []
         with self.lock:
             self.build_attrentry(regentry, all_entries, attrx_group)
+        for mycomp in self.config_spec:
+
+            if 'registry' not in self.config_spec[mycomp] or \
+               self.config_spec[mycomp]['registry'] != self.comp or \
+               'attributes' not in self.config_spec[mycomp]:
+                continue
+            attrx_group[mycomp] = []
+            arents = self.config_spec[mycomp]['attributes']
+            for ent in all_entries:
+                if ent['AttributeName'] in arents:
+                    attrx_group[mycomp].append(ent)
+                    ent['GroupName'] = mycomp
+
         with self.lock:
             self.build_groups(attrx_group)
         with self.lock:
@@ -341,7 +354,12 @@ class AttribRegistry(object):
 
         for i in props:
             if group: gname = props[i]['qualifier']
-            else: gname = self.comp
+            else:
+                gname = self.comp
+                if 'alias' in self.config_spec and \
+                   self.comp in self.config_spec['alias'] and \
+                   isinstance(self.config_spec['alias'][self.comp], str):
+                   gname = self.config_spec['alias'][self.comp]
             if not gname in new_prop_def:
                 new_prop_def[gname] = {}
             if not i in new_prop_def[gname]:
@@ -437,7 +455,7 @@ class AttribRegistry(object):
             out.write('class {0}(ClassType):\n'.format(ngrp))
             out.write('\n')
             out.write('    def __init__(self, parent = None, loading_from_scp=False):\n')
-            if grp == self.comp:
+            if grp == self.comp and group:
                 out.write('        super().__init__("Component", None, parent)\n')
             else:
                 out.write('        super().__init__(None, "'+grp+'", parent)\n')
@@ -465,11 +483,19 @@ class AttribRegistry(object):
                         field_spec += ", rebootRequired = True"
                 out.write(field_spec + ')\n')
 
-                if 'alias' in self.config_spec and grp in self.config_spec['alias']:
-                    if i in self.config_spec['alias'][grp]:
-                        out.write('        self.{0} = self.{1}\n'.format(
-                                self.config_spec['alias'][grp][i],
+                if 'alias' in self.config_spec and \
+                   self.comp in self.config_spec['alias'] and \
+                   not isinstance(self.config_spec['alias'][self.comp], str) and\
+                   grp in self.config_spec['alias'][self.comp]:
+                    aliasobj = self.config_spec['alias'][self.comp][grp]
+                    if isinstance(aliasobj, dict):
+                        if i in self.config_spec['alias'][self.comp][grp]:
+                            out.write('        self.{0} = self.{1}\n'.format(
+                                self.config_spec['alias'][self.comp][grp][i],
                                 new_prop_def[grp][i]['fldname']))
+            if grp in self.config_spec and 'children' in self.config_spec[grp]:
+                for child in self.config_spec[grp]['children']:
+                    out.write('        self.{0} = ArrayType({0}, parent=self, min_index={1}, max_index={2}, loading_from_scp=loading_from_scp)\n'.format(child, 1, 100))
 
             if 'composite' in self.config_spec and grp in self.config_spec['composite']:
                 for field in self.config_spec['composite'][grp]:
@@ -588,11 +614,14 @@ def save_tree(directory, dconfig, device):
             for comp in comps:
                 if comp not in config_spec or \
                    'entries' not in config_spec[comp]:
+                    print(comp + " not found!")
                     continue
                 if config_spec[comp]['entries'] == 1:
                     out.write('        self.{0} = {0}(parent=self, loading_from_scp=loading_from_scp)\n'.format(comp))
                 else:
-                    out.write('        self.{0} = ArrayType({0}, parent=self, loading_from_scp=loading_from_scp)\n'.format(comp))
+                    comp0 = comp
+                    if comp == 'NetworkInterface': comp0 = 'NIC'
+                    out.write('        self.{0} = ArrayType({1}, parent=self, loading_from_scp=loading_from_scp)\n'.format(comp0, comp))
 
             out.write('        self.commit(loading_from_scp)\n')
             out.write('\n')
@@ -618,7 +647,7 @@ if __name__ == "__main__":
     for file1 in glob.glob(os.path.join(driver_dir, "xml", "*.xml")):
         print("Processing: " + file1)
         if file1.endswith('EventFilters.xml') is True: continue
-        do_dump(file1, dconfig, config_spec, file1.endswith('iDRAC.xml'), MAJ)
+        do_dump(file1, dconfig, config_spec, file1.endswith('iDRAC.xml') or file1.endswith('RAID.xml'), MAJ)
     save_tree(types_dir, dconfig, device)
     print(str(MAJ.cntr) + " objects have special types")
     print(str(MAJ.ids) + " attributes created!")

@@ -84,7 +84,70 @@
             "type": "enumeration"
         },
         "RAID": {
-            "config_groups": {},
+            "config_groups": {
+                "Controller": [
+                    "RAIDbatteryLearnMode",
+                    "RAIDbgiRate",
+                    "RAIDccMode",
+                    "RAIDccRate",
+                    "RAIDcopybackMode",
+                    "RAIDloadBalancedMode",
+                    "RAIDMaxCapableSpeed",
+                    "RAIDmaxPDsInSpan",
+                    "RAIDmaxSpansInVD",
+                    "RAIDmaxSupportedVD",
+                    "RAIDprMode",
+                    "RAIDprRate",
+                    "RAIDrebuildRate",
+                    "RAIDreconstructRate",
+                    "RAIDsupportedDiskProt",
+                    "RAIDSupportedRAIDLevels",
+                    "RAIDspinDownIdleTime",
+                    "RAIDNegotiatedSpeed",
+                    "RAIDAssetTag",
+                    "EncryptionMode",
+                    "KeyID",
+                    "NewControllerKey",
+                    "OldControllerKey",
+                    "RAIDforeignConfig",
+                    "RAIDrekey",
+                    "RAIDremovecontrollerKey",
+                    "RAIDresetConfig",
+                    "RAIDEnhancedAutoImportForeignConfig",
+                    "RAIDControllerBootMode",
+                    "CurrentControllerMode",
+                    "BackplaneType"
+                ],
+                "Enclosure": [
+                    "RAIDEffectiveSASAddress",
+                    "RAIDEnclosureRequestedCfgMode",
+                    "RAIDEnclosureCurrentCfgMode"
+                ],
+                "PhysicalDisk": [
+                    "RAIDPDState",
+                    "RAIDHotSpareStatus",
+                    "RAIDNominalMediumRotationRate",
+                    "PCIeSSDSecureErase"
+                ],
+                "VirtualDisk": [
+                    "RAIDdefaultWritePolicy",
+                    "RAIDdefaultReadPolicy",
+                    "DiskCachePolicy",
+                    "Name",
+                    "Cachecade",
+                    "IncludedPhysicalDiskID",
+                    "LockStatus",
+                    "RAIDaction",
+                    "RAIDdedicatedSpare",
+                    "RAIDinitOperation",
+                    "RAIDTypes",
+                    "Size",
+                    "SpanDepth",
+                    "SpanLength",
+                    "StripeSize",
+                    "T10PIStatus"
+                ]
+            },
             "properties": {
                 "BackplaneType": {
                     "baseType": "enum",
@@ -92,6 +155,7 @@
                     "longDescription": "This indicates enclosures type.",
                     "modDeleteAllowed": true,
                     "name": "BackplaneType",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "type": "BackplaneTypeTypes",
                     "uneditable": false
@@ -102,6 +166,7 @@
                     "longDescription": "This attribute represents the cachecade state of the virtual disk. It can be modified to create a cachecaded virtual disk using XML configuration feature. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "Cachecade",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "type": "CachecadeTypes",
                     "uneditable": false
@@ -112,6 +177,7 @@
                     "longDescription": "This indicates controllers current personaility mode , which could be RAID or Non-RAID. ",
                     "modDeleteAllowed": true,
                     "name": "CurrentControllerMode",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "type": "CurrentControllerModeTypes",
                     "uneditable": false
@@ -123,6 +189,7 @@
                     "longDescription": "Set the physical disk caching policy of all members of a Virtual Disk by enabling the Disk Cache Policy. When this feature is enabled, the physical disk writes data to the physical disk cache before writing it to the physical disk. Because it is faster to write data to the cache than to a disk, enabling this feature can improve system performance.",
                     "modDeleteAllowed": true,
                     "name": "DiskCachePolicy",
+                    "qualifier": "VirtualDisk",
                     "readonly": false,
                     "type": "DiskCachePolicyTypes",
                     "uneditable": false
@@ -133,6 +200,7 @@
                     "longDescription": "This attribute represents encryption mode on the controller. It could be used to set the encryption mode to Local Key Management or Dell Key Management on the controller through XML configuration feature.Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "EncryptionMode",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "type": "EncryptionModeTypes",
                     "uneditable": false
@@ -143,6 +211,7 @@
                     "longDescription": "This is a pseudo attribute for XML configuration feature. It is used for specifying physical disk FQDD for creating a virtual disk. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "IncludedPhysicalDiskID",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -152,6 +221,7 @@
                     "longDescription": "This attribute represents the controller key identifier for Local Key Management or Dell Key Management controller encryption modes. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "KeyID",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -161,6 +231,7 @@
                     "longDescription": "This attribute represents security status of the virtual disk. It is used to secure a virtual disk using XML configuration feature. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "LockStatus",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "type": "LockStatusTypes",
                     "uneditable": false
@@ -171,6 +242,7 @@
                     "longDescription": "Diplays the name associated with a Virtual Disk.",
                     "modDeleteAllowed": true,
                     "name": "Name",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -180,6 +252,7 @@
                     "longDescription": "This attribute represents the controller passphrase for Local Key Management encryption mode. This is used during a ReKey operation to specify the new controller key. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "NewControllerKey",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -189,6 +262,7 @@
                     "longDescription": "This attribute represents the controller passphrase for Local Key Management encryption mode. This is used during a ReKey operation to specify the old controller key. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "OldControllerKey",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -199,6 +273,7 @@
                     "longDescription": "Performs full initialization on the selected physical device. This operation deletes all data on the device.",
                     "modDeleteAllowed": true,
                     "name": "PCIeSSDSecureErase",
+                    "qualifier": "PhysicalDisk",
                     "type": "PCIeSSDSecureEraseTypes",
                     "uneditable": false
                 },
@@ -208,6 +283,7 @@
                     "longDescription": "Displays the Asset Tag information for the enclosure.",
                     "modDeleteAllowed": true,
                     "name": "RAIDAssetTag",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -217,6 +293,7 @@
                     "longDescription": "This indicates the current BootMode setting of the Controller. Configurable via XML configuration feature only.\n",
                     "modDeleteAllowed": true,
                     "name": "RAIDControllerBootMode",
+                    "qualifier": "Controller",
                     "type": "RAIDControllerBootModeTypes",
                     "uneditable": false
                 },
@@ -226,6 +303,7 @@
                     "longDescription": "This attribute represents the effective SAS Address of an enclosure.",
                     "modDeleteAllowed": true,
                     "name": "RAIDEffectiveSASAddress",
+                    "qualifier": "Enclosure",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -235,6 +313,7 @@
                     "longDescription": "This indicates enclosures current configuration mode setting",
                     "modDeleteAllowed": true,
                     "name": "RAIDEnclosureCurrentCfgMode",
+                    "qualifier": "Enclosure",
                     "readonly": true,
                     "type": "RAIDEnclosureCurrentCfgModeTypes",
                     "uneditable": false
@@ -246,6 +325,7 @@
                     "longDescription": "This indicates enclosures requested configuration mode setting.",
                     "modDeleteAllowed": true,
                     "name": "RAIDEnclosureRequestedCfgMode",
+                    "qualifier": "Enclosure",
                     "readonly": false,
                     "type": "RAIDEnclosureRequestedCfgModeTypes",
                     "uneditable": false
@@ -256,6 +336,7 @@
                     "longDescription": "This indicates the current EnhancedAutoImportForeignConfig setting of the controller. Configurable via XML configuration feature only.\n",
                     "modDeleteAllowed": true,
                     "name": "RAIDEnhancedAutoImportForeignConfig",
+                    "qualifier": "Controller",
                     "type": "RAIDEnhancedAutoImportForeignConfigTypes",
                     "uneditable": false
                 },
@@ -266,6 +347,7 @@
                     "longDescription": "On RAID controllers, a hot spare is a backup for a disk that fails. The attribute indicates whether a physical disk is Hot Spare and/or the type of hot spare.Configurable via XML configuration only.",
                     "modDeleteAllowed": true,
                     "name": "RAIDHotSpareStatus",
+                    "qualifier": "PhysicalDisk",
                     "readonly": true,
                     "type": "RAIDHotSpareStatusTypes",
                     "uneditable": false
@@ -276,6 +358,7 @@
                     "longDescription": "This attribute represents the maximum link speed supported by the controller.",
                     "modDeleteAllowed": true,
                     "name": "RAIDMaxCapableSpeed",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "type": "RAIDMaxCapableSpeedTypes",
                     "uneditable": false
@@ -287,6 +370,7 @@
                     "longDescription": "Negotiated Speed shows the speed of data transfer that the disk negotiated while spinning up and upon initial communication with the controller. This speed is dependent on the speed of the disk, the capable speed of the controller, the current speed of the controller on that connector, and the speed of the EMM (Enclosure Management Module) on the enclosure.",
                     "modDeleteAllowed": true,
                     "name": "RAIDNegotiatedSpeed",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "type": "RAIDNegotiatedSpeedTypes",
                     "uneditable": false
@@ -297,6 +381,7 @@
                     "longDescription": "This attribute represents the nominal medium rotation speed of a physical disk.",
                     "modDeleteAllowed": true,
                     "name": "RAIDNominalMediumRotationRate",
+                    "qualifier": "PhysicalDisk",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -306,6 +391,7 @@
                     "longDescription": "Physical Disk State shows the state of Physical disk that is part of a Virtual Disk.Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "RAIDPDState",
+                    "qualifier": "PhysicalDisk",
                     "readonly": true,
                     "type": "RAIDPDStateTypes",
                     "uneditable": false
@@ -316,6 +402,7 @@
                     "longDescription": "This attribute provides a list of RAID levels supported by the controller.",
                     "modDeleteAllowed": true,
                     "name": "RAIDSupportedRAIDLevels",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "type": "RAIDSupportedRAIDLevelsTypes",
                     "uneditable": false
@@ -326,6 +413,7 @@
                     "longDescription": "This indicates the type of RAID level on the virtual disk. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "RAIDTypes",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "type": "RAIDTypesTypes",
                     "uneditable": false
@@ -337,6 +425,7 @@
                     "longDescription": "This pseudo attribute represents RAID action to be performed on the virtual disk. It is used to specify Delete, Create , CreateAuto or Update virtual disk operations. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "RAIDaction",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "type": "RAIDactionTypes",
                     "uneditable": false
@@ -348,6 +437,7 @@
                     "longDescription": "Battery Learn Mode controls a RAID Controller's Battery Learn Cycle.",
                     "modDeleteAllowed": true,
                     "name": "RAIDbatteryLearnMode",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "type": "RAIDbatteryLearnModeTypes",
                     "uneditable": false
@@ -359,6 +449,7 @@
                     "longDescription": "The Background Initialization (BGI) rate is the percentage of the system's resources dedicated to performing the background initialization of a virtual disk after it is created",
                     "modDeleteAllowed": true,
                     "name": "RAIDbgiRate",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "uneditable": false
                 },
@@ -369,6 +460,7 @@
                     "longDescription": "Check Consistency feature is used to verify the accuracy of the redundant (parity) information.",
                     "modDeleteAllowed": true,
                     "name": "RAIDccMode",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "type": "RAIDccModeTypes",
                     "uneditable": false
@@ -380,6 +472,7 @@
                     "longDescription": "The Check Consistency rate is the percentage of the system's resources dedicated to performing a check consistency on a redundant virtual disk.",
                     "modDeleteAllowed": true,
                     "name": "RAIDccRate",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "uneditable": false
                 },
@@ -390,6 +483,7 @@
                     "longDescription": "This attribute represents the mode of restoring configuration of a virtual disk when a failed physical disk is replaced in an array.",
                     "modDeleteAllowed": true,
                     "name": "RAIDcopybackMode",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "type": "RAIDcopybackModeTypes",
                     "uneditable": false
@@ -400,6 +494,7 @@
                     "longDescription": "This pseudo attribute represents the dedicated spare to be assigned to a virtual disk. It could be set to physical disk FQDD to be assigned as a dedicated spare to the virtual disk. If a Spare is intended to be assigned when  RAIDaction is set as CreateAuto, this attribute value should be set to AutoSelect. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "RAIDdedicatedSpare",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "type": "RAIDdedicatedSpareTypes",
                     "uneditable": false
@@ -411,6 +506,7 @@
                     "longDescription": "The read policies indicate whether or not the controller should read sequential sectors of the virtual disk when seeking data.",
                     "modDeleteAllowed": true,
                     "name": "RAIDdefaultReadPolicy",
+                    "qualifier": "VirtualDisk",
                     "readonly": false,
                     "type": "RAIDdefaultReadPolicyTypes",
                     "uneditable": false
@@ -422,6 +518,7 @@
                     "longDescription": "The write policies specify whether the controller sends a write-request completion signal as soon as the data is in the cache or after it has been written to disk.",
                     "modDeleteAllowed": true,
                     "name": "RAIDdefaultWritePolicy",
+                    "qualifier": "VirtualDisk",
                     "readonly": false,
                     "type": "RAIDdefaultWritePolicyTypes",
                     "uneditable": false
@@ -433,6 +530,7 @@
                     "longDescription": "This pseudo attribute represents foreign configuration operation to be performed on the RAID controller via XML configuration feature.Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "RAIDforeignConfig",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "type": "RAIDforeignConfigTypes",
                     "uneditable": false
@@ -444,6 +542,7 @@
                     "longDescription": "This pseudo attribute represents initialization configuration operation to be performed on the virtual disk via XML configuration feature. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "RAIDinitOperation",
+                    "qualifier": "VirtualDisk",
                     "readonly": false,
                     "type": "RAIDinitOperationTypes",
                     "uneditable": false
@@ -455,6 +554,7 @@
                     "longDescription": "This attribute reprsents the ability to automatically use both controller ports connected to the same enclosure to route I/O requests.",
                     "modDeleteAllowed": true,
                     "name": "RAIDloadBalancedMode",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "type": "RAIDloadBalancedModeTypes",
                     "uneditable": false
@@ -465,6 +565,7 @@
                     "longDescription": "This attribute represents the maximum number of Physical Disks in a single Span, as supported by the controller.",
                     "modDeleteAllowed": true,
                     "name": "RAIDmaxPDsInSpan",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -474,6 +575,7 @@
                     "longDescription": "This attribute represents the maximum number of spans in a Virtual Disk, as supported by the controller.",
                     "modDeleteAllowed": true,
                     "name": "RAIDmaxSpansInVD",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -483,6 +585,7 @@
                     "longDescription": "This attribute represents the maximum number of virtual disks supported by the controller.",
                     "modDeleteAllowed": true,
                     "name": "RAIDmaxSupportedVD",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -493,6 +596,7 @@
                     "longDescription": "Patrol Read is a feature for identifying disk errors in order to avoid disk failures and data loss or corruption. The Patrol Read only runs on disks that are being used in a virtual disk or that are hot spares.",
                     "modDeleteAllowed": true,
                     "name": "RAIDprMode",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "type": "RAIDprModeTypes",
                     "uneditable": false
@@ -504,6 +608,7 @@
                     "longDescription": "The Patrol Read Rate is the percentage of the system's resources dedicated to perform Patrol Read.",
                     "modDeleteAllowed": true,
                     "name": "RAIDprRate",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -514,6 +619,7 @@
                     "longDescription": "The Rebuild Rate is the percentage of the system's resources dedicated to rebuilding a failed disk when a rebuild is necessary.",
                     "modDeleteAllowed": true,
                     "name": "RAIDrebuildRate",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "uneditable": false
                 },
@@ -524,6 +630,7 @@
                     "longDescription": "The Reconstruct Rate is the percentage of the system's resources dedicated to reconstructing a disk group after adding a physical disk or changing the RAID level of a virtual disk residing on the disk group",
                     "modDeleteAllowed": true,
                     "name": "RAIDreconstructRate",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "uneditable": false
                 },
@@ -534,6 +641,7 @@
                     "longDescription": "This pseudo attribute represents whether a rekey operation needs to be performed on the RAID controller.Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "RAIDrekey",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "type": "RAIDrekeyTypes",
                     "uneditable": false
@@ -545,6 +653,7 @@
                     "longDescription": "This pseudo attribute represents whether a rekey operation needs to be performed on the RAID controller.Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "RAIDremovecontrollerKey",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "type": "RAIDremovecontrollerKeyTypes",
                     "uneditable": false
@@ -556,6 +665,7 @@
                     "longDescription": "This pseudo attribute represents whether a reset config operation needs to be performed on the RAID controller.Reset Config operation deletes all the virtual disks that exists on the RAID controller. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "RAIDresetConfig",
+                    "qualifier": "Controller",
                     "readonly": false,
                     "type": "RAIDresetConfigTypes",
                     "uneditable": false
@@ -567,6 +677,7 @@
                     "longDescription": "Spindown idle time is the amount of time in seconds an uncofigured or hotspare can be idle before being spinned down by the controller.",
                     "modDeleteAllowed": true,
                     "name": "RAIDspinDownIdleTime",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -576,6 +687,7 @@
                     "longDescription": "This attribute provides a list of Disk Protocols supported by the controller.",
                     "modDeleteAllowed": true,
                     "name": "RAIDsupportedDiskProt",
+                    "qualifier": "Controller",
                     "readonly": true,
                     "type": "RAIDsupportedDiskProtTypes",
                     "uneditable": false
@@ -586,6 +698,7 @@
                     "longDescription": "This indicates the size in bytes of the virtual disk. When creating a virtual disk, size of 0 indicates using full size of the physical disks for the specified RAIDTypes.Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "Size",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -595,6 +708,7 @@
                     "longDescription": "This indicates number of spans in the virtual disk.Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "SpanDepth",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -604,6 +718,7 @@
                     "longDescription": "This indicates the number of physical disks per span on a virtual disk.Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "SpanLength",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "uneditable": false
                 },
@@ -613,6 +728,7 @@
                     "longDescription": "This indicates the stripe size of the virtual disk. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
                     "name": "StripeSize",
+                    "qualifier": "VirtualDisk",
                     "readonly": true,
                     "type": "StripeSizeTypes",
                     "uneditable": false
@@ -623,6 +739,7 @@
                     "longDescription": "This indicates virtual disks T10PIStatus.",
                     "modDeleteAllowed": true,
                     "name": "T10PIStatus",
+                    "qualifier": "VirtualDisk",
                     "readonly": false,
                     "type": "T10PIStatusTypes",
                     "uneditable": false

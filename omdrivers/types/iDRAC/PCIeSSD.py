@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class PCIeSSD(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__("Component", None, parent)
+        super().__init__(None, "PCIeSSD", parent)
         # readonly attribute populated by iDRAC
         self.BusProtocol = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC

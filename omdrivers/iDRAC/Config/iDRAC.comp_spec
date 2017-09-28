@@ -40,6 +40,13 @@
         "nogroup" : true,
         "entries" : "multiple"
     },
+    "NetworkInterface" : {
+        "pattern" : "NIC\\..*",
+        "firmware_pattern" : "NIC\\..*",
+        "registry" : "NIC",
+        "nogroup" : true,
+        "entries" : "multiple"
+    },
     "NIC" : {
         "pattern" : "NIC\\..*",
         "firmware_pattern" : "NIC\\..*",
@@ -51,29 +58,93 @@
         "pattern" : "^RAID\\.*",
         "firmware_pattern" : "^RAID\\.*",
         "registry" : "RAID",
-        "groups" : [ "Controller" ],
+        "groups" : [ ],
         "nogroup" : true,
-        "entries" : "multiple"
+        "entries" : "multiple",
+        "attributes" : [
+            "RAIDbatteryLearnMode",
+            "RAIDforeignConfig",
+            "RAIDresetConfig",
+            "RAIDbgiRate",
+            "RAIDccMode",
+            "RAIDccRate",
+            "RAIDcopybackMode",
+            "RAIDprMode",
+            "RAIDprRate",
+            "RAIDrebuildRate",
+            "RAIDreconstructRate",
+            "RAIDloadBalancedMode",
+            "RAIDMaxCapableSpeed",
+            "RAIDmaxPDsInSpan",
+            "RAIDmaxSpansInVD",
+            "RAIDmaxSupportedVD",
+            "RAIDsupportedDiskProt",
+            "RAIDSupportedRAIDLevels",
+            "RAIDspinDownIdleTime",
+            "RAIDNegotiatedSpeed",
+            "RAIDAssetTag",
+            "EncryptionMode",
+            "KeyID",
+            "NewControllerKey",
+            "OldControllerKey",
+            "RAIDrekey",
+            "RAIDremovecontrollerKey",
+            "RAIDEnhancedAutoImportForeignConfig",
+            "RAIDControllerBootMode",
+            "CurrentControllerMode",
+            "BackplaneType"
+        ],
+        "children" : [ "Enclosure", "VirtualDisk" ]
     },
     "Enclosure" : {
         "pattern" : "^[^:]+:RAID\\..*",
         "firmware_pattern" : "^[^:]+:RAID\\..*",
         "registry" : "RAID",
-        "groups" : [ "Enclosure" ],
-        "nogroup" : true
+        "groups" : [ ],
+        "nogroup" : true,
+        "attributes" : [
+            "RAIDEffectiveSASAddress",
+            "RAIDEnclosureRequestedCfgMode",
+            "RAIDEnclosureCurrentCfgMode"
+        ],
+        "children" : [ "PhysicalDisk" ]
     },
     "PhysicalDisk" : {
         "pattern" : "^Disk.*",
         "firmware_pattern" : "^Disk.*",
         "registry" : "RAID",
-        "groups" : [ "PhysicalDisk" ],
-        "nogroup" : true
+        "groups" : [ ],
+        "nogroup" : true,
+        "attributes" : [
+            "RAIDHotSpareStatus",
+            "RAIDPDState",
+            "RAIDNominalMediumRotationRate",
+            "PCIeSSDSecureErase"
+        ]
     },
     "VirtualDisk" : {
         "pattern" : "Disk\\.Virtual\\..*",
         "registry" : "RAID",
-        "groups" : [ "VirtualDisk" ],
-        "nogroup" : true
+        "groups" : [ ],
+        "nogroup" : true,
+        "attributes" : [
+            "Name",
+            "RAIDaction",
+            "RAIDinitOperation",
+            "Size",
+            "SpanDepth",
+            "SpanLength",
+            "StripeSize",
+            "RAIDdefaultWritePolicy",
+            "RAIDdefaultReadPolicy",
+            "DiskCachePolicy",
+            "RAIDTypes",
+            "IncludedPhysicalDiskID",
+            "Cachecade",
+            "RAIDdedicatedSpare",
+            "T10PIStatus",
+            "LockStatus"
+        ]
     },
     "BIOS" : {
         "pattern" : "BIOS\\..*",
@@ -128,12 +199,15 @@
         "IPv6Static" : { "DNSServers" : [ "DNS1", "DNS2" ] }
     },
     "alias": {
-        "Time" : {
-            "Timezone_Time" : "TimeZone_Time",
-            "Timezone" : "TimeZone_Time",
-            "DayLightOffset_Time" : "DaylightOffset_Time",
-            "DayLightOffset" : "DaylightOffset_Time"
-         }
+        "iDRAC" : {
+            "Time" : {
+                "Timezone_Time" : "TimeZone_Time",
+                "Timezone" : "TimeZone_Time",
+                "DayLightOffset_Time" : "DaylightOffset_Time",
+                "DayLightOffset" : "DaylightOffset_Time"
+            }
+         },
+         "NIC" : "NetworkInterface"
     },
     "tree" : {
         "SystemConfiguration" : [
@@ -141,7 +215,7 @@
             "System",
             "iDRAC",
             "FCHBA",
-            "NIC",
+            "NetworkInterface",
             "BIOS",
             "Controller"
         ]
@@ -299,9 +373,6 @@
             ],
             "SNMPTrapIPv6": [
                 "DestIPv6Addr"
-            ],
-            "SupportAssist": [
-                "DefaultIPAddress"
             ],
             "SysInfo": [
                 "CMCIPv6Info",

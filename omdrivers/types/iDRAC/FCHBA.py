@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class FCHBA(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__("Component", None, parent)
+        super().__init__(None, "FCHBA", parent)
         self.BootScanSelection = EnumTypeField(BootScanSelectionTypes.Disabled,BootScanSelectionTypes, parent=self)
         # readonly attribute
         self.BusDeviceFunction = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)

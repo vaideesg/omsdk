@@ -6,10 +6,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class NIC(ClassType):
+class NetworkInterface(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__("Component", None, parent)
+        super().__init__(None, "NetworkInterface", parent)
         # readonly attribute populated by iDRAC
         self.AddressingMode = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.BannerMessageTimeout = IntField(None, parent=self)
