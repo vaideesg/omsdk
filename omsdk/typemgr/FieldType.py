@@ -56,6 +56,9 @@ class FieldType(TypeBase):
                                  if i._value is not None]))
         raise AttributeError('Invalid attribute ' + name)
 
+    def get_value(self):
+        return self._value
+
     # Value APIs
     def __setattr__(self, name, value):
         # Do not allow access to internal variables
@@ -158,6 +161,9 @@ class FieldType(TypeBase):
 
         if name in self.__dict__:
             del self.__dict__[name]
+
+    def set_value(self, value):
+        self._value = value
 
     # Value APIs
     def my_accept_value(self, value):
