@@ -30,10 +30,6 @@ class RootClassType(ClassType):
     def __init__(self, fname, alias, parent = None):
         super().__init__(fname, alias, parent)
 
-class CloneableClassType(ClassType):
-    def clone(self, parent=None, commit=False):
-        return type(self)(parent=parent, loading_from_scp=not commit)
-
 class CloneableFieldType(FieldType):
     def clone(self, parent=None, commit=False):
         if isinstance(self, EnumTypeField):

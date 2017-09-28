@@ -3,6 +3,7 @@ from omdrivers.lifecycle.iDRAC.SCPParsers import XMLParser
 from omdrivers.enums.iDRAC.iDRAC import *
 from omsdk.sdkcenum import TypeHelper
 from omsdk.typemgr.Formatters import *
+from omsdk.typemgr.TypeState import *
 
 TLSOptions = TLSProtocol_WebServerTypes
 class SCPSimulator(object):
@@ -615,19 +616,19 @@ class Config:
     def delete_user(self, username):
         user = self.get_user(username)
         if user:
-            user = user.clone(parent=None)
-            user.UserName_Users = ''
-            user.Password_Users = ''
-            user.Privilege_Users =''
-            user.IpmiLanPrivilege_Users = IpmiLanPrivilege_UsersTypes.No_Access
-            IpmiSerialPrivilege_Users = IpmiSerialPrivilege_UsersTypes.No_Access
-            user.IpmiSerialPrivilege_Users =''
-            user.Enable_Users ='Disabled'
-            user.SolEnable_Users ='Disabled'
-            user.ProtocolEnable_Users ='Disabled'
-            cfg.xmlp.save_Cfg('', user.get_root())
-            self.idrac.xmlp.save_scp('', user.get_root())
-            self._sysconfig.iDRAC.Users.delete(UserName_Users =  username)
+            newobj = type(user.get_root())(loading_from_scp=True)
+            newobj.commit(True)
+            newobj.iDRAC.__dict__['_attribs'] = user.get_root().iDRAC.__dict__['_attribs']
+            nuser = newobj.iDRAC.Users.find_or_create(user._index)
+            nuser.UserName_Users.__dict__['_state'] = TypeState.Initializing
+            nuser.Privilege_Users = Privilege_UsersTypes.T_0
+            nuser.IpmiLanPrivilege_Users = IpmiLanPrivilege_UsersTypes.No_Access
+            nuser.IpmiSerialPrivilege_Users = IpmiSerialPrivilege_UsersTypes.No_Access
+            nuser.Enable_Users ='Disabled'
+            nuser.SolEnable_Users ='Disabled'
+            nuser.ProtocolEnable_Users ='Disabled'
+            self.xmlp.save_scp('', newobj)
+            self._sysconfig.iDRAC.Users.remove(UserName_Users = username)
             self.apply_changes()
 
     def print_data(self, obj):

@@ -165,52 +165,6 @@ class ArrayType(TypeBase):
                 self._entries[i].copy(other._entries[i])
         return True
 
-    def _clone_update(self, child, child_state):
-
-        if child_state in [TypeState.Initializing, TypeState.Precommit,
-                           TypeState.Changing]:
-            if self._state == TypeState.UnInitialized:
-                self.__dict__['_state'] = TypeState.Initializing
-            elif self._state == TypeState.Committed:
-                self.__dict__['_state'] = TypeState.Changing
-        if child._index in self._indexes_free:
-            self._indexes_free.remove(child._index)
-            self._entries.append(child)
-            self._keys[str(child.Key)] = child
-        if self.is_changed() and self._parent:
-            self._parent._clone_update(self, self._state)
-
-    def _clone_parent(self, commit):
-        parent = None
-        if self._parent:
-            parent = self._parent._clone_parent(commit)
-        return self._clone_shallow(parent, commit)
-
-    def _clone_shallow(self, parent=None, commit=True):
-        #print('cloning shallow myself: ' + type(self).__name__)
-        obj = type(self)(clsname = self._cls, parent=parent,
-                             min_index=self._min_index,
-                             max_index=self._max_index,
-                             loading_from_scp = not commit)
-        if obj.is_changed() and obj._parent:
-            obj._parent._clone_update(obj, obj._state)
-        return obj
-
-    def _clone_deep(self, parent=None, commit=True):
-        #print('cloning deep myself: ' + type(self).__name__)
-        obj = type(self)(clsname = self._cls, parent=parent,
-                             min_index=self._min_index,
-                             max_index=self._max_index,
-                             loading_from_scp = not commit)
-        if obj.is_changed() and obj._parent:
-            obj._parent._clone_update(obj, obj._state)
-        return obj
-
-    def clone(self, parent=None, commit=True):
-        if parent is None:
-            parent = self._parent._clone_parent(commit)
-        return self._clone_deep(parent, commit)
-
     # Freeze APIs
     def freeze(self):
         self._freeze = True
@@ -327,7 +281,8 @@ class ArrayType(TypeBase):
         for i in entries:
             self._entries.remove(i)
             self._indexes_free.append(i.Index)
-            del self._keys[str(i.Key)]
+            if str(i.Key) in self._keys:
+                del self._keys[str(i.Key)]
         self._sort()
 
         if self._state in [TypeState.UnInitialized, TypeState.Precommit, TypeState.Initializing]:
