@@ -48,6 +48,14 @@ class CloneableFieldType(FieldType):
                   deleteAllowed = self._deleteAllowed,
                   rebootRequired = self._rebootRequired,
                   loading_from_scp=not commit)
+        elif isinstance(self, IntRangeField):
+            return type(self)(self._value, self._min, self._max,
+                  entype=self._type, alias=self._alias,
+                  parent=parent, volatile=self._volatile,
+                  modifyAllowed = self._modifyAllowed,
+                  deleteAllowed = self._deleteAllowed,
+                  rebootRequired = self._rebootRequired,
+                  loading_from_scp=not commit)
         else:
             return type(self)(self._value, alias=self._alias,
                   parent=parent, volatile=self._volatile,
@@ -94,6 +102,34 @@ class IntField(CloneableFieldType):
     def __repr__(self):
         return (str(self._value) if self._value else None)
 
+class IntRangeField(CloneableFieldType):
+    def __init__(self, init_value, min_value, max_value, alias =None,
+                 parent=None, volatile=False,
+                 modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
+        self._min = min_value
+        self._max = max_value
+        if PY2:
+            super(IntField, self).__init__(init_value, int, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
+        else:
+            super().__init__(init_value, int, 'Attribute', alias, parent,
+                         volatile, modifyAllowed, deleteAllowed, rebootRequired)
+
+    def my_accept_value(self, value):
+        if not self._min  and not self._max:
+            # not initialized yet!!!
+            return True
+        if not isinstance(value, int) or \
+            value not in range(self._min, self._max+1):
+            raise ValueError(str(value) + " should be in range[" +
+                             str(self._min) + ", " + str(self._max)+  " ]")
+        return True
+
+    def __str__(self):
+        return (str(self._value) if self._value else None)
+
+    def __repr__(self):
+        return (str(self._value) if self._value else None)
 
 class BooleanField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
