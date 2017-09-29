@@ -1822,7 +1822,6 @@ class iDRACConfig(iBaseConfigApi):
                 self._sysconfig.commit()
             else:
                 self._config_entries.process(filename, False)
-        return { 'Status' : 'Success' }
 
         if tempshare:
             tempshare.dispose()
