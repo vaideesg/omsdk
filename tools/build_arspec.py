@@ -459,7 +459,7 @@ class AttribRegistry(object):
             out.write('class {0}(ClassType):\n'.format(ngrp))
             out.write('\n')
             out.write('    def __init__(self, parent = None, loading_from_scp=False):\n')
-            if grp == self.comp and group:
+            if grp == self.comp or (grp in self.config_spec and grp not in ['CMC', 'NIC']):
                 out.write('        if PY2: \n')
                 out.write('            super({0}, self).__init__("Component", None, parent)\n'.format(ngrp))
                 out.write('        else: \n')
@@ -503,6 +503,8 @@ class AttribRegistry(object):
                             out.write('        self.{0} = self.{1}\n'.format(
                                 self.config_spec['alias'][self.comp][grp][i],
                                 new_prop_def[grp][i]['fldname']))
+                            out.write("        self._ignore_fields('{0}')\n".format(
+                                self.config_spec['alias'][self.comp][grp][i]))
             if grp in self.config_spec and 'children' in self.config_spec[grp]:
                 for child in self.config_spec[grp]['children']:
                     out.write('        self.{0} = ArrayType({0}, parent=self, min_index={1}, max_index={2}, loading_from_scp=loading_from_scp)\n'.format(child, 1, 100))
@@ -647,6 +649,7 @@ def save_tree(directory, dconfig, device):
                     if comp == 'NetworkInterface': comp0 = 'NIC'
                     out.write('        self.{0} = ArrayType({1}, parent=self, loading_from_scp=loading_from_scp)\n'.format(comp0, comp))
 
+            out.write("        self._ignore_attribs('ServiceTag', 'Model', 'TimeStamp')\n")
             out.write('        self.commit(loading_from_scp)\n')
             out.write('\n')
 

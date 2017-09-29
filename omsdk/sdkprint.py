@@ -58,6 +58,7 @@ class MyEncoder(JSONEncoder):
 
 class Prettifyer:
     def prettify_json(self, json_object):
+        return ""
         return "<empty json>" if json_object is None else json.dumps(json_object, sort_keys=True, indent=4, \
               separators=(',', ': '), cls=MyEncoder)
 

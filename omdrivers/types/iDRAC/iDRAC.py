@@ -3198,6 +3198,7 @@ class Time(ClassType):
             super().__init__(None, "Time", parent)
         self.DayLightOffset_Time = IntField(None, parent=self)
         self.DaylightOffset_Time = self.DayLightOffset_Time
+        self._ignore_fields('DaylightOffset_Time')
         self.TimeZoneAbbreviation_Time = StringField("", parent=self)
         self.TimeZoneOffset_Time = IntField(None, parent=self)
         self.Time_Time = IntField(None, parent=self)
@@ -3466,6 +3467,23 @@ class vFlashSD(ClassType):
         self.WriteProtect_vFlashSD = EnumTypeField(None,WriteProtect_vFlashSDTypes, parent=self)
         self.commit(loading_from_scp)
 
+class System(ClassType):
+
+    def __init__(self, parent = None, loading_from_scp=False):
+        if PY2: 
+            super(System, self).__init__("Component", None, parent)
+        else: 
+            super().__init__("Component", None, parent)
+        self.ChassisControl = ChassisControl(parent=self, loading_from_scp=loading_from_scp)
+        self.ChassisPwrState = ChassisPwrState(parent=self, loading_from_scp=loading_from_scp)
+        self.LCD = LCD(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerOS = ServerOS(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerPwr = ServerPwr(parent=self, loading_from_scp=loading_from_scp)
+        self.ServerTopology = ServerTopology(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalConfig = ThermalConfig(parent=self, loading_from_scp=loading_from_scp)
+        self.ThermalSettings = ThermalSettings(parent=self, loading_from_scp=loading_from_scp)
+        self.commit(loading_from_scp)
+
 class LifecycleController(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
@@ -3647,22 +3665,5 @@ class iDRAC(ClassType):
         self._STP_ = _STP_(parent=self, loading_from_scp=loading_from_scp)
         self.vFlashPartition = vFlashPartition(parent=self, loading_from_scp=loading_from_scp)
         self.vFlashSD = vFlashSD(parent=self, loading_from_scp=loading_from_scp)
-        self.commit(loading_from_scp)
-
-class System(ClassType):
-
-    def __init__(self, parent = None, loading_from_scp=False):
-        if PY2: 
-            super(System, self).__init__("Component", None, parent)
-        else: 
-            super().__init__("Component", None, parent)
-        self.ChassisControl = ChassisControl(parent=self, loading_from_scp=loading_from_scp)
-        self.ChassisPwrState = ChassisPwrState(parent=self, loading_from_scp=loading_from_scp)
-        self.LCD = LCD(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerOS = ServerOS(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerPwr = ServerPwr(parent=self, loading_from_scp=loading_from_scp)
-        self.ServerTopology = ServerTopology(parent=self, loading_from_scp=loading_from_scp)
-        self.ThermalConfig = ThermalConfig(parent=self, loading_from_scp=loading_from_scp)
-        self.ThermalSettings = ThermalSettings(parent=self, loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 

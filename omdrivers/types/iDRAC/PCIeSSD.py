@@ -14,9 +14,9 @@ class PCIeSSD(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         if PY2: 
-            super(PCIeSSD, self).__init__(None, "PCIeSSD", parent)
+            super(PCIeSSD, self).__init__("Component", None, parent)
         else: 
-            super().__init__(None, "PCIeSSD", parent)
+            super().__init__("Component", None, parent)
         # readonly attribute populated by iDRAC
         self.BusProtocol = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC

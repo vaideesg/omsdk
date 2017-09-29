@@ -203,9 +203,7 @@
         "iDRAC" : {
             "Time" : {
                 "Timezone_Time" : "TimeZone_Time",
-                "Timezone" : "TimeZone_Time",
-                "DayLightOffset_Time" : "DaylightOffset_Time",
-                "DayLightOffset" : "DaylightOffset_Time"
+                "DayLightOffset_Time" : "DaylightOffset_Time"
             }
          },
          "NIC" : "NetworkInterface"
