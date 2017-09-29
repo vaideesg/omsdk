@@ -4,6 +4,9 @@ from omsdk.typemgr.TypeState import TypeState, TypeBase
 import sys
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
+import logging
+
+logger = logging.getLogger(__name__)
 
 # private
 #
@@ -99,7 +102,7 @@ class FieldType(TypeBase):
         # Validate value and convert it if needed
         valid = False
         msg = None
-        if value is None or isinstance(value, self._type):
+        if value is None or TypeHelper.belongs_to(self._type, value):
             valid = True
         elif type(self) == type(value):
             value = value._value
@@ -110,13 +113,13 @@ class FieldType(TypeBase):
                 value = int(value)
                 valid = True
             # expected value is bool
-            if self._type == bool:
+            elif self._type == bool:
                 value = bool(value)
                 valid = True
             # expected value is enumeration
-            elif isinstance(self._type, type(Enum)):
+            elif isinstance(self._type, Enum):
                 newvalue = TypeHelper.convert_to_enum(value, self._type)
-                if value is not None:
+                if newvalue is not None:
                     value = newvalue
                     valid = True
                 else:

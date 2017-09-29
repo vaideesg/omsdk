@@ -1817,6 +1817,12 @@ class iDRACConfig(iBaseConfigApi):
             logger.debug(PrettyPrint.prettify_json(msg))
 
         if msg['Status'] == 'Success':
+            if Simulator.is_recording():
+                with open(filename, 'r') as f:
+                    content = f.read()
+                Simulator.record_config(self.entity.ipaddr,content, 'config.xml')
+            msg = { 'Status' : 'Success',
+                    'Message' : 'Saved successfully' }
             if self.UseNewStyle:
                 self._sysconfig = self.xmlp.parse_scp(filename)
                 self._sysconfig.commit()
