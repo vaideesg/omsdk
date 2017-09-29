@@ -229,6 +229,10 @@ class AttribRegistry(object):
             self.update_type(self.comp, config_spec, MAJ)
 
         props = self.attr_json["definitions"][self.comp]["properties"]
+        if 'RAIDTypes' in props:
+            self.attr_json["definitions"]['RAIDTypesTypes']['enum'].append('Volume')
+            self.attr_json["definitions"]['RAIDTypesTypes']['enumDescriptions'].append('Volume')
+
         if 'StripeSize' in props:
             props['StripeSize']['type'] = 'StripeSizeTypes'
             self.attr_json["definitions"]['StripeSizeTypes'] = {

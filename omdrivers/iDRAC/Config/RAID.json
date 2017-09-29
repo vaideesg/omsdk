@@ -890,7 +890,8 @@
                 "RAID 6",
                 "RAID 10",
                 "RAID 50",
-                "RAID 60"
+                "RAID 60",
+                "Volume"
             ],
             "enumDescriptions": [
                 "RAID 0",
@@ -899,7 +900,8 @@
                 "RAID 6",
                 "RAID 10",
                 "RAID 50",
-                "RAID 60"
+                "RAID 60",
+                "Volume"
             ],
             "type": "enumeration"
         },
