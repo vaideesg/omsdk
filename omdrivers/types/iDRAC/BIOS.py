@@ -2,14 +2,21 @@ from omdrivers.enums.iDRAC.BIOS import *
 from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.ArrayType import ArrayType
 from omsdk.typemgr.BuiltinTypes import *
+import sys
 import logging
+
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
 
 logger = logging.getLogger(__name__)
 
 class BIOS(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__(None, "BIOS", parent)
+        if PY2: 
+            super(BIOS, self).__init__(None, "BIOS", parent)
+        else: 
+            super().__init__(None, "BIOS", parent)
         self.AcPwrRcvry = EnumTypeField(None,AcPwrRcvryTypes, parent=self)
         self.AcPwrRcvryDelay = EnumTypeField(None,AcPwrRcvryDelayTypes, parent=self)
         self.AcPwrRcvryUserDelay = IntField(None, parent=self)

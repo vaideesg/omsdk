@@ -2,14 +2,21 @@ from omdrivers.enums.iDRAC.RAID import *
 from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.ArrayType import ArrayType
 from omsdk.typemgr.BuiltinTypes import *
+import sys
 import logging
+
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
 
 logger = logging.getLogger(__name__)
 
 class Controller(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__(None, "Controller", parent)
+        if PY2: 
+            super(Controller, self).__init__(None, "Controller", parent)
+        else: 
+            super().__init__(None, "Controller", parent)
         # readonly attribute populated by iDRAC
         self.BackplaneType = EnumTypeField(None,BackplaneTypeTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -65,7 +72,10 @@ class Controller(ClassType):
 class Enclosure(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__(None, "Enclosure", parent)
+        if PY2: 
+            super(Enclosure, self).__init__(None, "Enclosure", parent)
+        else: 
+            super().__init__(None, "Enclosure", parent)
         # readonly attribute populated by iDRAC
         self.RAIDEffectiveSASAddress = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -77,7 +87,10 @@ class Enclosure(ClassType):
 class PhysicalDisk(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__(None, "PhysicalDisk", parent)
+        if PY2: 
+            super(PhysicalDisk, self).__init__(None, "PhysicalDisk", parent)
+        else: 
+            super().__init__(None, "PhysicalDisk", parent)
         self.PCIeSSDSecureErase = EnumTypeField(PCIeSSDSecureEraseTypes.T_False,PCIeSSDSecureEraseTypes, parent=self)
         # readonly attribute
         self.RAIDHotSpareStatus = EnumTypeField(RAIDHotSpareStatusTypes.No,RAIDHotSpareStatusTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -90,7 +103,10 @@ class PhysicalDisk(ClassType):
 class VirtualDisk(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
-        super().__init__(None, "VirtualDisk", parent)
+        if PY2: 
+            super(VirtualDisk, self).__init__(None, "VirtualDisk", parent)
+        else: 
+            super().__init__(None, "VirtualDisk", parent)
         # readonly attribute
         self.Cachecade = EnumTypeField(None,CachecadeTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.DiskCachePolicy = EnumTypeField(DiskCachePolicyTypes.Default,DiskCachePolicyTypes, parent=self)
