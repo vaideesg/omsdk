@@ -1,7 +1,7 @@
 import re
 from omsdk.typemgr.FieldType import FieldType
 from omsdk.typemgr.ClassType import ClassType
-from omsdk.sdkcenum import EnumWrapper
+from omsdk.sdkcenum import EnumWrapper, TypeHelper
 import sys
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -70,6 +70,13 @@ class PortField(CloneableFieldType):
         if not isinstance(value, int) or value <= 0:
             raise ValueError(str(value) + " should be an integer > 0")
         return True
+
+    def __str__(self):
+        return self._value
+
+    def __repr__(self):
+        return self._value
+
         
 class IntField(CloneableFieldType):
     def __init__(self, init_value, alias =None, parent=None, volatile=False,
@@ -81,6 +88,13 @@ class IntField(CloneableFieldType):
             super().__init__(init_value, int, 'Attribute', alias, parent,
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
+    def __str__(self):
+        return (str(self._value) if self._value else None)
+
+    def __repr__(self):
+        return (str(self._value) if self._value else None)
+
+
 class BooleanField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
                  modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
@@ -90,6 +104,13 @@ class BooleanField(CloneableFieldType):
         else:
             super().__init__(init_value, bool, 'Attribute', alias, parent,
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
+
+    def __str__(self):
+        return self._value
+
+    def __repr__(self):
+        return self._value
+
 
 class StringField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
@@ -101,6 +122,13 @@ class StringField(CloneableFieldType):
             super().__init__(init_value, str, 'Attribute', alias, parent,
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
+    def __str__(self):
+        return self._value
+
+    def __repr__(self):
+        return self._value
+
+
 class EnumTypeField(CloneableFieldType):
     def __init__(self, init_value, entype, alias=None, parent=None,
                  volatile=False, modifyAllowed=True, deleteAllowed=True,
@@ -111,6 +139,13 @@ class EnumTypeField(CloneableFieldType):
         else:
             super().__init__(init_value, entype, 'Attribute', alias, parent,
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
+
+
+    def __str__(self):
+        return TypeHelper.resolve(self._value)
+
+    def __repr__(self):
+        return TypeHelper.resolve(self._value)
 
 
 class AddressHelpers(object):
@@ -156,6 +191,12 @@ class IPv4AddressField(CloneableFieldType):
     def my_accept_value(self, value):
         return AddressHelpers._check_address(value, AddressTypes.IPv4Address)
 
+    def __str__(self):
+        return self._value
+
+    def __repr__(self):
+        return self._value
+
 class IPv6AddressField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
                 modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
@@ -167,6 +208,12 @@ class IPv6AddressField(CloneableFieldType):
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
     def my_accept_value(self, value):
         return AddressHelpers._check_address(value, AddressTypes.IPv6Address)
+
+    def __str__(self):
+        return self._value
+
+    def __repr__(self):
+        return self._value
 
 class IPAddressField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
@@ -182,6 +229,12 @@ class IPAddressField(CloneableFieldType):
     def my_accept_value(self, value):
         return AddressHelpers._check_address(value, AddressTypes.IPAddress)
 
+    def __str__(self):
+        return self._value
+
+    def __repr__(self):
+        return self._value
+
 class MacAddressField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
                 modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
@@ -195,6 +248,12 @@ class MacAddressField(CloneableFieldType):
     def my_accept_value(self, value):
         return AddressHelpers._check_address(value, AddressTypes.MACAddress)
 
+    def __str__(self):
+        return self._value
+
+    def __repr__(self):
+        return self._value
+
 class WWPNAddressField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
                 modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
@@ -207,3 +266,9 @@ class WWPNAddressField(CloneableFieldType):
 
     def my_accept_value(self, value):
         return AddressHelpers._check_address(value, AddressTypes.WWPNAddress)
+
+    def __str__(self):
+        return self._value
+
+    def __repr__(self):
+        return self._value

@@ -16,6 +16,7 @@ from omsdk.lifecycle.sdkentry import ConfigEntries, RowStatus
 from omsdk.sdktime import SchTimer, TIME_NOW
 from omdrivers.lifecycle.iDRAC.rebootOptions import RebootOptions
 from omdrivers.enums.iDRAC.iDRACEnums import *
+from omdrivers.enums.iDRAC.iDRAC import *
 from omsdk.simulator.devicesim import Simulator
 from omdrivers.lifecycle.iDRAC.SCPParsers import XMLParser
 import sys
@@ -1735,9 +1736,12 @@ class iDRACConfig(iBaseConfigApi):
             self._sysconfig  = None
             fcspec = os.path.join(self.entity.config_dir, 'iDRAC.comp_spec')
             self.xmlp = XMLParser(fcspec)
-            self._load_scp()
+            return self._load_scp()
         else:
             self._config_entries = ConfigEntries(iDRACConfigKeyFields)
+            msg = { 'Status' : 'Success',
+                'Message' : 'Config loaded' }
+            return msg
 
     def apply_changes(self, reboot=False):
         return self._commit_scp(reboot)
@@ -1753,7 +1757,10 @@ class iDRACConfig(iBaseConfigApi):
         else:
             content = self.config.format_scp(record)
         if Simulator.is_simulating():
-            filename = Simulator.record_config(self.entity.ipaddr,content,'scp.xml')
+            print('======new' if self.UseNewStyle else '======old')
+            print(content)
+            filename = Simulator.record_config(self.entity.ipaddr,content,
+                            ('new' if self.UseNewStyle else 'old') + '-scp.xml')
             msg = { 'Status' : 'Success',
                     'Message' : 'Saved successfully' }
         else:
@@ -1970,11 +1977,11 @@ class iDRACConfig(iBaseConfigApi):
 
 
     def Nenable_csior(self):
-        self.CSIOR.set_value(CollectSystemInventoryOnRestart_LCAttributesTypes.Enabled)
+        self.NCSIOR.set_value(CollectSystemInventoryOnRestart_LCAttributesTypes.Enabled)
         return self.apply_changes(reboot = True)
 
     def Ndisable_csior(self):
-        self.CSIOR.set_value(CollectSystemInventoryOnRestart_LCAttributesTypes.Disabled)
+        self.NCSIOR.set_value(CollectSystemInventoryOnRestart_LCAttributesTypes.Disabled)
         return self.apply_changes(reboot = True)
 
     @property
@@ -2120,7 +2127,7 @@ class iDRACConfig(iBaseConfigApi):
 
     @property
     def NNTPServers(self):
-        return self._sysconfig.iDRAC.NTPConfigGroup.NTPServers.get_value()
+        return self._sysconfig.iDRAC.NTPConfigGroup.NTPServers
 
     @property
     def NNTPEnabled(self):
@@ -2143,31 +2150,31 @@ class iDRACConfig(iBaseConfigApi):
     ##  Email Alerts
     #############################################
     @property
-    def RegisteredEmailAlert(self):
+    def NRegisteredEmailAlert(self):
         return self._sysconfig.iDRAC.EmailAlert
 
-    def get_email_alert(self, email_id):
+    def Nget_email_alert(self, email_id):
         return self._sysconfig.iDRAC.EmailAlert.find(Address_EmailAlert = email_id)
 
-    def add_email_alert(self, email_id, custom_msg = ""):
+    def Nadd_email_alert(self, email_id, custom_msg = ""):
         self._sysconfig.iDRAC.EmailAlert.new(Address_EmailAlert = email_id, CustomMsg_EmailAlert = custom_msg)
         return self.apply_changes(reboot = False)
 
-    def remove_email_alert(self, email_id):
+    def Nremove_email_alert(self, email_id):
         self._sysconfig.iDRAC.EmailAlert.remove(Address_EmailAlert = email_id)
         return self.apply_changes(reboot = False)
 
-    def disable_email_alert(self, email_id):
+    def Ndisable_email_alert(self, email_id):
         entry = self._sysconfig.iDRAC.EmailAlert.find(Address_EmailAlert = email_id)
         if entry: entry.State_EmailAlert = StateTypes_EmailAlert.Disabled
         return self.apply_changes(reboot = False)
 
-    def enable_email_alert(self, email_id):
+    def Nenable_email_alert(self, email_id):
         entry = self._sysconfig.iDRAC.EmailAlert.find(Address_EmailAlert = email_id)
         if entry: entry.State_EmailAlert = StateTypes_EmailAlert.Enabled
         return self.apply_changes(reboot = False)
 
-    def change_email_alert(self, email_id, custom_msg):
+    def Nchange_email_alert(self, email_id, custom_msg):
         entry = self._sysconfig.iDRAC.EmailAlert.find(Address_EmailAlert = email_id)
         if entry: entry.CustomMsg_EmailAlert = custom_msg
         return self.apply_changes(reboot = False)

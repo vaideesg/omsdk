@@ -28,5 +28,6 @@ class SystemConfiguration(RootClassType):
         self.NIC = ArrayType(NetworkInterface, parent=self, loading_from_scp=loading_from_scp)
         self.BIOS = BIOS(parent=self, loading_from_scp=loading_from_scp)
         self.Controller = ArrayType(Controller, parent=self, loading_from_scp=loading_from_scp)
+        self._ignore_attribs('ServiceTag', 'Model', 'TimeStamp')
         self.commit(loading_from_scp)
 

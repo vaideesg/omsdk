@@ -61,6 +61,8 @@ class ClassType(TypeBase):
 
         self.__dict__['_state'] = TypeState.UnInitialized
         self.__dict__['_attribs'] = {}
+        self.__dict__['_ign_attribs'] = ()
+        self.__dict__['_ign_fields'] = ()
 
     # Value APIs
     def __getattr__(self, name):
@@ -153,6 +155,12 @@ class ClassType(TypeBase):
     # Value APIs
     def my_accept_value(self, value):
         return True
+
+    def _ignore_attribs(self, *ign_attribs):
+        self.__dict__['_ign_attribs'] = ign_attribs
+
+    def _ignore_fields(self, *ign_fields):
+        self.__dict__['_ign_fields'] = ign_fields
 
     # State APIs:
     def is_changed(self):
@@ -389,7 +397,8 @@ class ClassType(TypeBase):
     def Json(self):
         output = {}
         for i in self._attribs:
-            output[i] = self._attribs[i]
+            if i not in self._ign_attribs:
+                output[i] = self._attribs[i]
         output['_index'] = self._index
         output['_attributes'] = list(self._attribs.keys())
 
@@ -397,6 +406,8 @@ class ClassType(TypeBase):
             attr_name = i
             if self.__dict__[i]._alias is not None:
                 attr_name = self.__dict__[i]._alias
+            if attr_name in self._ign_fields:
+                continue
             attr_name = re.sub('_.*', '', attr_name)
             if isinstance(self.__dict__[i], FieldType):
                 output[attr_name] = TypeHelper.resolve(self.__dict__[i]._value)
@@ -420,6 +431,8 @@ class ClassType(TypeBase):
                 if not self.__dict__[i].is_changed() and not everything:
                         continue
                 attr_name = i
+                if attr_name in self._ign_fields:
+                    continue
                 if '_' in attr_name:
                     attr_name = re.sub('_.*', '', attr_name)
                     attr_name ="{0}.{1}#{2}".format(self._alias,
@@ -437,7 +450,8 @@ class ClassType(TypeBase):
 
         s.write(space + '<{0}'.format(self._fname))
         for i in self._attribs:
-            s.write(' {0}="{1}"'.format(i,self._attribs[i]))
+            if i not in self._ign_attribs:
+                s.write(' {0}="{1}"'.format(i,self._attribs[i]))
         s.write('>\n')
 
         orig_len = len(s.getvalue())
@@ -445,6 +459,8 @@ class ClassType(TypeBase):
             if not self.__dict__[i].is_changed() and not everything:
                 continue
             attr_name = i
+            if attr_name in self._ign_fields:
+                continue
             if isinstance(self.__dict__[i], FieldType):
                 if not self.__dict__[i]._composite:
                     s.write(space+'  <Attribute Name="{0}">{1}</Attribute>\n'.format(

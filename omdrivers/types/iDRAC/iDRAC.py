@@ -3203,6 +3203,7 @@ class Time(ClassType):
         self.Time_Time = IntField(None, parent=self)
         self.Timezone_Time = StringField("", parent=self)
         self.TimeZone_Time = self.Timezone_Time
+        self._ignore_fields('TimeZone_Time')
         self.commit(loading_from_scp)
 
 class USB(ClassType):
