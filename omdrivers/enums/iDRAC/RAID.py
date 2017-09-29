@@ -116,6 +116,7 @@ RAIDTypesTypes = EnumWrapper("RAIDTypesTypes", {
     "RAID_50" : "RAID 50",
     "RAID_6" : "RAID 6",
     "RAID_60" : "RAID 60",
+    "Volume" : "Volume",
 }).enum_type
 
 RAIDactionTypes = EnumWrapper("RAIDactionTypes", {

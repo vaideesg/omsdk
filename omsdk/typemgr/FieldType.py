@@ -117,7 +117,8 @@ class FieldType(TypeBase):
                 value = bool(value)
                 valid = True
             # expected value is enumeration
-            elif isinstance(self._type, Enum):
+            elif (PY2 and isinstance(self._type, Enum)) or \
+                 (PY3 and isinstance(self._type, type(Enum))):
                 newvalue = TypeHelper.convert_to_enum(value, self._type)
                 if newvalue is not None:
                     value = newvalue
