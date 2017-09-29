@@ -1,6 +1,9 @@
 from enum import Enum
 from omsdk.sdkcenum import TypeHelper
 from omsdk.typemgr.TypeState import TypeState, TypeBase
+import sys
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
 
 # private
 #
@@ -31,6 +34,10 @@ from omsdk.typemgr.TypeState import TypeState, TypeBase
 class FieldType(TypeBase):
 
     def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False, modifyAllowed = True, deleteAllowed = True, rebootRequired=False):
+        if PY2:
+            super(FieldType, self).__init__()
+        else:
+            super().__init__()
         self._type  = typename
         self._alias = alias
         self._fname = fname

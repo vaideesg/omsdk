@@ -55,8 +55,8 @@
         "entries" : "multiple"
     },
     "Controller" : {
-        "pattern" : "^RAID\\.*",
-        "firmware_pattern" : "^RAID\\.*",
+        "pattern" : "^(RAID|AHCI)\\.*",
+        "firmware_pattern" : "^(RAID|AHCI)\\.*",
         "registry" : "RAID",
         "groups" : [ ],
         "nogroup" : true,
@@ -97,8 +97,8 @@
         "children" : [ "Enclosure", "VirtualDisk", "PhysicalDisk" ]
     },
     "Enclosure" : {
-        "pattern" : "^[^D][^:]+:RAID\\..*",
-        "firmware_pattern" : "^[^:]+:RAID\\..*",
+        "pattern" : "^[^D].+:RAID[.]",
+        "firmware_pattern" : "^[^D].+:RAID[.]",
         "registry" : "RAID",
         "groups" : [ ],
         "nogroup" : true,
@@ -110,8 +110,8 @@
         "children" : [ "PhysicalDisk" ]
     },
     "PhysicalDisk" : {
-        "pattern" : "^Disk\\.[^V]*",
-        "firmware_pattern" : "^Disk.*",
+        "pattern" : "^Disk[.][^V]",
+        "firmware_pattern" : "^Disk[.][^V]",
         "registry" : "RAID",
         "groups" : [ ],
         "nogroup" : true,
@@ -123,7 +123,8 @@
         ]
     },
     "VirtualDisk" : {
-        "pattern" : "Disk\\.Virtual\\..*",
+        "pattern" : "^Disk[.]V",
+        "firmware_pattern" : "^Disk[.]V",
         "registry" : "RAID",
         "groups" : [ ],
         "nogroup" : true,

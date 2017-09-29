@@ -1,5 +1,8 @@
 from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.TypeState import TypeState,TypeBase
+import sys
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
 
 # private
 #
@@ -31,6 +34,11 @@ from omsdk.typemgr.TypeState import TypeState,TypeBase
 
 class ArrayType(TypeBase):
     def __init__(self, clsname, parent=None, min_index=1, max_index=20, loading_from_scp=False):
+        if PY2:
+            super(ArrayType, self).__init__()
+        else:
+            super().__init__()
+
         self._alias = None
         self._fname = clsname.__name__
         self._volatile = False

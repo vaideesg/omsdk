@@ -1,5 +1,9 @@
 from omsdk.sdkcenum import EnumWrapper
+import sys
 import logging
+
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
 
 logger = logging.getLogger(__name__)
 

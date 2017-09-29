@@ -1,5 +1,6 @@
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 
+
 TypeState = EnumWrapper('TMS', { 
     'UnInitialized' : 'UnInitialized',
     'Initializing' : 'Initializing',
@@ -9,5 +10,6 @@ TypeState = EnumWrapper('TMS', {
 }).enum_type
 
 class TypeBase(object):
-    pass
+    def __init__(self):
+        pass
 

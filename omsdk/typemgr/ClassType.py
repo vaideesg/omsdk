@@ -43,6 +43,10 @@ PY3 = sys.version_info[0] == 3
 class ClassType(TypeBase):
 
     def __init__(self, fname, alias, parent = None, volatile=False, modifyAllowed = True, deleteAllowed = True):
+        if PY2:
+            super(ClassType, self).__init__()
+        else:
+            super().__init__()
         self._alias = alias
         self._fname = fname
         self._volatile = volatile

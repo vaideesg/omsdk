@@ -6,9 +6,16 @@ from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.BuiltinTypes import RootClassType
 from omsdk.typemgr.ArrayType import ArrayType
 from omsdk.sdkcenum import TypeHelper
+import sys
+PY2 = sys.version_info[0] == 2
+PY3 = sys.version_info[0] == 3
 
 class FormatterTemplate(object):
     def __init__(self, everything):
+        if PY2:
+            super(FormatterTemplate, self).__init__()
+        else:
+            super().__init__()
         self.everything = everything
         self.include_composite = True
         self.target = None
@@ -117,36 +124,6 @@ class XMLFormatter(FormatterTemplate):
     def _write_end(self, output, attr_name, value, data, space):
         if value._fname:
             output.write('</{0}>\n'.format(value._fname))
-
-    def _get_str(self):
-        return self.target.getvalue()
-
-class StringFormatter(FormatterTemplate):
-    def __init__(self, everything):
-        super().__init__(everything)
-        self.target = io.StringIO()
-
-    def _emit(self, output, value):
-        val = value.sanitized_value()
-        if val: output.write(str(val))
-        return 0
-
-    def _init(self, output, obj, space):
-        if obj._fname:
-            output.write('{0}=['.format(obj._fname))
-        return output
-
-    def _close(self, output, obj):
-        if obj._fname:
-            output.write(']\n'.format(obj._fname))
-
-    def _write_start(self, output, attr_name, value, space):
-        if value._fname:
-            output.write('{1}='.  format(value._fname, attr_name))
-
-    def _write_start(self, output, attr_name, value, data, space):
-        if value._fname:
-            output.write(','.format(value._fname))
 
     def _get_str(self):
         return self.target.getvalue()
