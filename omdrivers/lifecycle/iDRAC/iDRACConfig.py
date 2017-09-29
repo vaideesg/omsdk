@@ -18,7 +18,6 @@ from omdrivers.lifecycle.iDRAC.rebootOptions import RebootOptions
 from omdrivers.enums.iDRAC.iDRACEnums import *
 from omsdk.simulator.devicesim import Simulator
 from omdrivers.lifecycle.iDRAC.SCPParsers import XMLParser
-from omsdk.typemgr.Formatters import *
 import sys
 import logging
 import tempfile
@@ -1750,7 +1749,7 @@ class iDRACConfig(iBaseConfigApi):
                 'Message' : 'Unable to load configuration' }
         tempshare = None
         if self.UseNewStyle:
-            content = XMLFormatter().format_type(self._sysconfig)._get_str()
+            content = self._sysconfig.ModifiedXML
         else:
             content = self.config.format_scp(record)
         if Simulator.is_simulating():

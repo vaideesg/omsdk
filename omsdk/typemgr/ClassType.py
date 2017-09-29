@@ -412,7 +412,7 @@ class ClassType(TypeBase):
     def ModifiedXML(self):
         return self._get_xml_string(False)
 
-    def _get_xml_string(self, everything = True):
+    def _get_xml_string(self, everything = True, space=''):
         s = io.StringIO()
         if not self._fname:
             # group object!!
@@ -432,10 +432,10 @@ class ClassType(TypeBase):
                     s.write('  <Attribute Name="{0}">{1}</Attribute>\n'.format(
                         attr_name, TypeHelper.resolve(self.__dict__[i]._value)))
                 else:
-                    s.write(self.__dict__[i]._get_xml_string(everything))
+                    s.write(self.__dict__[i]._get_xml_string(everything, space + '  '))
             return s.getvalue()
 
-        s.write('<{0}'.format(self._fname))
+        s.write(space + '<{0}'.format(self._fname))
         for i in self._attribs:
             s.write(' {0}="{1}"'.format(i,self._attribs[i]))
         s.write('>\n')
@@ -447,15 +447,15 @@ class ClassType(TypeBase):
             attr_name = i
             if isinstance(self.__dict__[i], FieldType):
                 if not self.__dict__[i]._composite:
-                    s.write('  <Attribute Name="{0}">{1}</Attribute>\n'.format(
+                    s.write(space+'  <Attribute Name="{0}">{1}</Attribute>\n'.format(
                        attr_name, TypeHelper.resolve(self.__dict__[i]._value)))
             else:
-                s.write(self.__dict__[i]._get_xml_string(everything))
+                s.write(self.__dict__[i]._get_xml_string(everything, space + '  '))
         new_len = len(s.getvalue())
         if new_len == orig_len:
             return ""
 
-        s.write('</{0}>'.format(self._fname))
+        s.write(space + '</{0}>\n'.format(self._fname))
         return s.getvalue()
 
     def json_encode(self):

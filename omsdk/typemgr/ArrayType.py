@@ -366,15 +366,13 @@ class ArrayType(TypeBase):
     def ModifiedXML(self):
         return self._get_xml_string(False)
 
-    def _get_xml_string(self, everything = True):
+    def _get_xml_string(self, everything = True, space=''):
         s = io.StringIO()
-        if True:
-            for entry in self._entries:
-                if not entry.is_changed() and not everything:
-                    continue
-                s.write(entry._get_xml_string(everything))
-            return s.getvalue()
-        return ""
+        for entry in self._entries:
+            if not entry.is_changed() and not everything:
+                continue
+            s.write(entry._get_xml_string(everything, space))
+        return s.getvalue()
 
     def __iter__(self):
         return ArrayTypeIterator(self)

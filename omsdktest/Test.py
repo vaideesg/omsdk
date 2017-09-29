@@ -1,6 +1,5 @@
 from omdrivers.enums.iDRAC.iDRAC import *
 from omdrivers.types.iDRAC.iDRAC import *
-from omsdk.typemgr.Formatters import *
 from omsdk.typemgr.BuiltinTypes import *
 
 FType = False
@@ -14,24 +13,24 @@ def P(msg, expected, actual):
 
 def D(msg, obj, everything = False):
     print('=======' + msg)
-    print(XMLFormatter(everything=everything).format_type(obj)._get_str())
+    print(obj.ModifiedXML)
 
 if True:
     idrac_system = SNMP(None, loading_from_scp=True)
     idrac_system.AlertPort_SNMP = 184
     idrac_system.TrapFormat_SNMP = TrapFormat_SNMPTypes.SNMPv1
     idrac_system.commit(True)
-    print(XMLFormatter(everything=False).format_type(idrac_system)._get_str())
+    print(idrac_system.ModifiedXML)
 
     idrac_system.commit()
-    print(XMLFormatter(everything=False).format_type(idrac_system)._get_str())
+    print(idrac_system.ModifiedXML)
 
     Users = ArrayType(Users, loading_from_scp=True)
     Users.new(UserName_Users='vaidees')
     Users.commit(True)
-    print(XMLFormatter(everything=False).format_type(Users)._get_str())
+    print(Users.ModifiedXML)
     Users.commit()
-    print(XMLFormatter(everything=False).format_type(Users)._get_str())
+    print(Users.ModifiedXML)
 
 if FType:
     # Precommit FType
@@ -58,13 +57,13 @@ if False:
     idrac_idrac.SNMP.AlertPort_SNMP = 184
     idrac_idrac.SNMP.TrapFormat_SNMP = TrapFormat_SNMPTypes.SNMPv1
     print("=== System.iDRAC.SNMP.162")
-    print(XMLFormatter(everything=False).format_type(idrac_system)._get_str())
-    print(XMLFormatter(everything=False).format_type(idrac_idrac)._get_str())
+    print(idrac_system.ModifiedXML)
+    print(idrac_idrac.ModifiedXML)
 
     print(idrac_system.iDRAC.SNMP.AlertPort_SNMP == 162)
     idrac_system.iDRAC.copy(idrac_idrac)
     idrac_system.commit()
-    print(XMLFormatter(everything=False).format_type(idrac_idrac)._get_str())
+    print(idrac_idrac.ModifiedXML)
     print(idrac_system.iDRAC.SNMP.AlertPort_SNMP == 184)
     idrac_idrac.reject()
     print(idrac_idrac.SNMP.AlertPort_SNMP == 162)
@@ -75,38 +74,14 @@ if False:
     print(idrac_system.iDRAC.SNMP.AlertPort_SNMP == 184)
 
     print("=== SNMP.changed.162")
-    print(XMLFormatter(everything=True).format_type(idrac_idrac)._get_str())
+    print(idrac_system.XML)
     print("=== System.iDRAC.SNMP.184")
-    print(XMLFormatter(everything=True).format_type(idrac_system)._get_str())
+    print(idrac_system.XML)
 
     idrac_system.reject() # no rejection as copy committed
     print(idrac_system.iDRAC.SNMP.AlertPort_SNMP == 184)
     print("=== System.iDRAC.SNMP.184 (no rejection as copy committed)")
-    print(XMLFormatter(everything=True).format_type(idrac_system)._get_str())
-
-if Hierarchy:
-    original = SNMP(parent=None)
-    cloned = original.clone()
-    cloned.AlertPort_SNMP = 923
-    print("=== iDRAC.SNMP.923 (SNMP.clone().get_root().SNMP.port=923)")
-    print(JSONFormatter(True).format_type(cloned)._get_str())
-    print(JSONFormatter(True).format_type(cloned.get_root())._get_str())
-    print("=== user=iDRAC.SNMP.162 (orig of SNMP.duplicate() = 162)")
-    print(JSONFormatter(True).format_type(original)._get_str())
-
-if False:
-    original = iDRAC(parent=None)
-    cloned = original.SNMP.clone()
-    original.Users.new(UserName_Users = 'vaidees')
-    cloned.AlertPort_SNMP = 923
-    print("=== iDRAC.SNMP.923 (SNMP.clone().get_root().SNMP.port=923)")
-    print(JSONFormatter(True).format_type(cloned)._get_str())
-    print(JSONFormatter(True).format_type(cloned.get_root())._get_str())
-    print("=== user=iDRAC.SNMP.162 (orig of SNMP.duplicate() = 162)")
-    print(JSONFormatter(True).format_type(original)._get_str())
-
-if False:
-    user_data = XMLParser().parse_type(s)
+    print(idrac_system.XML)
 
 if FType:
     tport = PortField(162, 'SNMPTrapPort')
@@ -237,13 +212,6 @@ if FType:
     P("s1 <  s2", False, s1 <  s2)
     P("s1 <= s2", False, s1 <= s2)
 
-
-if False:
-    s = iDRAC(mode='create')
-    for i in [JSONFormatter, XMLFormatter]:
-        jformat = i(everything=True)
-        jformat.format_type(s)
-        jformat.printx()
 
 if CType:
     s = SNMP()
@@ -389,24 +357,24 @@ if AType:
     users = ArrayType(Users)
     entry = users.new(UserName_Users = 'vaidees')
     print("===== (users.username=vaidees)")
-    print(XMLFormatter(False).format_type(users)._get_str())
+    print(users.ModifiedXML)
     users.commit()
     print("=== ()")
-    print(XMLFormatter(False).format_type(users)._get_str())
+    print(users.ModifiedXML)
     users.new(UserName_Users = 'ajaya')
     print("===== (ajaya)")
-    print(XMLFormatter(False).format_type(users)._get_str())
+    print(users.ModifiedXML)
     users.reject()
     print("===== ()")
-    print(XMLFormatter(False).format_type(users)._get_str())
+    print(users.ModifiedXML)
     print("=====(vaidees)")
-    print(XMLFormatter(True).format_type(users)._get_str())
+    print(users.XML)
     users.remove(UserName_Users = 'vaidees')
     print("===== ()")
-    print(XMLFormatter(False).format_type(users)._get_str())
+    print(users.ModifiedXML)
     print("Expected =[vaidees], Actual=" + str(users.values_deleted()))
     users.reject()
     print("Expected =[], Actual=" + str(users.values_deleted()))
     print("===== ()")
-    print(XMLFormatter(False).format_type(users)._get_str())
+    print(users.ModifiedXML)
     print("=====")

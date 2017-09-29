@@ -3,7 +3,6 @@ import re
 import json
 import xml.etree.ElementTree as ET
 from omsdk.typemgr.ClassType import *
-from omsdk.typemgr.Formatters import *
 from omdrivers.types.iDRAC.iDRAC import *
 from omdrivers.types.iDRAC.BIOS import *
 from omdrivers.types.iDRAC.RAID import *
@@ -137,7 +136,3 @@ class XMLParser(object):
         sysconfig._clear_duplicates()
         sysconfig.commit()
         return sysconfig
-
-    def save_scp(self, fname, sysconfig):
-        print(XMLFormatter(everything=False).format_type(sysconfig)._get_str())
-

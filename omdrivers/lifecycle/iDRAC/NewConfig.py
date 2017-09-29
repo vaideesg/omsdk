@@ -2,7 +2,6 @@ import os
 from omdrivers.lifecycle.iDRAC.SCPParsers import XMLParser
 from omdrivers.enums.iDRAC.iDRAC import *
 from omsdk.sdkcenum import TypeHelper
-from omsdk.typemgr.Formatters import *
 from omsdk.typemgr.TypeState import *
 
 TLSOptions = TLSProtocol_WebServerTypes
@@ -662,8 +661,3 @@ class Config:
             cfg._sysconfig.BIOS.BootSeq = ','.join(boot_seq_list)
             cfg._sysconfig.BIOS.HddSeq = ','.join(hdd_seq)
 
-    def print_data(self, obj):
-        if obj:
-            print(XMLFormatter(True).format_type(obj)._get_str())
-        else:
-            print('object is null')

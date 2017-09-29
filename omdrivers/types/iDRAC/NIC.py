@@ -14,9 +14,9 @@ class NetworkInterface(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         if PY2: 
-            super(NetworkInterface, self).__init__(None, "NetworkInterface", parent)
+            super(NetworkInterface, self).__init__("Component", None, parent)
         else: 
-            super().__init__(None, "NetworkInterface", parent)
+            super().__init__("Component", None, parent)
         # readonly attribute populated by iDRAC
         self.AddressingMode = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.BannerMessageTimeout = IntField(None, parent=self)

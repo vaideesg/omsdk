@@ -14,9 +14,9 @@ class FCHBA(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         if PY2: 
-            super(FCHBA, self).__init__(None, "FCHBA", parent)
+            super(FCHBA, self).__init__("Component", None, parent)
         else: 
-            super().__init__(None, "FCHBA", parent)
+            super().__init__("Component", None, parent)
         self.BootScanSelection = EnumTypeField(BootScanSelectionTypes.Disabled,BootScanSelectionTypes, parent=self)
         # readonly attribute
         self.BusDeviceFunction = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
