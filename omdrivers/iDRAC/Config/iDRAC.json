@@ -267,12 +267,14 @@
             "enum": [
                 "Detached",
                 "Attached",
-                "Auto-attach"
+                "Auto-attach",
+                "Auto-Attach"
             ],
             "enumDescriptions": [
                 "Detached",
                 "Attached",
-                "Auto-attach"
+                "Auto-attach",
+                "Auto-Attach"
             ],
             "type": "enumeration"
         },

@@ -233,6 +233,9 @@ class AttribRegistry(object):
             self.attr_json["definitions"]['RAIDTypesTypes']['enum'].append('Volume')
             self.attr_json["definitions"]['RAIDTypesTypes']['enumDescriptions'].append('Volume')
 
+        if 'AttachState_VirtualConsole' in props:
+            self.attr_json["definitions"]['AttachState_VirtualConsoleTypes']['enum'].append('Auto-Attach')
+            self.attr_json["definitions"]['AttachState_VirtualConsoleTypes']['enumDescriptions'].append('Auto-Attach')
         if 'StripeSize' in props:
             props['StripeSize']['type'] = 'StripeSizeTypes'
             self.attr_json["definitions"]['StripeSizeTypes'] = {

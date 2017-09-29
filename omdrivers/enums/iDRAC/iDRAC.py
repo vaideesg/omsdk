@@ -130,6 +130,7 @@ AttachMode_RFSTypes = EnumWrapper("AttachMode_RFSTypes", {
 
 AttachState_VirtualConsoleTypes = EnumWrapper("AttachState_VirtualConsoleTypes", {
     "Attached" : "Attached",
+    "Auto_Attach" : "Auto-Attach",
     "Auto_attach" : "Auto-attach",
     "Detached" : "Detached",
 }).enum_type
