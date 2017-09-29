@@ -107,16 +107,16 @@ class ArrayType(TypeBase):
 
     def values_deleted(self):
         source_idx = []
-        dest_idx = []
+        dest_entries = []
         for entry in self._entries:
             source_idx.append(self._get_key(entry))
         for entry in self.__dict__['_orig_value']:
             key = self._get_key(entry)
             if key not in source_idx:
-                dest_idx.append(key)
+                dest_entries.append(entry)
                 continue
             source_idx.remove(key)
-        return dest_idx
+        return dest_entries
 
     # State : to Committed
     # allowed even during freeze
@@ -366,12 +366,14 @@ class ArrayType(TypeBase):
     def ModifiedXML(self):
         return self._get_xml_string(False)
 
-    def _get_xml_string(self, everything = True, space=''):
+    def _get_xml_string(self, everything = True, space='', deleted=False):
         s = io.StringIO()
         for entry in self._entries:
             if not entry.is_changed() and not everything:
                 continue
-            s.write(entry._get_xml_string(everything, space))
+            s.write(entry._get_xml_string(everything, space, False))
+        for entry in self.values_deleted():
+            s.write(entry._get_xml_string(True, space, True))
         return s.getvalue()
 
     def __iter__(self):

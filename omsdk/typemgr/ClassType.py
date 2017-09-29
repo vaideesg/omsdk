@@ -423,7 +423,7 @@ class ClassType(TypeBase):
     def ModifiedXML(self):
         return self._get_xml_string(False)
 
-    def _get_xml_string(self, everything = True, space=''):
+    def _get_xml_string(self, everything = True, space='', deleted=False):
         s = io.StringIO()
         if not self._fname:
             # group object!!
@@ -442,10 +442,14 @@ class ClassType(TypeBase):
                 if isinstance(self.__dict__[i], FieldType):
                     if self.__dict__[i]._composite:
                         continue
+                    if not self.__dict__[i]._modifyAllowed and deleted:
+                        continue
+                    value = TypeHelper.resolve(self.__dict__[i]._value)
+                    if deleted: value = ''
                     s.write('  <Attribute Name="{0}">{1}</Attribute>\n'.format(
-                        attr_name, TypeHelper.resolve(self.__dict__[i]._value)))
+                        attr_name, value))
                 else:
-                    s.write(self.__dict__[i]._get_xml_string(everything, space + '  '))
+                    s.write(self.__dict__[i]._get_xml_string(everything, space + '  ', deleted))
             return s.getvalue()
 
         s.write(space + '<{0}'.format(self._fname))
@@ -463,10 +467,15 @@ class ClassType(TypeBase):
                 continue
             if isinstance(self.__dict__[i], FieldType):
                 if not self.__dict__[i]._composite:
-                    s.write(space+'  <Attribute Name="{0}">{1}</Attribute>\n'.format(
-                       attr_name, TypeHelper.resolve(self.__dict__[i]._value)))
+                    if not self.__dict__[i]._modifyAllowed and deleted:
+                        continue
+                    value = TypeHelper.resolve(self.__dict__[i]._value)
+                    if deleted: value = ''
+                    s.write(space+
+                       '  <Attribute Name="{0}">{1}</Attribute>\n'.format(
+                       attr_name, value))
             else:
-                s.write(self.__dict__[i]._get_xml_string(everything, space + '  '))
+                s.write(self.__dict__[i]._get_xml_string(everything, space + '  ', deleted))
         new_len = len(s.getvalue())
         if new_len == orig_len:
             return ""
