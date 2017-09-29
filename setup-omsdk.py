@@ -75,6 +75,7 @@ setup(
         'omsdk.reflection',
         'omsdk.typemgr',
         'omsdk.omlogs',
+        'omsdk.simulator',
         'omdrivers',
         'omdrivers.lifecycle',
         'omdrivers.lifecycle.iDRAC',

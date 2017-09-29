@@ -6,6 +6,7 @@ from omsdk.sdkprotopref import ProtoPreference, ProtocolEnum
 from omsdk.sdkprint import PrettyPrint
 from omsdk.sdkunits import UnitsFactory
 from omsdk.sdkentitymib import EntityCompEnum, EntitySNMPViews, EntityComponentTree
+from omsdk.simulator.devicesim import Simulator
 import json
 import re
 import os
@@ -20,29 +21,6 @@ PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
 logger = logging.getLogger(__name__)
-
-class Simulation:
-    def __init__(self):
-        self.record = False
-        self.simulate = False
-    def start_recording(self):
-        self.record = True
-        self.simulate = False
-    def end_recording(self):
-        self.record = False
-        self.simulate = False
-    def start_simulating(self):
-        self.simulate = True
-        self.record = False
-    def end_simulating(self):
-        self.record = False
-        self.simulate = False
-    def is_recording(self):
-        return self.record
-    def is_simulating(self):
-        return self.simulate
-
-Simulator = Simulation()
 
 class ProtocolOptions(object):
     def __init__(self, enid):
@@ -128,7 +106,7 @@ class ProtocolWrapper(object):
 
         logger.debug("Connecting to " + ipaddr + " using " + str(self.creds))
         if Simulator.is_simulating():
-            return self.simulator_connect()
+            return Simulator.simulator_connect(self.ipaddr, self.enumid, self)
         # no options for me!
         if not pOptions or not pOptions.get(self.enumid):
             pOptions = None
@@ -199,49 +177,6 @@ class ProtocolWrapper(object):
                 s = rjson[i]
                 rjson[i] = str(':'.join([s[j]+s[j+1] for j in range(2,14,2)]))
 
-    def simulator_save(self, retval, clsName):
-        mypath = "."
-        for i in ["simulator", self.ipaddr, str(self.enumid)]:
-            mypath = os.path.join(mypath, i)
-            if not os.path.exists(mypath):
-                os.mkdir(mypath)
-        with open(os.path.join(mypath, clsName + ".json"), "w") as f:
-            json.dump(retval, f, sort_keys=True, indent=4, \
-                 separators=(',', ': '))
-
-    def simulator_connect(self):
-        mypath = "."
-        for i in ["simulator", self.ipaddr, str(self.enumid)]:
-            mypath = os.path.join(mypath, i)
-        if os.path.exists(mypath) and os.path.isdir(mypath):
-            if self.enumid != ProtocolEnum.WSMAN:
-                return self
-            sjson = os.path.join(mypath, 'System.json')
-            simspec = None
-            for i in self.views:
-                if TypeHelper.resolve(i) == 'System':
-                    simspec = re.sub(".*/", '', self.views[i])
-                    break
-            if os.path.exists(sjson) and simspec:
-                with open(sjson, 'r') as endata:
-                    _s = json.load(endata)
-                    if _s and 'Data' in _s and \
-                       _s['Data'] and simspec in _s['Data']:
-                        return self
-        return None
-
-    def simulator_load(self, clsName):
-        mypath = "."
-        for i in ["simulator", self.ipaddr, str(self.enumid)]:
-            mypath = os.path.join(mypath, i)
-        mypath = os.path.join(mypath, clsName + ".json")
-        retval = {'Data' : {}, 'Status' : 'Failed', 'Message' : 'No file found'}
-        if os.path.exists(mypath) and not os.path.isdir(mypath):
-            with open(mypath) as enum_data:
-                retval = json.load(enum_data)
-        return retval
-
-
     def enumerate_view(self, index, bTrue):
         return self._enumerate_view(index, self.views, bTrue)
 
@@ -252,11 +187,11 @@ class ProtocolWrapper(object):
         clsName = TypeHelper.resolve(index)
         logger.debug("Collecting " + clsName + " ... via " + str(self.enumid) + "..." )
         if Simulator.is_simulating():
-            retval = self.simulator_load(clsName)
+            retval = Simulator.simulate_proto(self.ipaddr, self.enumid, clsName)
         else:
             retval = self.proto.enumerate(clsName, views[index], self.selectors, True)
             if Simulator.is_recording():
-                self.simulator_save(retval, clsName)
+                Simulator.record_proto(self.ipaddr,self.enumid, clsName, retval)
         if not 'Data' in retval or retval['Data'] is None:
             return retval
         if index in self.classifier:
@@ -351,11 +286,11 @@ class ProtocolWrapper(object):
         clsName = TypeHelper.resolve(index)
         logger.debug("Collecting " + clsName + " ... via " + str(self.enumid) + "..." )
         if Simulator.is_simulating():
-            retval = self.simulator_load(clsName)
+            retval = Simulator.simulate_proto(self.ipaddr, self.enumid, clsName)
         else:
             retval = self.proto.opget(self.views[index], clsName, selector)
             if Simulator.is_recording():
-                self.simulator_save(retval, clsName)
+                Simulator.record_proto(self.ipaddr,self.enumid, clsName, retval)
         if not 'Data' in retval or retval['Data'] is None:
             return retval
 

@@ -268,7 +268,11 @@ class AttribRegistry(object):
         print('Saving to :' + dest_file)
         with open(dest_file, 'w') as out:
             out.write('from omsdk.sdkcenum import EnumWrapper\n')
+            out.write('import sys\n')
             out.write('import logging\n')
+            out.write('\n')
+            out.write('PY2 = sys.version_info[0] == 2\n')
+            out.write('PY3 = sys.version_info[0] == 3\n')
             out.write('\n')
             out.write('logger = logging.getLogger(__name__)\n')
             out.write('\n')
@@ -456,9 +460,15 @@ class AttribRegistry(object):
             out.write('\n')
             out.write('    def __init__(self, parent = None, loading_from_scp=False):\n')
             if grp == self.comp and group:
-                out.write('        super().__init__("Component", None, parent)\n')
+                out.write('        if PY2: \n')
+                out.write('            super({0}, self).__init__("Component", None, parent)\n'.format(ngrp))
+                out.write('        else: \n')
+                out.write('            super().__init__("Component", None, parent)\n')
             else:
-                out.write('        super().__init__(None, "'+grp+'", parent)\n')
+                out.write('        if PY2: \n')
+                out.write('            super({0}, self).__init__(None, "{1}", parent)\n'.format(ngrp, grp))
+                out.write('        else: \n')
+                out.write('            super().__init__(None, "'+grp+'", parent)\n')
             for i in s_cls_props:
                 if '[Partition:n]' in i:
                     continue
@@ -544,7 +554,10 @@ class AttribRegistry(object):
                 out.write('class {0}(ClassType):\n'.format(comp))
                 out.write('\n')
                 out.write('    def __init__(self, parent = None, loading_from_scp=False):\n')
-                out.write('        super().__init__("Component", None, parent)\n')
+                out.write('        if PY2: \n')
+                out.write('            super({0}, self).__init__("Component", None, parent)\n'.format(comp))
+                out.write('        else: \n')
+                out.write('            super().__init__("Component", None, parent)\n')
                 for grp in sorted(self.config_spec[comp]['groups']):
                     ngrp = self._sanitize(grp)
                     if 'arrays' in self.config_spec and grp in self.config_spec['arrays']:
@@ -572,7 +585,11 @@ class AttribRegistry(object):
             out.write('from omsdk.typemgr.ClassType import ClassType\n')
             out.write('from omsdk.typemgr.ArrayType import ArrayType\n')
             out.write('from omsdk.typemgr.BuiltinTypes import *\n')
+            out.write('import sys\n')
             out.write('import logging\n')
+            out.write('\n')
+            out.write('PY2 = sys.version_info[0] == 2\n')
+            out.write('PY3 = sys.version_info[0] == 3\n')
             out.write('\n')
             out.write('logger = logging.getLogger(__name__)\n')
             out.write('\n')
@@ -601,7 +618,11 @@ def save_tree(directory, dconfig, device):
             out.write('from omsdk.typemgr.BuiltinTypes import RootClassType\n')
             for i in registries:
                 out.write('from omdrivers.types.{0}.{1} import *\n'.format(device, i))
+            out.write('import sys\n')
             out.write('import logging\n')
+            out.write('\n')
+            out.write('PY2 = sys.version_info[0] == 2\n')
+            out.write('PY3 = sys.version_info[0] == 3\n')
             out.write('\n')
             out.write('logger = logging.getLogger(__name__)\n')
             out.write('\n')
@@ -609,7 +630,10 @@ def save_tree(directory, dconfig, device):
             out.write('class {0}(RootClassType):\n'.format(elem))
             out.write('\n')
             out.write('    def __init__(self, parent = None, loading_from_scp=False):\n')
-            out.write('        super().__init__("{0}", None, parent)\n'.format(elem))
+            out.write('        if PY2:\n')
+            out.write('            super({0}, self).__init__("{0}", None, parent)\n'.format(elem))
+            out.write('        else:\n')
+            out.write('            super().__init__("{0}", None, parent)\n'.format(elem))
 
             for comp in comps:
                 if comp not in config_spec or \
