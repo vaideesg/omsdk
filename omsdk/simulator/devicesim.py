@@ -37,22 +37,20 @@ class Simulation:
         for i in ["simulator", ipaddr, 'config']:
             mypath = os.path.join(mypath, i)
         mypath = os.path.join(mypath, "config.xml")
-        retval = None
         if os.path.exists(mypath) and not os.path.isdir(mypath):
-            with open(mypath) as enum_data:
-                retval = json.load(enum_data)
-        return retval
+            return mypath
+        return None
 
-    def record_config(self, ipaddr, config):
+    def record_config(self, ipaddr, config, name='config.xml'):
         mypath = "."
         for i in ["simulator", ipaddr, 'config']:
             mypath = os.path.join(mypath, i)
             if not os.path.exists(mypath):
                 os.mkdir(mypath)
-        mypath = os.path.join(mypath, "config.xml")
+        mypath = os.path.join(mypath, name)
         with open(mypath, 'w') as myconfig:
                 myconfig.write(config)
-        return retval
+        return mypath
 
     def simulate_proto(self, ipaddr, enumid, clsName):
         mypath = "."

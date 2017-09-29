@@ -1,6 +1,7 @@
 from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.TypeState import TypeState,TypeBase
 import sys
+import io
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
@@ -356,6 +357,24 @@ class ArrayType(TypeBase):
         for entry in self:
             output.append(entry.Json)
         return output
+
+    @property
+    def XML(self):
+        return self._get_xml_string(True)
+
+    @property
+    def ModifiedXML(self):
+        return self._get_xml_string(False)
+
+    def _get_xml_string(self, everything = True):
+        s = io.StringIO()
+        if True:
+            for entry in self._entries:
+                if not entry.is_changed() and not everything:
+                    continue
+                s.write(entry._get_xml_string(everything))
+            return s.getvalue()
+        return ""
 
     def __iter__(self):
         return ArrayTypeIterator(self)

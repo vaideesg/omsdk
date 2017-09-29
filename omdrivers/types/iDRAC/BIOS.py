@@ -14,9 +14,9 @@ class BIOS(ClassType):
 
     def __init__(self, parent = None, loading_from_scp=False):
         if PY2: 
-            super(BIOS, self).__init__(None, "BIOS", parent)
+            super(BIOS, self).__init__("Component", None, parent)
         else: 
-            super().__init__(None, "BIOS", parent)
+            super().__init__("Component", None, parent)
         self.AcPwrRcvry = EnumTypeField(None,AcPwrRcvryTypes, parent=self)
         self.AcPwrRcvryDelay = EnumTypeField(None,AcPwrRcvryDelayTypes, parent=self)
         self.AcPwrRcvryUserDelay = IntField(None, parent=self)

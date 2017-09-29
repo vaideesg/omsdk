@@ -16,6 +16,9 @@ from omsdk.lifecycle.sdkentry import ConfigEntries, RowStatus
 from omsdk.sdktime import SchTimer, TIME_NOW
 from omdrivers.lifecycle.iDRAC.rebootOptions import RebootOptions
 from omdrivers.enums.iDRAC.iDRACEnums import *
+from omsdk.simulator.devicesim import Simulator
+from omdrivers.lifecycle.iDRAC.SCPParsers import XMLParser
+from omsdk.typemgr.Formatters import *
 import sys
 import logging
 import tempfile
@@ -76,28 +79,28 @@ iDRACConfigCompSpec = {
         "nogroup" : True
     },
     "Controller" : {
-        "pattern" : "^RAID\.*",
-        "firmware_pattern" : "^RAID\.*",
+        "pattern" : "^(RAID|AHCI)\.*",
+        "firmware_pattern" : "^(RAID|AHCI)\.*",
         "registry" : "RAID",
         "groups" : [ "Controller" ],
         "nogroup" : True
     },
     "Enclosure" : {
-        "pattern" : "^[^:]+:RAID\..*",
-        "firmware_pattern" : "^[^:]+:RAID\..*",
+        "pattern" : "^[^D].+:RAID[.]",
+        "firmware_pattern" : "^[^D].+:RAID[.]",
         "registry" : "RAID",
         "groups" : [ "Enclosure" ],
         "nogroup" : True
     },
     "PhysicalDisk" : {
-        "pattern" : "^Disk.*",
-        "firmware_pattern" : "^Disk.*",
+        "pattern" : "^Disk[.][^V]",
+        "firmware_pattern" : "^Disk[.][^V]",
         "registry" : "RAID",
         "groups" : [ "PhysicalDisk" ],
         "nogroup" : True
     },
     "VirtualDisk" : {
-        "pattern" : "Disk\.Virtual\..*",
+        "pattern" : "^Disk[.]V",
         "registry" : "RAID",
         "groups" : [ "VirtualDisk" ],
         "nogroup" : True
@@ -1710,11 +1713,12 @@ class iDRACConfig(iBaseConfigApi):
         else:
             super().__init__(entity)
         self._job_mgr = entity.job_mgr
-        self.config = ConfigFactory.get_config(entity.config_dir, iDRACConfigCompSpec)
         self.entity.configCompSpec = iDRACConfigCompSpec
         self.liason_share = None
-        self._config_entries = ConfigEntries(iDRACConfigKeyFields)
         self._raid_tree = None
+        self.config = ConfigFactory.get_config(entity.config_dir, iDRACConfigCompSpec)
+        self.UseNewStyle = False
+        self._initialize()
 
     def set_liason_share(self, myshare):
         if not isinstance(myshare, FileOnShare):
@@ -1727,54 +1731,98 @@ class iDRACConfig(iBaseConfigApi):
         self.liason_share = myshare
         return True
 
+    def _initialize(self):
+        if self.UseNewStyle:
+            self._sysconfig  = None
+            fcspec = os.path.join(self.entity.config_dir, 'iDRAC.comp_spec')
+            self.xmlp = XMLParser(fcspec)
+            self._load_scp()
+        else:
+            self._config_entries = ConfigEntries(iDRACConfigKeyFields)
+
+    def apply_changes(self, reboot=False):
+        return self._commit_scp(reboot)
+
     # Enabling APIs
     def _commit_scp(self, record, reboot=False):
-        if not self.liason_share:
-            return { 'Status' : 'Failed',
+        filename = None
+        msg = { 'Status' : 'Failed',
+                'Message' : 'Unable to load configuration' }
+        tempshare = None
+        if self.UseNewStyle:
+            content = XMLFormatter().format_type(self._sysconfig)._get_str()
+        else:
+            content = self.config.format_scp(record)
+        if Simulator.is_simulating():
+            filename = Simulator.record_config(self.entity.ipaddr,content,'scp.xml')
+            msg = { 'Status' : 'Success',
+                    'Message' : 'Saved successfully' }
+        else:
+            if not self.liason_share:
+                return { 'Status' : 'Failed',
                      'Message' : 'Configuration Liason Share not registered.' }
 
-        tempshare = self.liason_share.mkstemp(prefix='scp', suffix='.xml')
+            tempshare = self.liason_share.mkstemp(prefix='scp', suffix='.xml')
+            filename = tempshare.local_full_path
 
-        with open(tempshare.local_full_path, "w") as f:
-            f.write(self.config.format_scp(record))
-        msg = self.scp_import(tempshare, reboot=reboot)
-        if msg['Status'] == 'Success':
-            self._config_entries.process(tempshare.local_full_path, True)
-        tempshare.dispose()
+            with open(filename, "w") as f:
+                f.write(content)
+            msg = self.scp_import(tempshare, reboot=reboot)
+
+        if self.UseNewStyle:
+            if msg['Status'] == 'Success':
+                self._sysconfig.commit()
+            else:
+                self._sysconfig.reject()
+        else:
+            if msg['Status'] == 'Success':
+                self._config_entries.process(filename, True)
+
+        if tempshare:
+            tempshare.dispose()
+
         return msg
 
     def _load_scp(self):
-        if self._config_entries.loaded:
-            return { 'Status' : 'Success' }
-        if not self.liason_share:
-            return { 'Status' : 'Failed',
-                     'Message' : 'Configuration Liason Share not registered.' }
+        if self.UseNewStyle:
+            if self._sysconfig:
+                return { 'Status' : 'Success' }
+        else:
+            if self._config_entries.loaded:
+                return { 'Status' : 'Success' }
 
-        tempshare = self.liason_share.mkstemp(prefix='scp', suffix='.xml')
-        msg = self.scp_export(tempshare)
-        logger.debug(PrettyPrint.prettify_json(msg))
+        filename = None
+        msg = { 'Status' : 'Failed',
+                'Message' : 'Unable to load configuration' }
+        tempshare = None
+        if Simulator.is_simulating():
+            filename = Simulator.simulate_config(self.entity.ipaddr)
+            msg = { 'Status' : 'Success',
+                    'Message' : 'Loaded successfully' }
+        else:
+            if not self.liason_share:
+                return { 'Status' : 'Failed',
+                         'Message' : 'Configuration Liason Share not registered.' }
+
+            tempshare = self.liason_share.mkstemp(prefix='scp', suffix='.xml')
+            filename = tempshare.local_full_path
+
+            msg = self.scp_export(tempshare)
+            logger.debug(PrettyPrint.prettify_json(msg))
+
         if msg['Status'] == 'Success':
-            self._config_entries.process(tempshare.local_full_path, False)
-        tempshare.dispose()
+            if self.UseNewStyle:
+                self._sysconfig = self.xmlp.parse_scp(filename)
+                self._sysconfig.commit()
+            else:
+                self._config_entries.process(filename, False)
+        return { 'Status' : 'Success' }
+
+        if tempshare:
+            tempshare.dispose()
+
         return msg
 
-    def _configure_field_using_scp(self, component, fmap, reboot_needed = False):
-        config = self.config
-        lc_config = { component : fmap }
-        rjson = self._commit_scp(lc_config, reboot_needed)
-        return rjson
-
-    def _modify_field_using_scp(self, component, modify_map, reboot_needed = False):
-        fmap = {}
-        if not isinstance(modify_map, list):
-            modify_map = [ modify_map ]
-        for (fname, new_value, current) in modify_map:
-            new_value = TypeHelper.resolve(new_value)
-            if new_value and new_value != TypeHelper.resolve(current):
-                fmap[ fname ] = new_value
-        if len(fmap) <= 0:
-            return { 'Status' : 'Success', 'Message' : 'No changes required!' }
-        return self._configure_field_using_scp(component, fmap, reboot_needed)
 
     def _comp_to_fqdd(self, fqdd_list, comp, default=None):
         retVal = []
@@ -1822,38 +1870,6 @@ class iDRACConfig(iBaseConfigApi):
                     retVal[i] = []
                 retVal[i].append(i)
         return retVal
-
-    def _find_empty_slot(self, component, field):
-        self._load_scp()
-        msg = self._config_entries.check_and_get_empty_slot(component, field)
-        if msg['Status'] != 'Success':
-            return (-1, None, msg)
-        return (msg['retval'], str(msg['retval']), msg)
-
-    def _find_existing_slot(self, component, field):
-        self._load_scp()
-        msg = self._config_entries.find_existing(component, field)
-        if msg['Status'] != 'Success':
-            return (-1, None, msg)
-        return (msg['retval']['_slot'], msg['retval'], msg)
-
-    def _get_scp_component(self, comp):
-        self._load_scp()
-        return self._config_entries.get_component(comp)
-
-    def _get_scp_comp_field(self, comp, field):
-        self._load_scp()
-        return self._config_entries.get_comp_field(comp, field)
-
-    def _get_scp_comp_field_as_array(self, comp, group, fields):
-        self._load_scp()
-        array = []
-        if not isinstance(fields, list):
-            fields = [fields]
-        for i in fields:
-            entry = self._get_scp_comp_field(comp, group + i)
-            if entry: array.append(entry)
-        return array
 
     @property
     def LCReady(self):
@@ -1912,22 +1928,6 @@ class iDRACConfig(iBaseConfigApi):
         return self.entity._change_bios_password(target="BIOS.Setup.1-1", 
                  passtype=passtype, old_password=old_password, new_password=new_password)
 
-    @property
-    def BootMode(self):
-        bmode = self._get_scp_comp_field('BIOS.Setup.1-1','BootMode')
-        if bmode and bmode.lower() == 'bios':
-            return BootModeEnum.Bios
-        elif bmode and bmode.lower() == 'uefi':
-            return BootModeEnum.Uefi
-        else:
-            return BootModeEnum.Unknown
-
-    def change_boot_mode(self, mode):
-        return self._modify_field_using_scp(
-                    component = "BIOS.Setup.1-1",
-                    modify_map = (self.config.arspec.BIOS.BootMode, mode, self.BootMode),
-                    reboot_needed = True)
-
     # Power Management and Reboot
     def change_power(self, penum):
         return self.entity._change_power_state(state = penum)
@@ -1938,12 +1938,6 @@ class iDRACConfig(iBaseConfigApi):
     # Reset to Factory Defaults
     def reset_to_factory(self, preserve_config = ResetToFactoryPreserveEnum.ResetExceptNICAndUsers, force=ResetForceEnum.Graceful):
         return self.entity._reset_to_factory(preserve = preserve_config, force=force)
-
-    def bios_reset_to_defaults(self):
-        return self._configure_field_using_scp(
-                    component = "LifecycleController.Embedded.1",
-                    fmap = { self.config.arspec.iDRAC.BIOSRTDRequested_LCAttributes : 'True'},
-                    reboot_needed = True)
 
     # Reset iDRAC
     def reset_idrac(self, force=ResetForceEnum.Graceful):
@@ -1957,7 +1951,338 @@ class iDRACConfig(iBaseConfigApi):
         return self.entity._renitiate_dhs()
     # End Auto Discovery APIs
 
+
+    @property
+    def NBootMode(self):
+        return self._sysconfig.BIOS.BootMode
+
+    def Nchange_boot_mode(self, mode):
+        self._sysconfig.BIOS.BootMode = mode
+        return self.apply_changes(reboot = True)
+
+    def Nbios_reset_to_defaults(self):
+        self._sysconfig.LifecycleController.LCAttributes.BIOSRTDRequested_LCAttributes = BIOSRTDRequested_LCAttributes.T_True
+        return self.apply_changes(reboot = True)
+
     # Configure APIs
+    @property
+    def NCSIOR(self):
+        return self._sysconfig.LifecycleController.LCAttributes.CollectSystemInventoryOnRestart_LCAttributes
+
+
+    def Nenable_csior(self):
+        self.CSIOR.set_value(CollectSystemInventoryOnRestart_LCAttributesTypes.Enabled)
+        return self.apply_changes(reboot = True)
+
+    def Ndisable_csior(self):
+        self.CSIOR.set_value(CollectSystemInventoryOnRestart_LCAttributesTypes.Disabled)
+        return self.apply_changes(reboot = True)
+
+    @property
+    def NLocation(self):
+        return self._sysconfig.System.ServerTopology
+
+    def Nconfigure_location(self, loc_datacenter = None, loc_room=None, loc_aisle=None, loc_rack=None, loc_rack_slot =None, loc_chassis=None):
+        self._sysconfig.System.ServerTopology.DataCenterName_ServerTopology = loc_datacenter
+        self._sysconfig.System.ServerTopology.RoomName_ServerTopology = loc_room
+        self._sysconfig.System.ServerTopology.AisleName_ServerTopology = loc_aisle
+        self._sysconfig.System.ServerTopology.RackName_ServerTopology = loc_rack
+        self._sysconfig.System.ServerTopology.RackSlot_ServerTopology = loc_rack_slot
+        return self.apply_changes()
+
+    def Nconfigure_idrac_dnsname(self, dnsname):
+        self._sysconfig.iDRAC.NIC.DNSRacName_NIC = dnsname
+        return self.apply_changes()
+
+    def Nconfigure_idrac_ipv4(self, enable_ipv4=True, dhcp_enabled=True):
+        m = { True : 'Enabled', False : 'Disabled' }
+        self._sysconfig.iDRAC.IPv4.Enable_IPv4 = m[enable_ipv4]
+        self._sysconfig.iDRAC.IPv4.DHCPEnable_IPv4 = m[dhcp_enabled]
+        return self.apply_changes()
+
+#    def Nconfigure_tls(self, tls_protocol = TLSOptions.TLS_1_0_and_Higher, ssl_bits = None):
+#        self._sysconfig.iDRAC.WebServer.TLSProtocol_WebServer = tls_protocol
+#        self._sysconfig.iDRAC.WebServer.SSLEncryptionBitLength_WebServer = ssl_bits
+#        return self.apply_changes()
+
+    def Nconfigure_idrac_ipv4static(self, ipv4_address, ipv4_netmask, ipv4_gateway, dnsarray=None, dnsFromDHCP=False):
+        m = { True : 'Enabled', False : 'Disabled' }
+        if dnsarray is None: dnsarray = []
+        dnsarray.extend(['', ''])
+        self._sysconfig.iDRAC.IPv4Static.Address_IPv4Static = ipv4_address
+        self._sysconfig.iDRAC.IPv4Static.Netmask_IPv4Static = ipv4_netmask
+        self._sysconfig.iDRAC.IPv4Static.Gateway_IPv4Static = ipv4_gateway
+        self._sysconfig.iDRAC.IPv4Static.DNS1_IPv4Static = dnsarray[0]
+        self._sysconfig.iDRAC.IPv4Static.DNS2_IPv4Static = dnsarray[1]
+        self._sysconfig.iDRAC.IPv4Static.DNSFromDHCP_IPv4Static = m[dnsFromDHCP]
+        return self.apply_changes()
+
+    def Nconfigure_idrac_ipv4dns(self, dnsarray, dnsFromDHCP=False):
+        m = { True : 'Enabled', False : 'Disabled' }
+        if dnsarray is None: dnsarray = []
+        dnsarray.extend(['', ''])
+        self._sysconfig.iDRAC.IPv4Static.DNS1_IPv4Static = dnsarray[0]
+        self._sysconfig.iDRAC.IPv4Static.DNS2_IPv4Static = dnsarray[1]
+        self._sysconfig.iDRAC.IPv4Static.DNSFromDHCP_IPv4Static = m[dnsFromDHCP]
+        return self.apply_changes()
+
+    def Nconfigure_idrac_ipv6static(self, ipv6_address, ipv6_prefixlen = 64, ipv6_gateway="::", dnsarray=None, dnsFromDHCP=False):
+        m = { True : 'Enabled', False : 'Disabled' }
+        if dnsarray is None: dnsarray = []
+        dnsarray.extend(['', ''])
+        self._sysconfig.iDRAC.IPv6Static.Address1_IPv6Static = ipv6_address
+        self._sysconfig.iDRAC.IPv6Static.PrefixLength_IPv6Static = ipv6_prefixlen
+        self._sysconfig.iDRAC.IPv6Static.Gateway_IPv6Static = ipv6_gateway
+        self._sysconfig.iDRAC.IPv6Static.DNS1_IPv6Static = dnsarray[0]
+        self._sysconfig.iDRAC.IPv6Static.DNS2_IPv6Static = dnsarray[1]
+        self._sysconfig.iDRAC.IPv6Static.DNSFromDHCP6_IPv6Static = m[dnsFromDHCP]
+        return self.apply_changes()
+
+    def Nconfigure_idrac_ipv6dns(self, dnsarray, dnsFromDHCP=False):
+        m = { True : 'Enabled', False : 'Disabled' }
+        self._sysconfig.iDRAC.IPv6Static.DNS1_IPv6Static = dnsarray[0]
+        self._sysconfig.iDRAC.IPv6Static.DNS2_IPv6Static = dnsarray[1]
+        self._sysconfig.iDRAC.IPv6Static.DNSFromDHCP6_IPv6Static = m[dnsFromDHCP]
+        return self.apply_changes()
+
+    def Nconfigure_idrac_nic(self, idrac_nic = 'Dedicated', failover=None, auto_negotiate=False, idrac_nic_speed = 1000, auto_dedicated_nic = False):
+        m = { True: 'Enabled', False : 'Disabled' }
+        if idrac_nic == 'Dedicated':
+            failover = None
+            auto_dedicated_nic = False
+        if idrac_nic == failover:
+            return { 'Status' : 'Failed', 'Message' : 'Dedicated and Failover NIC should be different' }
+        self._sysconfig.iDRAC.NIC.Selection_NIC = idrac_nic
+        self._sysconfig.iDRAC.NIC.Failover_NIC = str(failover)
+        self._sysconfig.iDRAC.NIC.Autoneg_NIC = auto_negotiate
+        self._sysconfig.iDRAC.NIC.Speed_NIC = idrac_nic_speed
+#       self._sysconfig.iDRAC.AutoDedicatedNIC_NIC = m[auto_dedicated_nic],
+        return self.apply_changes()
+
+    #############################################
+    ##  SNMP Trap Destinations
+    #############################################
+    @property
+    def NSNMPTrapDestination(self):
+        return self._sysconfig.iDRAC.SNMPAlert
+
+    def Nget_trap_destination(self, trap_dest_host):
+        return self._sysconfig.iDRAC.SNMPAlert.find_first(Destination_SNMPAlert = trap_dest_host)
+
+    def Nadd_trap_destination(self, trap_dest_host, username = None):
+        self._sysconfig.iDRAC.SNMPAlert.new(Destination_SNMPAlert =trap_dest_host, SNMPv3Username_SNMPAlert =username)
+        return self.apply_changes(reboot = False)
+
+    def Nremove_trap_destination(self, trap_dest_host):
+        self._sysconfig.iDRAC.SNMPAlert.remove(Destination_SNMPAlert =trap_dest_host)
+        return self.apply_changes(reboot = False)
+
+    def Ndisable_trap_destination(self, trap_dest_host):
+        entry = self._sysconfig.iDRAC.SNMPAlert.find(trap_dest_host)
+        if entry: entry.State_SNMPAlert = StateTypes_SNMPAlert.Disabled
+        return self.apply_changes(reboot = False)
+
+    def Nenable_trap_destination(self, trap_dest_host):
+        entry = self._sysconfig.iDRAC.SNMPAlert.find(trap_dest_host)
+        if entry: entry.State_SNMPAlert = StateTypes_SNMPAlert.Enabled
+        return self.apply_changes(reboot = False)
+
+    @property
+    def NSNMPConfiguration(self):
+        return self._sysconfig.iDRAC.SNMP
+
+    @property
+    def NSyslogServers(self):
+        return self._sysconfig.iDRAC.SysLog.Servers.get_value()
+
+    @property
+    def NSyslogConfig(self):
+        return self._sysconfig.iDRAC.SysLog
+
+    def Nenable_syslog(self):
+        if len(self.SyslogServers) > 0:
+            self._sysconfig.iDRAC.SysLog.PowerLogEnable_SysLog = PowerLogEnable_SysLogTypes.Enabled
+            self._sysconfig.iDRAC.SysLog.SysLogEnable_SysLog = SysLogEnable_SysLogTypes.Enabled
+        return self.apply_changes(reboot = False)
+
+    def Ndisable_syslog(self):
+        if len(self.SyslogServers) > 0:
+            self._sysconfig.iDRAC.SysLog.PowerLogEnable_SysLog = PowerLogEnable_SysLogTypes.Disabled
+            self._sysconfig.iDRAC.SysLog.SysLogEnable_SysLog = SysLogEnable_SysLogTypes.Disabled
+        return self.apply_changes(reboot = False)
+
+    @property
+    def NTimeZone(self):
+        return self._sysconfig.iDRAC.Time.TimeZone_Time
+
+    @property
+    def NTime(self):
+        return self._sysconfig.iDRAC.Time
+
+    @property
+    def NNTPServers(self):
+        return self._sysconfig.iDRAC.NTPConfigGroup.NTPServers.get_value()
+
+    @property
+    def NNTPEnabled(self):
+        return self._sysconfig.iDRAC.NTPConfigGroup.NTPEnable_NTPConfigGroup
+
+    @property
+    def NNTPMaxDist(self):
+        return self._sysconfig.iDRAC.NTPConfigGroup.NTPMaxDist_NTPConfigGroup
+
+    def Nenable_ntp(self):
+        if len(NTPServers) > 0:
+            self._sysconfig.iDRAC.SysLog.NTPEnable_NTPConfigGroup = NTPEnable_NTPConfigGroupTypes.Enabled
+        return self.apply_changes(reboot = False)
+
+    def Ndisable_ntp(self):
+        self._sysconfig.iDRAC.SysLog.NTPEnable_NTPConfigGroup = NTPEnable_NTPConfigGroupTypes.Disabled
+        return self.apply_changes(reboot = False)
+
+    #############################################
+    ##  Email Alerts
+    #############################################
+    @property
+    def RegisteredEmailAlert(self):
+        return self._sysconfig.iDRAC.EmailAlert
+
+    def get_email_alert(self, email_id):
+        return self._sysconfig.iDRAC.EmailAlert.find(Address_EmailAlert = email_id)
+
+    def add_email_alert(self, email_id, custom_msg = ""):
+        self._sysconfig.iDRAC.EmailAlert.new(Address_EmailAlert = email_id, CustomMsg_EmailAlert = custom_msg)
+        return self.apply_changes(reboot = False)
+
+    def remove_email_alert(self, email_id):
+        self._sysconfig.iDRAC.EmailAlert.remove(Address_EmailAlert = email_id)
+        return self.apply_changes(reboot = False)
+
+    def disable_email_alert(self, email_id):
+        entry = self._sysconfig.iDRAC.EmailAlert.find(Address_EmailAlert = email_id)
+        if entry: entry.State_EmailAlert = StateTypes_EmailAlert.Disabled
+        return self.apply_changes(reboot = False)
+
+    def enable_email_alert(self, email_id):
+        entry = self._sysconfig.iDRAC.EmailAlert.find(Address_EmailAlert = email_id)
+        if entry: entry.State_EmailAlert = StateTypes_EmailAlert.Enabled
+        return self.apply_changes(reboot = False)
+
+    def change_email_alert(self, email_id, custom_msg):
+        entry = self._sysconfig.iDRAC.EmailAlert.find(Address_EmailAlert = email_id)
+        if entry: entry.CustomMsg_EmailAlert = custom_msg
+        return self.apply_changes(reboot = False)
+
+    #############################################
+    ##  End Email Alerts
+    #############################################
+
+
+    @property
+    def NiDRAC_NIC(self):
+        return self._sysconfig.iDRAC.NIC
+
+    @property
+    def NiDRAC_IPv4Static(self):
+        return self._sysconfig.iDRAC.IPv4Static
+
+    @property
+    def NiDRAC_IPv6Static(self):
+        return self._sysconfig.iDRAC.IPv4Static
+
+    @property
+    def NTLSProtocol(self):
+        return self._sysconfig.iDRAC.WebServer.TLSProtocol_WebServer
+
+    @property
+    def NSSLEncryptionBits(self):
+        return self._sysconfig.iDRAC.WebServer.SSLEncryptionBitLength_WebServer
+
+
+    # TODO: Delete
+    def _configure_field_using_scp(self, component, fmap, reboot_needed = False):
+        config = self.config
+        lc_config = { component : fmap }
+        rjson = self._commit_scp(lc_config, reboot_needed)
+        return rjson
+
+    # TODO: Delete
+    def _modify_field_using_scp(self, component, modify_map, reboot_needed = False):
+        fmap = {}
+        if not isinstance(modify_map, list):
+            modify_map = [ modify_map ]
+        for (fname, new_value, current) in modify_map:
+            new_value = TypeHelper.resolve(new_value)
+            if new_value and new_value != TypeHelper.resolve(current):
+                fmap[ fname ] = new_value
+        if len(fmap) <= 0:
+            return { 'Status' : 'Success', 'Message' : 'No changes required!' }
+        return self._configure_field_using_scp(component, fmap, reboot_needed)
+
+    # TODO: Delete
+    def _find_empty_slot(self, component, field):
+        self._load_scp()
+        msg = self._config_entries.check_and_get_empty_slot(component, field)
+        if msg['Status'] != 'Success':
+            return (-1, None, msg)
+        return (msg['retval'], str(msg['retval']), msg)
+
+    # TODO: Delete
+    def _find_existing_slot(self, component, field):
+        self._load_scp()
+        msg = self._config_entries.find_existing(component, field)
+        if msg['Status'] != 'Success':
+            return (-1, None, msg)
+        return (msg['retval']['_slot'], msg['retval'], msg)
+
+    # TODO: Delete
+    def _get_scp_component(self, comp):
+        self._load_scp()
+        return self._config_entries.get_component(comp)
+
+    # TODO: Delete
+    def _get_scp_comp_field(self, comp, field):
+        self._load_scp()
+        return self._config_entries.get_comp_field(comp, field)
+
+    # TODO: Delete
+    def _get_scp_comp_field_as_array(self, comp, group, fields):
+        self._load_scp()
+        array = []
+        if not isinstance(fields, list):
+            fields = [fields]
+        for i in fields:
+            entry = self._get_scp_comp_field(comp, group + i)
+            if entry: array.append(entry)
+        return array
+
+    # TODO: Delete
+    @property
+    def BootMode(self):
+        bmode = self._get_scp_comp_field('BIOS.Setup.1-1','BootMode')
+        if bmode and bmode.lower() == 'bios':
+            return BootModeEnum.Bios
+        elif bmode and bmode.lower() == 'uefi':
+            return BootModeEnum.Uefi
+        else:
+            return BootModeEnum.Unknown
+
+    # TODO: Delete
+    def change_boot_mode(self, mode):
+        return self._modify_field_using_scp(
+                    component = "BIOS.Setup.1-1",
+                    modify_map = (self.config.arspec.BIOS.BootMode, mode, self.BootMode),
+                    reboot_needed = True)
+
+    # TODO: Delete
+    def bios_reset_to_defaults(self):
+        return self._configure_field_using_scp(
+                    component = "LifecycleController.Embedded.1",
+                    fmap = { self.config.arspec.iDRAC.BIOSRTDRequested_LCAttributes : 'True'},
+                    reboot_needed = True)
+
+    # Configure APIs
+    # TODO: Delete
     @property
     def CSIOR(self):
         csior = self._get_scp_comp_field("LifecycleController.Embedded.1",
@@ -1965,18 +2290,21 @@ class iDRACConfig(iBaseConfigApi):
         return TypeHelper.convert_to_enum(csior, ConfigStateEnum,
                     ConfigStateEnum.Unknown)
 
+    # TODO: Delete
     def enable_csior(self):
         csior_fname = self.config.arspec.iDRAC.CollectSystemInventoryOnRestart_LCAttributes
         return self._modify_field_using_scp(
                     component = "LifecycleController.Embedded.1",
                     modify_map = (csior_fname, 'Enabled', self.CSIOR))
 
+    # TODO: Delete
     def disable_csior(self):
         csior_fname = self.config.arspec.iDRAC.CollectSystemInventoryOnRestart_LCAttributes
         return self._modify_field_using_scp(
                     component = "LifecycleController.Embedded.1",
                     modify_map = (csior_fname, 'Disabled', self.CSIOR))
 
+    # TODO: Delete
     @property
     def Location(self):
         return {
@@ -1988,6 +2316,7 @@ class iDRACConfig(iBaseConfigApi):
             'ChassisName': self._get_scp_comp_field('System.Embedded.1', 'ServerTopology.1#ChassisName')
         }
 
+    # TODO: Delete
     def configure_location(self, loc_datacenter = None, loc_room=None, loc_aisle=None, loc_rack=None, loc_rack_slot =None, loc_chassis=None):
         loc = self.Location
         if not loc_datacenter:  loc_datacenter = loc['DataCenter']
@@ -2007,11 +2336,13 @@ class iDRACConfig(iBaseConfigApi):
                 (self.config.arspec.iDRAC.ChassisName_ServerTopology, loc_chassis, loc['ChassisName']),
             ])
 
+    # TODO: Delete
     def configure_idrac_dnsname(self, dnsname):
         return self._configure_field_using_scp(
                     component = "iDRAC.Embedded.1",
                     fmap = { self.config.arspec.iDRAC.DNSRacName_NIC : dnsname })
 
+    # TODO: Delete
     def configure_idrac_ipv4(self, enable_ipv4=True, dhcp_enabled=True):
         m = { True : 'Enabled', False : 'Disabled' }
         return self._configure_field_using_scp(
@@ -2021,22 +2352,26 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.DHCPEnable_IPv4 : m[dhcp_enabled],
             })
 
+    # TODO: Delete
     @property
     def TLSProtocol(self):
         tls = self._get_scp_comp_field('iDRAC.Embedded.1', 'WebServer.1#TLSProtocol')
         return TypeHelper.convert_to_enum(tls, TLSOptions)
 
+    # TODO: Delete
     @property
     def SSLEncryptionBits(self):
         ssl = self._get_scp_comp_field('iDRAC.Embedded.1', 'WebServer.1#SSLEncryptionBitLength')
         return TypeHelper.convert_to_enum(ssl, SSLBits)
 
+    # TODO: Delete
     def configure_tls(self, tls_protocol = TLSOptions.TLS_1_1, ssl_bits = None):
         return self._modify_field_using_scp(component = "iDRAC.Embedded.1", 
             modify_map = [
                 (self.config.arspec.iDRAC.TLSProtocol_WebServer, tls_protocol, self.TLSProtocol),
                 (self.config.arspec.iDRAC.SSLEncryptionBitLength_WebServer, ssl_bits, self.SSLEncryptionBits) ])
 
+    # TODO: Delete
     def _clean_dnsarray(self, dnsarray, defdns):
         if not dnsarray:
             dnsarray = [defdns, defdns]
@@ -2048,6 +2383,7 @@ class iDRACConfig(iBaseConfigApi):
             dnsarray[2:] = []
         return dnsarray
 
+    # TODO: Delete
     def configure_idrac_ipv4static(self, ipv4_address, ipv4_netmask, ipv4_gateway, dnsarray=None, dnsFromDHCP=False):
         fieldmap = { True : 'Enabled', False : 'Disabled' }
         dnsarray = self._clean_dnsarray(dnsarray, "0.0.0.0")
@@ -2062,6 +2398,7 @@ class iDRACConfig(iBaseConfigApi):
                         self.config.arspec.iDRAC.DNSFromDHCP_IPv4Static : fieldmap[dnsFromDHCP],
                     })
 
+    # TODO: Delete
     def configure_idrac_ipv4dns(self, dnsarray, dnsFromDHCP=False):
         fieldmap = { True : 'Enabled', False : 'Disabled' }
         dnsarray = self._clean_dnsarray(dnsarray, "0.0.0.0")
@@ -2073,6 +2410,7 @@ class iDRACConfig(iBaseConfigApi):
                         self.config.arspec.iDRAC.DNSFromDHCP_IPv4Static : fieldmap[dnsFromDHCP],
                     })
 
+    # TODO: Delete
     def configure_idrac_ipv6static(self, ipv6_address, ipv6_prefixlen = 64, ipv6_gateway="::", dnsarray=None, dnsFromDHCP=False):
         fieldmap = { True : 'Enabled', False : 'Disabled' }
         dnsarray = self._clean_dnsarray(dnsarray, "::")
@@ -2087,6 +2425,7 @@ class iDRACConfig(iBaseConfigApi):
                         self.config.arspec.iDRAC.DNSFromDHCP6_IPv6Static : fieldmap[dnsFromDHCP],
                     })
 
+    # TODO: Delete
     def configure_idrac_ipv6dns(self, dnsarray, dnsFromDHCP=False):
         fieldmap = { True : 'Enabled', False : 'Disabled' }
         dnsarray = self._clean_dnsarray(dnsarray, "::")
@@ -2098,6 +2437,7 @@ class iDRACConfig(iBaseConfigApi):
                         self.config.arspec.iDRAC.DNSFromDHCP6_IPv6Static : fieldmap[dnsFromDHCP],
                     })
 
+    # TODO: Delete
     # idrac_nic = 'Dedicated', LOM1, LOM2, LOM3, LOM4
     # failover = None, LOM1, LOM2, LOM3, LOM4, All LOMs
     def configure_idrac_nic(self, idrac_nic = 'Dedicated', failover=None, auto_negotiate=False, idrac_nic_speed = 1000, auto_dedicated_nic = False):
@@ -2118,6 +2458,7 @@ class iDRACConfig(iBaseConfigApi):
 #              self.config.arspec.iDRAC.AutoDedicatedNIC_NIC : m[auto_dedicated_nic],
             })
 
+    # TODO: Delete
     def disable_idracnic_vlan(self):
         return self._configure_field_using_scp(
             component = "iDRAC.Embedded.1",
@@ -2125,6 +2466,7 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.VLanEnable_NIC : 'Disabled',
             })
 
+    # TODO: Delete
     def enable_idracnic_vlan(self, vlan_id = 1, vlan_priority = 0):
         return self._configure_field_using_scp(
             component = "iDRAC.Embedded.1",
@@ -2138,14 +2480,17 @@ class iDRACConfig(iBaseConfigApi):
     #############################################
     ##  SNMP Trap Destinations
     #############################################
+    # TODO: Delete
     @property
     def SNMPTrapDestination(self):
         return self._get_scp_component('SNMPAlert')
 
+    # TODO: Delete
     def get_trap_destination(self, trap_dest_host):
         (uid, retobj, msg) = self._find_existing_slot('SNMPAlert', trap_dest_host)
         return retobj
 
+    # TODO: Delete
     def add_trap_destination(self, trap_dest_host, username = None):
         (uid, retobj, msg) = self._find_empty_slot('SNMPAlert', trap_dest_host)
         if retobj is None: return msg
@@ -2158,6 +2503,7 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.State_SNMPAlert : (uid, 'Enabled'),
                 self.config.arspec.iDRAC.SNMPv3Username_SNMPAlert : (uid, username),
             })
+    # TODO: Delete
     def remove_trap_destination(self, trap_dest_host):
         (uid, retobj, msg) = self._find_existing_slot('SNMPAlert', trap_dest_host)
         if retobj is None: return msg
@@ -2169,6 +2515,7 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.State_SNMPAlert : (uid, 'Disabled'),
                 self.config.arspec.iDRAC.SNMPv3Username_SNMPAlert : (uid, ''),
             })
+    # TODO: Delete
     def disable_trap_destination(self, trap_dest_host):
         (uid, retobj, msg) = self._find_existing_slot('SNMPAlert', trap_dest_host)
         if retobj is None: return msg
@@ -2177,6 +2524,7 @@ class iDRACConfig(iBaseConfigApi):
             component = "iDRAC.Embedded.1",
             fmap= { self.config.arspec.iDRAC.State_SNMPAlert:(uid, 'Disabled')})
 
+    # TODO: Delete
     def enable_trap_destination(self, trap_dest_host):
         (uid, retobj, msg) = self._find_existing_slot('SNMPAlert', trap_dest_host)
         if retobj is None: return msg
@@ -2189,6 +2537,7 @@ class iDRACConfig(iBaseConfigApi):
     ##  End SNMP Trap Destinations
     #############################################
 
+    # TODO: Delete
     @property
     def SNMPConfiguration(self):
         return {
@@ -2200,6 +2549,7 @@ class iDRACConfig(iBaseConfigApi):
             'SNMPVersions'   : self._get_scp_comp_field('iDRAC.Embedded.1', 'SNMP.1#SNMPProtocol')
         }
 
+    # TODO: Delete
     def enable_snmp(self, community, snmp_port = None, trap_port = None, trap_format = None, protocols = None):
         snmpcfg = self.SNMPConfiguration
         if not snmp_port: snmp_port = snmpcfg['SNMPPort']
@@ -2221,17 +2571,20 @@ class iDRACConfig(iBaseConfigApi):
                         (self.config.arspec.iDRAC.DiscoveryPort_SNMP, str(snmp_port), snmpcfg['SNMPPort']),
                         (self.config.arspec.iDRAC.AlertPort_SNMP, str(trap_port), snmpcfg['SNMPTrapPort'])])
 
+    # TODO: Delete
     def disable_snmp(self):
         snmpcfg = self.SNMPConfig
         return self._modify_field_using_scp(
                     component = "iDRAC.Embedded.1",
                     modify_map = (self.config.arspec.iDRAC.AgentEnable_SNMP, 'Disabled', snmpcfg['SNMPEnabled']))
 
+    # TODO: Delete
     @property
     def SyslogServers(self):
         return self._get_scp_comp_field_as_array('iDRAC.Embedded.1',
                   'SysLog.1#', ['Server1', 'Server2', 'Server3'])
 
+    # TODO: Delete
     @property
     def SyslogConfig(self):
         return {
@@ -2242,6 +2595,7 @@ class iDRACConfig(iBaseConfigApi):
             'PowerLogInterval' : self._get_scp_comp_field('iDRAC.Embedded.1', 'SysLog.1#PowerLogInterval')
         }
 
+    # TODO: Delete
     def enable_syslog(self, syslog_port = 514, powerlog_interval = 0, server1="", server2="", server3=""):
         syslog = self.SyslogConfig
         powerlog_enable = 'Enabled'
@@ -2260,6 +2614,7 @@ class iDRACConfig(iBaseConfigApi):
                         (self.config.arspec.iDRAC.PowerLogEnable_SysLog, powerlog_enable, syslog['PowerLogEnable']),
                         (self.config.arspec.iDRAC.PowerLogInterval_SysLog, powerlog_interval, syslog['PowerLogInterval'])])
 
+    # TODO: Delete
     def disable_syslog(self):
         syslog = self.SyslogConfig
         return self._modify_field_using_scp(
@@ -2268,15 +2623,18 @@ class iDRACConfig(iBaseConfigApi):
                 (self.config.arspec.iDRAC.SysLogEnable_SysLog, 'Disabled', syslog['SyslogEnable']),
                 (self.config.arspec.iDRAC.PowerLogEnable_SysLog, 'Disabled', syslog['PowerLogEnable']) ])
 
+    # TODO: Delete
     @property
     def TimeZone(self):
         return self._get_scp_comp_field('iDRAC.Embedded.1', 'Time.1#TimeZone')
 
+    # TODO: Delete
     @property
     def NTPServers(self):
         return self._get_scp_comp_field_as_array('iDRAC.Embedded.1',
                   'NTPConfigGroup.1#', ['NTP1', 'NTP2', 'NTP3'])
 
+    # TODO: Delete
     @property
     def NTPEnabled(self):
         ntp = self._get_scp_comp_field('iDRAC.Embedded.1', 'NTPConfigGroup.1#NTPEnable')
@@ -2284,12 +2642,14 @@ class iDRACConfig(iBaseConfigApi):
             return True
         return False
 
+    # TODO: Delete
     @property
     def NTPMaxDist(self):
         ntp = self._get_scp_comp_field('iDRAC.Embedded.1', 'NTPConfigGroup.1#NTPMaxDist')
         if ntp: return int(ntp)
         return 0
 
+    # TODO: Delete
     def configure_time_zone(self, tz="CST6CDT", dst_offset = 0, tz_offset = 0):
         return self._modify_field_using_scp(
                     component = "iDRAC.Embedded.1",
@@ -2298,6 +2658,7 @@ class iDRACConfig(iBaseConfigApi):
                         (self.config.arspec.iDRAC.DayLightOffset_Time, 0, 0),
                         (self.config.arspec.iDRAC.TimeZoneOffset_Time, 0, 0) ])
 
+    # TODO: Delete
     def enable_ntp(self, ntp_max_dist = 16, powerlog_interval = 0, server1="", server2="", server3=""):
         ntp_server = self.NTPServers
         ntp_server.extend([' ', ' ', ' '])
@@ -2310,6 +2671,7 @@ class iDRACConfig(iBaseConfigApi):
                         (self.config.arspec.iDRAC.NTP2_NTPConfigGroup, server2, ntp_server[1]),
                         (self.config.arspec.iDRAC.NTP3_NTPConfigGroup, server3, ntp_server[2]) ])
 
+    # TODO: Delete
     def disable_ntp(self):
         syslog = self.SyslogConfig
         return self._modify_field_using_scp(
@@ -2322,10 +2684,12 @@ class iDRACConfig(iBaseConfigApi):
     #############################################
     ##  Email Alerts
     #############################################
+    # TODO: Delete
     @property
     def RegisteredEmailAlert(self):
         return self._get_scp_component('EmailAlerts')
 
+    # TODO: Delete
     def add_email_alert(self, email_id, custom_msg = ""):
         (uid, retobj, msg) = self._find_empty_slot('EmailAlert', email_id)
         if retobj is None: return msg
@@ -2339,6 +2703,7 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.Enable_EmailAlert : (uid, 'Enabled'),
                 self.config.arspec.iDRAC.CustomMsg_EmailAlert : (uid, custom_msg),
             })
+    # TODO: Delete
     def delete_email_alert(self, email_id):
         (uid, retobj, msg) = self._find_existing_slot('EmailAlert', email_id)
         if retobj is None: return msg
@@ -2350,6 +2715,7 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.Enable_EmailAlert : (uid, 'Disabled'),
                 self.config.arspec.iDRAC.CustomMsg_EmailAlert : (uid, ''),
             })
+    # TODO: Delete
     def disable_email_alert(self, email_id):
         (uid, retobj, msg) = self._find_existing_slot('EmailAlert', email_id)
         if retobj is None: return msg
@@ -2359,6 +2725,7 @@ class iDRACConfig(iBaseConfigApi):
             fmap= {
                 self.config.arspec.iDRAC.Enable_EmailAlert : (uid, 'Disabled'),
             })
+    # TODO: Delete
     def enable_email_alert(self, email_id):
         (uid, retobj, msg) = self._find_existing_slot('EmailAlert', email_id)
         if retobj is None: return msg
@@ -2369,6 +2736,7 @@ class iDRACConfig(iBaseConfigApi):
                 self.config.arspec.iDRAC.Enable_EmailAlert : (uid, 'Enabled'),
             })
 
+    # TODO: Delete
     def change_email_alert(self, email_id, custom_msg = ""):
         (uid, retobj, msg) = self._find_existing_slot('EmailAlert', email_id)
         if retobj is None: return msg
@@ -2383,6 +2751,7 @@ class iDRACConfig(iBaseConfigApi):
     ##  End Email Alerts
     #############################################
 
+    # TODO: Delete
     def configure_part_update(self, part_fw_update, part_config_update):
         return self._configure_field_using_scp(
             component = "LifecycleController.Embedded.1",
