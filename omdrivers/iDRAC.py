@@ -482,10 +482,10 @@ iDRACWsManViews_FieldSpec = {
         }
     },
     iDRACCompEnum.PhysicalDisk : {
-        "SizeInBytes" : { 'Rename' : 'Size', 'Type' : 'Bytes' , 'InUnits' : 'B' },
+        "SizeInBytes" : { 'Rename' : 'Size', 'Type' : 'Bytes' , 'InUnits' : 'B', 'Metrics' : 'GB' },
         "UsedSpace" : { 'Type' : 'Bytes' , 'InUnits' : 'B', 'Metrics' : 'GB' },
         "FreeSizeInBytes" : { 'Rename' : 'FreeSize', 'Type' : 'Bytes' , 'InUnits' : 'B', 'Metrics' : 'GB' },
-        "BlockSizeInBytes":  { 'Rename' : 'BlockSize', 'Type' : 'Bytes' , 'InUnits' : 'B', 'Metrics' : 'KB' },
+        "BlockSizeInBytes":  { 'Rename' : 'BlockSize', 'Type' : 'Bytes' , 'InUnits' : 'B', 'Metrics' : 'B' },
         "RemainingRatedWriteEndurance":  {
             'Lookup' : 'True',
             'Values' : {

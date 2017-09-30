@@ -182,7 +182,7 @@ class FieldType(TypeBase):
 
     # Representation APIs
     def __str__(self):
-        return str(self._value) if self._value else None
+        return str(self._value)
 
     # Representation APIs
     def sanitized_value(self):
@@ -244,86 +244,103 @@ class FieldType(TypeBase):
     def __lt__(self, other):
         if self._state is TypeState.UnInitialized:
             return False
-        if self._value is None and other._value is None:
+        if other is None:
             return False
-        if self._value is not None and other._value is None:
-            return False
-        if not (isinstance(other, type(self)) or isinstance(other, self._type)):
-            return TypeError('cannot compare with ' + type(other).__name__)
-        if self._value is None and other._value is not None:
-            return True
+        myvalue = self._value
         if isinstance(other, type(self)):
-            return self._value < other._value
+            othervalue = other._value
         elif isinstance(other, self._type):
-            return self._value < other
-        return False
+            othervalue = other
+        else:
+            raise TypeError('cannot compare with ' + type(other).__name__)
+        if myvalue is None and othervalue is not None:
+            return True
+        if myvalue is None and othervalue is None:
+            return False
+        return myvalue < othervalue
 
     # Compare APIs:
     def __le__(self, other):
         if self._state is TypeState.UnInitialized:
             return False
-        if self._value is None and other._value is None:
+        if self._value is None and other is None:
             return True
-        if self._value is not None and other._value is None:
+        if self._value is not None and other is None:
             return False
-        if not (isinstance(other, type(self)) or isinstance(other, self._type)):
-            return TypeError('cannot compare with ' + type(other).__name__)
-        if self._value is None and other._value is not None:
-            return True
+        myvalue = self._value
         if isinstance(other, type(self)):
-            return self._value <= other._value
+            othervalue = other._value
         elif isinstance(other, self._type):
-            return self._value <= other
-        return False
+            othervalue = other
+        else:
+            raise TypeError('cannot compare with ' + type(other).__name__)
+        if myvalue is not None and othervalue is None:
+            return False
+        if myvalue is None and othervalue is not None:
+            return True
+        return myvalue <= othervalue
 
     # Compare APIs:
     def __gt__(self, other):
         if self._state is TypeState.UnInitialized:
             return False
-        if self._value is None and other._value is None:
+        if self._value is None:
             return False
-        if self._value is not None and other._value is None:
+        if self._value is not None and other is None:
             return True
-        if not (isinstance(other, type(self)) or isinstance(other, self._type)):
-            return TypeError('cannot compare with ' + type(other).__name__)
-        if self._value is None and other._value is not None:
-            return False
+        myvalue = self._value
         if isinstance(other, type(self)):
-            return self._value > other._value
+            othervalue = other._value
         elif isinstance(other, self._type):
-            return self._value > other
-        return False
+            othervalue = other
+        else:
+            raise TypeError('cannot compare with ' + type(other).__name__)
+        if myvalue is not None and othervalue is None:
+            return True
+        return myvalue > othervalue
 
     # Compare APIs:
     def __ge__(self, other):
         if self._state is TypeState.UnInitialized:
             return False
-        if self._value is None and other._value is None:
+        if self._value is None and other is None:
             return True
-        if self._value is not None and other._value is None:
+        if self._value is not None and other is None:
             return True
-        if not (isinstance(other, type(self)) or isinstance(other, self._type)):
-            return TypeError('cannot compare with ' + type(other).__name__)
-        if self._value is None and other._value is not None:
-            return False
+        myvalue = self._value
         if isinstance(other, type(self)):
-            return self._value >= other._value
+            othervalue = other._value
         elif isinstance(other, self._type):
-            return self._value >= other
-        return False
+            othervalue = other
+        else:
+            raise TypeError('cannot compare with ' + type(other).__name__)
+        if myvalue is None and othervalue is None:
+            return True
+        if myvalue is None and othervalue is not None:
+            return False
+        return myvalue >= othervalue
 
     # Don't allow comparision with string ==> becomes too generic
     # Compare APIs:
     def __eq__(self, other):
         if self._state is TypeState.UnInitialized:
             return False
-        if not (isinstance(other, type(self)) or isinstance(other, self._type)):
-            return TypeError('cannot compare with ' + type(other).__name__)
+        if self._value is None and other is None:
+            return True
+        if self._value is not None and other is None:
+            return False
+        myvalue = self._value
         if isinstance(other, type(self)):
-            return self._value == other._value
+            othervalue = other._value
         elif isinstance(other, self._type):
-            return self._value == other
-        return False
+            othervalue = other
+        else:
+            raise TypeError('cannot compare with ' + type(other).__name__)
+        if myvalue is None and othervalue is None:
+            return True
+        if myvalue is None and othervalue is not None:
+            return True
+        return myvalue == othervalue
 
     # Compare APIs:
     def __ne__(self, other):

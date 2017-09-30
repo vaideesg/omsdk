@@ -1,11 +1,14 @@
+import os
+import sys
+sys.path.append(os.getcwd())
 from omdrivers.enums.iDRAC.iDRAC import *
 from omdrivers.types.iDRAC.iDRAC import *
+from omdrivers.types.iDRAC.SystemConfiguration import *
 from omsdk.typemgr.BuiltinTypes import *
 
-FType = False
-CType = False
-AType = False
-Hierarchy = False
+FType = True
+CType = True
+AType = True
 def P(msg, expected, actual):
     p = 'Passed==>'
     if expected != actual: p = 'Failed==>'
@@ -19,20 +22,27 @@ if True:
     idrac_system = SNMP(None, loading_from_scp=True)
     idrac_system.AlertPort_SNMP = 184
     idrac_system.TrapFormat_SNMP = TrapFormat_SNMPTypes.SNMPv1
+    print("===== 2 attributes")
+    print(idrac_system.ModifiedXML)
     idrac_system.commit(True)
+    print("===== nothing")
     print(idrac_system.ModifiedXML)
 
     idrac_system.commit()
+    print("===== nothing")
     print(idrac_system.ModifiedXML)
 
     Users = ArrayType(Users, loading_from_scp=True)
     Users.new(UserName_Users='vaidees')
+    print("===== 1 user name")
+    print(Users.ModifiedXML)
     Users.commit(True)
+    print("===== nothing")
     print(Users.ModifiedXML)
     Users.commit()
+    print("===== nothing")
     print(Users.ModifiedXML)
 
-if FType:
     # Precommit FType
     DVAL = 162
     VAL = 700
@@ -46,53 +56,53 @@ if FType:
     tport.reject()
     print(tport == VAL)
     print(tport.__dict__['_orig_value'] == VAL)
-
-
-
-if False:
-    idrac_system = System()
     idrac_idrac = iDRAC()
-if False:
     # Final Test
     idrac_idrac.SNMP.AlertPort_SNMP = 184
     idrac_idrac.SNMP.TrapFormat_SNMP = TrapFormat_SNMPTypes.SNMPv1
     print("=== System.iDRAC.SNMP.162")
+    print("=====2 attributes")
+    print(idrac_idrac.ModifiedXML)
+    print("=====================================")
+
+    idrac_system = SystemConfiguration(loading_from_scp=False)
+    print("=====nothing")
     print(idrac_system.ModifiedXML)
-    print(idrac_idrac.ModifiedXML)
-
-    print(idrac_system.iDRAC.SNMP.AlertPort_SNMP == 162)
-    idrac_system.iDRAC.copy(idrac_idrac)
+    print(idrac_system.iDRAC.SNMP.AlertPort_SNMP == None)
+    try:
+        idrac_system.iDRAC.copy(idrac_idrac)
+        print("Failed: copy ro objects after commit: Failed")
+    except Exception as ex:
+        print("Passed: do not allow copy of ro objects after commit")
+        print(str(ex))
     idrac_system.commit()
-    print(idrac_idrac.ModifiedXML)
+    print("===== nothing")
+    print(idrac_system.ModifiedXML)
+    idrac_system.iDRAC.SNMP.AlertPort_SNMP = 184
     print(idrac_system.iDRAC.SNMP.AlertPort_SNMP == 184)
-    idrac_idrac.reject()
-    print(idrac_idrac.SNMP.AlertPort_SNMP == 162)
-    # copy with false should not commit!!
-    idrac_system.iDRAC.copy(idrac_idrac)
-    # able to reject
-    idrac_system.reject()
+    idrac_system.commit()
     print(idrac_system.iDRAC.SNMP.AlertPort_SNMP == 184)
-
-    print("=== SNMP.changed.162")
-    print(idrac_system.XML)
-    print("=== System.iDRAC.SNMP.184")
-    print(idrac_system.XML)
 
     idrac_system.reject() # no rejection as copy committed
     print(idrac_system.iDRAC.SNMP.AlertPort_SNMP == 184)
     print("=== System.iDRAC.SNMP.184 (no rejection as copy committed)")
-    print(idrac_system.XML)
+    print(idrac_system.iDRAC.SNMP.XML)
 
-if FType:
     tport = PortField(162, 'SNMPTrapPort')
     tfmt = EnumTypeField(None, TrapFormat_SNMPTypes, 'SNMPTrapFormat')
     tfmt._value = "SNMPv1"
     print(tfmt == TrapFormat_SNMPTypes.SNMPv1)
     # Don't allow comparision with string ==> becomes too generic
-    print(tfmt != 'SNMPv1')
+    try:
+        print(tfmt == 'SNMPv1')
+        print('Failed')
+    except Exception as ex:
+        print(str(ex))
+        print('Passed')
     # Enum Types
     print(tfmt == TrapFormat_SNMPTypes.SNMPv1)
     print(tfmt != None)
+    print("=============")
     tfmt.commit()
     print(tfmt == TrapFormat_SNMPTypes.SNMPv1)
     tfmt._value = None
@@ -104,7 +114,7 @@ if FType:
     tfmt.reject()
     print(tfmt == TrapFormat_SNMPTypes.SNMPv1)
     print(tfmt.is_changed() == False)
-    print('=====')
+    print("=====================================")
 
     tport._value = 194
     print(tport.is_changed() == True and tport == 194)
@@ -117,14 +127,14 @@ if FType:
     try:
         tport.reject()
         print(tport._state)
-        print(tport.is_changed() == False and tport == 162)
+        print(tport.is_changed() == False)
     except Exception as s1:
         # tport has moved to Initialized state. So no ops can be done!
         print(True)
     print(tport._state)
     try:
         tport.commit()
-        print(tport.is_changed() == False and tport == 162)
+        print(tport.is_changed() == False)
     except Exception as s1:
         # tport has moved to Initialized state. So no ops can be done!
         print(True)
@@ -150,8 +160,8 @@ if FType:
         print(False)
     except Exception as s1:
         print(True)
-    print('=------=')
     print(nport.is_changed() == False and nport == 171)
+    print("=====================================")
 
     try :
         # freeze the object
@@ -185,6 +195,7 @@ if FType:
         print(False)
 
 
+    print("=====================================")
     s1 = PortField(161)
     print('==== s1 <> s1 ')
     P("s1 == s1",  True , s1 == s1)
@@ -212,8 +223,6 @@ if FType:
     P("s1 <  s2", False, s1 <  s2)
     P("s1 <= s2", False, s1 <= s2)
 
-
-if CType:
     s = SNMP()
     s1 = SNMP()
     s1.AgentCommunity_SNMP = 'public'
@@ -222,7 +231,7 @@ if CType:
     D('after SNMP() -> printall', s, everything=True)
     s.reject()
     D('after SNMP() -> reject - no changes', s, everything=False)
-    s.TrapFormat_SNMP = TrapFormat_SNMPTypes.SNMPv1
+    s.TrapFormat_SNMP._value = TrapFormat_SNMPTypes.SNMPv1
     D('after SNMP() -> trapfmt = snmpv1', s, everything=False)
     s.commit()
     D('after SNMP() -> commit - no changes', s, everything=False)
@@ -237,6 +246,7 @@ if CType:
 
     # assigning a string (same value) to value
     s.AlertPort_SNMP = "162"
+    s.commit()
     D('after SNMP() -> commit - no changes', s, everything=False)
     print(s.is_changed() == False and s.AlertPort_SNMP == 162)
     # assigning a string (different value) to value
@@ -257,14 +267,17 @@ if CType:
     print(s.is_changed() == True and s.AlertPort_SNMP == 171)
 
     s = SNMP()
+    s.AlertPort_SNMP = 184
+    s.commit()
     try :
         # freeze the object
         s.freeze()
         # setting should fail!
-        s.AlertPort_SNMP = PortField(141)
+        s.AlertPort_SNMP._value = PortField(141)
         print('Failed')
     except Exception as ex:
-        print(s.is_changed() == False and s.AlertPort_SNMP == 162)
+        print(s.is_changed() == False and s.AlertPort_SNMP == 184)
+    print("======")
     try:
         # unfreeze the object
         s.unfreeze()
@@ -298,6 +311,15 @@ if CType:
 
     s1 = SNMP()
     s2 = SNMP()
+    print('==== def(s1) <> def(s2) ')
+    P("s1 == s2", True , s1 == s2)
+    P("s1 != s2", False, s1 != s2)
+    P("s1 >  s2", False, s1 >  s2)
+    P("s1 >= s2", True , s1 >= s2)
+    P("s1 <  s2", False, s1 <  s2)
+    P("s1 <= s2", True , s1 <= s2)
+    s1.AlertPort_SNMP = 162
+    s1.commit()
     print('==== s1 <> s1 ')
     P("s1 == s1", True , s1 == s1)
     P("s1 != s1", False, s1 != s1)
@@ -306,6 +328,8 @@ if CType:
     P("s1 <  s1",  False, s1 <  s1)
     P("s1 <= s1",  True , s1 <= s1)
 
+    s2.AlertPort_SNMP = 162
+    s2.commit()
     print('==== s1 <> s2 ')
     P("s1 == s2", True , s1 == s2)
     P("s1 != s2", False, s1 != s2)
@@ -353,10 +377,9 @@ if CType:
     P("s1 <  s2", False, s1 <  s2)
     P("s1 <= s2", False, s1 <= s2)
 
-if AType:
-    users = ArrayType(Users)
-    entry = users.new(UserName_Users = 'vaidees')
-    print("===== (users.username=vaidees)")
+    users = Users
+    entry = users.new(UserName_Users = 'hello')
+    print("===== (users.username=hello)")
     print(users.ModifiedXML)
     users.commit()
     print("=== ()")
@@ -367,12 +390,14 @@ if AType:
     users.reject()
     print("===== ()")
     print(users.ModifiedXML)
-    print("=====(vaidees)")
+    print("=====(hello)")
     print(users.XML)
-    users.remove(UserName_Users = 'vaidees')
+    users.remove(UserName_Users = 'hello')
     print("===== ()")
     print(users.ModifiedXML)
-    print("Expected =[vaidees], Actual=" + str(users.values_deleted()))
+    print("Expected =[vaidees], Actual=")
+    for i in users.values_deleted(): print(i.Json)
+
     users.reject()
     print("Expected =[], Actual=" + str(users.values_deleted()))
     print("===== ()")

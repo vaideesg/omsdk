@@ -1,7 +1,9 @@
 from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.TypeState import TypeState,TypeBase
+from omsdk.typemgr.BuiltinTypes import StringField, IntField
 import sys
 import io
+import re
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
@@ -66,6 +68,10 @@ class ArrayType(TypeBase):
     # State APIs:
     def is_changed(self):
         return self._state in [TypeState.Initializing, TypeState.Changing]
+
+    @property
+    def Length(self):
+        return len(self._entries)
 
     def _copy_state(self, source, dest):
         # from _entries to _orig_entries
@@ -150,7 +156,7 @@ class ArrayType(TypeBase):
                     for entry in self._entries:
                         entry.reject()
                     self._indexes_free = [i for i in \
-                                 range(min_index, max_index+1)]
+                                 range(self._min_index, self._max_index+1)]
                     for i in self._entries:
                         self._indexes_free.remove(i._index)
                         self._keys[self._get_key(i)] = i
@@ -218,10 +224,21 @@ class ArrayType(TypeBase):
         return False
 
     def new(self, index=None, **kwargs):
+        return self._new(index, False, **kwargs)
+
+    def flexible_new(self, index=None, **kwargs):
+        return self._new(index, True, **kwargs)
+
+    def _new(self, index=None, add=False, **kwargs):
         if len(self._indexes_free) <= 0:
             raise AttributeError('no more entries in array')
         entry = self._cls(parent=self, loading_from_scp=self._loading_from_scp)
         for i in kwargs:
+            if i not in entry.__dict__ and add:
+                if isinstance(kwargs[i], int):
+                    entry.__dict__[i] = IntField(0, parent=self)
+                else:
+                    entry.__dict__[i] = StringField("", parent=self)
             entry.__setattr__(i, kwargs[i])
         if index is None and self._get_key(entry) is None:
             raise ValueError('key not provided')
@@ -296,6 +313,16 @@ class ArrayType(TypeBase):
 
     def remove(self, **kwargs):
         entries = self._find(True, **kwargs)
+        return self._remove_selected(entries)
+
+    def remove_matching(self, criteria):
+        entries = self.find_matching(criteria)
+        return self._remove_selected(entries)
+
+    def _remove_selected(self, entries):
+        if len(entries) <= 0:
+            return entries
+
         for i in entries:
             self._entries.remove(i)
             self._indexes_free.append(i._index)
@@ -327,7 +354,12 @@ class ArrayType(TypeBase):
         for entry in self._entries:
             found = True
             for field in kwargs:
-                if entry.__dict__[field]._value != kwargs[field]:
+                if field in entry.__dict__ and \
+                   entry.__dict__[field]._value != kwargs[field]:
+                    found = False
+                    break
+                if field in entry._attribs and \
+                   entry._attribs[field] != kwargs[field]:
                     found = False
                     break
             if found:
@@ -335,18 +367,21 @@ class ArrayType(TypeBase):
                 if not all_entries: break
         return output
 
-    def _find(self, all_entries = True, **kwargs):
+    def find_matching(self, criteria):
         output = []
         for entry in self._entries:
-            found = True
-            for field in kwargs:
-                if entry.__dict__[field]._value != kwargs[field]:
-                    found = False
-                    break
-            if found:
+            if self.select_entry(entry, criteria):
                 output.append(entry)
-                if not all_entries: break
         return output
+
+    def select_entry(self, entry, criteria):
+        if 'self.' in criteria or '(' in criteria:
+            print("criteria cannot have functions or self objects!")
+            return False
+        criteria = criteria.replace('.parent', '._parent._parent')
+        criteria = re.sub('([^ \t]+)\s+is\s+([^ \t]+)', 'isinstance(\\1, \\2)',
+                          criteria)
+        return eval(criteria)
 
     @property
     def Properties(self):
@@ -384,7 +419,7 @@ class ArrayTypeIterator:
     def __init__(self, array):
         self.array = array
         self.current = -1
-        self.high = len(self.array._entries)
+        self.high = self.array.Length
 
     def __iter__(self):
         return self

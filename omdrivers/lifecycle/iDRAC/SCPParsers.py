@@ -51,7 +51,7 @@ class XMLParser(object):
                 subentry = subnode
                 if isinstance(subnode, ArrayType):
                     parent = subnode
-                    subentry = parent.find_or_create(len(parent._entries)+1)
+                    subentry = parent.find_or_create(parent.Length+1)
 
                 for attr in child.attrib:
                     subentry.add_attribute(attr, child.attrib[attr])
@@ -130,7 +130,7 @@ class XMLParser(object):
             parent = None
             if isinstance(entry, ArrayType):
                 parent = entry
-                entry = parent.find_or_create(len(parent._entries)+1)
+                entry = parent.find_or_create(parent.Length + 1)
     
             for attrib in subnode.attrib:
                 entry.add_attribute(attrib, subnode.attrib[attrib])

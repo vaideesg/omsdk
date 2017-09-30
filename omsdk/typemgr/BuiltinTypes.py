@@ -82,15 +82,17 @@ class PortField(CloneableFieldType):
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
     def my_accept_value(self, value):
+        if value is None or value == '':
+            return True
         if not isinstance(value, int) or value <= 0:
             raise ValueError(str(value) + " should be an integer > 0")
         return True
 
     def __str__(self):
-        return self._value
+        return str(self._value)
 
     def __repr__(self):
-        return self._value
+        return str(self._value)
 
         
 class IntField(CloneableFieldType):
@@ -104,10 +106,10 @@ class IntField(CloneableFieldType):
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
     def __str__(self):
-        return (str(self._value) if self._value else None)
+        return str(self._value)
 
     def __repr__(self):
-        return (str(self._value) if self._value else None)
+        return str(self._value)
 
 class IntRangeField(CloneableFieldType):
     def __init__(self, init_value, min_value, max_value, alias =None,
@@ -138,10 +140,10 @@ class IntRangeField(CloneableFieldType):
         return True
 
     def __str__(self):
-        return (str(self._value) if self._value else None)
+        return str(self._value)
 
     def __repr__(self):
-        return (str(self._value) if self._value else None)
+        return str(self._value)
 
 class BooleanField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
@@ -154,10 +156,10 @@ class BooleanField(CloneableFieldType):
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
     def __str__(self):
-        return self._value
+        return str(self._value)
 
     def __repr__(self):
-        return self._value
+        return str(self._value)
 
 
 class StringField(CloneableFieldType):
@@ -171,10 +173,10 @@ class StringField(CloneableFieldType):
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
 
     def __str__(self):
-        return self._value
+        return str(self._value)
 
     def __repr__(self):
-        return self._value
+        return str(self._value)
 
 
 class EnumTypeField(CloneableFieldType):
@@ -240,10 +242,10 @@ class IPv4AddressField(CloneableFieldType):
         return AddressHelpers._check_address(value, AddressTypes.IPv4Address)
 
     def __str__(self):
-        return self._value
+        return str(self._value)
 
     def __repr__(self):
-        return self._value
+        return str(self._value)
 
 class IPv6AddressField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
@@ -258,10 +260,10 @@ class IPv6AddressField(CloneableFieldType):
         return AddressHelpers._check_address(value, AddressTypes.IPv6Address)
 
     def __str__(self):
-        return self._value
+        return str(self._value)
 
     def __repr__(self):
-        return self._value
+        return str(self._value)
 
 class IPAddressField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
@@ -278,10 +280,10 @@ class IPAddressField(CloneableFieldType):
         return AddressHelpers._check_address(value, AddressTypes.IPAddress)
 
     def __str__(self):
-        return self._value
+        return str(self._value)
 
     def __repr__(self):
-        return self._value
+        return str(self._value)
 
 class MacAddressField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
@@ -297,10 +299,10 @@ class MacAddressField(CloneableFieldType):
         return AddressHelpers._check_address(value, AddressTypes.MACAddress)
 
     def __str__(self):
-        return self._value
+        return str(self._value)
 
     def __repr__(self):
-        return self._value
+        return str(self._value)
 
 class WWPNAddressField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
@@ -316,7 +318,7 @@ class WWPNAddressField(CloneableFieldType):
         return AddressHelpers._check_address(value, AddressTypes.WWPNAddress)
 
     def __str__(self):
-        return self._value
+        return str(self._value)
 
     def __repr__(self):
-        return self._value
+        return str(self._value)

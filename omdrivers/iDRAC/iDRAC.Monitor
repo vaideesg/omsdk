@@ -456,7 +456,7 @@
             "SASAddress",
             "Slot",
             "SupportedEncryptionTypes",
-            "busProtocol",
+            "BusProtocol",
             "SecurityState"
         ],
         "ConfigState" : [ 
@@ -502,7 +502,7 @@
             "8" : "Non-RAID", 
             "9" : "Removed" 
         },
-        "busProtocol" :{
+        "BusProtocol" :{
             "0" : "Unknown",
             "1" : "SCSI",
             "2" : "PATA",
@@ -525,8 +525,8 @@
             "4" : "12 Gbps"
         },
         "MediaType" :{
-            "0" : "Magnetic Drive",
-            "1" : "Solid State Drive"
+            "0" : "HDD",
+            "1" : "SSD"
         },
         "DriveFormFactor" :{
             "0" : "Unknown",

@@ -41,10 +41,10 @@ class Controller(ClassType):
         self.RAIDSupportedRAIDLevels = EnumTypeField(None,RAIDSupportedRAIDLevelsTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.RAIDbatteryLearnMode = EnumTypeField(RAIDbatteryLearnModeTypes.T_None,RAIDbatteryLearnModeTypes, parent=self)
         self.RAIDbgiRate = IntRangeField(100,1,100, parent=self)
-        self.RAIDccMode = EnumTypeField(RAIDccModeTypes.Normal,RAIDccModeTypes, parent=self)
+        self.RAIDccMode = EnumTypeField(None,RAIDccModeTypes, parent=self)
         self.RAIDccRate = IntRangeField(100,1,100, parent=self)
-        self.RAIDcopybackMode = EnumTypeField(RAIDcopybackModeTypes.On,RAIDcopybackModeTypes, parent=self)
-        self.RAIDforeignConfig = EnumTypeField(RAIDforeignConfigTypes.Ignore,RAIDforeignConfigTypes, parent=self)
+        self.RAIDcopybackMode = EnumTypeField(None,RAIDcopybackModeTypes, parent=self)
+        self.RAIDforeignConfig = EnumTypeField(None,RAIDforeignConfigTypes, parent=self)
         self.RAIDloadBalancedMode = EnumTypeField(RAIDloadBalancedModeTypes.Automatic,RAIDloadBalancedModeTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.RAIDmaxPDsInSpan = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -52,7 +52,7 @@ class Controller(ClassType):
         self.RAIDmaxSpansInVD = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.RAIDmaxSupportedVD = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.RAIDprMode = EnumTypeField(RAIDprModeTypes.Automatic,RAIDprModeTypes, parent=self)
+        self.RAIDprMode = EnumTypeField(None,RAIDprModeTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.RAIDprRate = IntRangeField(30,1,100, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.RAIDrebuildRate = IntRangeField(100,1,100, parent=self)
@@ -93,7 +93,7 @@ class PhysicalDisk(ClassType):
             super().__init__("Component", None, parent)
         self.PCIeSSDSecureErase = EnumTypeField(PCIeSSDSecureEraseTypes.T_False,PCIeSSDSecureEraseTypes, parent=self)
         # readonly attribute
-        self.RAIDHotSpareStatus = EnumTypeField(RAIDHotSpareStatusTypes.No,RAIDHotSpareStatusTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.RAIDHotSpareStatus = EnumTypeField(None,RAIDHotSpareStatusTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.RAIDNominalMediumRotationRate = IntRangeField(None,2,4294967295, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
@@ -109,7 +109,7 @@ class VirtualDisk(ClassType):
             super().__init__("Component", None, parent)
         # readonly attribute
         self.Cachecade = EnumTypeField(None,CachecadeTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.DiskCachePolicy = EnumTypeField(DiskCachePolicyTypes.Default,DiskCachePolicyTypes, parent=self)
+        self.DiskCachePolicy = EnumTypeField(None,DiskCachePolicyTypes, parent=self)
         # readonly attribute
         self.IncludedPhysicalDiskID = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
@@ -124,7 +124,7 @@ class VirtualDisk(ClassType):
         self.RAIDdedicatedSpare = EnumTypeField(None,RAIDdedicatedSpareTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.RAIDdefaultReadPolicy = EnumTypeField(RAIDdefaultReadPolicyTypes.Adaptive,RAIDdefaultReadPolicyTypes, parent=self)
         self.RAIDdefaultWritePolicy = EnumTypeField(RAIDdefaultWritePolicyTypes.WriteBack,RAIDdefaultWritePolicyTypes, parent=self)
-        self.RAIDinitOperation = EnumTypeField(RAIDinitOperationTypes.T_None,RAIDinitOperationTypes, parent=self)
+        self.RAIDinitOperation = EnumTypeField(None,RAIDinitOperationTypes, parent=self)
         # readonly attribute
         self.Size = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
