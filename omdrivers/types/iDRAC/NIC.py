@@ -220,7 +220,7 @@ class NetworkInterface(ClassType):
         self.MacAddr = MacAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.MaxBandwidth = IntRangeField(100,0,100, parent=self)
         # readonly attribute populated by iDRAC
-        self.MaxFrameSize = IntRangeField(None,0, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.MaxFrameSize = IntRangeField(None,0,9223372036854775808, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.MaxIOsPerSession = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -234,7 +234,7 @@ class NetworkInterface(ClassType):
         # readonly attribute populated by iDRAC
         self.MaxNumberOutStandingCommands = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
-        self.MaxNumberVFSupportedByDevice = IntRangeField(0,0, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.MaxNumberVFSupportedByDevice = IntRangeField(0,0,9223372036854775808, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.MgmtSVID = IntRangeField(1000,0,4095, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.MinBandwidth = IntRangeField(0,0,100, parent=self)
@@ -256,7 +256,7 @@ class NetworkInterface(ClassType):
         # readonly attribute populated by iDRAC
         self.NinthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.NumberPCIFunctionsEnabled = IntRangeField(None,1, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.NumberPCIFunctionsEnabled = IntRangeField(None,1,9223372036854775808, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.NumberPCIFunctionsSupported = IntRangeField(None,1,256, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.NumberVFAdvertised = IntRangeField(0,0,256, parent=self)

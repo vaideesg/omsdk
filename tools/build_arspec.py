@@ -164,6 +164,10 @@ class AttribRegistry(object):
                     del tt[fld_name]['max']
                 elif int(tt[fld_name]['max']) >= 2**63-1:
                         tt[fld_name]['max'] = str(2**63-1)
+            if 'min' not in tt[fld_name] and 'max' in tt[fld_name]:
+                tt[fld_name]['min'] = str(-2**63)
+            if 'max' not in tt[fld_name] and 'min' in tt[fld_name]:
+                tt[fld_name]['max'] = str(2**63)
 
             tt[fld_name]['modDeleteAllowed'] = True
             tt[fld_name]['uneditable'] = False
