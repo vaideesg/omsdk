@@ -20,6 +20,7 @@ class T(ET.TreeBuilder):
         if re.match('<[^ >]+( [^>]+)*>[^<]*</[^>]+>', k):
             t = ET.fromstring(k)
             self.start(t.tag, dict([(k, v) for (k,v) in t.items()]))
+            if not t.text: t.text = ""
             self.data(t.text)
             self.end(t.tag)
 

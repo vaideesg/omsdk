@@ -119,7 +119,7 @@ class IntRangeField(CloneableFieldType):
         if self._max is None: self._max = MaxInteger
 
         if PY2:
-            super(IntField, self).__init__(init_value, int, 'Attribute', alias, parent,
+            super(IntRangeField, self).__init__(init_value, int, 'Attribute', alias, parent,
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
         else:
             super().__init__(init_value, int, 'Attribute', alias, parent,
@@ -132,7 +132,7 @@ class IntRangeField(CloneableFieldType):
         if value is None or value == '':
             return True
         if not isinstance(value, int) or \
-            value not in range(self._min, self._max+1):
+            value < self._min or value > self._max:
             raise ValueError(str(value) + " should be in range[" +
                              str(self._min) + ", " + str(self._max)+  " ]")
         return True

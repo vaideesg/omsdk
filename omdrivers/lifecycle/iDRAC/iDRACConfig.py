@@ -1820,9 +1820,8 @@ class iDRACConfig(iBaseConfigApi):
             if Simulator.is_recording():
                 with open(filename, 'r') as f:
                     content = f.read()
-                Simulator.record_config(self.entity.ipaddr,content, 'config.xml')
-            msg = { 'Status' : 'Success',
-                    'Message' : 'Saved successfully' }
+                Simulator.record_config(self.entity.ipaddr,content,'config.xml')
+
             if self.UseNewStyle:
                 self._sysconfig = self.xmlp.parse_scp(filename)
                 self._sysconfig.commit()

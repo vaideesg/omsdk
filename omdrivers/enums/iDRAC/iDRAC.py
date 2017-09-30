@@ -2385,10 +2385,10 @@ PrivacyProtocol_UsersTypes = EnumWrapper("PrivacyProtocol_UsersTypes", {
 }).enum_type
 
 Privilege_UsersTypes = EnumWrapper("Privilege_UsersTypes", {
-    "T_0" : "0",
-    "T_1" : "1",
-    "T_499" : "499",
-    "T_511" : "511",
+    "NoAccess" : "0",
+    "Readonly" : "1",
+    "Operator" : "499",
+    "Administrator" : "511",
 }).enum_type
 
 ProSupportPlusRecommendationsReport_SupportAssistTypes = EnumWrapper("ProSupportPlusRecommendationsReport_SupportAssistTypes", {
