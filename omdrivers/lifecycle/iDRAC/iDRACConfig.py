@@ -1744,6 +1744,10 @@ class iDRACConfig(iBaseConfigApi):
             return msg
 
     def apply_changes(self, reboot=False):
+        if self._sysconfig and not self._sysconfig.is_changed():
+            msg = { 'Status' : 'Success',
+                    'Message' : 'No changes found to commit!' }
+            return msg
         return self._commit_scp(reboot)
 
     # Enabling APIs
