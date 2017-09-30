@@ -275,7 +275,7 @@ class ArrayType(TypeBase):
             strkey = self._get_key(entry)
             if strkey is None:
                 toremove.append(entry)
-            if strkey in ["", "()"]:
+            elif strkey in ["", "()"]:
                 toremove.append(entry)
             elif strkey in keys:
                 toremove.append(entry)
@@ -287,6 +287,9 @@ class ArrayType(TypeBase):
             strkey = self._get_key(entry)
             if strkey in self._keys:
                 del self._keys[strkey]
+
+        for entry in self._entries:
+            self._index_helper.remove(entry._index)
         self._sort()
 
     # returns a list
@@ -300,9 +303,11 @@ class ArrayType(TypeBase):
             return entries[0]
         return None
 
-    def find_or_create(self, index):
-        if isinstance(index, str):
-            index = int(index)
+    def find_or_create(self, index=None):
+        if not index:
+            index = self._index_helper.next_index()
+        else:
+            self._index_helper.remove(index)
         for entry in self._entries:
             if entry._index == index:
                 return entry
@@ -310,7 +315,6 @@ class ArrayType(TypeBase):
 
     def remove(self, **kwargs):
         entries = self._find(True, **kwargs)
-        print(entries)
         return self._remove_selected(entries)
 
     def remove_matching(self, criteria):
@@ -452,6 +456,10 @@ class IndexHelper:
         if index in self.indexes_free:
             self.indexes_free.remove(index)
             self.reserve.append(index)
+
+    def remove(self, index):
+        if index in self.indexes_free:
+            self.indexes_free.remove(index)
 
     def restore_index(self, index):
         if  index not in self.reserve and \

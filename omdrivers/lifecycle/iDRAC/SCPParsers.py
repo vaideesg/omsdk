@@ -51,7 +51,7 @@ class XMLParser(object):
                 subentry = subnode
                 if isinstance(subnode, ArrayType):
                     parent = subnode
-                    subentry = parent.find_or_create(parent.Length+1)
+                    subentry = parent.find_or_create()
 
                 for attr in child.attrib:
                     subentry.add_attribute(attr, child.attrib[attr])
@@ -91,7 +91,7 @@ class XMLParser(object):
     
                 subentry = grp
                 if isinstance(grp, ArrayType):
-                    subentry = grp.find_or_create(index=index)
+                    subentry = grp.find_or_create(index=int(index))
     
                 if field not in subentry.__dict__:
                     field = field + '_' + group
@@ -130,7 +130,7 @@ class XMLParser(object):
             parent = None
             if isinstance(entry, ArrayType):
                 parent = entry
-                entry = parent.find_or_create(parent.Length + 1)
+                entry = parent.find_or_create()
     
             for attrib in subnode.attrib:
                 entry.add_attribute(attrib, subnode.attrib[attrib])
