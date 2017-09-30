@@ -14,6 +14,13 @@ AddressTypes = EnumWrapper("ADT", {
     'WWPNAddress' : 5,
 }).enum_type
 
+if PY2:
+    MaxInteger = sys.maxint
+    MinInteger = -sys.maxint
+else:
+    MaxInteger = 2**63-1
+    MinInteger = -2**63
+
 class CompositeFieldType(FieldType):
     def __init__(self, *parts):
         if PY2:
@@ -107,7 +114,10 @@ class IntRangeField(CloneableFieldType):
                  parent=None, volatile=False,
                  modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
         self._min = min_value
+        if self._min is None: self._min = MinInteger
         self._max = max_value
+        if self._max is None: self._max = MaxInteger
+
         if PY2:
             super(IntField, self).__init__(init_value, int, 'Attribute', alias, parent,
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
@@ -118,6 +128,8 @@ class IntRangeField(CloneableFieldType):
     def my_accept_value(self, value):
         if not self._min  and not self._max:
             # not initialized yet!!!
+            return True
+        if value is None or value == '':
             return True
         if not isinstance(value, int) or \
             value not in range(self._min, self._max+1):

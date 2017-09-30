@@ -82,7 +82,7 @@
                     "uneditable": false
                 },
                 "BusDeviceFunction": {
-                    "baseType": "int",
+                    "baseType": "str",
                     "description": "Bus:Device:Function",
                     "modDeleteAllowed": true,
                     "name": "BusDeviceFunction",
@@ -154,7 +154,7 @@
                     "uneditable": false
                 },
                 "FamilyVersion": {
-                    "baseType": "int",
+                    "baseType": "str",
                     "description": "Family Firmware Version",
                     "modDeleteAllowed": true,
                     "name": "FamilyVersion",

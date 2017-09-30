@@ -376,9 +376,11 @@
                     "uneditable": false
                 },
                 "RAIDNominalMediumRotationRate": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Nominal Medium Rotation Rate",
                     "longDescription": "This attribute represents the nominal medium rotation speed of a physical disk.",
+                    "max": "4294967295",
+                    "min": "2",
                     "modDeleteAllowed": true,
                     "name": "RAIDNominalMediumRotationRate",
                     "qualifier": "PhysicalDisk",
@@ -443,10 +445,12 @@
                     "uneditable": false
                 },
                 "RAIDbgiRate": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "100",
                     "description": "Background Initialization Rate",
                     "longDescription": "The Background Initialization (BGI) rate is the percentage of the system's resources dedicated to performing the background initialization of a virtual disk after it is created",
+                    "max": "100",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "RAIDbgiRate",
                     "qualifier": "Controller",
@@ -466,10 +470,12 @@
                     "uneditable": false
                 },
                 "RAIDccRate": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "100",
                     "description": "Check Consistency Rate",
                     "longDescription": "The Check Consistency rate is the percentage of the system's resources dedicated to performing a check consistency on a redundant virtual disk.",
+                    "max": "100",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "RAIDccRate",
                     "qualifier": "Controller",
@@ -602,10 +608,12 @@
                     "uneditable": false
                 },
                 "RAIDprRate": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "30",
                     "description": "Patrol Read Rate",
                     "longDescription": "The Patrol Read Rate is the percentage of the system's resources dedicated to perform Patrol Read.",
+                    "max": "100",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "RAIDprRate",
                     "qualifier": "Controller",
@@ -613,10 +621,12 @@
                     "uneditable": false
                 },
                 "RAIDrebuildRate": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "100",
                     "description": "Rebuild Rate",
                     "longDescription": "The Rebuild Rate is the percentage of the system's resources dedicated to rebuilding a failed disk when a rebuild is necessary.",
+                    "max": "100",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "RAIDrebuildRate",
                     "qualifier": "Controller",
@@ -624,10 +634,12 @@
                     "uneditable": false
                 },
                 "RAIDreconstructRate": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "100",
                     "description": "Reconstruction Rate",
                     "longDescription": "The Reconstruct Rate is the percentage of the system's resources dedicated to reconstructing a disk group after adding a physical disk or changing the RAID level of a virtual disk residing on the disk group",
+                    "max": "100",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "RAIDreconstructRate",
                     "qualifier": "Controller",
@@ -671,10 +683,12 @@
                     "uneditable": false
                 },
                 "RAIDspinDownIdleTime": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "30",
                     "description": "Spin Down Idle Time",
                     "longDescription": "Spindown idle time is the amount of time in seconds an uncofigured or hotspare can be idle before being spinned down by the controller.",
+                    "max": "65535",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "RAIDspinDownIdleTime",
                     "qualifier": "Controller",

@@ -19,13 +19,13 @@ class NetworkInterface(ClassType):
             super().__init__("Component", None, parent)
         # readonly attribute populated by iDRAC
         self.AddressingMode = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.BannerMessageTimeout = IntField(None, parent=self)
-        self.BlnkLeds = IntField("15", parent=self)
+        self.BannerMessageTimeout = IntRangeField(None,0,14, parent=self)
+        self.BlnkLeds = IntRangeField(15,0,15, parent=self)
         self.BootOptionROM = EnumTypeField(None,BootOptionROMTypes, parent=self)
-        self.BootOrderFirstFCoETarget = IntField("0", parent=self)
-        self.BootOrderFourthFCoETarget = IntField("0", parent=self)
-        self.BootOrderSecondFCoETarget = IntField("0", parent=self)
-        self.BootOrderThirdFCoETarget = IntField("0", parent=self)
+        self.BootOrderFirstFCoETarget = IntField(0, parent=self)
+        self.BootOrderFourthFCoETarget = IntField(0, parent=self)
+        self.BootOrderSecondFCoETarget = IntField(0, parent=self)
+        self.BootOrderThirdFCoETarget = IntField(0, parent=self)
         self.BootRetryCnt = EnumTypeField(BootRetryCntTypes.NoRetry,BootRetryCntTypes, parent=self)
         self.BootStrapType = EnumTypeField(BootStrapTypeTypes.AutoDetect,BootStrapTypeTypes, parent=self)
         # readonly attribute populated by iDRAC
@@ -134,10 +134,10 @@ class NetworkInterface(ClassType):
         self.FCoEBootScanSelection = EnumTypeField(FCoEBootScanSelectionTypes.Disabled,FCoEBootScanSelectionTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.FCoEBootSupport = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.FCoEFabricDiscoveryRetryCnt = IntField(None, parent=self)
+        self.FCoEFabricDiscoveryRetryCnt = IntRangeField(None,0,60, parent=self)
         self.FCoEFirstHddTarget = EnumTypeField(FCoEFirstHddTargetTypes.Disabled,FCoEFirstHddTargetTypes, parent=self)
-        self.FCoELnkUpDelayTime = IntField(None, parent=self)
-        self.FCoELunBusyRetryCnt = IntField(None, parent=self)
+        self.FCoELnkUpDelayTime = IntRangeField(None,0,255, parent=self)
+        self.FCoELunBusyRetryCnt = IntRangeField(None,0,60, parent=self)
         self.FCoEOffloadMode = EnumTypeField(FCoEOffloadModeTypes.Disabled,FCoEOffloadModeTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.FCoEOffloadSupport = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -156,17 +156,17 @@ class NetworkInterface(ClassType):
         self.FifthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.FifthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.FirstFCoEBootTargetLUN = IntField(None, parent=self)
-        self.FirstFCoEFCFVLANID = IntField(None, parent=self)
+        self.FirstFCoEBootTargetLUN = IntRangeField(None,0,9223372036854775807, parent=self)
+        self.FirstFCoEFCFVLANID = IntRangeField(None,1,4094, parent=self)
         self.FirstFCoEWWPNTarget = WWPNAddressField(None, parent=self)
         self.FirstHddTarget = EnumTypeField(FirstHddTargetTypes.Disabled,FirstHddTargetTypes, parent=self)
-        self.FirstTgtBootLun = IntField(None, parent=self)
+        self.FirstTgtBootLun = IntRangeField(None,0,9223372036854775807, parent=self)
         self.FirstTgtChapId = StringField("", parent=self)
         self.FirstTgtChapPwd = StringField("", parent=self)
         self.FirstTgtIpAddress = IPv4AddressField(None, parent=self)
         self.FirstTgtIpVer = EnumTypeField(FirstTgtIpVerTypes.IPv4,FirstTgtIpVerTypes, parent=self)
         self.FirstTgtIscsiName = StringField("", parent=self)
-        self.FirstTgtTcpPort = IntField(None, parent=self)
+        self.FirstTgtTcpPort = IntRangeField(None,1,65535, parent=self)
         # readonly attribute populated by iDRAC
         self.FlexAddressing = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.FlowControlSetting = EnumTypeField(FlowControlSettingTypes.Auto,FlowControlSettingTypes, parent=self)
@@ -202,25 +202,25 @@ class NetworkInterface(ClassType):
         # readonly attribute populated by iDRAC
         self.IscsiMacAddr = MacAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.IscsiTgtBoot = EnumTypeField(IscsiTgtBootTypes.Disabled,IscsiTgtBootTypes, parent=self)
-        self.IscsiVLanId = IntField(None, parent=self)
+        self.IscsiVLanId = IntRangeField(None,1,4094, parent=self)
         self.IscsiVLanMode = EnumTypeField(IscsiVLanModeTypes.Disabled,IscsiVLanModeTypes, parent=self)
         self.IscsiViaDHCP = EnumTypeField(IscsiViaDHCPTypes.Disabled,IscsiViaDHCPTypes, parent=self)
         self.LegacyBootProto = EnumTypeField(LegacyBootProtoTypes.varies,LegacyBootProtoTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.LinkStatus = EnumTypeField(None,LinkStatusTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.LnkSpeed = EnumTypeField(None,LnkSpeedTypes, parent=self)
-        self.LnkUpDelayTime = IntField("0", parent=self)
+        self.LnkUpDelayTime = IntRangeField(0,0,255, parent=self)
         self.LocalDCBXWillingMode = EnumTypeField(LocalDCBXWillingModeTypes.Enabled,LocalDCBXWillingModeTypes, parent=self)
         self.LogicalPortEnable = EnumTypeField(LogicalPortEnableTypes.Disabled,LogicalPortEnableTypes, parent=self)
-        self.LunBusyRetryCnt = IntField(None, parent=self)
+        self.LunBusyRetryCnt = IntRangeField(None,0,60, parent=self)
         self.MTUParams = EnumTypeField(None,MTUParamsTypes, parent=self)
         # readonly attribute populated by iDRAC
         self.MTUReconfigurationSupport = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.MacAddr = MacAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.MaxBandwidth = IntField("100", parent=self)
+        self.MaxBandwidth = IntRangeField(100,0,100, parent=self)
         # readonly attribute populated by iDRAC
-        self.MaxFrameSize = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.MaxFrameSize = IntRangeField(None,0, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.MaxIOsPerSession = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -234,10 +234,10 @@ class NetworkInterface(ClassType):
         # readonly attribute populated by iDRAC
         self.MaxNumberOutStandingCommands = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
-        self.MaxNumberVFSupportedByDevice = IntField("0", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.MaxNumberVFSupportedByDevice = IntRangeField(0,0, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.MgmtSVID = IntField("1000", parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.MinBandwidth = IntField("0", parent=self)
+        self.MgmtSVID = IntRangeField(1000,0,4095, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.MinBandwidth = IntRangeField(0,0,100, parent=self)
         self.NPCP = EnumTypeField(NPCPTypes.Enabled,NPCPTypes, parent=self)
         self.NParEP = EnumTypeField(NParEPTypes.Disabled,NParEPTypes, parent=self)
         # readonly attribute populated by iDRAC
@@ -256,12 +256,12 @@ class NetworkInterface(ClassType):
         # readonly attribute populated by iDRAC
         self.NinthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.NumberPCIFunctionsEnabled = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.NumberPCIFunctionsEnabled = IntRangeField(None,1, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.NumberPCIFunctionsSupported = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.NumberVFAdvertised = IntField("0", parent=self)
+        self.NumberPCIFunctionsSupported = IntRangeField(None,1,256, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.NumberVFAdvertised = IntRangeField(0,0,256, parent=self)
         # readonly attribute populated by iDRAC
-        self.NumberVFSupported = IntField("0", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.NumberVFSupported = IntRangeField(0,0,256, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.OSBMCManagementPassThrough = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
@@ -274,25 +274,25 @@ class NetworkInterface(ClassType):
         self.PartitionStateInterpretation = EnumTypeField(None,PartitionStateInterpretationTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
         self.PriorityFlowControl = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.PriorityGroup0BandwidthAllocation = IntField(None, parent=self)
+        self.PriorityGroup0BandwidthAllocation = IntRangeField(None,0,100, parent=self)
         self.PriorityGroup0ProtocolAssignment = EnumTypeField(None,PriorityGroup0ProtocolAssignmentTypes, parent=self)
-        self.PriorityGroup15BandwidthAllocation = IntField(None, parent=self)
+        self.PriorityGroup15BandwidthAllocation = IntRangeField(None,0,100, parent=self)
         self.PriorityGroup15ProtocolAssignment = EnumTypeField(None,PriorityGroup15ProtocolAssignmentTypes, parent=self)
-        self.PriorityGroup1BandwidthAllocation = IntField(None, parent=self)
+        self.PriorityGroup1BandwidthAllocation = IntRangeField(None,0,100, parent=self)
         self.PriorityGroup1ProtocolAssignment = EnumTypeField(None,PriorityGroup1ProtocolAssignmentTypes, parent=self)
-        self.PriorityGroup2BandwidthAllocation = IntField(None, parent=self)
+        self.PriorityGroup2BandwidthAllocation = IntRangeField(None,0,100, parent=self)
         self.PriorityGroup2ProtocolAssignment = EnumTypeField(None,PriorityGroup2ProtocolAssignmentTypes, parent=self)
-        self.PriorityGroup3BandwidthAllocation = IntField(None, parent=self)
+        self.PriorityGroup3BandwidthAllocation = IntRangeField(None,0,100, parent=self)
         self.PriorityGroup3ProtocolAssignment = EnumTypeField(None,PriorityGroup3ProtocolAssignmentTypes, parent=self)
-        self.PriorityGroup4BandwidthAllocation = IntField(None, parent=self)
+        self.PriorityGroup4BandwidthAllocation = IntRangeField(None,0,100, parent=self)
         self.PriorityGroup4ProtocolAssignment = EnumTypeField(None,PriorityGroup4ProtocolAssignmentTypes, parent=self)
-        self.PriorityGroup5BandwidthAllocation = IntField(None, parent=self)
+        self.PriorityGroup5BandwidthAllocation = IntRangeField(None,0,100, parent=self)
         self.PriorityGroup5ProtocolAssignment = EnumTypeField(None,PriorityGroup5ProtocolAssignmentTypes, parent=self)
-        self.PriorityGroup6BandwidthAllocation = IntField(None, parent=self)
+        self.PriorityGroup6BandwidthAllocation = IntRangeField(None,0,100, parent=self)
         self.PriorityGroup6ProtocolAssignment = EnumTypeField(None,PriorityGroup6ProtocolAssignmentTypes, parent=self)
-        self.PriorityGroup7BandwidthAllocation = IntField(None, parent=self)
+        self.PriorityGroup7BandwidthAllocation = IntRangeField(None,0,100, parent=self)
         self.PriorityGroup7ProtocolAssignment = EnumTypeField(None,PriorityGroup7ProtocolAssignmentTypes, parent=self)
-        self.PriorityGroupBandwidthAllocation = IntField(None, parent=self)
+        self.PriorityGroupBandwidthAllocation = IntRangeField(None,0,100, parent=self)
         self.RDMAApplicationProfile = EnumTypeField(None,RDMAApplicationProfileTypes, parent=self)
         self.RDMANICModeOnPort = EnumTypeField(RDMANICModeOnPortTypes.Varies,RDMANICModeOnPortTypes, parent=self)
         # readonly attribute populated by iDRAC
@@ -309,13 +309,13 @@ class NetworkInterface(ClassType):
         self.SecondFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.SecondFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.SecondTgtBootLun = IntField(None, parent=self)
+        self.SecondTgtBootLun = IntRangeField(None,0,9223372036854775807, parent=self)
         self.SecondTgtChapId = StringField("", parent=self)
         self.SecondTgtChapPwd = StringField("", parent=self)
         self.SecondTgtIpAddress = IPv4AddressField(None, parent=self)
         self.SecondTgtIpVer = EnumTypeField(SecondTgtIpVerTypes.IPv4,SecondTgtIpVerTypes, parent=self)
         self.SecondTgtIscsiName = StringField("", parent=self)
-        self.SecondTgtTcpPort = IntField(None, parent=self)
+        self.SecondTgtTcpPort = IntRangeField(None,1,65535, parent=self)
         self.SecondaryDeviceMacAddr = MacAddressField(None, parent=self)
         # readonly attribute populated by iDRAC
         self.SeventeenthFCoEBootTargetLUN = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
@@ -419,9 +419,9 @@ class NetworkInterface(ClassType):
         # readonly attribute populated by iDRAC
         self.VFAllocBasis = EnumTypeField(None,VFAllocBasisTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.VFAllocMult = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.VFAllocMult = IntRangeField(None,1,255, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.VFDistribution = StringField("", parent=self)
-        self.VLanId = IntField(None, parent=self)
+        self.VLanId = IntRangeField(None,1,4094, parent=self)
         self.VLanMode = EnumTypeField(VLanModeTypes.Disabled,VLanModeTypes, parent=self)
         self.VirtFIPMacAddr = MacAddressField("00:00:00:00:00:00", parent=self)
         self.VirtIscsiMacAddr = MacAddressField("00:00:00:00:00:00", parent=self)

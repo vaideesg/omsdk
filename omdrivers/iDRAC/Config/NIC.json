@@ -915,9 +915,11 @@
                     "uneditable": false
                 },
                 "BannerMessageTimeout": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Banner Message Timeout",
                     "longDescription": "Specify the number of seconds that the OptionROM banner is displayed during POST.",
+                    "max": "14",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "BannerMessageTimeout",
                     "qualifier": "NICConfig",
@@ -925,10 +927,12 @@
                     "uneditable": false
                 },
                 "BlnkLeds": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "15",
                     "description": "Blink LEDs",
                     "longDescription": "Specify the number of seconds the LEDs on the physical network port should blink to assist with port identification.",
+                    "max": "15",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "BlnkLeds",
                     "qualifier": "VndrConfigPage",
@@ -1617,9 +1621,11 @@
                     "uneditable": false
                 },
                 "FCoEFabricDiscoveryRetryCnt": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Fabric Discovery Retry Count",
                     "longDescription": "Specify the retry count for FCoE fabric discovery.",
+                    "max": "60",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "FCoEFabricDiscoveryRetryCnt",
                     "qualifier": "FCoEGenParams",
@@ -1639,9 +1645,11 @@
                     "uneditable": false
                 },
                 "FCoELnkUpDelayTime": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Link Up Delay Time",
                     "longDescription": "Specify how long the FCoE Initiator waits after an Ethernet link is established before sending any data over the network.  Units are in seconds.",
+                    "max": "255",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "FCoELnkUpDelayTime",
                     "qualifier": "FCoEGenParams",
@@ -1649,9 +1657,11 @@
                     "uneditable": false
                 },
                 "FCoELunBusyRetryCnt": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "LUN Busy Retry Count",
                     "longDescription": "Specify the number of connection retries the FCoE boot initiator will attempt if the FCoE target LUN is busy.",
+                    "max": "60",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "FCoELunBusyRetryCnt",
                     "qualifier": "FCoEGenParams",
@@ -1787,9 +1797,11 @@
                     "uneditable": false
                 },
                 "FirstFCoEBootTargetLUN": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Boot LUN",
                     "longDescription": "Specify the boot Logical Unit Number (LUN) of the first FCoE storage target that will be used by the FCoE initiator.",
+                    "max": "9223372036854775807",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "FirstFCoEBootTargetLUN",
                     "qualifier": "FCoEConfiguration",
@@ -1797,9 +1809,11 @@
                     "uneditable": false
                 },
                 "FirstFCoEFCFVLANID": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Virtual LAN ID",
                     "longDescription": "Specify the VLAN ID to be used in connecting to the first FC storage target.",
+                    "max": "4094",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "FirstFCoEFCFVLANID",
                     "qualifier": "FCoEConfiguration",
@@ -1829,9 +1843,11 @@
                     "uneditable": false
                 },
                 "FirstTgtBootLun": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Boot LUN",
                     "longDescription": "Specify the boot Logical Unit Number (LUN) on the first iSCSI storage target.",
+                    "max": "9223372036854775807",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "FirstTgtBootLun",
                     "qualifier": "IscsiFirstTgtParams",
@@ -1891,9 +1907,11 @@
                     "uneditable": false
                 },
                 "FirstTgtTcpPort": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "TCP Port",
                     "longDescription": "Specify the TCP Port number of the first iSCSI target.",
+                    "max": "65535",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "FirstTgtTcpPort",
                     "qualifier": "IscsiFirstTgtParams",
@@ -1991,6 +2009,7 @@
                     "baseType": "int",
                     "description": "Instance Number",
                     "longDescription": "Instance Number of the partition.",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "InstanceNumber[Partition:n]",
                     "qualifier": "ConfigureFormn",
@@ -2224,9 +2243,11 @@
                     "uneditable": false
                 },
                 "IscsiVLanId": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Virtual LAN ID",
                     "longDescription": "Specify the VLAN ID to be used for iSCSI boot mode. The VLAN ID must be in the range from 1 to 4094.  [Vendor confirm support for this range].",
+                    "max": "4094",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "IscsiVLanId",
                     "qualifier": "IscsiGenParams",
@@ -2292,10 +2313,12 @@
                     "uneditable": false
                 },
                 "LnkUpDelayTime": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "0",
                     "description": "Link Up Delay Time",
                     "longDescription": "Specifies how long the iSCSI boot host software should wait, in seconds, after an Ethernet link is established before sending any data over the network.",
+                    "max": "255",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "LnkUpDelayTime",
                     "qualifier": "IscsiGenParams",
@@ -2327,9 +2350,11 @@
                     "uneditable": false
                 },
                 "LunBusyRetryCnt": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "LUN Busy Retry Count",
                     "longDescription": "Specify the number of connection attempts the iSCSI boot initiator will attempt if the iSCSI target LUN is busy.",
+                    "max": "60",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "LunBusyRetryCnt",
                     "qualifier": "IscsiGenParams",
@@ -2383,6 +2408,8 @@
                     "default": "100",
                     "description": "Partition n Maximum TX Bandwidth",
                     "longDescription": "Maximum Bandwidth represents the maximum transmit bandwidth of the partition as a percentage of the full physical port link speed.  The Maximum Bandwidth range is 0-100 percent for each enabled partition.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "MaxBandwidth",
                     "qualifier": "GlobalBandwidthAllocation",
@@ -2393,6 +2420,7 @@
                     "baseType": "int",
                     "description": "Maximum Frame Size",
                     "longDescription": "Maximum frame size of each FCoE frame.",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "MaxFrameSize",
                     "qualifier": "FCOECapabilities",
@@ -2463,6 +2491,7 @@
                     "baseType": "int",
                     "default": "0",
                     "description": "Number of PCI Virtual Functions Supported",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "MaxNumberVFSupportedByDevice",
                     "qualifier": "DeviceLevelConfig",
@@ -2470,10 +2499,12 @@
                     "uneditable": false
                 },
                 "MgmtSVID": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "1000",
                     "description": "Management SVID",
                     "longDescription": "Represents and enables configuration or the switch VLAN ID (SVID) for the iDRAC service processor.",
+                    "max": "4095",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "MgmtSVID",
                     "qualifier": "NICPartitioningConfig",
@@ -2481,10 +2512,12 @@
                     "uneditable": false
                 },
                 "MinBandwidth": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "0",
                     "description": "Partition n Minimum TX Bandwidth",
                     "longDescription": "[Vendor: modify as appropriate.] Minimum Bandwidth represents the minimum transmit bandwidth of the partition as a percentage of the full physical port link speed.  The Minimum Bandwidth range is 0-100 percent for each enabled partition.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "MinBandwidth",
                     "qualifier": "GlobalBandwidthAllocation",
@@ -2629,6 +2662,7 @@
                     "baseType": "int",
                     "description": "Number of PCI Physical Functions Currently Enabled per Port",
                     "longDescription": "The number of PCI Physical Functions currently enabled on this port.",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "NumberPCIFunctionsEnabled",
                     "qualifier": "NICPartitioningConfig",
@@ -2636,9 +2670,11 @@
                     "uneditable": false
                 },
                 "NumberPCIFunctionsSupported": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Number of Physical Functions Supported",
                     "longDescription": "Defines the maximum number of PFs that can be enabled within the domain specified by VFAllocBasis. ",
+                    "max": "256",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "NumberPCIFunctionsSupported",
                     "qualifier": "DeviceLevelConfig",
@@ -2646,10 +2682,12 @@
                     "uneditable": false
                 },
                 "NumberVFAdvertised": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "0",
                     "description": "PCI Virtual Functions Advertised",
                     "longDescription": "Specify the number of PCI Virtual Functions (VFs) to be advertised on this port in non-NPAR mode.",
+                    "max": "256",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "NumberVFAdvertised",
                     "qualifier": "NICConfig",
@@ -2657,10 +2695,12 @@
                     "uneditable": false
                 },
                 "NumberVFAdvertised[Partition:n]": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "0",
                     "description": "PCI Virtual Functions Advertised",
                     "longDescription": "Specify the number of PCI Virtual Functions (VFs) to be advertised on this partition (PF) in PCI config space. The number of advertised VFs on each partition must add up to be less than or equal to the number of PCI Virtual Functions supported by the device or port.  [VENDOR modify appropriately for the implementation].\n",
+                    "max": "256",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "NumberVFAdvertised[Partition:n]",
                     "qualifier": "ConfigureFormn",
@@ -2668,10 +2708,12 @@
                     "uneditable": false
                 },
                 "NumberVFSupported": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "0",
                     "description": "Number of Virtual Functions Supported",
                     "longDescription": "The number of virtual functions supported on this port (or device) [VENDOR modify appropriately for the implementation]. ",
+                    "max": "256",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "NumberVFSupported",
                     "qualifier": "DeviceLevelConfig",
@@ -2681,6 +2723,7 @@
                 "NumberVFSupported[Partition:n]": {
                     "baseType": "int",
                     "description": "Number of Virtual Functions Supported per partition",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "NumberVFSupported[Partition:n]",
                     "qualifier": "ConfigureFormn",
@@ -2767,6 +2810,7 @@
                     "baseType": "int",
                     "description": "Port Number",
                     "longDescription": "Port that the partition belongs to.  Replace n with the number of the partition.",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "PortNumber[Partition:n]",
                     "qualifier": "ConfigureFormn",
@@ -2784,9 +2828,11 @@
                     "uneditable": false
                 },
                 "PriorityGroup0BandwidthAllocation": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Priority Group 0 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 0 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "PriorityGroup0BandwidthAllocation",
                     "qualifier": "DCBSettings",
@@ -2805,9 +2851,11 @@
                     "uneditable": false
                 },
                 "PriorityGroup15BandwidthAllocation": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Priority Group 15 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 15 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "PriorityGroup15BandwidthAllocation",
                     "qualifier": "DCBSettings",
@@ -2826,9 +2874,11 @@
                     "uneditable": false
                 },
                 "PriorityGroup1BandwidthAllocation": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Priority Group 1 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 1 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "PriorityGroup1BandwidthAllocation",
                     "qualifier": "DCBSettings",
@@ -2847,9 +2897,11 @@
                     "uneditable": false
                 },
                 "PriorityGroup2BandwidthAllocation": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Priority Group 2 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 2 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "PriorityGroup2BandwidthAllocation",
                     "qualifier": "DCBSettings",
@@ -2868,9 +2920,11 @@
                     "uneditable": false
                 },
                 "PriorityGroup3BandwidthAllocation": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Priority Group 3 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 3 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "PriorityGroup3BandwidthAllocation",
                     "qualifier": "DCBSettings",
@@ -2889,9 +2943,11 @@
                     "uneditable": false
                 },
                 "PriorityGroup4BandwidthAllocation": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Priority Group 4 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 4 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "PriorityGroup4BandwidthAllocation",
                     "qualifier": "DCBSettings",
@@ -2910,9 +2966,11 @@
                     "uneditable": false
                 },
                 "PriorityGroup5BandwidthAllocation": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Priority Group 5 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 5 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "PriorityGroup5BandwidthAllocation",
                     "qualifier": "DCBSettings",
@@ -2931,9 +2989,11 @@
                     "uneditable": false
                 },
                 "PriorityGroup6BandwidthAllocation": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Priority Group 6 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 6 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "PriorityGroup6BandwidthAllocation",
                     "qualifier": "DCBSettings",
@@ -2952,9 +3012,11 @@
                     "uneditable": false
                 },
                 "PriorityGroup7BandwidthAllocation": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Priority Group 7 Bandwidth Allocation",
                     "longDescription": "Specify the percentage of total port bandwidth to be assigned to Priority Group 7 traffic.  The summation of bandwidth allocations from all Priority Groups must equal 100%.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "PriorityGroup7BandwidthAllocation",
                     "qualifier": "DCBSettings",
@@ -2973,9 +3035,11 @@
                     "uneditable": false
                 },
                 "PriorityGroupBandwidthAllocation": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Priority Group Bandwidth Allocation",
                     "longDescription": "Specify the allocation of network port bandwidth by Priority Group.  Format in a colon-separated list for all Priority Groups without omission.  Values in the list from left to right apply to PG0-7 and PG15 inclusively (e.g. PG0BW:PG1BW:PG2BW:PG3BW:PG4BW:PG5BW:PG6BW:PG7BW:PG15BW).  The sum of all Priority Group allocations must equal 100.",
+                    "max": "100",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "PriorityGroupBandwidthAllocation",
                     "qualifier": "DCBSettings",
@@ -3073,10 +3137,12 @@
                     "uneditable": false
                 },
                 "SVID[Partition:n]": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "default": "1001,1002,1003,1004",
                     "description": "SVID",
                     "longDescription": "The Switch VLAN Identifier (SVID) of the partition. ",
+                    "max": "4095",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "SVID[Partition:n]",
                     "qualifier": "ConfigureFormn",
@@ -3104,9 +3170,11 @@
                     "uneditable": false
                 },
                 "SecondTgtBootLun": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Boot LUN",
                     "longDescription": "Specify the boot Logical Unit Number (LUN) on the second iSCSI storage target.",
+                    "max": "9223372036854775807",
+                    "min": "0",
                     "modDeleteAllowed": true,
                     "name": "SecondTgtBootLun",
                     "qualifier": "IscsiSecondTgtParams",
@@ -3166,9 +3234,11 @@
                     "uneditable": false
                 },
                 "SecondTgtTcpPort": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "TCP Port",
                     "longDescription": "Specify the TCP Port number of the second iSCSI target.",
+                    "max": "65535",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "SecondTgtTcpPort",
                     "qualifier": "IscsiSecondTgtParams",
@@ -3732,9 +3802,11 @@
                     "uneditable": false
                 },
                 "VFAllocMult": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "VF Allocation Multiple",
                     "longDescription": "[VENDOR provide appropriate help text for the implementation - what is allowed, etc].",
+                    "max": "255",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "VFAllocMult",
                     "qualifier": "DeviceLevelConfig",
@@ -3752,9 +3824,11 @@
                     "uneditable": false
                 },
                 "VLanId": {
-                    "baseType": "int",
+                    "baseType": "minmaxrange",
                     "description": "Virtual LAN ID",
                     "longDescription": "Specify the VLAN tag to be used with the selected boot protocol. The VLAN ID must be in the range from 1 to 4094.  [Vendor to provide implementation-specific language].",
+                    "max": "4094",
+                    "min": "1",
                     "modDeleteAllowed": true,
                     "name": "VLanId",
                     "qualifier": "NICConfig",

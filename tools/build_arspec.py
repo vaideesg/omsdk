@@ -111,6 +111,8 @@ class AttribRegistry(object):
             'HelpText' : 'longDescription',
             'Partition' : 'partition',
             'RegEx' : 'pattern',
+            'Min' : 'min',
+            'Max' : 'max',
             'GroupName' : 'qualifier',
             'AttributeName' : 'name',
             'AttributeType' : 'baseType',
@@ -124,7 +126,8 @@ class AttribRegistry(object):
             'orderlistseq' : 'list',
             'password' : 'str',
             'binary' : 'str',
-            'minmaxrange' : 'int',
+            'minmaxrange' : 'minmaxrange', # RAID, NIC - means integer
+                                           # for FCHBA - means length of string
             'range' : 'int',
         }
 
@@ -143,11 +146,24 @@ class AttribRegistry(object):
                 if fld in entry:
                     if attmap[fld] in ['baseType']:
                         ntype = typemaps[entry[fld].lower()]
+                        if self.comp == 'FCHBA' and ntype == 'minmaxrange':
+                            ntype = 'str'
                         tt[fld_name][attmap[fld]] = ntype
                     else:
                         if entry[fld] == "FALSE": entry[fld] = False
                         if entry[fld] == "TRUE": entry[fld] = True
                         tt[fld_name][attmap[fld]] = entry[fld]
+
+            if 'min' in tt[fld_name]:
+                if self.comp == 'FCHBA' :
+                    del tt[fld_name]['min']
+                elif int(tt[fld_name]['min']) <= -2**63:
+                        tt[fld_name]['min'] = str(-2**63)
+            if 'max' in tt[fld_name]:
+                if self.comp == 'FCHBA' :
+                    del tt[fld_name]['max']
+                elif int(tt[fld_name]['max']) >= 2**63-1:
+                        tt[fld_name]['max'] = str(2**63-1)
 
             tt[fld_name]['modDeleteAllowed'] = True
             tt[fld_name]['uneditable'] = False
@@ -356,6 +372,7 @@ class AttribRegistry(object):
                 'bool' : 'BooleanField',
                 'enum' : 'EnumTypeField',
                 'list' : 'StringField', # TODO
+                'minmaxrange' : 'IntRangeField', 
                 'IPv4AddressField' : 'IPv4AddressField',
                 'IPAddressField' : 'IPAddressField',
                 'IPv6AddressField' : 'IPv6AddressField',
@@ -403,8 +420,16 @@ class AttribRegistry(object):
             if 'default' not in props[i]:
                 props[i]['default'] = None
 
+            if 'min' not in props[i]:
+                props[i]['min'] = None
+
+            if 'max' not in props[i]:
+                props[i]['max'] = None
+
             # type and default values
             new_prop_def[gname][i]['type'] = None
+            new_prop_def[gname][i]['min'] = props[i]['min']
+            new_prop_def[gname][i]['max'] = props[i]['max']
             new_prop_def[gname][i]['default'] = props[i]['default']
             defval = new_prop_def[gname][i]['default']
 
@@ -432,6 +457,9 @@ class AttribRegistry(object):
                 if 'type' not in props[i]:
                     #print(i + " is wrong typed as enum. switching to enum!")
                     f_pytype = 'StringField'
+            if f_pytype in ['IntField'] and \
+              (new_prop_def[gname][i]['min'] or new_prop_def[gname][i]['max']):
+                f_pytype = 'IntRangeField'
 
             #if o_pytype != f_pytype:
             #    print("{0} => original({1}), new({2})".format(i, o_pytype, f_pytype))
@@ -442,12 +470,13 @@ class AttribRegistry(object):
                 else:
                     defval = str(defval)
                 new_prop_def[gname][i]['type'] = props[i]['type']
+            elif f_pytype in ['IntField', 'IntRangeField']:
+                defval = str(defval)
             else:
                 if defval:
                     defval = '"' + defval + '"'
                 else:
                     defval = str(defval)
-                field_spec = defval
             if defval is None and f_pytype in ['StringField']:
                 defval = ''
             new_prop_def[gname][i]['default'] = defval
@@ -485,6 +514,10 @@ class AttribRegistry(object):
                 field_spec  += "{0}({1}".format(new_prop_def[grp][i]['pytype'], new_prop_def[grp][i]['default'])
                 if new_prop_def[grp][i]['type']:
                     field_spec  += ",{0}".format(new_prop_def[grp][i]['type'])
+                if new_prop_def[grp][i]['min']:
+                    field_spec  += ",{0}".format(new_prop_def[grp][i]['min'])
+                if new_prop_def[grp][i]['max']:
+                    field_spec  += ",{0}".format(new_prop_def[grp][i]['max'])
                 if new_prop_def[grp][i]['alias']:
                     field_spec += ', alias="{0}"'.format(new_prop_def[grp][i]['alias'])
                 field_spec += ', parent=self'

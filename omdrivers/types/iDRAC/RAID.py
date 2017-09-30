@@ -40,9 +40,9 @@ class Controller(ClassType):
         # readonly attribute populated by iDRAC
         self.RAIDSupportedRAIDLevels = EnumTypeField(None,RAIDSupportedRAIDLevelsTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.RAIDbatteryLearnMode = EnumTypeField(RAIDbatteryLearnModeTypes.T_None,RAIDbatteryLearnModeTypes, parent=self)
-        self.RAIDbgiRate = IntField("100", parent=self)
+        self.RAIDbgiRate = IntRangeField(100,1,100, parent=self)
         self.RAIDccMode = EnumTypeField(RAIDccModeTypes.Normal,RAIDccModeTypes, parent=self)
-        self.RAIDccRate = IntField("100", parent=self)
+        self.RAIDccRate = IntRangeField(100,1,100, parent=self)
         self.RAIDcopybackMode = EnumTypeField(RAIDcopybackModeTypes.On,RAIDcopybackModeTypes, parent=self)
         self.RAIDforeignConfig = EnumTypeField(RAIDforeignConfigTypes.Ignore,RAIDforeignConfigTypes, parent=self)
         self.RAIDloadBalancedMode = EnumTypeField(RAIDloadBalancedModeTypes.Automatic,RAIDloadBalancedModeTypes, parent=self)
@@ -54,14 +54,14 @@ class Controller(ClassType):
         self.RAIDmaxSupportedVD = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.RAIDprMode = EnumTypeField(RAIDprModeTypes.Automatic,RAIDprModeTypes, parent=self)
         # readonly attribute populated by iDRAC
-        self.RAIDprRate = IntField("30", parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.RAIDrebuildRate = IntField("100", parent=self)
-        self.RAIDreconstructRate = IntField("100", parent=self)
+        self.RAIDprRate = IntRangeField(30,1,100, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.RAIDrebuildRate = IntRangeField(100,1,100, parent=self)
+        self.RAIDreconstructRate = IntRangeField(100,1,100, parent=self)
         self.RAIDrekey = EnumTypeField(RAIDrekeyTypes.T_False,RAIDrekeyTypes, parent=self)
         self.RAIDremovecontrollerKey = EnumTypeField(RAIDremovecontrollerKeyTypes.T_False,RAIDremovecontrollerKeyTypes, parent=self)
         self.RAIDresetConfig = EnumTypeField(RAIDresetConfigTypes.T_False,RAIDresetConfigTypes, parent=self, rebootRequired = True)
         # readonly attribute populated by iDRAC
-        self.RAIDspinDownIdleTime = IntField("30", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.RAIDspinDownIdleTime = IntRangeField(30,1,65535, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.RAIDsupportedDiskProt = EnumTypeField(None,RAIDsupportedDiskProtTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.Enclosure = ArrayType(Enclosure, parent=self, min_index=1, max_index=100, loading_from_scp=loading_from_scp)
@@ -95,7 +95,7 @@ class PhysicalDisk(ClassType):
         # readonly attribute
         self.RAIDHotSpareStatus = EnumTypeField(RAIDHotSpareStatusTypes.No,RAIDHotSpareStatusTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
-        self.RAIDNominalMediumRotationRate = IntField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.RAIDNominalMediumRotationRate = IntRangeField(None,2,4294967295, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
         self.RAIDPDState = EnumTypeField(None,RAIDPDStateTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.commit(loading_from_scp)
