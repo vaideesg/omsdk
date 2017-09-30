@@ -203,11 +203,11 @@ class AddressHelpers(object):
         if address_type in [AddressTypes.IPv4Address, AddressTypes.IPAddress]:
             match_regex.append('^\d+([.]\d+){3}$')
         elif address_type in [AddressTypes.IPv6Address, AddressTypes.IPAddress]:
-            match_regex.append('^[a-f0-9:]+$')
+            match_regex.append('^[A-Fa-f0-9:]+$')
         elif address_type in [AddressTypes.MACAddress]:
-            match_regex.append('^[0-9a-f]{2}(:[0-9a-f]{2}){5}$')
+            match_regex.append('^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}$')
         elif address_type in [AddressTypes.WWPNAddress]:
-            match_regex.append('^[0-9a-f]{2}(:[0-9a-f]{2}){7}$')
+            match_regex.append('^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){7}$')
 
         if value is None or value == '':
             return True

@@ -12,6 +12,16 @@ from omdrivers.types.iDRAC.SystemConfiguration import *
 
 import logging
 
+# Uncomment valid Attributes and place it inside the tree
+class T(ET.TreeBuilder):
+
+    def comment(self, data):
+        k = data.strip()
+        if re.match('<[^ >]+( [^>]+)*>[^<]*</[^>]+>', k):
+            t = ET.fromstring(k)
+            self.start(t.tag, dict([(k, v) for (k,v) in t.items()]))
+            self.data(t.text)
+            self.end(t.tag)
 
 class XMLParser(object):
 
@@ -127,7 +137,7 @@ class XMLParser(object):
             self._load_child(subnode, entry)
     
     def parse_scp(self, fname):
-        tree= ET.parse(fname)
+        tree= ET.parse(fname, ET.XMLParser(target=T()))
         root = tree.getroot()
         sysconfig = SystemConfiguration(loading_from_scp=True)
         # Do a pre-commit - to save original values

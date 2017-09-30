@@ -133,7 +133,7 @@ class FieldType(TypeBase):
                   type(value).__name__
 
         if valid and not self.my_accept_value(value):
-            msg = "Subclass returned failure"
+            msg = type(self).__name__ +" returned failure for " + str(value)
             valid = False
 
         # if invalid, raise ValueError exception
