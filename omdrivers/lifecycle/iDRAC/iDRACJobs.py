@@ -141,11 +141,13 @@ class iDRACJobs(iBaseJobApi):
         rjson['file'] = fname
         return rjson
 
-    def job_wait(self, jobid, track_jobid = True, show_progress=False):
+    def job_wait(self, jobid, track_jobid = True, show_progress=False,
+                       wait_for = 2*60*60):  # wait for a 2 hours (longgg time)
         if track_jobid:
             self.last_job = jobid
         ret_json = {}
         job_ret = False
+        wait_till = time.time() + wait_for
         while True:
             status = self.get_job_status(jobid)
             if not 'Status' in status:
@@ -175,7 +177,11 @@ class iDRACJobs(iBaseJobApi):
                     break
                 else:
                     logger.debug(str(status))
-            time.sleep(2)
+            time.sleep(5)
+            if time.time() > wait_till:
+                ret_json['Status'] = 'Failed'
+                ret_json['Message'] = 'Job wait did not return for {0} seconds'.format(wait_for)
+                break
         ret_json['retval'] = job_ret
         return ret_json
 
