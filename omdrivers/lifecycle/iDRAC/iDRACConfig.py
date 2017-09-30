@@ -23,6 +23,7 @@ from omdrivers.lifecycle.iDRAC.RAIDHelper import RAIDHelper
 import sys
 import logging
 import tempfile
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -1819,10 +1820,16 @@ class iDRACConfig(iBaseConfigApi):
                     content = f.read()
                 Simulator.record_config(self.entity.ipaddr,content,'config.xml')
 
-            self._sysconfig = self.xmlp.parse_scp(filename)
-            self._sysconfig.commit()
-            # 1 is used for special default user - root
-            self._sysconfig.iDRAC.Users._index_helper.unusable(1)
+            try:
+                self._sysconfig = self.xmlp.parse_scp(filename)
+                self._sysconfig.commit()
+                # 1 is used for special default user - root
+                self._sysconfig.iDRAC.Users._index_helper.unusable(1)
+            except Exception as ex:
+                self._sysconfig = None
+                logger.error(str(ex))
+                #traceback.print_exc()
+
 
         if tempshare:
             tempshare.dispose()
@@ -2153,6 +2160,7 @@ class iDRACConfig(iBaseConfigApi):
         return self._sysconfig.iDRAC.WebServer.SSLEncryptionBitLength_WebServer
 
     def CreateVD(self, vd_name, span_depth, span_length, raid_type, n_dhs = 0, n_ghs = 0):
+        #RAIDTypeTypes.RAID_0
         from omdrivers.types.iDRAC.RAID import Enclosure
         if not self._raid_helper:
             self._raid_helper = RAIDHelper(self.entity)
@@ -2174,9 +2182,12 @@ class iDRACConfig(iBaseConfigApi):
         vdfqdd = "Disk.Virtual." + str(vdindex) + ":" + str(controller.FQDD)
         controller_fqdd = 'RAID.Embedded.1-1'
         cntrl = self._sysconfig.Controller.find_first(FQDD = controller_fqdd)
+        if cntrl is None:
+            print("No such controller found!")
+            return
         cntrl.RAIDresetConfig = 'True'
         cntrl.RAIDresetConfig = "False"
-        cntrl.RAIDforeignConfig = "Clear"
+        cntrl.RAIDforeignConfig = RAIDforeignConfigTypes.Clear
         cntrl.RAIDprMode = "Automatic"
         cntrl.RAIDccMode = "Normal"
         cntrl.RAIDcopybackMode = "On"

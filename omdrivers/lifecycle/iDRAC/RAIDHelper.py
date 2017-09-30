@@ -3,7 +3,7 @@ from omsdk.sdkcreds import UserCredentials
 from omsdk.simulator.devicesim import Simulator
 from omsdk.sdkprint import PrettyPrint
 from omdrivers.types.iDRAC.RAID import *
-from omsdk.typemgr.ArrayType import ArrayType
+from omsdk.typemgr.ArrayType import ArrayType,FQDDHelper
 import re
 
 import logging
@@ -12,8 +12,9 @@ logger = logging.getLogger(__name__)
 
 class Storage:
     def __init__(self, loading_from_scp=True):
-        self.Controller = ArrayType(Controller, parent = None, min_index=1,
-                              max_index=100, loading_from_scp=loading_from_scp)
+        self.Controller = ArrayType(Controller, parent = None, 
+                              index_helper=FQDDHelper(),
+                              loading_from_scp=loading_from_scp)
         self.inited = False
 
     @property

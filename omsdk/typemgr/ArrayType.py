@@ -438,11 +438,15 @@ class ArrayTypeIterator:
            return self.array._entries[self.current]
 
 
-class IndexHelper:
+class IndexHelper(object):
     def __init__(self, min_value, max_value):
+        if PY2:
+            super(IndexHelper, self).__init__()
+        else:
+            super().__init__()
         self.min_value = min_value
         self.max_value = max_value
-        self.indexes_free = [i for i in range(self.min_value, self.max_value)]
+        self.indexes_free = [i for i in range(self.min_value, self.max_value+2)]
         self.reserve = []
 
     def next_index(self):
@@ -474,26 +478,9 @@ class IndexHelper:
     def printx(self):
         print(PrettyPrint.prettify_json(self.__dict__))
 
-class FQDDHelper:
+class FQDDHelper(IndexHelper):
     def __init__(self):
-        self.min_value = 1
-        self.max_value = 30
-        self.indexes_free = [i for i in range(self.min_value, self.max_value)]
-
-    def next_index(self):
-        if len(self.indexes_free) > 0:
-            index = self.indexes_free[0]
-            self.indexes_free.remove(index)
-            return index
-        raise IndexError('ran out of all entries')
-
-    def restore_index(self, index):
-        if index not in self.indexes_free:
-            self.indexes_free.append(index)
-            self.indexes_free = sorted(self.indexes_free)
-
-    def has_indexes(self):
-        return len(self.indexes_free) > 0
-
-    def printx(self):
-        print(PrettyPrint.prettify_json(self.__dict__))
+        if PY2:
+            super(FQDDHelper, self).__init__(1, 30)
+        else:
+            super().__init__(1,30)
