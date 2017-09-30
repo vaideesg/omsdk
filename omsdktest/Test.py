@@ -18,7 +18,7 @@ def D(msg, obj, everything = False):
     print('=======' + msg)
     print(obj.ModifiedXML)
 
-if True:
+if False:
     idrac_system = SNMP(None, loading_from_scp=True)
     idrac_system.AlertPort_SNMP = 184
     idrac_system.TrapFormat_SNMP = TrapFormat_SNMPTypes.SNMPv1
@@ -32,16 +32,6 @@ if True:
     print("===== nothing")
     print(idrac_system.ModifiedXML)
 
-    Users = ArrayType(Users, loading_from_scp=True)
-    Users.new(UserName_Users='vaidees')
-    print("===== 1 user name")
-    print(Users.ModifiedXML)
-    Users.commit(True)
-    print("===== nothing")
-    print(Users.ModifiedXML)
-    Users.commit()
-    print("===== nothing")
-    print(Users.ModifiedXML)
 
     # Precommit FType
     DVAL = 162
@@ -377,7 +367,19 @@ if True:
     P("s1 <  s2", False, s1 <  s2)
     P("s1 <= s2", False, s1 <= s2)
 
-    users = Users
+if True:
+
+    users = ArrayType(Users, loading_from_scp=True)
+    print(users._index_helper.unusable(1))
+    users.new(UserName_Users='vaidees')
+    print("===== 1 user name")
+    print(Users.ModifiedXML)
+    users.commit(True)
+    print("===== nothing")
+    print(Users.ModifiedXML)
+    users.commit()
+    print("===== nothing")
+    print(Users.ModifiedXML)
     entry = users.new(UserName_Users = 'hello')
     print("===== (users.username=hello)")
     print(users.ModifiedXML)

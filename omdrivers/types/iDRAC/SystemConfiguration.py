@@ -1,5 +1,5 @@
 from omsdk.typemgr.ClassType import ClassType
-from omsdk.typemgr.ArrayType import ArrayType
+from omsdk.typemgr.ArrayType import ArrayType, FQDDHelper
 from omsdk.typemgr.BuiltinTypes import RootClassType
 from omdrivers.types.iDRAC.iDRAC import *
 from omdrivers.types.iDRAC.BIOS import *
@@ -24,10 +24,10 @@ class SystemConfiguration(RootClassType):
         self.LifecycleController = LifecycleController(parent=self, loading_from_scp=loading_from_scp)
         self.System = System(parent=self, loading_from_scp=loading_from_scp)
         self.iDRAC = iDRAC(parent=self, loading_from_scp=loading_from_scp)
-        self.FCHBA = ArrayType(FCHBA, parent=self, loading_from_scp=loading_from_scp)
-        self.NIC = ArrayType(NetworkInterface, parent=self, loading_from_scp=loading_from_scp)
+        self.FCHBA = ArrayType(FCHBA, parent=self, index_helper=FQDDHelper(), loading_from_scp=loading_from_scp)
+        self.NIC = ArrayType(NetworkInterface, parent=self, index_helper=FQDDHelper(), loading_from_scp=loading_from_scp)
         self.BIOS = BIOS(parent=self, loading_from_scp=loading_from_scp)
-        self.Controller = ArrayType(Controller, parent=self, loading_from_scp=loading_from_scp)
+        self.Controller = ArrayType(Controller, parent=self, index_helper=FQDDHelper(), loading_from_scp=loading_from_scp)
         self._ignore_attribs('ServiceTag', 'Model', 'TimeStamp')
         self.commit(loading_from_scp)
 

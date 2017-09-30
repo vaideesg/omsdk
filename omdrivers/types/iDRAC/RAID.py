@@ -1,6 +1,6 @@
 from omdrivers.enums.iDRAC.RAID import *
 from omsdk.typemgr.ClassType import ClassType
-from omsdk.typemgr.ArrayType import ArrayType
+from omsdk.typemgr.ArrayType import ArrayType, FQDDHelper
 from omsdk.typemgr.BuiltinTypes import *
 import sys
 import logging
@@ -64,9 +64,9 @@ class Controller(ClassType):
         self.RAIDspinDownIdleTime = IntRangeField(30,1,65535, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.RAIDsupportedDiskProt = EnumTypeField(None,RAIDsupportedDiskProtTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        self.Enclosure = ArrayType(Enclosure, parent=self, min_index=1, max_index=100, loading_from_scp=loading_from_scp)
-        self.VirtualDisk = ArrayType(VirtualDisk, parent=self, min_index=1, max_index=100, loading_from_scp=loading_from_scp)
-        self.PhysicalDisk = ArrayType(PhysicalDisk, parent=self, min_index=1, max_index=100, loading_from_scp=loading_from_scp)
+        self.Enclosure = ArrayType(Enclosure, parent=self, index_helper=FQDDHelper(), loading_from_scp=loading_from_scp)
+        self.VirtualDisk = ArrayType(VirtualDisk, parent=self, index_helper=FQDDHelper(), loading_from_scp=loading_from_scp)
+        self.PhysicalDisk = ArrayType(PhysicalDisk, parent=self, index_helper=FQDDHelper(), loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 
 class Enclosure(ClassType):
@@ -81,7 +81,7 @@ class Enclosure(ClassType):
         # readonly attribute populated by iDRAC
         self.RAIDEnclosureCurrentCfgMode = EnumTypeField(None,RAIDEnclosureCurrentCfgModeTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.RAIDEnclosureRequestedCfgMode = EnumTypeField(RAIDEnclosureRequestedCfgModeTypes.T_None,RAIDEnclosureRequestedCfgModeTypes, parent=self)
-        self.PhysicalDisk = ArrayType(PhysicalDisk, parent=self, min_index=1, max_index=100, loading_from_scp=loading_from_scp)
+        self.PhysicalDisk = ArrayType(PhysicalDisk, parent=self, index_helper=FQDDHelper(), loading_from_scp=loading_from_scp)
         self.commit(loading_from_scp)
 
 class PhysicalDisk(ClassType):

@@ -1,6 +1,6 @@
 from omdrivers.enums.iDRAC.iDRAC import *
 from omsdk.typemgr.ClassType import ClassType
-from omsdk.typemgr.ArrayType import ArrayType
+from omsdk.typemgr.ArrayType import ArrayType,IndexHelper
 from omsdk.typemgr.BuiltinTypes import *
 import sys
 import logging
@@ -3501,7 +3501,7 @@ class iDRAC(ClassType):
             super(iDRAC, self).__init__("Component", None, parent)
         else: 
             super().__init__("Component", None, parent)
-        self.ADGroup = ArrayType(ADGroup, parent=self, min_index=1, max_index=5, loading_from_scp=loading_from_scp)
+        self.ADGroup = ArrayType(ADGroup, parent=self, index_helper=IndexHelper(1, 5), loading_from_scp=loading_from_scp)
         self.ASRConfig = ASRConfig(parent=self, loading_from_scp=loading_from_scp)
         self.ActiveDirectory = ActiveDirectory(parent=self, loading_from_scp=loading_from_scp)
         self.AutoBackup = AutoBackup(parent=self, loading_from_scp=loading_from_scp)
@@ -3534,7 +3534,7 @@ class iDRAC(ClassType):
         self.DefaultFactoryPassword = DefaultFactoryPassword(parent=self, loading_from_scp=loading_from_scp)
         self.Diagnostics = Diagnostics(parent=self, loading_from_scp=loading_from_scp)
         self.EC = EC(parent=self, loading_from_scp=loading_from_scp)
-        self.EmailAlert = ArrayType(EmailAlert, parent=self, min_index=1, max_index=4, loading_from_scp=loading_from_scp)
+        self.EmailAlert = ArrayType(EmailAlert, parent=self, index_helper=IndexHelper(1, 4), loading_from_scp=loading_from_scp)
         self.FPGAFWInventory = FPGAFWInventory(parent=self, loading_from_scp=loading_from_scp)
         self.FReDFWInventory = FReDFWInventory(parent=self, loading_from_scp=loading_from_scp)
         self.FWInventory = FWInventory(parent=self, loading_from_scp=loading_from_scp)
@@ -3582,7 +3582,7 @@ class iDRAC(ClassType):
         self.IntegratedDatacenter = IntegratedDatacenter(parent=self, loading_from_scp=loading_from_scp)
         self.LCAttributes = LCAttributes(parent=self, loading_from_scp=loading_from_scp)
         self.LDAP = LDAP(parent=self, loading_from_scp=loading_from_scp)
-        self.LDAPRoleGroup = ArrayType(LDAPRoleGroup, parent=self, min_index=1, max_index=5, loading_from_scp=loading_from_scp)
+        self.LDAPRoleGroup = ArrayType(LDAPRoleGroup, parent=self, index_helper =IndexHelper(1, 5), loading_from_scp=loading_from_scp)
         self.LocalSecurity = LocalSecurity(parent=self, loading_from_scp=loading_from_scp)
         self.Lockdown = Lockdown(parent=self, loading_from_scp=loading_from_scp)
         self.Logging = Logging(parent=self, loading_from_scp=loading_from_scp)
@@ -3622,7 +3622,7 @@ class iDRAC(ClassType):
         self.SC_BMC = SC_BMC(parent=self, loading_from_scp=loading_from_scp)
         self.SECONDARYNIC = SECONDARYNIC(parent=self, loading_from_scp=loading_from_scp)
         self.SNMP = SNMP(parent=self, loading_from_scp=loading_from_scp)
-        self.SNMPAlert = ArrayType(SNMPAlert, parent=self, min_index=1, max_index=8, loading_from_scp=loading_from_scp)
+        self.SNMPAlert = ArrayType(SNMPAlert, parent=self, index_helper=IndexHelper(1, 8), loading_from_scp=loading_from_scp)
         self.SNMPTrapIPv4 = SNMPTrapIPv4(parent=self, loading_from_scp=loading_from_scp)
         self.SNMPTrapIPv6 = SNMPTrapIPv6(parent=self, loading_from_scp=loading_from_scp)
         self.SSH = SSH(parent=self, loading_from_scp=loading_from_scp)
@@ -3656,8 +3656,8 @@ class iDRAC(ClassType):
         self.USB = USB(parent=self, loading_from_scp=loading_from_scp)
         self.Update = Update(parent=self, loading_from_scp=loading_from_scp)
         self.UpdateTask = UpdateTask(parent=self, loading_from_scp=loading_from_scp)
-        self.UserDomain = ArrayType(UserDomain, parent=self, min_index=1, max_index=40, loading_from_scp=loading_from_scp)
-        self.Users = ArrayType(Users, parent=self, min_index=1, max_index=16, loading_from_scp=loading_from_scp)
+        self.UserDomain = ArrayType(UserDomain, parent=self, index_helper=IndexHelper(1, 40), loading_from_scp=loading_from_scp)
+        self.Users = ArrayType(Users, parent=self, index_helper=IndexHelper(1, 16), loading_from_scp=loading_from_scp)
         self.VNCServer = VNCServer(parent=self, loading_from_scp=loading_from_scp)
         self.VirtualConsole = VirtualConsole(parent=self, loading_from_scp=loading_from_scp)
         self.VirtualMedia = VirtualMedia(parent=self, loading_from_scp=loading_from_scp)

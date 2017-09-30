@@ -1,6 +1,7 @@
 from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.TypeState import TypeState,TypeBase
 from omsdk.typemgr.BuiltinTypes import StringField, IntField
+from omsdk.sdkprint import PrettyPrint
 import sys
 import io
 import re
@@ -36,7 +37,7 @@ PY3 = sys.version_info[0] == 3
 # def get_root(self)
 
 class ArrayType(TypeBase):
-    def __init__(self, clsname, parent=None, min_index=1, max_index=20, loading_from_scp=False):
+    def __init__(self, clsname, parent=None, index_helper=None, loading_from_scp=False):
         if PY2:
             super(ArrayType, self).__init__()
         else:
@@ -49,14 +50,14 @@ class ArrayType(TypeBase):
         self._composite = False
         self._index = 1
         self._loading_from_scp = loading_from_scp
-        self._min_index = min_index
-        self._max_index = max_index
+        if index_helper is None:
+            index_helper = IndexHelper(1, 20)
+        self._index_helper = index_helper
         #self._modifyAllowed = True
 
         self._cls = clsname
         self._entries = []
 
-        self._indexes_free = [i for i in range(min_index, max_index+1)]
         self._keys = {}
 
         self._freeze = False
@@ -133,7 +134,6 @@ class ArrayType(TypeBase):
                                  dest = self.__dict__['_orig_value'])
                 self.__dict__['_orig_value'] = \
                     sorted(self.__dict__['_orig_value'], key = lambda entry: entry._index)
-                # update _keys
                 for entry in self._entries:
                     entry.commit(loading_from_scp)
             if loading_from_scp:
@@ -155,10 +155,8 @@ class ArrayType(TypeBase):
                                  dest = self._entries)
                     for entry in self._entries:
                         entry.reject()
-                    self._indexes_free = [i for i in \
-                                 range(self._min_index, self._max_index+1)]
+                        self._index_helper.restore_index(entry._index)
                     for i in self._entries:
-                        self._indexes_free.remove(i._index)
                         self._keys[self._get_key(i)] = i
                 self.__dict__['_state'] = TypeState.Committed
         return True
@@ -230,7 +228,7 @@ class ArrayType(TypeBase):
         return self._new(index, True, **kwargs)
 
     def _new(self, index=None, add=False, **kwargs):
-        if len(self._indexes_free) <= 0:
+        if not self._index_helper.has_indexes():
             raise AttributeError('no more entries in array')
         entry = self._cls(parent=self, loading_from_scp=self._loading_from_scp)
         for i in kwargs:
@@ -247,11 +245,10 @@ class ArrayType(TypeBase):
             raise ValueError(self._cls.__name__ +" key "+str(key)+' already exists')
 
         if index is None:
-            index = self._indexes_free[0]
+            index = self._index_helper.next_index()
         else:
             index = int(index)
         entry._set_index(index)
-        self._indexes_free.remove(index)
         self._entries.append(entry)
         self._keys[key] = entry
         self._sort()
@@ -286,7 +283,7 @@ class ArrayType(TypeBase):
 
         for entry in toremove:
             self._entries.remove(entry)
-            self._indexes_free.append(entry._index)
+            self._index_helper.restore_index(entry._index)
             strkey = self._get_key(entry)
             if strkey in self._keys:
                 del self._keys[strkey]
@@ -313,6 +310,7 @@ class ArrayType(TypeBase):
 
     def remove(self, **kwargs):
         entries = self._find(True, **kwargs)
+        print(entries)
         return self._remove_selected(entries)
 
     def remove_matching(self, criteria):
@@ -325,7 +323,7 @@ class ArrayType(TypeBase):
 
         for i in entries:
             self._entries.remove(i)
-            self._indexes_free.append(i._index)
+            self._index_helper.restore_index(i._index)
             key = self._get_key(i)
             if key in self._keys:
                 del self._keys[key]
@@ -346,7 +344,6 @@ class ArrayType(TypeBase):
         return entries
 
     def _sort(self):
-        self._indexes_free = sorted(self._indexes_free)
         self._entries = sorted(self._entries, key = lambda entry: entry._index)
 
     def _find(self, all_entries = True, **kwargs):
@@ -435,3 +432,60 @@ class ArrayTypeIterator:
            if self.current >= self.high:
                raise StopIteration
            return self.array._entries[self.current]
+
+
+class IndexHelper:
+    def __init__(self, min_value, max_value):
+        self.min_value = min_value
+        self.max_value = max_value
+        self.indexes_free = [i for i in range(self.min_value, self.max_value)]
+        self.reserve = []
+
+    def next_index(self):
+        if len(self.indexes_free) > 0:
+            index = self.indexes_free[0]
+            self.indexes_free.remove(index)
+            return index
+        raise IndexError('ran out of all entries')
+
+    def unusable(self, index):
+        if index in self.indexes_free:
+            self.indexes_free.remove(index)
+            self.reserve.append(index)
+
+    def restore_index(self, index):
+        if  index not in self.reserve and \
+            index not in self.indexes_free:
+            self.indexes_free.append(index)
+            self.indexes_free = sorted(self.indexes_free)
+
+
+    def has_indexes(self):
+        return len(self.indexes_free) > 0
+
+    def printx(self):
+        print(PrettyPrint.prettify_json(self.__dict__))
+
+class FQDDHelper:
+    def __init__(self):
+        self.min_value = 1
+        self.max_value = 30
+        self.indexes_free = [i for i in range(self.min_value, self.max_value)]
+
+    def next_index(self):
+        if len(self.indexes_free) > 0:
+            index = self.indexes_free[0]
+            self.indexes_free.remove(index)
+            return index
+        raise IndexError('ran out of all entries')
+
+    def restore_index(self, index):
+        if index not in self.indexes_free:
+            self.indexes_free.append(index)
+            self.indexes_free = sorted(self.indexes_free)
+
+    def has_indexes(self):
+        return len(self.indexes_free) > 0
+
+    def printx(self):
+        print(PrettyPrint.prettify_json(self.__dict__))

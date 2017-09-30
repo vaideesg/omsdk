@@ -1821,6 +1821,8 @@ class iDRACConfig(iBaseConfigApi):
 
             self._sysconfig = self.xmlp.parse_scp(filename)
             self._sysconfig.commit()
+            # 1 is used for special default user - root
+            self._sysconfig.iDRAC.Users._index_helper.unusable(1)
 
         if tempshare:
             tempshare.dispose()
