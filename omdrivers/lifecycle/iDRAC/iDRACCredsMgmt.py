@@ -5,6 +5,7 @@ from omsdk.sdkcreds import UserCredentials
 from omsdk.sdkcenum import EnumWrapper, TypeHelper
 from omsdk.lifecycle.sdkcredentials import iBaseCredentialsApi
 from omdrivers.enums.iDRAC.iDRACEnums import *
+from omdrivers.enums.iDRAC.iDRAC import Privilege_UsersTypes
 
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
@@ -29,90 +30,70 @@ class iDRACCredsMgmt(iBaseCredentialsApi):
 
     @property
     def Users(self):
-        return self._config_mgr._get_scp_component('Users')
+        return self._config_mgr._sysconfig.iDRAC.Users
 
-    def get_user(self, username):
-        (uid, retobj, msg) = self._config_mgr._find_existing_slot('Users', username)
-        return retobj
+    #######
+    # Creating a user
+    # 
+    #   user = idrac.user_mgr.Users.new(
+    #         user.<attribute_name> = value
+    #         user.<attribute_name> = value
+    #         user.<attribute_name> = value
+    #   )
+    #   idrac.user_mgr.Users.new(
+    #           UserName_Users = username,
+    #           Password_Users = password,
+    #           Privilege_Users = Privilege_UsersTypes.Operator,
+    #           IpmiLanPrivilege_Users = "Administrator",
+    #           IpmiSerialPrivilege_Users = "Administrator",
+    #           Enable_Users = "Enabled",
+    #           SolEnable_Users = "Enabled",
+    #           ProtocolEnable_Users = "Disabled",
+    #           AuthenticationProtocol_Users = "SHA",
+    #           PrivacyProtocol_Users = "AES"
+    #       )
+    #
+    #   idrac.config_mgr.apply_changes()
+    #
+    #   Note: for enum types you can give enum or corresponding string value
+    #             Privilege_UsersTypes.Administrator or "511"
+    #   For details on variable types look at omdrivers.types.iDRAC.iDRAC
+    #   and possible values of enum in omdrivers.enums.iDRAC.iDRAC
+    #
+    #   don't forget to catch for ValueEror and AttributeError exceptions!
+    #   You will get that for following reasons:
+    #        - Wrong/invalid value provided (enum, string)
+    #        - All user entries are exhausted
+    #        - Duplicate user entry
+    #
+    #   Until you do apply_changes, they are not committed.
+    #
+    #######
 
-    def create_user(self, username, password, user_privilege, others=None):
-        (uid, retobj, msg) = self._config_mgr._find_existing_slot('Users', username)
-        if retobj is not None: return { 'Status' : 'Failed', 'Message' : username + " already exists!" }
+    #######
+    # Modifying a user
+    # 
+    #   user = idrac.user_mgr.Users.find_first(UserName_Users = username)
+    #
+    #   user.<attribute_name> = value
+    #   user.<attribute_name> = value
+    #   user.<attribute_name> = value
+    #
+    #   value is None     => treated as no change
+    #   value is ''       => treated as equivalent nullifying the object
+    #   value is invalid  => ValueError is thrown
+    #   idrac.config_mgr.apply_changes()
+    #
+    #   don't forget to catch for ValueEror and AttributeError exceptions!
+    #
+    #######
 
-        (uid, retobj, msg) = self._config_mgr._find_empty_slot('Users', username)
-        if retobj is None: return msg
-
-        user_privilege = TypeHelper.resolve(user_privilege)
-        config = self._config_mgr.config
-        return self._config_mgr._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap =  {
-                config.arspec.iDRAC.UserName_Users :  (uid, username),
-                config.arspec.iDRAC.Password_Users :  (uid, password),
-                config.arspec.iDRAC.Privilege_Users : (uid, user_privilege),
-                config.arspec.iDRAC.IpmiLanPrivilege_Users : (uid, 'Administrator'),
-                config.arspec.iDRAC.IpmiSerialPrivilege_Users : (uid, 'Administrator'),
-                config.arspec.iDRAC.Enable_Users : (uid, 'Enabled'),
-                config.arspec.iDRAC.SolEnable_Users : (uid, 'Enabled'),
-                config.arspec.iDRAC.ProtocolEnable_Users : (uid, 'Enabled'),
-                config.arspec.iDRAC.AuthenticationProtocol_Users : (uid, 'SHA'),
-                config.arspec.iDRAC.PrivacyProtocol_Users : (uid, 'AES'),
-            })
-
-    def change_password(self, username, old_password, new_password):
-        (uid, retobj, msg) = self._config_mgr._find_existing_slot('Users', username)
-        if retobj is None: return msg
-
-        config = self._config_mgr.config
-        return self._config_mgr._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap =  { config.arspec.iDRAC.Password_Users : (uid, new_password), })
-
-    def change_privilege(self, username, user_privilege, others=None):
-        (uid, retobj, msg) = self._config_mgr._find_existing_slot('Users', username)
-        if retobj is None: return msg
-
-        config = self._config_mgr.config
-        user_privilege = TypeHelper.resolve(user_privilege)
-        return self._config_mgr._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap =  { config.arspec.iDRAC.Privilege_Users : (uid, user_privilege), })
-
-    def disable_user(self, username):
-        (uid, retobj, msg) = self._config_mgr._find_existing_slot('Users', username)
-        if retobj is None: return msg
-
-        config = self._config_mgr.config
-        return self._config_mgr._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap =  { config.arspec.iDRAC.Enable_Users :  (uid, 'Disabled'), })
-
-    def enable_user(self, username):
-        (uid, retobj, msg) = self._config_mgr._find_existing_slot('Users', username)
-        if retobj is None: return msg
-
-        config = self._config_mgr.config
-        return self._config_mgr._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap =  { config.arspec.iDRAC.Enable_Users :  (uid, 'Enabled'), })
-
-    def delete_user(self, username):
-        (uid, retobj, msg) = self._config_mgr._find_existing_slot('Users', username)
-        if retobj is None: return msg
-
-        config = self._config_mgr.config
-        return self._config_mgr._configure_field_using_scp(
-            component = "iDRAC.Embedded.1",
-            fmap =  {
-                config.arspec.iDRAC.UserName_Users :  (uid, ''),
-                config.arspec.iDRAC.Password_Users :  (uid, ''),
-                config.arspec.iDRAC.Privilege_Users : (uid, ''),
-                config.arspec.iDRAC.IpmiLanPrivilege_Users : (uid, ''),
-                config.arspec.iDRAC.IpmiSerialPrivilege_Users : (uid, ''),
-                config.arspec.iDRAC.Enable_Users : (uid, 'Disabled'),
-                config.arspec.iDRAC.SolEnable_Users : (uid, 'Disabled'),
-                config.arspec.iDRAC.ProtocolEnable_Users : (uid, 'Disabled'),
-                config.arspec.iDRAC.AuthenticationProtocol_Users : (uid, 'SHA'),
-                config.arspec.iDRAC.PrivacyProtocol_Users : (uid, 'AES'),
-            })
-
+    #######
+    # deleting a user
+    # 
+    #   idrac.user_mgr.iDRAC.Users.remove(UserName_Users = username)
+    #   idrac.config_mgr.apply_changes()
+    #
+    #   don't forget to catch for ValueEror and AttributeError exceptions!
+    #
+    #######

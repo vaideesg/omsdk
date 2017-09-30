@@ -226,8 +226,8 @@ class ArrayType(TypeBase):
         if index is None and self._get_key(entry) is None:
             raise ValueError('key not provided')
         key = self._get_key(entry)
-        if key and key in self._keys:
-            raise ValueError(self._cls.__name__ +" key "+key+' already exists')
+        if index is None and (key and key in self._keys):
+            raise ValueError(self._cls.__name__ +" key "+str(key)+' already exists')
 
         if index is None:
             index = self._indexes_free[0]
@@ -236,6 +236,7 @@ class ArrayType(TypeBase):
         entry._set_index(index)
         self._indexes_free.remove(index)
         self._entries.append(entry)
+        self._keys[key] = entry
         self._sort()
 
         # set state!
