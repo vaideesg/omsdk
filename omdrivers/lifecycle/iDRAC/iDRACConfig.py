@@ -1717,6 +1717,7 @@ class iDRACConfig(iBaseConfigApi):
         self.liason_share = None
         self._raid_tree = None
         self.config = ConfigFactory.get_config(entity.config_dir, iDRACConfigCompSpec)
+        self._config_entries = ConfigEntries(iDRACConfigKeyFields)
         self.UseNewStyle = False
         self._initialize()
 
@@ -1729,6 +1730,7 @@ class iDRACConfig(iBaseConfigApi):
             logger.debug("You can only perform readonly operations!")
             #return False
         self.liason_share = myshare
+        self._initialize()
         return True
 
     def _initialize(self):
@@ -1737,11 +1739,6 @@ class iDRACConfig(iBaseConfigApi):
             fcspec = os.path.join(self.entity.config_dir, 'iDRAC.comp_spec')
             self.xmlp = XMLParser(fcspec)
             return self._load_scp()
-        else:
-            self._config_entries = ConfigEntries(iDRACConfigKeyFields)
-            msg = { 'Status' : 'Success',
-                'Message' : 'Config loaded' }
-            return msg
 
     def apply_changes(self, reboot=False):
         if self._sysconfig and not self._sysconfig.is_changed():
