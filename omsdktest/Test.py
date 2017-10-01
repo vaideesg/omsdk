@@ -18,7 +18,7 @@ def D(msg, obj, everything = False):
     print('=======' + msg)
     print(obj.ModifiedXML)
 
-if False:
+if True:
     idrac_system = SNMP(None, loading_from_scp=True)
     idrac_system.AlertPort_SNMP = 184
     idrac_system.TrapFormat_SNMP = TrapFormat_SNMPTypes.SNMPv1

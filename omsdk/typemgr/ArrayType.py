@@ -5,9 +5,11 @@ from omsdk.sdkprint import PrettyPrint
 import sys
 import io
 import re
+import logging
 PY2 = sys.version_info[0] == 2
 PY3 = sys.version_info[0] == 3
 
+logger = logging.getLogger(__name__)
 # private
 #
 # >>def __init__(self, mode, fname, alias, parent=None, volatile=False)
@@ -376,12 +378,13 @@ class ArrayType(TypeBase):
         return output
 
     def select_entry(self, entry, criteria):
-        if 'self.' in criteria or '(' in criteria:
-            print("criteria cannot have functions or self objects!")
+        if 'self.' in criteria:
+            logger.error("criteria cannot have self references!")
             return False
         criteria = criteria.replace('.parent', '._parent._parent')
-        criteria = re.sub('([^ \t]+)\s+is\s+([^ \t]+)', 'isinstance(\\1, \\2)',
-                          criteria)
+        criteria = re.sub('([a-zA-Z0-9_.]+)\s+is\s+([^ \t]+)',
+                          '(type(\\1).__name__ == "\\2")', criteria)
+        logger.debug("Evaluating: " + criteria)
         return eval(criteria)
 
     @property

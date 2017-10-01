@@ -51,6 +51,7 @@ class FieldType(TypeBase):
         self._modifyAllowed = modifyAllowed
         self._deleteAllowed = deleteAllowed
         self._rebootRequired = rebootRequired
+        self._list = False
 
         self._freeze = False
 

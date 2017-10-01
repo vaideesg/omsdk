@@ -111,15 +111,15 @@ class VirtualDisk(ClassType):
         self.Cachecade = EnumTypeField(None,CachecadeTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.DiskCachePolicy = EnumTypeField(None,DiskCachePolicyTypes, parent=self)
         # readonly attribute
-        self.IncludedPhysicalDiskID = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.IncludedPhysicalDiskID = ListField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
         self.LockStatus = EnumTypeField(None,LockStatusTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.Name = StringField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
         self.RAIDTypes = EnumTypeField(None,RAIDTypesTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
-        # readonly attribute
-        self.RAIDaction = EnumTypeField(RAIDactionTypes.Update,RAIDactionTypes, parent=self, modifyAllowed = False, deleteAllowed = False, rebootRequired = True)
+        # action attribute
+        self.RAIDaction = EnumTypeField(RAIDactionTypes.Update,RAIDactionTypes, parent=self, rebootRequired = True)
         # readonly attribute
         self.RAIDdedicatedSpare = EnumTypeField(None,RAIDdedicatedSpareTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.RAIDdefaultReadPolicy = EnumTypeField(RAIDdefaultReadPolicyTypes.Adaptive,RAIDdefaultReadPolicyTypes, parent=self)

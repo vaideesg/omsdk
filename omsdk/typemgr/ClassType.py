@@ -471,9 +471,13 @@ class ClassType(TypeBase):
                         continue
                     value = TypeHelper.resolve(self.__dict__[i]._value)
                     if deleted: value = ''
-                    s.write(space+
-                       '  <Attribute Name="{0}">{1}</Attribute>\n'.format(
-                       attr_name, value))
+                    values = [value]
+                    if self.__dict__[i]._list:
+                        values = value.split(',')
+                    for val in values:
+                        s.write(space+
+                        '  <Attribute Name="{0}">{1}</Attribute>\n'.format(
+                        attr_name, val))
             else:
                 s.write(self.__dict__[i]._get_xml_string(everything, space + '  ', deleted))
         new_len = len(s.getvalue())

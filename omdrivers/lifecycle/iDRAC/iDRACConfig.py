@@ -17,6 +17,7 @@ from omsdk.sdktime import SchTimer, TIME_NOW
 from omdrivers.lifecycle.iDRAC.rebootOptions import RebootOptions
 from omdrivers.enums.iDRAC.iDRACEnums import *
 from omdrivers.enums.iDRAC.iDRAC import *
+from omdrivers.enums.iDRAC.RAID import *
 from omsdk.simulator.devicesim import Simulator
 from omdrivers.lifecycle.iDRAC.SCPParsers import XMLParser
 from omdrivers.lifecycle.iDRAC.RAIDHelper import RAIDHelper
@@ -2159,72 +2160,43 @@ class iDRACConfig(iBaseConfigApi):
     def SSLEncryptionBits(self):
         return self._sysconfig.iDRAC.WebServer.SSLEncryptionBitLength_WebServer
 
-    def CreateVD(self, vd_name, span_depth, span_length, raid_type, n_dhs = 0, n_ghs = 0):
-        #RAIDTypeTypes.RAID_0
-        from omdrivers.types.iDRAC.RAID import Enclosure
+    @property
+    def RaidHelper(self):
         if not self._raid_helper:
             self._raid_helper = RAIDHelper(self.entity)
-        disks = self._raid_helper.get_disks(span_depth, span_length, n_dhs, n_ghs)
-        if len(disks) <= 0:
-            logger.debug("No sufficient disks found in Controller!")
-            return { 'Status' : 'Failed',
-                     'Message' : 'No sufficient disks found in controller!' }
-        # Assumption: All disks are part of same enclosure or direct attached!
-        controller = None
-        enclosure = disks[0]._parent._parent
-        if not isinstance(disks[0]._parent._parent, Enclosure):
-            enclosure = None
-            controller = disks[0]._parent._parent
-        else:
-            controller = enclosure._parent._parent
+        return self._raid_helper
 
-        vdindex = self._raid_helper.get_vd_index(controller)
-        vdfqdd = "Disk.Virtual." + str(vdindex) + ":" + str(controller.FQDD)
-        controller_fqdd = 'RAID.Embedded.1-1'
-        cntrl = self._sysconfig.Controller.find_first(FQDD = controller_fqdd)
-        if cntrl is None:
-            print("No such controller found!")
-            return
-        cntrl.RAIDresetConfig = 'True'
-        cntrl.RAIDresetConfig = "False"
-        cntrl.RAIDforeignConfig = RAIDforeignConfigTypes.Clear
-        cntrl.RAIDprMode = "Automatic"
-        cntrl.RAIDccMode = "Normal"
-        cntrl.RAIDcopybackMode = "On"
-        cntrl.RAIDEnhancedAutoImportForeignConfig = "Disabled"
-        cntrl.RAIDrebuildRate = "30"
-        cntrl.RAIDbgiRate = "30"
-        cntrl.RAIDreconstructRate = "30"
-        vdisk = cntrl.VirtualDisk.new(
-            index = cntrl.VirtualDisk.Length+1,
-            #FQDD = vdfqdd,
+    def CreateVD(self, vd_name, span_depth, span_length, raid_type, n_dhs = 0, n_ghs = 0, **kwargs):
+        return self.RaidHelper.new_virtual_disk(
+            # VirtualDisk parameters
+            Name = vd_name,
+            SpanDepth = span_depth,
+            SpanLength = span_length,
+            NumberDedicatedHotSpare=n_dhs,
+            NumberGlobalHotSpare=n_ghs,
+            RAIDTypes = raid_type,
             RAIDaction = "Create",
             RAIDinitOperation = "None",
             DiskCachePolicy = "Default",
             RAIDdefaultWritePolicy = "WriteThrough",
             RAIDdefaultReadPolicy  ="NoReadAhead",
-            Name = vd_name,
             StripeSize = 128,
-            SpanDepth = span_depth,
-            SpanLength = span_length,
-            RAIDTypes = raid_type)
-            #IncludedPhysicalDiskID = s_disks)
-        vdisk._attribs['FQDD'] = vdfqdd
-        target = cntrl
-        if enclosure:
-            tgt_encl = cntrl.Enclosure.find_first(FQDD = enclosure.FQDD)
-            if tgt_encl is None:
-                tgt_encl = cntrl.Enclosure.new(index = cntrl.Enclosure.Length+1)
-                tgt_encl._attribs['FQDD'] = enclosure.FQDD
-            target = tgt_encl
-        for disk in disks:
-            tgt_disk = target.PhysicalDisk.find_first(FQDD = disk.FQDD)
-            if tgt_disk is None:
-                tgt_disk = target.PhysicalDisk.new(
-                          index = target.PhysicalDisk.Length+1,
-                          )
-                tgt_disk._attribs['FQDD'] = disk.FQDD
-            tgt_disk.RAIDHotSpareStatus = "No"
+            # disk filter
+            PhysicalDiskFilter = 'disk.MediaType == "HDD" and (disk.Size > 200 and disk.Size < 1000) and (disk.parent.parent is Controller and "H330" in disk.parent.parent.ProductName._value)',
+            # Controller Params
+            RAIDcopybackMode = "On",
+            RAIDEnhancedAutoImportForeignConfig = "Disabled",
+            RAIDresetConfig = "False",
+            RAIDbgiRate = "30",
+            RAIDprMode = "Automatic",
+            RAIDrebuildRate = "30",
+            RAIDforeignConfig = "Clear",
+            RAIDreconstructRate = "30",
+            RAIDccMode = "Normal",
+            **kwargs)
+
+    def DeleteVD(self, vd_name):
+        return self.RaidHelper.delete_virtual_disk(Name = vd_name)
 
     def _replicate_ctree(self, obj):
         if isinstance(obj, list):
