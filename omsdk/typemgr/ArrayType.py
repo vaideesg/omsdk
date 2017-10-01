@@ -230,7 +230,7 @@ class ArrayType(TypeBase):
         return self._new(index, True, **kwargs)
 
     def _new(self, index=None, add=False, **kwargs):
-        if not self._index_helper.has_indexes():
+        if index is None and not self._index_helper.has_indexes():
             raise AttributeError('no more entries in array')
         entry = self._cls(parent=self, loading_from_scp=self._loading_from_scp)
         for i in kwargs:
@@ -449,7 +449,7 @@ class IndexHelper(object):
             super().__init__()
         self.min_value = min_value
         self.max_value = max_value
-        self.indexes_free = [i for i in range(self.min_value, self.max_value+2)]
+        self.indexes_free = [i for i in range(self.min_value, self.max_value+1)]
         self.reserve = []
 
     def next_index(self):
