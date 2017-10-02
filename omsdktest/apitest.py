@@ -1,4 +1,6 @@
 import os
+import sys
+sys.path.append(os.getcwd())
 import xml.etree.ElementTree as ET
 import re
 from omsdk.typemgr.ClassType import *
@@ -27,6 +29,7 @@ myshare = FileOnShare(remote ="\\\\<share>\\Share",
         mount_point='Z:\\', isFolder=True,
         creds = UserCredentials("user@domain", "password"))
 
+ipaddr = '192.168.0.1'
 logging.basicConfig(level=logging.DEBUG)
 myshare.valid = True
 
@@ -66,9 +69,6 @@ emailtest(idrac, "pacific@gmail.com", "deleted", action=2)
 emailtest(idrac, "pacific@gmail.com", "deletion-fail", action=2)
 emailtest(idrac, "pacific@gmail.com", "added")
 print(PrettyPrint.prettify_json(idrac.config_mgr._sysconfig.iDRAC.EmailAlert.Json))
-
-exit()
-
 
 idrac.config_mgr.create_virtual_disk('hola',1,1,'RAID 1',0)
 print("createvd")
