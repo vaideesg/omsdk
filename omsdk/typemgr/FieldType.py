@@ -145,8 +145,13 @@ class FieldType(TypeBase):
         if name in self.__dict__ and self._value == value:
             return
 
+        # List fields, simply append the new entry!
+        if self._list and name in self.__dict__ and self.__dict__[name]:
+            value = self.__dict__[name] + "," + value
+
         # modify the value
         self.__dict__[name] = value
+
         if self._state in [TypeState.UnInitialized, TypeState.Precommit, TypeState.Initializing]:
             self.__dict__['_state'] = TypeState.Initializing
         elif self._state in [TypeState.Committed, TypeState.Changing]:
@@ -176,6 +181,24 @@ class FieldType(TypeBase):
 
     def set_value(self, value):
         self._value = value
+
+    # nulls the value
+    def nullify_value(self):
+        if '_value' in self.__dict__:
+            self.__dict__['_value'] = None
+
+        if self._state in [TypeState.UnInitialized, TypeState.Precommit, TypeState.Initializing]:
+            self.__dict__['_state'] = TypeState.Initializing
+        elif self._state in [TypeState.Committed, TypeState.Changing]:
+            if self._orig_value == self._value:
+                self.__dict__['_state'] = TypeState.Committed
+            else:
+                self.__dict__['_state'] = TypeState.Changing
+        else:
+            print("Should not come here")
+
+        if self.is_changed() and self._parent:
+            self._parent.child_state_changed(self, self._state)
 
     # Value APIs
     def my_accept_value(self, value):
@@ -219,7 +242,7 @@ class FieldType(TypeBase):
                     del self.__dict__['_value']
                     self.__dict__['_state'] = TypeState.UnInitialized
                 else:
-                    self._value = self._orig_value
+                    self.__dict__['_value'] = self._orig_value
                     self.__dict__['_state'] = TypeState.Committed
         return True
 
