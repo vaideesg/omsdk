@@ -73,6 +73,15 @@ class TypeHelper:
                 return i
         return defval
 
+    @staticmethod
+    def is_enum(entype):
+
+        if PY3Enum and isinstance(entype, type(Enum)):
+            return True
+        elif PY2Enum and isinstance(entype, Enum):
+            return True
+        return False
+
 class EnumWrapper(object):
     enum_entries = {}
     enum_name = None

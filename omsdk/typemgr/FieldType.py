@@ -1,4 +1,3 @@
-from enum import Enum
 from omsdk.sdkcenum import TypeHelper
 from omsdk.typemgr.TypeState import TypeState, TypeBase
 import sys
@@ -118,8 +117,7 @@ class FieldType(TypeBase):
                 value = bool(value)
                 valid = True
             # expected value is enumeration
-            elif (PY2 and isinstance(self._type, Enum)) or \
-                 (PY3 and isinstance(self._type, type(Enum))):
+            elif TypeHelper.is_enum(self._type):
                 newvalue = TypeHelper.convert_to_enum(value, self._type)
                 if newvalue is not None:
                     value = newvalue

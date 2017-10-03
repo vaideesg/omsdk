@@ -150,6 +150,7 @@ RAIDdedicatedSpareTypes = EnumWrapper("RAIDdedicatedSpareTypes", {
 
 RAIDdefaultReadPolicyTypes = EnumWrapper("RAIDdefaultReadPolicyTypes", {
     "Adaptive" : "Adaptive",
+    "AdaptiveReadAhead" : "AdaptiveReadAhead",
     "NoReadAhead" : "NoReadAhead",
     "ReadAhead" : "ReadAhead",
 }).enum_type

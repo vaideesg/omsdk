@@ -1,6 +1,7 @@
 from omsdk.sdkcenum import TypeHelper
 from omsdk.typemgr.FieldType import FieldType
 from omsdk.typemgr.TypeState import TypeState, TypeBase
+from omsdk.sdkcunicode import UnicodeStringWriter
 import sys
 import re
 import io
@@ -424,7 +425,7 @@ class ClassType(TypeBase):
         return self._get_xml_string(False)
 
     def _get_xml_string(self, everything = True, space='', deleted=False):
-        s = io.StringIO()
+        s = UnicodeStringWriter()
         if not self._fname:
             # group object!!
             for i in self.Properties:
@@ -446,17 +447,17 @@ class ClassType(TypeBase):
                         continue
                     value = TypeHelper.resolve(self.__dict__[i]._value)
                     if deleted: value = ''
-                    s.write('  <Attribute Name="{0}">{1}</Attribute>\n'.format(
+                    s._write_output('  <Attribute Name="{0}">{1}</Attribute>\n'.format(
                         attr_name, value))
                 else:
-                    s.write(self.__dict__[i]._get_xml_string(everything, space + '  ', deleted))
+                    s._write_output(self.__dict__[i]._get_xml_string(everything, space + '  ', deleted))
             return s.getvalue()
 
-        s.write(space + '<{0}'.format(self._fname))
+        s._write_output(space + '<{0}'.format(self._fname))
         for i in self._attribs:
             if i not in self._ign_attribs:
-                s.write(' {0}="{1}"'.format(i,self._attribs[i]))
-        s.write('>\n')
+                s._write_output(' {0}="{1}"'.format(i,self._attribs[i]))
+        s._write_output('>\n')
 
         orig_len = len(s.getvalue())
         for i in self.Properties:
@@ -475,16 +476,16 @@ class ClassType(TypeBase):
                     if self.__dict__[i]._list:
                         values = value.split(',')
                     for val in values:
-                        s.write(space+
+                        s._write_output(space+
                         '  <Attribute Name="{0}">{1}</Attribute>\n'.format(
                         attr_name, val))
             else:
-                s.write(self.__dict__[i]._get_xml_string(everything, space + '  ', deleted))
+                s._write_output(self.__dict__[i]._get_xml_string(everything, space + '  ', deleted))
         new_len = len(s.getvalue())
         if new_len == orig_len:
             return ""
 
-        s.write(space + '</{0}>\n'.format(self._fname))
+        s._write_output(space + '</{0}>\n'.format(self._fname))
         return s.getvalue()
 
     def json_encode(self):

@@ -182,7 +182,7 @@ class ListField(CloneableFieldType):
     def __init__(self, init_value, alias=None, parent=None, volatile=False,
                  modifyAllowed=True, deleteAllowed=True, rebootRequired=False):
         if PY2:
-            super(StringField, self).__init__(init_value, str, 'Attribute', alias, parent,
+            super(ListField, self).__init__(init_value, str, 'Attribute', alias, parent,
                          volatile, modifyAllowed, deleteAllowed, rebootRequired)
         else:
             super().__init__(init_value, str, 'Attribute', alias, parent,

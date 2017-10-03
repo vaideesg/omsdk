@@ -2,6 +2,7 @@ from omsdk.typemgr.ClassType import ClassType
 from omsdk.typemgr.TypeState import TypeState,TypeBase
 from omsdk.typemgr.BuiltinTypes import StringField, IntField
 from omsdk.sdkprint import PrettyPrint
+from omsdk.sdkcunicode import UnicodeStringWriter
 import sys
 import io
 import re
@@ -413,13 +414,13 @@ class ArrayType(TypeBase):
         return self._get_xml_string(False)
 
     def _get_xml_string(self, everything = True, space='', deleted=False):
-        s = io.StringIO()
+        s = UnicodeStringWriter()
         for entry in self._entries:
             if not entry.is_changed() and not everything:
                 continue
-            s.write(entry._get_xml_string(everything, space, False))
+            s._write_output(entry._get_xml_string(everything, space, False))
         for entry in self.values_deleted():
-            s.write(entry._get_xml_string(True, space, True))
+            s._write_output(entry._get_xml_string(True, space, True))
         return s.getvalue()
 
     def __iter__(self):
