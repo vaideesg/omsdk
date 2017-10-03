@@ -305,6 +305,12 @@ class ArrayType(TypeBase):
             return entries[0]
         return None
 
+    def entry_at(self, index):
+        for entry in self._entries:
+            if entry._index == index:
+                return entry
+        return None
+
     def find_or_create(self, index=None):
         if not index:
             index = self._index_helper.next_index()
