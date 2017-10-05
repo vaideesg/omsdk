@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 class FieldType(TypeBase):
 
-    def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False, modifyAllowed = True, deleteAllowed = True, rebootRequired=False):
+    def __init__(self, init_value, typename, fname, alias, parent=None, volatile=False, modifyAllowed = True, deleteAllowed = True, rebootRequired=False, default_on_delete=''):
         if PY2:
             super(FieldType, self).__init__()
         else:
@@ -50,6 +50,7 @@ class FieldType(TypeBase):
         self._modifyAllowed = modifyAllowed
         self._deleteAllowed = deleteAllowed
         self._rebootRequired = rebootRequired
+        self._default_on_delete = default_on_delete
         self._list = False
 
         self._freeze = False
@@ -166,7 +167,7 @@ class FieldType(TypeBase):
     # Value APIs
     def __delattr__(self, name):
         # Do not allow access to internal variables
-        if name in ['_orig_value', '_track', '_freeze', '_type',
+        if name in ['_orig_value', '_track', '_freeze', '_type', '_default_on_delete',
                     '_value', '_volatile', '_composite']:
             raise AttributeError('Invalid attribute ' + name)
 

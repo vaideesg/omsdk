@@ -446,7 +446,7 @@ class ClassType(TypeBase):
                     if not self.__dict__[i]._modifyAllowed and deleted:
                         continue
                     value = TypeHelper.resolve(self.__dict__[i]._value)
-                    if deleted: value = ''
+                    if deleted: value = self.__dict__[i]._default_on_delete
                     s._write_output('  <Attribute Name="{0}">{1}</Attribute>\n'.format(
                         attr_name, value))
                 else:
@@ -471,7 +471,7 @@ class ClassType(TypeBase):
                     if not self.__dict__[i]._modifyAllowed and deleted:
                         continue
                     value = TypeHelper.resolve(self.__dict__[i]._value)
-                    if deleted: value = ''
+                    if deleted: value = self.__dict__[i]._default_on_delete
                     values = [value]
                     if self.__dict__[i]._list:
                         values = value.split(',')
