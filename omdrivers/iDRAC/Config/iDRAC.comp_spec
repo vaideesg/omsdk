@@ -55,8 +55,8 @@
         "entries" : "multiple"
     },
     "Controller" : {
-        "pattern" : "^(RAID|AHCI)\\.*",
-        "firmware_pattern" : "^(RAID|AHCI)\\.*",
+        "pattern" : "^(RAID|AHCI|FD)\\.*",
+        "firmware_pattern" : "^(RAID|AHCI|FD)\\.*",
         "registry" : "RAID",
         "groups" : [ ],
         "nogroup" : true,
