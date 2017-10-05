@@ -9488,7 +9488,7 @@
                     "uneditable": false
                 },
                 "AlertPort_CMCSNMPAlert": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "SNMP Alert Port",
                     "longDescription": "Specifies Alert Port number",
                     "modDeleteAllowed": true,
@@ -9498,7 +9498,7 @@
                     "uneditable": false
                 },
                 "AlertPort_SNMP": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "Alert Port",
                     "longDescription": "Specifies the SNMP Alert Port",
                     "modDeleteAllowed": true,
@@ -12963,7 +12963,7 @@
                     "uneditable": false
                 },
                 "DiscoveryPort_SNMP": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "Discovery Port",
                     "longDescription": "Specifies the SNMP Discovery Port",
                     "modDeleteAllowed": true,
@@ -14710,7 +14710,7 @@
                     "uneditable": false
                 },
                 "HostOSProxyPort_SupportAssist": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "Host OS Proxy Port",
                     "longDescription": "Host OS proxy port",
                     "modDeleteAllowed": true,
@@ -14741,7 +14741,7 @@
                     "uneditable": false
                 },
                 "HttpPort_WebServer": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "Http Port",
                     "longDescription": "Specifies the port number for HTTP communication with the iDRAC",
                     "modDeleteAllowed": true,
@@ -14751,7 +14751,7 @@
                     "uneditable": false
                 },
                 "HttpsPort_WebServer": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "Https Port",
                     "longDescription": "Specifies the port number for HTTPS communication with the iDRAC",
                     "modDeleteAllowed": true,
@@ -19178,7 +19178,7 @@
                     "uneditable": false
                 },
                 "Port_SSH": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "SSH Port",
                     "longDescription": "Specifies the port number for the iDRAC SSH interface",
                     "modDeleteAllowed": true,
@@ -19188,7 +19188,7 @@
                     "uneditable": false
                 },
                 "Port_SysLog": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "Sys Log Port",
                     "longDescription": "[Required to fill]",
                     "modDeleteAllowed": true,
@@ -19198,7 +19198,7 @@
                     "uneditable": false
                 },
                 "Port_Telnet": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "Telnet Port",
                     "longDescription": "Specifies the port number for the iDRAC Telnet interface",
                     "modDeleteAllowed": true,
@@ -19208,7 +19208,7 @@
                     "uneditable": false
                 },
                 "Port_VNCServer": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "Port",
                     "longDescription": "VNC Server Port",
                     "modDeleteAllowed": true,
@@ -19218,7 +19218,7 @@
                     "uneditable": false
                 },
                 "Port_VirtualConsole": {
-                    "baseType": "int",
+                    "baseType": "PortField",
                     "description": "vKVM Port",
                     "longDescription": "Specifies the virtual KVM port",
                     "modDeleteAllowed": true,

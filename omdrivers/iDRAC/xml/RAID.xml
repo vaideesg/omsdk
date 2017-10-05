@@ -314,6 +314,10 @@
 			<ValueName> Adaptive</ValueName>
 			<DisplayValueName>Adaptive</DisplayValueName>
 		 </AttributeValue> 
+ 		 <AttributeValue>
+			<ValueName> AdaptiveReadAhead</ValueName>
+			<DisplayValueName>AdaptiveReadAhead</DisplayValueName>
+		 </AttributeValue> 
  	 </Attribute>
 	 <Attribute>
 		<AttributeName>DiskCachePolicy</AttributeName>

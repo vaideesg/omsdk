@@ -233,8 +233,36 @@
             "RAIDaction"
         ]
     },
+    "defaults" : {
+        "RAID" : {
+            "RAIDccMode": null,
+            "RAIDcopybackMode": null,
+            "RAIDforeignConfig": null,
+            "RAIDprMode": null,
+            "RAIDHotSpareStatus": null,
+            "DiskCachePolicy": null,
+            "RAIDaction": null,
+            "RAIDinitOperation": null
+        }
+    },
     "types" : {
+    "RAID": {
+        "ListField" : {
+            "NA": [ "IncludedPhysicalDiskID" ]
+        }
+    },
     "iDRAC": {
+        "PortField" : {
+            "CMCSNMPAlert": [ "AlertPort" ],
+            "SNMP": [ "AlertPort", "DiscoveryPort" ],
+            "SSH": [ "Port" ],
+            "SupportAssist": [ "HostOSProxyPort" ],
+            "SysLog": [ "Port" ],
+            "Telnet": [ "Port" ],
+            "VNCServer": [ "Port" ],
+            "VirtualConsole": [ "Port" ],
+            "WebServer": [ "HttpPort", "HttpsPort" ]
+        },
         "IPAddressField": {
             "AutoBackup": [
                 "IPAddress"

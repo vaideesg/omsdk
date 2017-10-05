@@ -206,7 +206,7 @@
                     "uneditable": false
                 },
                 "IncludedPhysicalDiskID": {
-                    "baseType": "str",
+                    "baseType": "ListField",
                     "description": "Physical Disk ID",
                     "longDescription": "This is a pseudo attribute for XML configuration feature. It is used for specifying physical disk FQDD for creating a virtual disk. Configurable via XML configuration feature only.",
                     "modDeleteAllowed": true,
@@ -984,12 +984,14 @@
             "enum": [
                 "NoReadAhead",
                 "ReadAhead",
-                "Adaptive"
+                "Adaptive",
+                "AdaptiveReadAhead"
             ],
             "enumDescriptions": [
                 "No Read-Ahead",
                 "Read-Ahead",
-                "Adaptive"
+                "Adaptive",
+                "AdaptiveReadAhead"
             ],
             "type": "enumeration"
         },
