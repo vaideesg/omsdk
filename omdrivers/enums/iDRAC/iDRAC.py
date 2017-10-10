@@ -1331,6 +1331,8 @@ IsOCPcardActive_CurrentNICTypes = EnumWrapper("IsOCPcardActive_CurrentNICTypes",
 KeepPhyLinkUp_DCSCustomTypes = EnumWrapper("KeepPhyLinkUp_DCSCustomTypes", {
     "T_False" : "False",
     "T_True" : "True",
+    "T_0" : "0",
+    "T_1" : "1",
 }).enum_type
 
 KeyEnable_VirtualMediaTypes = EnumWrapper("KeyEnable_VirtualMediaTypes", {

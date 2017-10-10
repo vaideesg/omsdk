@@ -157,7 +157,7 @@ class NetworkInterface(ClassType):
         # readonly attribute populated by iDRAC
         self.FifthFCoEWWPNTarget = WWPNAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.FirstFCoEBootTargetLUN = IntRangeField(None,0,9223372036854775807, parent=self)
-        self.FirstFCoEFCFVLANID = IntRangeField(None,1,4094, parent=self)
+        self.FirstFCoEFCFVLANID = IntRangeField(None,0,4094, parent=self)
         self.FirstFCoEWWPNTarget = WWPNAddressField(None, parent=self)
         self.FirstHddTarget = EnumTypeField(FirstHddTargetTypes.Disabled,FirstHddTargetTypes, parent=self)
         self.FirstTgtBootLun = IntRangeField(None,0,9223372036854775807, parent=self)
@@ -202,7 +202,7 @@ class NetworkInterface(ClassType):
         # readonly attribute populated by iDRAC
         self.IscsiMacAddr = MacAddressField(None, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.IscsiTgtBoot = EnumTypeField(IscsiTgtBootTypes.Disabled,IscsiTgtBootTypes, parent=self)
-        self.IscsiVLanId = IntRangeField(None,1,4094, parent=self)
+        self.IscsiVLanId = IntRangeField(None,0,4094, parent=self)
         self.IscsiVLanMode = EnumTypeField(IscsiVLanModeTypes.Disabled,IscsiVLanModeTypes, parent=self)
         self.IscsiViaDHCP = EnumTypeField(IscsiViaDHCPTypes.Disabled,IscsiViaDHCPTypes, parent=self)
         self.LegacyBootProto = EnumTypeField(LegacyBootProtoTypes.varies,LegacyBootProtoTypes, parent=self)
@@ -421,7 +421,7 @@ class NetworkInterface(ClassType):
         # readonly attribute populated by iDRAC
         self.VFAllocMult = IntRangeField(None,1,255, parent=self, modifyAllowed = False, deleteAllowed = False)
         self.VFDistribution = StringField("", parent=self)
-        self.VLanId = IntRangeField(None,1,4094, parent=self)
+        self.VLanId = IntRangeField(None,0,4094, parent=self)
         self.VLanMode = EnumTypeField(VLanModeTypes.Disabled,VLanModeTypes, parent=self)
         self.VirtFIPMacAddr = MacAddressField("00:00:00:00:00:00", parent=self)
         self.VirtIscsiMacAddr = MacAddressField("00:00:00:00:00:00", parent=self)

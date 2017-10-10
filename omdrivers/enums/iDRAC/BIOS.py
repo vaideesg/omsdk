@@ -2078,6 +2078,7 @@ SignedFirmwareUpdateTypes = EnumWrapper("SignedFirmwareUpdateTypes", {
 }).enum_type
 
 Slot10BifTypes = EnumWrapper("Slot10BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2092,6 +2093,7 @@ Slot10Types = EnumWrapper("Slot10Types", {
 }).enum_type
 
 Slot11BifTypes = EnumWrapper("Slot11BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2106,6 +2108,7 @@ Slot11Types = EnumWrapper("Slot11Types", {
 }).enum_type
 
 Slot12BifTypes = EnumWrapper("Slot12BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2120,6 +2123,7 @@ Slot12Types = EnumWrapper("Slot12Types", {
 }).enum_type
 
 Slot13BifTypes = EnumWrapper("Slot13BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2134,6 +2138,7 @@ Slot13Types = EnumWrapper("Slot13Types", {
 }).enum_type
 
 Slot14BifTypes = EnumWrapper("Slot14BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2142,6 +2147,7 @@ Slot14BifTypes = EnumWrapper("Slot14BifTypes", {
 }).enum_type
 
 Slot1BifTypes = EnumWrapper("Slot1BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2156,6 +2162,7 @@ Slot1Types = EnumWrapper("Slot1Types", {
 }).enum_type
 
 Slot2BifTypes = EnumWrapper("Slot2BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2170,6 +2177,7 @@ Slot2Types = EnumWrapper("Slot2Types", {
 }).enum_type
 
 Slot3BifTypes = EnumWrapper("Slot3BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2184,6 +2192,7 @@ Slot3Types = EnumWrapper("Slot3Types", {
 }).enum_type
 
 Slot4BifTypes = EnumWrapper("Slot4BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2198,6 +2207,7 @@ Slot4Types = EnumWrapper("Slot4Types", {
 }).enum_type
 
 Slot5BifTypes = EnumWrapper("Slot5BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2212,6 +2222,7 @@ Slot5Types = EnumWrapper("Slot5Types", {
 }).enum_type
 
 Slot6BifTypes = EnumWrapper("Slot6BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2226,6 +2237,7 @@ Slot6Types = EnumWrapper("Slot6Types", {
 }).enum_type
 
 Slot7BifTypes = EnumWrapper("Slot7BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2240,6 +2252,7 @@ Slot7Types = EnumWrapper("Slot7Types", {
 }).enum_type
 
 Slot8BifTypes = EnumWrapper("Slot8BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",
@@ -2254,6 +2267,7 @@ Slot8Types = EnumWrapper("Slot8Types", {
 }).enum_type
 
 Slot9BifTypes = EnumWrapper("Slot9BifTypes", {
+    "DefaultBifurcation" : "DefaultBifurcation",
     "Allx16" : "Allx16",
     "Allx4" : "Allx4",
     "Allx8" : "Allx8",

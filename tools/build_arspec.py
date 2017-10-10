@@ -382,6 +382,8 @@ class AttribRegistry(object):
                 'IPv6AddressField' : 'IPv6AddressField',
                 'MacAddressField' : 'MacAddressField',
                 'WWPNAddressField' : 'WWPNAddressField',
+                'PortField' : 'PortField',
+                'ListField' : 'ListField',
         }
 
         for i in props:
@@ -467,6 +469,10 @@ class AttribRegistry(object):
 
             #if o_pytype != f_pytype:
             #    print("{0} => original({1}), new({2})".format(i, o_pytype, f_pytype))
+            if 'defaults' in self.config_spec and  \
+               self.comp in self.config_spec['defaults'] and  \
+               i in self.config_spec['defaults'][self.comp]:
+               defval = self.config_spec['defaults'][self.comp][i]
 
             if f_pytype in ['EnumTypeField']:
                 if defval:
@@ -551,7 +557,7 @@ class AttribRegistry(object):
                                 self.config_spec['alias'][self.comp][grp][i]))
             if grp in self.config_spec and 'children' in self.config_spec[grp]:
                 for child in self.config_spec[grp]['children']:
-                    out.write('        self.{0} = ArrayType({0}, parent=self, min_index={1}, max_index={2}, loading_from_scp=loading_from_scp)\n'.format(child, 1, 100))
+                    out.write('        self.{0} = ArrayType({0}, parent=self, index_helper=FQDDHelper(), loading_from_scp=loading_from_scp)\n'.format(child, 1, 100))
 
             if 'composite' in self.config_spec and grp in self.config_spec['composite']:
                 for field in self.config_spec['composite'][grp]:
@@ -608,7 +614,7 @@ class AttribRegistry(object):
                     ngrp = self._sanitize(grp)
                     if 'arrays' in self.config_spec and grp in self.config_spec['arrays']:
                         ent = self.config_spec['arrays'][grp]
-                        out.write('        self.{0} = ArrayType({0}, parent=self, min_index={1}, max_index={2}, loading_from_scp=loading_from_scp)\n'.format(ngrp, ent['min'], ent['max']))
+                        out.write('        self.{0} = ArrayType({0}, parent=self, index_helper =IndexHelper({1}, {2}), loading_from_scp=loading_from_scp)\n'.format(ngrp, ent['min'], ent['max']))
 
 
                     else:
@@ -629,7 +635,7 @@ class AttribRegistry(object):
             props = self.attr_json['definitions'][self.comp]['properties']
             out.write('from omdrivers.enums.{0}.{1} import *\n'.format(self.device, self.comp))
             out.write('from omsdk.typemgr.ClassType import ClassType\n')
-            out.write('from omsdk.typemgr.ArrayType import ArrayType\n')
+            out.write('from omsdk.typemgr.ArrayType import ArrayType, IndexHelper\n')
             out.write('from omsdk.typemgr.BuiltinTypes import *\n')
             out.write('import sys\n')
             out.write('import logging\n')
@@ -660,7 +666,7 @@ def save_tree(directory, dconfig, device):
 
         with open(dest_file, 'w') as out:
             out.write('from omsdk.typemgr.ClassType import ClassType\n')
-            out.write('from omsdk.typemgr.ArrayType import ArrayType\n')
+            out.write('from omsdk.typemgr.ArrayType import ArrayType, IndexHelper\n')
             out.write('from omsdk.typemgr.BuiltinTypes import RootClassType\n')
             for i in registries:
                 out.write('from omdrivers.types.{0}.{1} import *\n'.format(device, i))
