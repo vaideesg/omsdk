@@ -223,3 +223,26 @@ class RAIDHelper:
             return msg
         return { 'Status' : 'Success',
                  'Message' : 'Unable to find the virtual disk' }
+
+    def find_first_virtual_disk(self, **kwargs):
+        vdselect = None
+        sysconfig = self.entity.config_mgr._sysconfig
+        for controller in sysconfig.Controller:
+            vdselect = controller.VirtualDisk.find_first(**kwargs)
+            if vdselect:
+                break
+        return vdselect
+
+    def find_virtual_disk(self, **kwargs):
+        vdselect = []
+        sysconfig = self.entity.config_mgr._sysconfig
+        for controller in sysconfig.Controller:
+            vdselect.extend(controller.VirtualDisk.find(**kwargs))
+        return vdselect
+
+    def find_matching_virtual_disk(self, criteria):
+        vdselect = []
+        sysconfig = self.entity.config_mgr._sysconfig
+        for controller in sysconfig.Controller:
+            vdselect.extend(controller.VirtualDisk.find_matching(criteria))
+        return vdselect

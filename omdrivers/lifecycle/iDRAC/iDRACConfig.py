@@ -1965,6 +1965,9 @@ class iDRACConfig(iBaseConfigApi):
         return self.entity._renitiate_dhs()
     # End Auto Discovery APIs
 
+    @property
+    def SystemConfiguration(self):
+        return self._sysconfig
 
     @property
     def BootMode(self):
