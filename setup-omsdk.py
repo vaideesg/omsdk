@@ -25,8 +25,8 @@ setup(
     # https://packaging.python.org/en/latest/single_source_version.html
     version='0.9.1005',
 
-    description='Dell OpenManage SDK',
-    long_description='Dell OpenManage SDK for devices, consoles',
+    description='Dell EMC OpenManage Python SDK',
+    long_description='Dell EMC OpenManage Python SDK for Dell EMC PowerEdge Servers and Chassis',
 
     # The project's main homepage.
     url='https://support.dell.com',
