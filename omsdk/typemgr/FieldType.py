@@ -1,4 +1,5 @@
 from omsdk.sdkcenum import TypeHelper
+from omsdk.sdkcunicode import UnicodeHelper
 from omsdk.typemgr.TypeState import TypeState, TypeBase
 import sys
 PY2 = sys.version_info[0] == 2
@@ -108,7 +109,8 @@ class FieldType(TypeBase):
         elif type(self) == type(value):
             value = value._value
             valid = True
-        elif isinstance(value, str):
+        elif UnicodeHelper.is_string(value):
+            value = UnicodeHelper.stringize(value)
             # expected value is int
             if self._type == int:
                 value = int(value)

@@ -6,7 +6,11 @@ if PY2UC:
 
 class UnicodeHelper(object):
     @staticmethod
+    def is_string(ustring):
+        return isinstance(ustring, str) or \
+               (PY2UC and isinstance(ustring, unicode))
 
+    @staticmethod
     def stringize(ustring):
         if PY2UC and isinstance(ustring, unicode):
             ustring = ustring.encode('ascii', 'ignore')
