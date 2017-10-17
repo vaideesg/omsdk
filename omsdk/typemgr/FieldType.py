@@ -119,6 +119,9 @@ class FieldType(TypeBase):
             elif self._type == bool:
                 value = bool(value)
                 valid = True
+            # expected value is str
+            elif self._type == str:
+                valid = True
             # expected value is enumeration
             elif TypeHelper.is_enum(self._type):
                 newvalue = TypeHelper.convert_to_enum(value, self._type)
