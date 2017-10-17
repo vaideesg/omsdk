@@ -68,7 +68,7 @@ class XMLParser(object):
             if child.tag == 'Component':
                 subnode = self._get_entry(child.get('FQDD'), entry)
                 if subnode is None:
-                    logger.warning('No component spec found for ' + child.get('FQDD'))
+                    logger.debug('No component spec found for ' + child.get('FQDD'))
                     continue
                 parent = None
                 subentry = subnode
@@ -91,8 +91,8 @@ class XMLParser(object):
                 # plain attribute
                 if attrname not in entry.__dict__:
                     entry.__setattr__(attrname, StringField(child.text, parent=entry))
-                    logging.warning(attrname + ' not found in ' + type(entry).__name__)
-                    logging.warning("Ensure the attribute registry is updated.")
+                    logging.debug(attrname + ' not found in ' + type(entry).__name__)
+                    logging.debug("Ensure the attribute registry is updated.")
                     continue
     
                 if child.text is None or child.text.strip() == '':
@@ -120,8 +120,8 @@ class XMLParser(object):
                     field = field + '_' + group
                 if field not in subentry.__dict__:
                     subentry.__dict__[field] = StringField(child.text, parent=subentry)
-                    logging.warning(field+' not found in '+type(subentry).__name__)
-                    logging.warning("Ensure the attribute registry is updated.")
+                    logging.debug(field+' not found in '+type(subentry).__name__)
+                    logging.debug("Ensure the attribute registry is updated.")
                     continue
                 if child.text is None or child.text.strip() == '':
                     # empty - what to do?
@@ -137,7 +137,7 @@ class XMLParser(object):
     
     def _load_scp(self, node, sysconfig):
         if sysconfig._alias and node.tag != sysconfig._alias:
-            logger.warning(node.tag +  " no match to " +  sysconfig._alias)
+            logger.debug(node.tag +  " no match to " +  sysconfig._alias)
     
         for attrib in node.attrib:
             sysconfig.add_attribute(attrib, node.attrib[attrib])
@@ -147,7 +147,7 @@ class XMLParser(object):
             entry = self._get_entry(subnode.get('FQDD'), sysconfig)
     
             if entry is None:
-                logger.warning('No component spec found for ' + subnode.get('FQDD'))
+                logger.debug('No component spec found for ' + subnode.get('FQDD'))
                 continue
     
             parent = None
