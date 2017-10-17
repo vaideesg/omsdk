@@ -2208,7 +2208,7 @@ class iDRACConfig(iBaseConfigApi):
             RAIDdefaultReadPolicy  ="NoReadAhead",
             StripeSize = 128,
             # disk filter
-            PhysicalDiskFilter = 'disk.MediaType == "HDD" and (disk.Size > 200 and disk.Size < 1000) and (disk.parent.parent is Controller and "H330" in disk.parent.parent.ProductName._value)',
+            #PhysicalDiskFilter = 'disk.MediaType == "HDD" and (disk.Size > 200 and disk.Size < 1000) and (disk.parent.parent is Controller and "H330" in disk.parent.parent.ProductName._value)',
             # Controller Params
             RAIDcopybackMode = "On",
             RAIDEnhancedAutoImportForeignConfig = "Disabled",

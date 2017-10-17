@@ -116,7 +116,7 @@ class PhysicalDisk(ClassType):
             super().__init__("Component", None, parent)
         self.PCIeSSDSecureErase = EnumTypeField(PCIeSSDSecureEraseTypes.T_False,PCIeSSDSecureEraseTypes, parent=self)
         # readonly attribute
-        self.RAIDHotSpareStatus = EnumTypeField(None,RAIDHotSpareStatusTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.RAIDHotSpareStatus = EnumTypeField(None,RAIDHotSpareStatusTypes, parent=self, deleteAllowed = False)
         # readonly attribute populated by iDRAC
         self.RAIDNominalMediumRotationRate = IntRangeField(None,2,4294967295, parent=self, modifyAllowed = False, deleteAllowed = False)
         # readonly attribute
