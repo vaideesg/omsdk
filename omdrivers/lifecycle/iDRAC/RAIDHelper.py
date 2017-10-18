@@ -120,8 +120,8 @@ class RAIDHelper:
         for controller in self.storage.Controller:
             controller.Enclosure.remove(PrimaryStatus = '0')
             for encl in controller.Enclosure:
-                encl.PhysicalDisk.remove_matching("entry.RaidStatus != 'Ready'")
-            controller.PhysicalDisk.remove_matching("entry.RaidStatus != 'Ready'")
+                encl.PhysicalDisk.remove_matching("entry.RaidStatus != 'Ready' and entry.FreeSize._value > 0")
+            controller.PhysicalDisk.remove_matching("entry.RaidStatus != 'Ready' and entry.FreeSize._value > 0")
         return self.storage
 
     def compute_disk_count(self, span_depth, span_length, n_dhs, n_ghs):
