@@ -969,11 +969,15 @@ Enabled_STPTypes = EnumWrapper("Enabled_STPTypes", {
 
 EncryptEnable_VirtualConsoleTypes = EnumWrapper("EncryptEnable_VirtualConsoleTypes", {
     "AES" : "AES",
+    "Enabled" : "Enabled",
+    "Disabled" : "Disabled",
     "T_None" : "None",
 }).enum_type
 
 EncryptEnable_VirtualMediaTypes = EnumWrapper("EncryptEnable_VirtualMediaTypes", {
     "AES" : "AES",
+    "Enabled" : "Enabled",
+    "Disabled" : "Disabled",
     "T_None" : "None",
 }).enum_type
 
