@@ -138,12 +138,12 @@ class RAIDHelper:
             direct_pd_count = controller.PhysicalDisk.Length
             if direct_pd_count >= n_disks:
                 s_disks = [i for i in controller.PhysicalDisk]
-                return s_disks
+                return s_disks[0:n_disks]
             for enclosure in controller.Enclosure:
                 encl_pd_count = enclosure.PhysicalDisk.Length
                 if encl_pd_count >= n_disks:
                     s_disks = [i for i in enclosure.PhysicalDisk]
-                return s_disks
+                return s_disks[0:n_disks]
         return s_disks
 
     def filter_disks(self, n_disks, criteria):
@@ -227,6 +227,8 @@ class RAIDHelper:
             if tgt_disk is None:
                 tgt_disk = target.PhysicalDisk.new(index = target.PhysicalDisk.Length+1)
                 tgt_disk._attribs['FQDD'] = disk.FQDD
+            tgt_disk.RAIDHotSpareStatus.nullify_value()
+            tgt_disk.RAIDHotSpareStatus.commit()
             tgt_disk.RAIDHotSpareStatus = state
 
         return self.entity.config_mgr.apply_changes(reboot = True)
