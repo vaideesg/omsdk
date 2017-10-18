@@ -205,6 +205,8 @@ class RAIDHelper:
         # pass virtual disk attributes to vdisk
         for i in kwargs:
             if i in vdisk.__dict__:
+                if i == 'StripeSize':
+                    kwargs[i] = kwargs[i]/512
                 vdisk.__dict__[i]._value = kwargs[i]
         vdisk._attribs['FQDD'] = vdfqdd
         vdisk.IncludedPhysicalDiskID = ",".join([i.FQDD._value for i in disks])
