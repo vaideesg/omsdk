@@ -45,10 +45,10 @@ setup(
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='0.9.1007',
+    version='0.9.1010',
 
-    description='Dell EMC OpenManage Python SDK',
-    long_description='Dell EMC OpenManage Python SDK for Dell EMC PowerEdge Servers and Chassis',
+    description='Dell EMC OpenManage(tm) Python SDK',
+    long_description=long_description,
 
     # The project's main homepage.
     url='https://github.com/vaideesg/omsdk',
@@ -83,7 +83,7 @@ setup(
     ],
 
     # What does your project relate to?
-    keywords='dellemc, dellemcsdk, idrac, cmc',
+    keywords='dellemc, dellemcsdk, idrac, cmc, OpenManage, PowerEdge, Dell',
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
