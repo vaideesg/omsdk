@@ -1,3 +1,4 @@
+\
 Foundation Principles
 =====================
 
@@ -23,10 +24,21 @@ An Operation is a task, job or action that results in a desired end state of the
     4.  Have an timeout variable.  The API must exit when that timeout occurs. Timeout should be the maximum time that the API will wait altogether in that API (including all loops, waits, retries and internal timeouts). This definition brings confidence to API users that the API will not take more than a fixed time.
     5.  When a timeout occurs, return failure from the API.
 4. Keep all the APIs modular
-5. APIs must be transparent to protocol and other internals. Remember, the customer wants to do something with your system. Protocols just provide you a way to achieve that operation. Just because the system supports multiple protocols, it does not mean you should expose that to user.  While you hide it, you can also create a preferences which allows users to specify their own protocol choice if they want. Design should always assume that users first choice is to do it Dell's way.
+5. APIs must be transparent to protocol and other internals. 
+    1. Remember, the user intent is to perform an action with your system. The user intent is not to achieve the same via a specific protocol
+    2. Protocols just provide you a way to achieve that operation. Just because the system supports multiple protocols, it does not mean you should expose that to user.
+    3. Sometimes a user may want to control the protocol. Provide the users with a concept on preferences - so that users can specify their own protocol choice if they want.
+    4. Design should always assume that users first choice is to do it Dell's way.
+    5. Design should also assume that user may want to try all feasible ways to execute the action as is possible.
 
 # Ease of Use Principle
 1. APIs should be easy to use.
+    1. Ease of use is from user point of view.
+    2. If it becomes easier for you if user passes the same parameters multiple times, that is not ease of use.  You should provide a way to encapsuate those parameters in a structure.
+    3. Return as much information as possible to user.  Leave him to make the choice
+    4. Use simpler and well known datastructures.  Don't create you own variant of datastructures.  For example, OMSDK uses JSONs everywhere
+    5. Use language constructs to make the life of user easy
+    6. User should be able to catch logical errors as early as possible. Use language constructs as much as possible. Example: OMSDK typemgr code
 2. APIs must hide complexity and tribal knowledge.  Example: Liason Share and Update Share simplify configuration and update use cases
 
 # Repeatability Principle
@@ -40,12 +52,18 @@ Consistency is the conformity to standard principles all the time.
 2. APIs belonging to similar function must be consistent in return values - 
 3. APIs must be consistent with CRUD and ACID principles.
 4. APIs must cover well-rounded use cases.  Don't just add a Create API.  Instead add a Create, Modify, Delete and List APIs.  If an API is irrelevant, simply make it as not_implemented.
-5. APIs must use consistent arguments for the APIs.  For example, if parameters are passed as individual arguments to Create function, they should be passed as individual arguments to list, modify and delete functions. On the other hand, if you pass a structure, you should pass a structure to all.
+5. APIs must use consistent arguments for the APIs.
+     1. For example, if parameters are passed as individual arguments to Create function, they should be passed as individual arguments to list, modify and delete functions
+     2. On the other hand, if you pass a structure, you should pass a structure to all.
 
 # SPORTS Principle
 SPORTS is an acronym for Simple, Portable, Optimal, Reliable, Transparent and Scalable
 1. APIs must be simple. APIs must hide complexity and tribal knowledge from the consumer.
-2. APIs must be transparent to the platform on which it is executed. Avoid C/C++/Native or Platform dependent code.  Example: If you have plan to write a python wrapper on a C-based tool, how would you support custom Linux installations? Your C-based tool need to be also supported for those Linux Installations as well - which is a bigger burden. Instead go with pure-python implementation. In that case, as long as python community supports the python in that custom installation, we are good. 
+2. APIs must be transparent to the platform on which it is executed.
+    1.  Avoid C/C++/Native or Platform dependent code.
+    2. If you have plan to write a python wrapper on a C-based tool, how would you support custom Linux installations? Your C-based tool need to be also supported for those Linux Installations as well - is that feasible.
+    3. Instead go with pure-python implementation.
+    4. In that case, as long as python community supports the python in that custom installation, we are good. 
 3. API implementations must be written optimally.  Don't write voluminous code which can be written in fewer lines
 3. APIs must use only reliable dependencies - stable and supported dependent components
 4. APIs must be transparent to the protocol being used
