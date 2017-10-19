@@ -1,10 +1,8 @@
 # Include the license file
-include LICENSE.txt
+include LICENSE
 
 # Include the data files
 recursive-include omdrivers *
-
-recursive-include omgentools *
 
 recursive-include omsdk *
 
