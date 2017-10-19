@@ -16,7 +16,12 @@ APIs must always be consistent with Dell EMC Systems Management Strategy and Bes
 An Operation is a task, job or action that results in a desired end state of the system.
 1. Do not create multiple APIs for the same operation.
 2. Do not combine two independent tasks into an API (for example, do not combine Server Configuration and Operating System Deployment into one API)
-3. For operations taking long time, the API must allow for both synchronous and asynchronous options.  In synchronous case, the API will wait till the operation completes. In case of asynchronous case, the API will return immediately with an handle. The user can poll for status using that handle. A variant of asynchronous option is to allow the user to specify a callback.
+3. For operations taking long time, the API must allow for both synchronous and asynchronous options.
+    1.  In synchronous case, the API will wait till the operation completes
+    2.  In case of asynchronous case, the API will return immediately with an handle. The user can poll for status using that handle.
+    3.  A variant of asynchronous option is to allow the user to specify a callback.
+    4.  Have an timeout variable.  The API must exit when that timeout occurs. Timeout should be the maximum time that the API will wait altogether in that API (including all loops, waits, retries and internal timeouts). This definition brings confidence to API users that the API will not take more than a fixed time.
+    5.  When a timeout occurs, return failure from the API.
 4. Keep all the APIs modular
 5. APIs must be transparent to protocol and other internals. Remember, the customer wants to do something with your system. Protocols just provide you a way to achieve that operation. Just because the system supports multiple protocols, it does not mean you should expose that to user.  While you hide it, you can also create a preferences which allows users to specify their own protocol choice if they want. Design should always assume that users first choice is to do it Dell's way.
 
