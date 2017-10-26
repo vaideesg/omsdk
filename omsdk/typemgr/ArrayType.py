@@ -92,6 +92,20 @@ class ArrayType(TypeBase):
         self.__dict__['_orig_value'] = []
         self.__dict__['_state'] = TypeState.Committed
 
+    # Value APIs
+    def __getattr__(self, name):
+        matches = re.match('^_(\d+)$', name)
+        if name in self.__dict__:
+            return self.__dict__[name]
+        elif matches:
+            try:
+                n = int(matches.group(1))
+                if (n >= 0 and n < self.Length):
+                    return self._entries[n]
+            except Exception as ex:
+                print(str(ex))
+        raise AttributeError('Invalid attribute ' + name)
+
     # State APIs:
     def is_changed(self):
         return self._state in [TypeState.Initializing, TypeState.Changing]
