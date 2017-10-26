@@ -467,7 +467,7 @@ class ProtocolFactoryIterator:
                 self.current += 1
                 if self.protocol_factory.pref.include_flag[self.current - 1]:
                     break
-            if i >= self.high:
+            if self.current >= self.high:
                 raise StopIteration
             return self.protocol_factory.protos[self.current - 1]
 
