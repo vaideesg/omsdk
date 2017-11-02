@@ -144,7 +144,7 @@ class VirtualDisk(ClassType):
         # action attribute
         self.RAIDaction = EnumTypeField(RAIDactionTypes.Update,RAIDactionTypes, parent=self, rebootRequired = True)
         # readonly attribute
-        self.RAIDdedicatedSpare = EnumTypeField(None,RAIDdedicatedSpareTypes, parent=self, modifyAllowed = False, deleteAllowed = False)
+        self.RAIDdedicatedSpare = ListField("", parent=self, modifyAllowed = False, deleteAllowed = False)
         self.RAIDdefaultReadPolicy = EnumTypeField(RAIDdefaultReadPolicyTypes.Adaptive,RAIDdefaultReadPolicyTypes, parent=self)
         self.RAIDdefaultWritePolicy = EnumTypeField(RAIDdefaultWritePolicyTypes.WriteBack,RAIDdefaultWritePolicyTypes, parent=self)
         self.RAIDinitOperation = EnumTypeField(None,RAIDinitOperationTypes, parent=self)

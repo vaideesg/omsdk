@@ -209,7 +209,6 @@ class RAIDHelper:
                     kwargs[i] = int(kwargs[i]/512)
                 vdisk.__dict__[i]._value = kwargs[i]
         vdisk._attribs['FQDD'] = vdfqdd
-        vdisk.IncludedPhysicalDiskID = ",".join([i.FQDD._value for i in disks])
         target = cntrl
         if enclosure:
             tgt_encl = cntrl.Enclosure.find_first(FQDD = enclosure.FQDD)
@@ -222,9 +221,14 @@ class RAIDHelper:
                                kwargs['NumberGlobalHotSpare'])
         for disk in disks:
             counter += 1
-            if counter > (ndisks + n_dhs): state = "Global"
-            elif counter > ndisks: state = "Dedicated"
-            else: state = "No"
+            if counter >= (ndisks + n_dhs):
+                state = "Global"
+            elif counter >= ndisks:
+                state = "Dedicated"
+                vdisk.RAIDdedicatedSpare = disk.FQDD._value
+            else:
+                state = "No"
+                vdisk.IncludedPhysicalDiskID = disk.FQDD._value
             tgt_disk = target.PhysicalDisk.find_first(FQDD = disk.FQDD)
             if tgt_disk is None:
                 tgt_disk = target.PhysicalDisk.new(index = target.PhysicalDisk.Length+1)

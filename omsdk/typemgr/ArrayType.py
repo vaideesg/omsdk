@@ -94,7 +94,7 @@ class ArrayType(TypeBase):
 
     # Value APIs
     def __getattr__(self, name):
-        matches = re.match('^_(\d+)$', name)
+        matches = re.match('^Index_(\d+)$', name)
         if name in self.__dict__:
             return self.__dict__[name]
         elif matches:
