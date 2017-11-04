@@ -2107,7 +2107,7 @@ class iDRACConfig(iBaseConfigApi):
 
     @property
     def SyslogServers(self):
-        return self._sysconfig.iDRAC.SysLog.Servers.get_value()
+        return self._sysconfig.iDRAC.SysLog.Servers.Value
 
     @property
     def SyslogConfig(self):

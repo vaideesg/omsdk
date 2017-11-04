@@ -91,6 +91,15 @@ class FieldType(TypeBase):
                                  if i._value is not None]))
         raise AttributeError('Invalid attribute ' + name)
 
+    @property
+    def Value(self):
+        return self._value
+
+    @property
+    def OptimalValue(self):
+        return (self._optimal if self._composite else self._value)
+
+    #deprecate this. replace with Property
     def get_value(self):
         return self._value
 
