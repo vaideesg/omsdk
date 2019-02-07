@@ -1,0 +1,144 @@
+{
+  "System" : {
+    "ConfigState" : [],
+    "Health" : ["Status"],
+    "Inventory" : [ "ProductID", "Description", "Vendor", "Version", "ServiceTag", "URLString" ],
+    "Key" : [],
+    "Metrics" : []
+  },
+  "Controller": {
+    "ConfigState": ["Leader"],
+    "Health": [ "Status" ],
+    "Inventory": [ "AssetTag", "ServiceTag", "Name", "Model", "IpAddress", "IPv6Eth0IP", "IPv6Eth0IPPrefix" ],
+    "Key": [ "ID" ],
+    "Metrics": []
+  },
+  "ControllerFan": {
+    "ConfigState": [],
+    "Health": [ "Status" ],
+    "Inventory": [ "Name" ],
+    "Key": [ "ID" ],
+    "Metrics": [  ]
+  },
+  "Disk": {
+    "ConfigState": [],
+    "Health": [
+      "Healthy",
+      "Status"
+    ],
+    "Inventory": [
+      "Position",
+      "Size",
+      "IoPortType",
+      "Enclosure"
+    ],
+    "Key": [ "ID" ],
+    "Metrics": []
+  },
+
+  "Enclosure": {
+    "ConfigState": [],
+    "Health": [
+      "Status"
+    ],
+    "Inventory": [
+      "AssetTag",
+      "Type",
+      "Name",
+      "ServiceTag",
+        "Model"
+    ],
+    "Key": [
+      "ID"
+    ],
+    "Metrics": []
+  },
+
+  "EnclosureFan": {
+    "ConfigState": [],
+    "Health": [
+      "Status"
+    ],
+    "Inventory": [ "Location"],
+    "Key": [
+      "ID"
+    ],
+    "Metrics": [
+    ]
+  },
+  "EnclosurePSU": {
+    "ConfigState": [],
+    "Health": [
+      "Status"
+    ],
+    "Inventory": ["Position"],
+    "Key": [
+      "ID"
+    ],
+    "Metrics": []
+  },
+  "EnclosureIOM": {
+    "ConfigState": [],
+    "Health": [
+      "Status"
+    ],
+    "Inventory": ["Position"],
+    "Key": [
+      "ID"
+    ],
+    "Metrics": []
+  },
+
+  "Power": {
+    "ConfigState": [],
+    "Health": [
+      "Status"
+    ],
+    "Inventory": [
+      "Name"
+    ],
+    "Key": [
+      "ID"
+    ],
+    "Metrics": []
+  },
+  "StorageCenter": {
+    "ConfigState": [],
+    "Health": [
+      "scScStatus"
+    ],
+    "Inventory": [
+      "Name","ManagementIP", "IPv6MgmtIPPrefix", "Location", "IPv6MgmtIP", "SerialNumber", "Contact"
+    ],
+    "Key": [
+      "ID"
+    ],
+    "Metrics": []
+  },
+  "UPS": {
+    "ConfigState": [],
+    "Health": [
+      "Status"
+    ],
+    "Inventory": [
+      "Name"
+    ],
+    "Key": [
+      "ID"
+    ],
+    "Metrics": ["BatteryLife"]
+  },
+  "Volume": {
+    "ConfigState": [],
+    "Health": [
+      "Status"
+    ],
+    "Inventory": [
+      "Name"
+    ],
+    "Key": [
+      "ID"
+    ],
+    "Metrics": []
+  }
+}

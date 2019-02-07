@@ -1,0 +1,548 @@
+{
+  "dellNetCard": {
+    "ConfigState": [],
+    "Health": [
+      "Status"
+    ],
+    "Inventory": [
+      "ExpServiceCode",
+      "Type",
+      "PPIDRevision",
+      "CountryCode",
+      "PartNum",
+      "ProductRev",
+      "VendorId",
+      "Temp",
+      "Description",
+      "ProductOrder",
+      "PiecePartID",
+      "ServiceTag",
+      "MfgDate",
+      "NumOfPorts"
+    ],
+    "Key": [
+      "_SNMPIndex",
+      "ChassisIndex"
+    ],
+    "Metrics": []
+  },
+  "dellNetChassis": {
+    "ConfigState": [],
+    "Health": [],
+    "Inventory": [
+      "ExpServiceCode",
+      "Type",
+      "NumSlots",
+      "PPIDRev",
+      "MacAddr",
+      "CountryCode",
+      "NumLineCardSlots",
+      "PartNum",
+      "NumPowerSupplies",
+      "NumFanTrays",
+      "VendorId",
+      "SerialNumber",
+      "ProductRev",
+      "ServiceTag",
+      "MfgDate"
+    ],
+    "Key": [
+      "_SNMPIndex"
+    ],
+    "Metrics": []
+  },
+  "dellNetCpuUtil": {
+    "ConfigState": [],
+    "Health": [],
+    "Inventory": [
+      "5Min",
+      "1Min",
+      "5Sec"
+    ],
+    "Key": [ "_SNMPIndex" ],
+    "Metrics": [
+      "MemUsage",
+      "dellNetCpuFlashUsage"
+    ]
+  },
+  "dellNetFanTray": {
+    "ConfigState": [],
+    "Health": [
+      "OperStatus"
+    ],
+    "Inventory": [
+      "ExpressServiceCode",
+      "PiecePartID",
+      "ServiceTag",
+      "dellNetFanDeviceType",
+      "PPIDRevision"
+    ],
+    "Key": [
+      "_SNMPIndex",
+      "dellNetFanDeviceIndex"
+    ],
+    "Metrics": []
+  },
+  "dellNetFlash": {
+    "ConfigState": [],
+    "Health": [],
+    "Inventory": [
+      "PartitionUsed",
+      "PartitionMountPoint",
+      "PartitionFree",
+      "PartitionSize",
+      "PartitionNumber",
+      "PartitionName"
+    ],
+    "Key": [ "_SNMPIndex" ],
+    "Metrics": []
+  },
+  "dellNetPE": {
+    "ConfigState": [],
+    "Health": [
+      "Status"
+    ],
+    "Inventory": [
+      "ExpServiceCode",
+      "Type",
+      "PPIDRevision",
+      "CountryCode",
+      "PartNum",
+      "NumPluggableModules",
+      "NumPowerSupplies",
+      "ProductRev",
+      "NumFanTrays",
+      "VendorId",
+      "Temp",
+      "Description",
+      "ProductOrder",
+      "PEID",
+      "PiecePartID",
+      "UnitID",
+      "ServiceTag",
+      "MfgDate",
+      "NumOfPorts"
+    ],
+    "Key": [
+      "_SNMPIndex"
+    ],
+    "Metrics": []
+  },
+  "dellNetPEBinding": {
+    "ConfigState": [],
+    "Health": [],
+    "Inventory": [],
+    "Key": [
+      "_SNMPIndex",
+      "dellNetPEBindCascadePortIfIndex",
+      "dellNetPEBindPEIndex"
+    ],
+    "Metrics": []
+  },
+  "dellNetPowerSupply": {
+    "ConfigState": [],
+    "Health": [
+      "OperStatus"
+    ],
+    "Inventory": [
+      "Type",
+      "ExpressServiceCode",
+      "ServiceTag",
+      "PiecePartID",
+      "PPIDRevision",
+      "dellNetPowerDeviceType"
+    ],
+    "Key": [
+      "_SNMPIndex",
+      "dellNetPowerDeviceIndex"
+    ],
+    "Metrics": [
+      "Usage"
+    ]
+  },
+  "dellNetProcessor": {
+    "ConfigState": [],
+    "Health": [],
+    "Inventory": [
+      "Module",
+      "UpTime",
+      "DeviceType",
+      "MemSize"
+    ],
+    "Key": [
+      "_SNMPIndex",
+      "DeviceIndex"
+    ],
+    "Metrics": []
+  },
+  "dellNetStackPort": {
+    "ConfigState": [],
+    "Health": [
+      "LinkStatus"
+    ],
+    "Inventory": [
+      "RxTotalErrors",
+      "LinkSpeed",
+      "ConfiguredMode",
+      "RxDataRate",
+      "RxErrorRate",
+      "TxDataRate",
+      "TxTotalErrors",
+      "TxErrorRate",
+      "RunningMode"
+    ],
+    "Key": [
+      "_SNMPIndex"
+    ],
+    "Metrics": []
+  },
+  "dellNetStackUnit": {
+    "ConfigState": [],
+    "Health": [
+      "MgmtStatus",
+      "Status"
+    ],
+    "Inventory": [
+      "BladeSlotId",
+      "NumOfPorts",
+      "NumPluggableModules",
+      "ProductRev",
+      "NumPowerSupplies",
+      "SerialNumber",
+      "Number",
+      "IOMMode",
+      "PPIDRevision",
+      "ServiceTag",
+      "ModelId",
+      "CodeVersion",
+      "ExpServiceCode",
+      "MacAddress",
+      "CountryCode",
+      "HwMgmtPreference",
+      "PartNum",
+      "VendorId",
+      "NumFanTrays",
+      "Temp",
+      "Description",
+      "UpTime",
+      "PiecePartID",
+      "ProductOrder",
+      "AdmMgmtPreference",
+      "MfgDate"
+    ],
+    "Key": [
+      "_SNMPIndex"
+    ],
+    "Metrics": []
+  },
+  "dellNetSwModule": {
+    "ConfigState": [],
+    "Health": [],
+    "Inventory": [
+      "RuntimeImgDate",
+      "RuntimeImgVersion",
+      "NextRebootImage",
+      "InPartitionAImgVers",
+      "BootFlashImgVersion",
+      "BootSelectorImgVersion",
+      "InPartitionBImgVers"
+    ],
+    "Key": [ "_SNMPIndex" ],
+    "Metrics": [
+      "CurrentBootImage"
+    ]
+  },
+  "dellNetSysCores": {
+    "ConfigState": [],
+    "Health": [],
+    "Inventory": [
+      "Instance",
+      "Process",
+      "TimeCreated",
+      "StackUnitNumber",
+      "FileName"
+    ],
+    "Key": [ "_SNMPIndex" ],
+    "Metrics": []
+  },
+  "dellNetSysIf": {
+    "ConfigState": [],
+    "Health": [
+      "AdminStatus",
+      "OperStatus"
+    ],
+    "Inventory": [
+      "Type",
+      "Name",
+      "XfpRecvPower",
+      "XfpRecvTemp",
+      "XfpTxPower"
+    ],
+    "Key": [ "_SNMPIndex" ],
+    "Metrics": []
+  },
+   "stack" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   },
+   "chassis" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   },
+   "module" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   },
+   "port" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   },
+   "cpu" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   },
+   "backplane" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   },
+   "powerSupply" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   },
+   "fan" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   },
+   "sensor" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   },
+   "other" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   },
+   "container" : {
+		"Key" : [
+           "Name"
+         ],
+		"ConfigState" : [
+         ],
+    	"Health"      : [
+         ],
+    	"Inventory"   : [ 
+            "AssetTag",
+            "Class",
+            "ContainedIn",
+            "Description",
+            "FirmwareRev",
+            "HardwareRev",
+            "IsFRU",
+            "Manufacturer",
+            "Model",
+            "Name",
+            "ParentRelPos",
+            "MyPos",
+            "SerialNo"
+         ]
+   }
+}

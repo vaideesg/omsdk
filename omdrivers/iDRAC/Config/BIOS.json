@@ -486,7 +486,7 @@
                     "SysMgmtNVByte2",
                     "SystemUefiShell"
                 ],
-                "NVMeSettings": [
+                "_NVMeSettings": [
                     "NvmeSettings",
                     "NvmeSettingsRef"
                 ],

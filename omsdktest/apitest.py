@@ -1,26 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#
-# Copyright © 2017 Dell Inc. or its subsidiaries. All rights reserved.
-# Dell, EMC, and other trademarks are trademarks of Dell Inc. or its
-# subsidiaries. Other trademarks may be trademarks of their respective owners.
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-# Authors: Vaideeswaran Ganesan
-#
 import os
 import sys
 sys.path.append(os.getcwd())
@@ -46,20 +23,47 @@ from omsdk.sdkprint import PrettyPrint
 import logging
 from omdrivers.lifecycle.iDRAC.RAIDHelper import *
 
-
-myshare = FileOnShare(remote ="\\\\<share>\\Share",
+myshare = FileOnShare(remote = "\\\\100.96.20.115\\Share",
         mount_point='Z:\\', isFolder=True,
-        creds = UserCredentials("user@domain", "password"))
+        creds = UserCredentials("Administrator@AJUDOM", "ajaya_123"))
 
-ipaddr = '192.168.0.1'
+#ipaddr = '100.96.25.120'
+ipaddr = '100.100.249.114'
 logging.basicConfig(level=logging.DEBUG)
-myshare.valid = True
 
 Simulator.start_simulating()
+myshare.valid = True
 sd = sdkinfra()
 sd.importPath()
-idrac = sd.get_driver('iDRAC', ipaddr, UserCredentials('user', 'pass'))
+idrac = sd.find_driver(ipaddr, UserCredentials('root', 'calvin'))
 idrac.config_mgr.set_liason_share(myshare)
+
+idrac.config_mgr._sysconfig.iDRAC.Users.new(
+    UserName_Users = "ruse1",
+    Password_Users = "calvin",
+    Privilege_Users = "511",
+    IpmiLanPrivilege_Users = "Administrator",
+    IpmiSerialPrivilege_Users = "Administrator",
+    Enable_Users = "Enabled",
+    SolEnable_Users = "Enabled",
+    ProtocolEnable_Users = "Disabled",
+    AuthenticationProtocol_Users = "SHA",
+    PrivacyProtocol_Users = "AES"
+)
+idrac.config_mgr.apply_changes()
+user = idrac.config_mgr._sysconfig.iDRAC.Users.find_first(UserName_Users = "ruse1")
+if user is None:
+    print("No such user found!")
+else:
+    user.Password_Users = '_j2_2j_2j_j2_'
+    user.SolEnable_Users = "Disabled"
+    idrac.config_mgr.apply_changes()
+
+idrac.config_mgr._sysconfig.iDRAC.Users.remove(UserName_Users = "ruse1")
+idrac.config_mgr.apply_changes()
+print(PrettyPrint.prettify_json(idrac.config_mgr._sysconfig.iDRAC.Users.Json))
+
+exit()
 
 def emailtest(idrac, address, expected, action=1):
     print(expected)
