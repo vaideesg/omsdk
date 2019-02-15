@@ -37,6 +37,7 @@ logger = logging.getLogger(__name__)
 class UpdateManager(object):
 
     _update_store = None
+    _update_index_store = None
     _update_store_lock = threading.Lock()
     @staticmethod
     def configure(update_share, site = 'downloads.dell.com',
@@ -49,23 +50,63 @@ class UpdateManager(object):
                 if UpdateManager._update_store is None:
                     UpdateManager._update_store = \
                          _UpdateCacheManager(update_share, site, protocol)
+        if UpdateManager._update_index_store is None:
+            with UpdateManager._update_store_lock:
+                if UpdateManager._update_index_store is None:
+                    UpdateManager._update_index_store = \
+                         _UpdateIndexCacheManager(update_share, site, protocol)
         return (UpdateManager._update_store is not None)
 
     @staticmethod
     def update_catalog():
+        retval = { 'Status' : 'Failed',
+                   'Message' : 'Update Manager is not initialized' }
         if UpdateManager._update_store:
-            return UpdateManager._update_store.update_catalog()
-        return { 'Status' : 'Failed', 'Message' : 'Update Manager is not initialized' }
+            retval.update(UpdateManager._update_store.update_catalog())
+        return retval
+
+    @staticmethod
+    def update_index():
+        retval = { 'Status' : 'Failed',
+                   'Message' : 'Update Manager is not initialized' }
+        if UpdateManager._update_index_store:
+            retval.update(UpdateManager._update_index_store.update_index())
+        return retval
 
     @staticmethod
     def update_cache(catalog = 'Catalog'):
+        retval = { 'Status' : 'Failed',
+                   'Message' : 'Update Manager is not initialized' }
         if UpdateManager._update_store:
-            return UpdateManager._update_store.update_cache(catalog = 'Catalog')
-        return { 'Status' : 'Failed', 'Message' : 'Update Manager is not initialized' }
+            retval.update(UpdateManager._update_store.update_cache(catalog))
+        return retval
 
     @staticmethod
     def get_instance():
         return UpdateManager._update_store
+
+class _UpdateIndexCacheManager(object):
+    def __init__(self, update_share, site, protocol):
+        self._update_share = update_share
+        self._master_index = update_share.makedirs("_index")\
+                                             .new_file('CatalogIndex.xml')
+        self._conn = DownloadHelper(site = site, protocol = protocol)
+
+    def update_index(self):
+        folder = self._master_index.local_folder_path
+        c = 'catalog/CatalogIndex.gz'
+        retval = self._conn.download_newerfiles([c], folder)
+        logger.debug("Download Success = {0}, Failed = {1}"
+                .format(retval['success'], retval['failed']))
+        if retval['failed'] == 0 and \
+           self._conn.unzip_file(os.path.join(folder, c),
+                          os.path.join(folder, 'CatalogIndex.xml')):
+            retval['Status'] = 'Success'
+        else:
+            logger.debug("Unable to download and extract " + c)
+            retval['Status'] = 'Failed'
+        self._conn.disconnect()
+        return retval
 
 class _UpdateCacheManager(object):
 

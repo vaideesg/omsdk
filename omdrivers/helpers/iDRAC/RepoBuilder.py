@@ -62,6 +62,8 @@ def RepoBuilder(arglist):
         action="store_true", dest="dld_catalog", help="download catalog")
     parser.add_argument('-b', '--build-catalog', 
         action="store_true", dest="build_catalog", help="build catalog")
+    parser.add_argument('-i', '--download-index', 
+        action="store_true", dest="dld_index", help="build index")
 
     options = parser.parse_args(arglist)
     if not options.component:
@@ -104,6 +106,11 @@ def RepoBuilder(arglist):
         if options.protocol != DownloadProtocolEnum.HashCheck:
             print("Building Repository Catalog ....")
             UpdateHelper.build_repo(options.catalog, True, *options.component)
+    if options.dld_index:
+        if options.protocol != DownloadProtocolEnum.HashCheck:
+            print("Updating index from downloads.dell.com...")
+        UpdateManager.update_index()
+
     if options.dld_dups:
         if options.protocol != DownloadProtocolEnum.HashCheck:
             print("Downloading DUPs ...")
