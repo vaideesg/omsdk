@@ -37,6 +37,7 @@ class NoConfig:
 
 if not Pyconfig_mgr:
     F10Config = NoConfig
+    F10PSNMPCmds = {}
 if not Pyconfig_mgr and PyPSNMP:
     F10PSNMPCmds = {}
 

@@ -7,6 +7,7 @@ import time
 import traceback
 from multiprocessing import Pool
 import logging
+from netaddr import *
 
 counter = 1
 from sys import stdout, path
@@ -19,7 +20,7 @@ from omsdk.sdkvisitor import SDKHealthVisitor
 
 import sys
 import logging
-from omsdk.logging.Logger import LogManager, LoggerConfigTypeEnum
+from omsdk.omlogs.Logger import LogManager, LoggerConfigTypeEnum
 
 LogManager.setup_logging()
 
@@ -81,8 +82,8 @@ class ListProc:
             P = 1
         iplist = [x for x in self.devlist]
         th_iplist = [iplist[i:i+P] for i in range(0,len(iplist),P)]
-        print("Number of threads: " + str(len(th_iplist)))
-        print("Number of devices/thread: " + str(len(th_iplist[0])))
+        #print("Number of threads: " + str(len(th_iplist)))
+        #print("Number of devices/thread: " + str(len(th_iplist[0])))
         counter = 0
         results = Results()
         for i in th_iplist:
@@ -104,7 +105,7 @@ class ListProc:
         for ipaddr in th_iplist:
             try:
                 creds = self.devlist[ipaddr]
-                print("=== Connecting to " + ipaddr + " using " + creds+" ====")
+                #print("=== Connecting to " + ipaddr + " using " + creds+" ====")
                 #idrac = sd.get_driver(sd.driver_enum.iDRAC, ipaddr,
                 #           self.credstore.get_creds(creds))
                 idrac = sd.find_driver(ipaddr,
@@ -112,6 +113,7 @@ class ListProc:
                 if idrac is None:
                     print ("Error: Not found a device driver for: " + ipaddr)
                     continue
+                print(ipaddr)
 
                 idracTopoInfo = idrac._get_topology_info()
                 updateGroupsNeeded = self.store.has_topology_info_changes(idrac)
@@ -144,15 +146,20 @@ if __name__ == "__main__":
     if len(sys.argv) <= 1:
         print("Usage: python -m omsdktest.scom_helper devlist creds scalable|detailed")
         exit(1)
-    if not os.path.exists(sys.argv[1]) or os.path.isdir(sys.argv[1]):
-        print(sys.argv[1] + " does not exist!")
-        print("Usage: python -m {0} <jsonfile> [creds]".format(sys.argv[0]))
-        exit(1)
+    #if not os.path.exists(sys.argv[1]) or os.path.isdir(sys.argv[1]):
+    #    print(sys.argv[1] + " does not exist!")
+    #    print("Usage: python -m {0} <jsonfile> [creds]".format(sys.argv[0]))
+    #    exit(1)
+    #with open(sys.argv[1]) as enum_data:
+    #    devlist = json.load(enum_data)
+
+    devlist = { 'default' : [] }
+    for i in IPNetwork(sys.argv[1]):
+        devlist['default'].append(str(i))
+
     gen_spec = {}
     credstore = CredentialStore()
     mode = 'scalable'
-    with open(sys.argv[1]) as enum_data:
-        devlist = json.load(enum_data)
     if len(sys.argv) > 2:
         if not os.path.exists(sys.argv[2]) or os.path.isdir(sys.argv[2]):
             print(sys.argv[2] + " does not exist!")

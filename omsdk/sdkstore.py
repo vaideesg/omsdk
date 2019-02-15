@@ -76,6 +76,27 @@ class EntityStore(BaseStore):
     def clone(self):
         return Saver(self.store_dir)
 
+    def store_ip(self, fname, relpath=[]):
+        master_scope_file = self.master_dir
+        if relpath and len(relpath) > 0:
+            master_scope_file = self.makedir(master_scope_file, *relpath)
+
+        master_scope_file = os.path.join(master_scope_file, fname)
+        with open(master_scope_file, 'w') as f:
+            f.write('')
+            f.flush()
+
+    def store_firmware(self, firmware, fname, relpath=[]):
+        master_scope_file = self.master_dir
+        if relpath and len(relpath) > 0:
+            master_scope_file = self.makedir(master_scope_file, *relpath)
+
+        master_scope_file = os.path.join(master_scope_file, fname)
+        with open(master_scope_file, 'w') as f:
+            json.dump(firmware, f, sort_keys=True, indent=4,
+                      separators=(',', ': '))
+            f.flush()
+
     def store(self, current_json, diff_filter, fname, func, relpath=[]):
         master_scope_file = self.master_dir
         if relpath and len(relpath) > 0:
@@ -189,6 +210,12 @@ class DeviceStore(EntityStore):
                                diff_filter, fname, DeltaComputer.device_json,
                                [entity.device_type, entity._DeviceKey])
         ctree = entity.ContainmentTree
+        self.store_ip(entity.ipaddr, [entity.device_type, entity._DeviceKey])
+        try:
+            self.store_firmware(entity.update_mgr.InstalledFirmware,
+                'Firmware.json', [entity.device_type, entity._DeviceKey])
+        except:
+            pass
         if 'System' in ctree:
             self.store({ 'System' : ctree['System']} ,
                        None, 'ContainmentTree.json',

@@ -102,6 +102,7 @@ setup(
         'omdrivers',
         'omdrivers.lifecycle',
         'omdrivers.lifecycle.iDRAC',
+        'omdrivers.lifecycle.F10',
         'omdrivers.enums',
         'omdrivers.enums.iDRAC',
         'omdrivers.helpers',
