@@ -345,3 +345,40 @@ class DownloadHelper:
             finally:
                 f_in.close()
         return retval
+
+class SkipDownloadHelper(DownloadHelper):
+    def __init__(self, site, protocol = DownloadProtocolEnum.HTTP, creds=None):
+        super().__init__(site, protocol, creds)
+
+    def connect(self):
+        return True
+
+    def disconnect(self):
+        return True
+
+    def _download_file(self, rfile, lfile):
+        return os.path.exists(lfile) and os.path.isfile(lfile)
+
+    def download_newerfiles(self, flist, lfolder = "."):
+        counter = { 'success' : 0, 'failed' : 0 }
+
+        if not self._create_dir(lfolder):
+            counter['failed'] = len(flist)
+            counter['Message'] = 'Local folder not present'
+            print("local folder is not present")
+            return counter
+
+        for rfile in flist:
+            if not isinstance(rfile, dict):
+                rfile = { 'path' : rfile, 'hashMD5' : None }
+            lfile = os.path.join(lfolder, *rfile['path'].split('/'))
+            if self._download_file(rfile, lfile):
+                counter['success'] += 1
+            else:
+                counter['failed'] += 1
+        return counter
+
+    def unzip_file(self, lfname, tfname=None):
+        if not tfname:
+            tfname = lfname.rsplit('.gz',1)[0]
+        return os.path.isfile(tfname)

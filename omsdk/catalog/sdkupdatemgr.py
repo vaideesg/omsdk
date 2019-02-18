@@ -22,14 +22,17 @@
 # Authors: Vaideeswaran Ganesan
 #
 from omsdk.catalog.pdkcatalog import DellPDKCatalog
+from omsdk.catalog.pdkcatalog import DellPDKIndexCatalog
 from omsdk.catalog.updaterepo import UpdateRepo,RepoComparator
 from omsdk.catalog.sdkhttpsrc import DownloadHelper,DownloadProtocolEnum
+from omsdk.catalog.sdkhttpsrc import SkipDownloadHelper
 from omsdk.sdkprint import PrettyPrint
 
 import threading
 import os
 import glob
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +93,11 @@ class _UpdateIndexCacheManager(object):
         self._update_share = update_share
         self._master_index = update_share.makedirs("_index")\
                                              .new_file('CatalogIndex.xml')
+        self._index = None
+        self._indexes = {}
+        self._masters = {}
         self._conn = DownloadHelper(site = site, protocol = protocol)
+        self._conn = SkipDownloadHelper(site = site, protocol = protocol)
 
     def update_index(self):
         folder = self._master_index.local_folder_path
@@ -98,33 +105,68 @@ class _UpdateIndexCacheManager(object):
         retval = self._conn.download_newerfiles([c], folder)
         logger.debug("Download Success = {0}, Failed = {1}"
                 .format(retval['success'], retval['failed']))
-        if retval['failed'] == 0 and \
-           self._conn.unzip_file(os.path.join(folder, c),
-                          os.path.join(folder, 'CatalogIndex.xml')):
-            retval['Status'] = 'Success'
+        if retval['failed'] == 0:
+            retval = self._load_index(retval)
         else:
             logger.debug("Unable to download and extract " + c)
             retval['Status'] = 'Failed'
         self._conn.disconnect()
         return retval
 
-class _UpdateCacheManager(object):
+    def _load_index(self, retval = {}):
+        retval= {}
+        folder = self._master_index.local_folder_path
+        c = 'catalog/CatalogIndex.gz'
+        if self._conn.unzip_file(os.path.join(folder, c),
+                          os.path.join(folder, 'CatalogIndex.xml')):
+            retval['Status'] = 'Success'
+            self._index = DellPDKIndexCatalog(self._master_index.local_full_path)
+            for i in self._index.filter_index():
+                self._indexes[i['version']] = i
+        else:
+            logger.debug("Unable to extract " + c)
+            retval['Status'] = 'Failed'
+        return retval
 
-    def __init__(self, update_share, site, protocol):
-        self._update_share = update_share
+    def get_all_json(self, models):
+        for version in self._indexes:
+            if version not in self._masters:
+                if version not in self._indexes:
+                    return { 'Status' : 'Failed',
+                        'Message' : version + " not found in indexes" }
+                m_share = self._update_share.makedirs(version)
+                self._masters[version] = _CatalogManager(m_share,
+                    self._indexes[version]['path'], self._conn)
+
+            fname = self._masters[version]._scoped_catalog_share.local_full_path
+            if not os.path.exists(fname + "_catalog.json"):
+                self._masters[version].update_catalog()
+                (cshare, scoper) = self._masters[version].getCatalogScoper()
+                for model in models:
+                    scoper.add_to_scope(model)
+                with open(fname + "_catalog.json", "w") as f:
+                    f.write(json.dumps(scoper.get_json(), sort_keys=True,
+                            indent=4, separators=(',', ': ')))
+                    f.flush()
+
+class _CatalogManager(object):
+
+    def __init__(self, update_share, catalog_src, conn):
+        self._scoped_catalog_share = update_share
         self._master_share = update_share.makedirs("_master")\
                                              .new_file('Catalog.xml')
         self._master= MasterCatalog(self._master_share)
+        self._conn = conn
+        self._catalog_src = catalog_src
 
         self._inventory_share = update_share.makedirs("_inventory")
         self._cache_catalogs = {}
 
         self._initialize()
-        self._conn = DownloadHelper(site = site, protocol = protocol)
 
     def _initialize(self):
         self._master.load()
-        catalogs_path = os.path.join(self._update_share.local_full_path, '*.xml')
+        catalogs_path = os.path.join(self._scoped_catalog_share.local_full_path, '*.xml')
         for name in glob.glob(catalogs_path):
             fname = os.path.basename(name).replace('.xml', '')
             if fname not in self._cache_catalogs:
@@ -132,7 +174,7 @@ class _UpdateCacheManager(object):
         self._cache_catalogs['Catalog'] = None
 
     def _randomCatalogScoper(self):
-        fname= self._update_share.mkstemp(prefix='upd', suffix='.xml').local_full_path
+        fname= self._scoped_catalog_share.mkstemp(prefix='upd', suffix='.xml').local_full_path
         self.getCatalogScoper(os.path.basename(fname).replace('.xml', ''))
 
     def getCatalogScoper(self, name = 'Catalog'):
@@ -140,7 +182,7 @@ class _UpdateCacheManager(object):
             self._cache_catalogs[name] = None
 
         if not self._cache_catalogs[name]:
-            cache_share = self._update_share.new_file(name + '.xml')
+            cache_share = self._scoped_catalog_share.new_file(name + '.xml')
             self._cache_catalogs[name] = (cache_share,
                  CatalogScoper(self._master, cache_share))
 
@@ -151,7 +193,7 @@ class _UpdateCacheManager(object):
 
     def update_catalog(self):
         folder = self._master_share.local_folder_path
-        c = 'catalog/Catalog.gz'
+        c = self._catalog_src
         retval = self._conn.download_newerfiles([c], folder)
         logger.debug("Download Success = {0}, Failed = {1}"
                 .format(retval['success'], retval['failed']))
@@ -169,7 +211,7 @@ class _UpdateCacheManager(object):
     def update_cache(self, catalog = 'Catalog'):
         (cache_share, cache) = self.getCatalogScoper(catalog)
         retval = self._conn.download_newerfiles(cache.UpdateFileDetails,
-                        self._update_share.local_full_path)
+                        self._scoped_catalog_share.local_full_path)
         logger.debug("Download Success = {0}, Failed = {1}".\
                      format(retval['success'], retval['failed']))
         if retval['failed'] == 0:
@@ -178,6 +220,12 @@ class _UpdateCacheManager(object):
             retval['Status'] = 'Failed'
         self._conn.disconnect()
         return retval
+
+class _UpdateCacheManager(_CatalogManager):
+
+    def __init__(self, update_share, site, protocol):
+        conn = DownloadHelper(site = site, protocol = protocol)
+        super().__init__(update_share, 'catalog/Catalog.gz', conn)
 
 class MasterCatalog(object):
     def __init__(self, master_share):
@@ -192,6 +240,7 @@ class MasterCatalog(object):
 class CatalogScoper(object):
 
     def __init__(self, master_catalog, cache_share):
+        self.ostype = "WIN64"
         self._cache_share = cache_share
         self.cache_lock = threading.Lock()
         self._master_catalog = master_catalog
@@ -217,19 +266,24 @@ class CatalogScoper(object):
                 logger.error('Software Identity must be given when scoping updates to components')
             if swidentity:
                 count = self._rcache.filter_by_component(model,
-                            swidentity, compfqdd=comps)
+                            swidentity, self.ostype, compfqdd=comps)
             else:
-                count = self._rcache.filter_by_model(model)
+                count = self._rcache.filter_by_model(model, self.ostype)
         return count
 
     def compare(self, model, swidentity):
         compare = RepoComparator(swidentity)
-        self._rcache.filter_by_component(model, swidentity, compare=compare)
+        self._rcache.filter_by_component(model, swidentity, self.ostype, compare=compare)
         return compare.final()
 
     def save(self):
         with self.cache_lock:
             self._rcache.store()
+
+    def get_json(self):
+        with self.cache_lock:
+            self._rcache.store()
+        return self._rcache.get_json()
 
     def dispose(self):
         with self.cache_lock:

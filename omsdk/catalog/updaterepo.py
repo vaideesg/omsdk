@@ -366,13 +366,13 @@ class UpdateRepo:
                node.get("path") in self.entries:
                 self._copynode(insertnode, node)
 
-    def filter_by_model(self, model, ostype="WIN"):
+    def filter_by_model(self, model, ostype):
         if self.source:
             count = self.source.filter_bundle(model, ostype, tosource=self)
             logger.debug('filtered bundle ' + str(count))
         return self.source.filter_by_model(model, ostype, firm=None, tosource=self)
 
-    def filter_by_component(self, model,swidentity, compfqdd=None,ostype="WIN", compare=None):
+    def filter_by_component(self, model,swidentity, ostype, compfqdd=None, compare=None):
         if compfqdd and len(compfqdd) <= 0: compfqdd = None
         logger.debug('filter_by_component::compfqdd=' + str(compfqdd))
         logger.debug(PrettyPrint.prettify_json(swidentity))
@@ -460,3 +460,50 @@ class UpdateRepo:
             self.wcomps[node.get("path")] = "done"
             self._copynode(self.root, node)
         self.tree.write(os.path.join(self.folder, target))
+
+    # version = -1 : latest
+    # version =  0 : n-1
+    def get_json(self):
+        self.root = self.tree.getroot()
+        collect_fields = [ 'dateTime',
+            #'packageID', 'path'
+            'componentID', 'systemID', 'deviceID', 'subDeviceID',
+            'vendorID', 'subVendorID'
+        ]
+        for node in self.root.findall("./SoftwareComponent"):
+            entry = {}
+            self._get_sub_child(entry)
+
+    def _get_sub_child(self, entry):
+        for child in entry:
+
+    def get_old_json(self):
+        self.root = self.tree.getroot()
+        rjson = { 'SoftwareComponent' : [] }
+        for node in self.root.findall("./SoftwareComponent"):
+            for comp in node.findall('./SupportedDevices/Device'):
+                pcientries = []
+                pcis = comp.findall('./PCIInfo')
+                for vals in pcis:
+                    pcientries.append(vals.attrib)
+                if len(pcientries) == 0:
+                    pcientries.append({})
+                package = re.sub('.*/', '', node.attrib['path'])
+                for pcis in pcientries:
+                  for bundle in self.root.findall("./SoftwareBundle/Contents/Package[@path='{0}']/.../...".format(package)):
+                    for model in bundle.findall("./TargetSystems/Brand/Model"):
+                        entry = {'Package':  package}
+                        entry.update(node.attrib)
+                        for attr in comp.attrib:
+                            entry['component_'+ attr] = comp.attrib[attr]
+                        for attr in ['dateTime', 'releaseID', 'version']:
+                            entry['catalog_'+attr]=self.root.attrib[attr]
+                        for attr in bundle.attrib:
+                            if (attr == "Package"): continue
+                            entry['bundle_'+attr]=bundle.attrib[attr]
+                        for attr in model.attrib:
+                            entry['model_'+attr]=model.attrib[attr]
+                        for attr in pcis:
+                            entry['pci_'+attr]=pcis[attr]
+                        rjson['SoftwareComponent'].append(entry)
+        return rjson

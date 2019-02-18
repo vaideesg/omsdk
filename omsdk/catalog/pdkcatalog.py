@@ -40,6 +40,7 @@ class DellPDKCatalog:
 
     OSTypes = {
         "WIN" : "LWXP",
+        "WIN64" : "LW64",
     }
 
     def __init__(self, source_file):
@@ -57,7 +58,7 @@ class DellPDKCatalog:
     #ostype = None => all os types
     #ostype = "WIN" => only win32
     #ostype = ["WIN", "LIN"] => only win32 and Lin32
-    def filter_bundle(self, model, ostype="WIN", tosource = None):
+    def filter_bundle(self, model, ostype="WIN64", tosource = None):
         # Find all Software Bundles for this model
         model = model.upper()
         model_path = "./SoftwareBundle/TargetSystems/Brand/Model[@systemID='{0}']/.../.../...".format(model)
@@ -102,18 +103,18 @@ class DellPDKCatalog:
                     tosource.addComponent(model, node, firm)
         return count
 
-    def filter_by_model(self, model, ostype="WIN", firm = None, tosource=None):
+    def filter_by_model(self, model, ostype="WIN64", firm = None, tosource=None):
         model = model.upper()
         return self._filter_byid(model, ostype, "", firm, tosource)
 
-    def filter_by_compid(self, model, cid, ostype="WIN", firm=None, tosource=None):
+    def filter_by_compid(self, model, cid, ostype="WIN64", firm=None, tosource=None):
         model = model.upper()
         compid_path = ""
         if cid:
             compid_path = "[@componentID='{0}']".format(cid)
         return self._filter_byid(model, ostype, compid_path, firm, tosource)
 
-    def filter_by_pci(self, model, pcispec, ostype="WIN", firm=None, tosource = None):
+    def filter_by_pci(self, model, pcispec, ostype="WIN64", firm=None, tosource = None):
         model = model.upper()
         compid_path = "/PCIInfo"
         for field in ['deviceID', 'subDeviceID', 'subVendorID', 'vendorID']:
@@ -123,3 +124,54 @@ class DellPDKCatalog:
             compid_path += "[@" + field + "='" + pcispec[field] + "']"
         compid_path += "/..."
         return self._filter_byid(model, ostype, compid_path, firm, tosource)
+
+    def get_json(self, rjson):
+        for node in self.root.findall("./SoftwareComponent"):
+            for comp in node.findall('./SupportedDevices/Device'):
+                pcientries = []
+                pcis = comp.findall('./PCIInfo')
+                for vals in pcis:
+                    pcientries.append(vals.attrib)
+                if len(pcientries) == 0:
+                    pcientries.append({})
+                package = re.sub('.*/', '', node.attrib['path'])
+                for pcis in pcientries:
+                  for bundle in self.root.findall("./SoftwareBundle/Contents/Package[@path='{0}']/.../...".format(package)):
+                    for model in bundle.findall("./TargetSystems/Brand/Model"):
+                        entry = {'Package':  package}
+                        entry.update(node.attrib)
+                        for attr in comp.attrib:
+                            entry['component_'+ attr] = comp.attrib[attr]
+                        for attr in ['dateTime', 'releaseID', 'version']:
+                            entry['catalog_'+attr]=self.root.attrib[attr]
+                        for attr in bundle.attrib:
+                            if (attr == "Package"): continue
+                            entry['bundle_'+attr]=bundle.attrib[attr]
+                        for attr in model.attrib:
+                            entry['model_'+attr]=model.attrib[attr]
+                        for attr in pcis:
+                            entry['pci_'+attr]=pcis[attr]
+                        rjson.append(entry)
+        return rjson
+
+class DellPDKIndexCatalog:
+
+    UpdateTypes = {
+        "LC" : "MTLC",
+    }
+
+    def __init__(self, source_file):
+        self.source_file = source_file
+        if not os.path.isfile(self.source_file):
+            logger.debug(self.source_file + " does not exist!")
+            self.root = ET.Element("Manifest")
+            self.tree = ET.ElementTree(self.root)
+            self.valid = False
+        else:
+            self.tree = ET.parse(self.source_file)
+            self.root = self.tree.getroot()
+            self.valid = True
+
+    def filter_index(self, update_type="LC"):
+        update_path = "./{0}GroupManifest[@type='{1}']/{0}ManifestInformation".format('{openmanage/cm/dm}', self.UpdateTypes[update_type])
+        return [node.attrib for node in self.root.findall(update_path)]
