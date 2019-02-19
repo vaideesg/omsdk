@@ -2,6 +2,7 @@ import sys
 import os
 import json
 sys.path.append(os.getcwd())
+from datetime import datetime
 
 from sys import stdout, path
 
@@ -73,7 +74,7 @@ class FieldCollector(Base):
 
     @property
     def PersistentObject(self):
-        return "./__data/" + self.name + "_fields.txt"
+        return "../omdata/__data/" + self.name + "_fields.txt"
 
     def serialize(self):
         with open(self.PersistentObject, "w") as f:
@@ -85,18 +86,6 @@ class FieldCollector(Base):
             with open(self.PersistentObject, "r") as f:
                 self.fields = json.load(f)
 
-
-class EnumHelper(object):
-    def __init__(self):
-        self.enumerator = {}
-
-    def todo(self):
-        if fname in ['Model', 'FQDD']:
-            if fname not in self.enumerator:
-                self.enumerator[fname] = []
-            if value not in self.enumerator[fname]:
-                self.enumerator[fname].append(value)
-            value = str(self.enumerator[fname].index(value))
 
 class DataCollector(Base):
     def __init__(self, fields):
@@ -137,8 +126,12 @@ class DataCollector(Base):
                     myrec[field + "_orig"] = ""
             elif (field in origrec and origrec[field]):
                 myrec[field] = self.beautify_field(field, origrec[field])
+            elif field == "SREC":
+                myrec[field] = "-".join([myrec['DeviceID'],
+                            myrec['SubDeviceID'], myrec['VendorID'],
+                            myrec['SubVendorID']])
             else:
-                myrec[field] = "0"
+                myrec[field] = ""
 
         return myrec if not spec or spec(myrec) else None
 
@@ -154,7 +147,6 @@ class DeviceCollector(DataCollector):
     def __init__(self, fname):
         super().__init__('DeviceCollector')
         self.sp_fields = [
-            "InstallationDate",
             "FQDD", "Model", "SystemID"]
         ipaddr = re.sub('.*\\\\', '', fname)
         pathdir = re.sub(ipaddr + '$', '', fname)
@@ -168,15 +160,12 @@ class DeviceCollector(DataCollector):
     def my_beautify_field(self, fname, value):
         if fname in ['SystemID']:
             value = "000{0:X}".format(int(value))[-4:]
-        elif fname in ['InstallationDate']:
-            from datetime import datetime
-            date_format = "%Y-%m-%dT%H:%M:%SZ"
-            value = datetime.strptime(value, date_format).strftime('%y%m')
         elif fname in ['FQDD']:
             value = value.split('.')[0]
         elif fname in ['VersionString','ComponentID' 'DeviceID',
                        'SubDeviceID', 'SubVendorID', 'VendorID']:
             if value is None: value = ""
+            if value == "NULL" : value = ""
         return value
 
 class Objects(object):
@@ -218,26 +207,34 @@ class DateModifier(FieldModifier):
     def beautify(self, value):
         return datetime.strptime(value, self.date_format).strftime('%y%m')
 
-dev = Objects('./Store/Master/*/*/100*', DeviceCollector,
+dev = Objects('../omdata/Store/Master/*/*/100*', DeviceCollector,
         join_entries = ['Firmware', 'System', 'doc.props'],
         filter_fields = [ 'IPAddress',
             'LifecycleControllerVersion',
-            'FQDD',
+
             'Model',
-            'SystemID',
-            'VersionString',
-            'ComponentID',
-            'InstallationDate',
-            'InstallationDate_orig',
             'FQDD_orig',
-            'Model_orig' ])
+
+            'FQDD',
+            'SystemID',
+            'ComponentID',
+            'DeviceID',
+            'SubDeviceID',
+            'VendorID',
+            'SubVendorID',
+            'SREC',
+
+            'VersionString',
+            'InstallationDate',
+       ])
 
 fnames = []
 fnames.extend(dev.filter_fields)
-fnames.extend(['max_id', 'max_vs', 'min_id','min_vs','eql_id', 'eql_vs']) 
+fnames.extend(['dd','max_id', 'max_vs', 'prev_id','prev_vs','eql_id', 'eql_vs',
+'eql>max', 'eql<min', 'min<max', 'dt_base', 'diff_eql_max' ])
 
 fw_fields = {}
-with open('./SDKRepo/PDK.json', "r") as f:
+with open('../omdata/SDKRepo/PDK.json', "r") as f:
     fw_fields = json.load(f)
 
 def cmpx(i, j):
@@ -248,21 +245,73 @@ def cmpx(i, j):
     else:
         return "great"
 
+def cmp_vers(device, catalog, msg):
+    i_vers = device
+    i_vers1 = None
+    if i_vers.startswith('OSC_'):
+        i_vers = re.sub('OSC_', '', i_vers)
+    if re.match('^[0-9.-]+$', i_vers):
+        i_vers1 = [int(i) for i in i_vers.replace('-','.').split('.')]
+
+    j_vers = catalog
+    j_vers1 = None
+    if j_vers.startswith('OSC_'):
+        j_vers = re.sub('OSC_', '', j_vers)
+    if re.match('^[0-9.-]+$', j_vers):
+        j_vers1 = [int(i) for i in j_vers.replace('-','.').split('.')]
+
+    if not i_vers1 or not j_vers1:
+        i_vers1 = device
+        j_vers1 = catalog
+    
+    if msg == "<":
+        return i_vers1 < j_vers1
+    elif msg == ">":
+        return i_vers1 > j_vers1
+    elif msg == "<=":
+        return i_vers1 <= j_vers1
+    elif msg == ">=":
+        return i_vers1 >= j_vers1
+    elif msg == "==":
+        return i_vers1 == j_vers1
+    else:
+        print(">>>>>>")
+
 print(",".join(fnames))
 for dev_fw in dev.processed:
     for d in ['ComponentID', 'DeviceID', 'SubDeviceID',
             'SubVendorID', 'VendorID']:
         if d not in dev_fw or not dev_fw[d]: dev_fw[d] = ""
         if dev_fw[d] == '0': dev_fw[d] = ""
+        if dev_fw[d] == 'NULL': dev_fw[d] = ""
 
     t1 = "{0}-{1}".format(dev_fw['SystemID'], dev_fw['ComponentID'])
     if t1 not in fw_fields:
-        t1 = "{0}-{1}-{2}-{3}-{4}".format(
+        t1 = "{0}-{1}-{2}-{3}-{4}-{5}".format(
             dev_fw['SystemID'], dev_fw['ComponentID'],
             dev_fw['DeviceID'], dev_fw['SubDeviceID'],
-            dev_fw['SubVendorID'], dev_fw['VendorID'])
+            dev_fw['VendorID'], dev_fw['SubVendorID'])
+    if t1 not in fw_fields:
+        t1 = "-{0}".format(dev_fw['ComponentID'])
 
     if t1 not in fw_fields:
+        t1 = "-{0}-{1}-{2}-{3}-{4}".format(
+            dev_fw['ComponentID'],
+            dev_fw['DeviceID'], dev_fw['SubDeviceID'],
+            dev_fw['VendorID'], dev_fw['SubVendorID'])
+
+    if t1 not in fw_fields:
+        t1 = "--{0}-{1}-{2}-{3}".format(
+            dev_fw['DeviceID'], dev_fw['SubDeviceID'],
+            dev_fw['VendorID'], dev_fw['SubVendorID'])
+    if t1 not in fw_fields:
+        t1 = "<not_found>"
+
+    dev_fw['dd'] = t1
+
+    if t1 not in fw_fields:
+        dev_fw['diff_eql_max'] = 'No-Update-Found'
+        dev_fw['dt_base'] = -999999
         print(",".join([str(dev_fw[k]) if k in dev_fw else "" for k in fnames]))
         continue
 
@@ -276,26 +325,75 @@ for dev_fw in dev.processed:
       exact = None
       for ent in fw_fields[t1]['_plist']:
         cat_fw = fw_fields[t1][ent]
-        if (dev_fw[k] == cat_fw[v]):
-            if not exact or exact['catalog_version']<cat_fw['catalog_version']:
+        if (cmp_vers(dev_fw[k], cat_fw[v], "==")):
+            if not exact or cmp_vers(exact['catalog_version'], cat_fw['catalog_version'], "<"):
                 exact = cat_fw
-        if (dev_fw[k] <= cat_fw[v]):
-            if not imax or imax['catalog_version'] < cat_fw['catalog_version']:
+        if (cmp_vers(dev_fw[k], cat_fw[v], "<=")):
+            if not imax or cmp_vers(imax['catalog_version'], cat_fw['catalog_version'], "<"):
                 imax = cat_fw
-        if (dev_fw[k] >= cat_fw[v]):
-            if not imin or imin['catalog_version'] > cat_fw['catalog_version']:
+        if (cmp_vers(dev_fw[k], cat_fw[v], ">=")):
+            if not imin or cmp_vers(imin['catalog_version'], cat_fw['catalog_version'], "<"):
                 imin = cat_fw
 
-    dev_fw['max_id'] = imax['catalog_version'] if imax else "99.99.99"
-    dev_fw['min_id'] = imin['catalog_version'] if imin else "00.00.00"
-    dev_fw['eql_id'] = exact['catalog_version'] if exact else "00.00.00"
-    dev_fw['max_vs'] = imax['vendorVersion'] if imax else "99.99.99"
-    dev_fw['min_vs'] = imin['vendorVersion'] if imin else "00.00.00"
-    dev_fw['eql_vs'] = exact['vendorVersion'] if exact else "00.00.00"
-    print(",".join([str(dev_fw[i]) if i in dev_fw else "" for i in fnames]))
+    # 4: 063A--165F-0639-14E4-1028 : 7.10 in 2018-07; 20.6.52 in 18.03
+    # max version=GA6E; installed GA6C
 
-# fix systemID => Model_Hex
-# select catalog_version, dateTime where:
-#     VersionString == vendorVersion
-#     SystemID = model_systemID
-#     component_componentID == 107142
+    dev_fw['max_id'] = imax['max_cat'] if imax else "99.99.99"
+    dev_fw['max_vs'] = imax['vendorVersion'] if imax else "99.99.99"
+    dev_fw['eql_id'] = exact['max_cat'] if exact else "00.00.00"
+    dev_fw['eql_vs'] = exact['vendorVersion'] if exact else "00.00.00"
+    dev_fw['prev_id'] = imin['max_cat'] if imin else "00.00.00"
+    dev_fw['prev_vs'] = imin['vendorVersion'] if imin else "00.00.00"
+    min_catalog = "18.03.00"
+
+    # X-Rev was applied
+    if dev_fw['max_id'] == "99.99.99":
+        # eql_id will always be 00.00.00
+        # prev_id == 00.00.00 => is it not_found?
+        #        update present, it will always be < max_id
+        dev_fw['diff_eql_max'] = 'X-Rev'
+        dev_fw['dt_base'] = 999999
+
+    # At the latest!
+    elif dev_fw['max_id'] == dev_fw['eql_id']:
+        dev_fw['diff_eql_max'] = 'At-Latest'
+        dev_fw['dt_base'] = 888888
+    # Update released after a year!!!
+    elif dev_fw['eql_id'] == "00.00.00" and dev_fw['prev_id'] == "00.00.00":
+        value = dev_fw['InstallationDate']
+        # Baseline to start of century
+        if value.startswith("19"): value="2000-01-01T01:00:00Z"
+        date_format = "%Y-%m-%dT%H:%M:%SZ"
+        value = datetime.strptime(value, date_format).strftime('%y.%m.00')
+        # if not_updated_since == 0 & version != latest | hidden IPS version
+        if (min_catalog > value):
+            dev_fw['diff_eql_max'] = 'Update-After-Multiple-Years'
+        else:
+            dev_fw['diff_eql_max'] = 'Update-After-Single-Year'
+        dev_fw['dt_base'] = int(dev_fw['max_id'].replace('.',''))
+
+    # IPS Patch in between catalogs
+    elif dev_fw['eql_id'] == "00.00.00" and dev_fw['prev_id'] != "00.00.00":
+        dev_fw['diff_eql_max'] = 'IPS-In-Between'
+        #dev_fw['prev_id'] = imin['min_cat']
+        dev_fw['dt_base'] = int(dev_fw['max_id'].replace('.','')) - \
+                            int(dev_fw['prev_id'].replace('.',''))
+
+    # One Update inside year applied!!!
+    # will never happen, since prev_id <= eql_id
+    elif dev_fw['eql_id'] != "00.00.00" and dev_fw['prev_id'] == "00.00.00":
+        dev_fw['diff_eql_max'] = 'Rare-Update-One-Applied'
+        dev_fw['dt_base'] = int(dev_fw['max_id'].replace('.','')) - \
+                            int(dev_fw['eql_id'].replace('.',''))
+
+    # Multiple Updates inside year, at least one applied!!!
+    elif dev_fw['eql_id'] != "00.00.00" and dev_fw['prev_id'] != "00.00.00":
+        dev_fw['diff_eql_max'] = 'Multiple-Updates-One-Applied'
+        dev_fw['dt_base'] = int(dev_fw['max_id'].replace('.','')) - \
+                            int(dev_fw['eql_id'].replace('.',''))
+
+    dev_fw['eql>max'] = dev_fw['eql_id'] <= dev_fw['max_id']
+    dev_fw['eql<min'] = dev_fw['eql_id'] >= dev_fw['prev_id']
+    dev_fw['min<max'] = dev_fw['prev_id'] <= dev_fw['max_id']
+
+    print(",".join([str(dev_fw[i]) if i in dev_fw else "" for i in fnames]))

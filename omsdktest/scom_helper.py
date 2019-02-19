@@ -135,7 +135,7 @@ class ListProc:
 
 class Helper:
     def __init__(self, devlist, credstore, mode):
-        store = DeviceStore('.', 'Store')
+        store = DeviceStore('.', '../omdata/Store')
         tbuild = TopologyBuilder(store)
         tbuild.load()
         l =ListProc(sd, devlist, credstore, store, tbuild, mode)
