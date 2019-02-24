@@ -108,11 +108,12 @@ def clustering(fname):
             'attributes',
             'HostName',
             'max_id',
+            'max_id_min',
             'diff_eql_max'
             ], axis=1)
-    clean_data(new_data, lambda new_data,i : new_data.loc[i]['dt_base'] in [-999999, 999999, 888888, 190200])
+    clean_data(new_data, lambda new_data,i : new_data.loc[i]['dt_base'] in [-999999, 999999])
 
-    model = KMeans(n_clusters=4)
+    model = KMeans(n_clusters=8)
     model.fit(new_data)
 
     clust_labels = model.predict(new_data)
@@ -454,22 +455,24 @@ class UpdateItemsets(Charting):
 # Update Cost:
 #  How much downtime is needed
 #  How should I do the downtime?
-#clustering('o.csv')
 
 # Patterns:
 # Using Installation-Date sequences
 
 # Insights
 print("---- insights ----")
-UpdateImpact().process('o.csv')
-UpdateStatus().process('o.csv')
+#UpdateImpact().process('o.csv')
+#UpdateStatus().process('o.csv')
+clustering('o.csv')
 
 print("---- decision support ----")
 # Decision Making
-UpdateByWhen().process('o.csv')
-UpdateCost().process('o.csv')
-UpdateItemsets(include=['At-Latest']).process('o.csv')
+#UpdateByWhen().process('o.csv')
+#UpdateCost().process('o.csv')
+#UpdateItemsets(include=['At-Latest']).process('o.csv')
 #print("======")
 #UpdateItemsets(exclude=['At-Latest']).process('o.csv')
 #print("======")
-UpdateItemsets(include=['IPS/Demoted-Update'],support=0.1).process('o.csv')
+#UpdateItemsets(include=['IPS/Demoted-Update'],support=0.1).process('o.csv')
+
+print("---- remediation ----")

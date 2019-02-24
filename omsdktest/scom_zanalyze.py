@@ -242,7 +242,7 @@ fnames = []
 fnames.extend(dev.filter_fields)
 #fnames.extend(['dd','max_id', 'max_vs', 'prev_id','prev_vs','eql_id', 'eql_vs',
 #               'eql>max', 'eql<min', 'min<max'])
-fnames.extend(['max_id', 'max_id_min'])
+fnames.extend(['max_id', 'max_id_min', 'dt_base_i'])
 fnames.extend(['attributes','Vulnerability','Security','Availability','Performance','Reliability','dt_base', 'diff_eql_max' ])
 
 fw_fields = {}
@@ -295,6 +295,21 @@ def cmp_vers(device, catalog, msg):
 
 def doprint(data):
     print(data)
+
+def difference(d1, d2 = None):
+    if d1 == "99.99.99":
+        return 999999
+    if d2 is None:
+        return 400
+
+    from datetime import date,timedelta
+    today = date.today()
+    t = [int(j) for j in d1.split('.')]
+    catd1 = today.replace(2000+t[0], t[1], t[2]+15)
+    t = [int(j) for j in d2.split('.')]
+    catd2 = today.replace(2000+t[0], t[1], t[2]+15)
+    return (catd1-catd2).days
+
 doprint(",".join(fnames))
 for dev_fw in dev.processed:
     for d in ['ComponentID', 'DeviceID', 'SubDeviceID',
@@ -329,6 +344,7 @@ for dev_fw in dev.processed:
 
     if t1 not in fw_fields:
         dev_fw['diff_eql_max'] = 'No-Update-Found'
+        dev_fw['dt_base_i'] = -999999
         dev_fw['dt_base'] = -999999
         doprint(",".join([str(dev_fw[k]) if k in dev_fw else "" for k in fnames]))
         continue
@@ -390,12 +406,14 @@ for dev_fw in dev.processed:
         # prev_id == 00.00.00 => is it not_found?
         #        update present, it will always be < max_id
         dev_fw['diff_eql_max'] = 'X-Rev'
-        dev_fw['dt_base'] = 999999
+        dev_fw['dt_base_i'] = 999999
+        dev_fw['dt_base'] = difference(dev_fw['max_id'])
 
     # At the latest!
     elif dev_fw['max_id'] == dev_fw['eql_id']:
         dev_fw['diff_eql_max'] = 'At-Latest'
-        dev_fw['dt_base'] = 888888
+        dev_fw['dt_base_i'] = 888888
+        dev_fw['dt_base'] = 0
     # Update released after a year!!!
     elif dev_fw['eql_id'] == "00.00.00" and dev_fw['prev_id'] == "00.00.00":
         value = dev_fw['InstallationDate']
@@ -408,27 +426,31 @@ for dev_fw in dev.processed:
             dev_fw['diff_eql_max'] = 'Update-After-Multiple-Years'
         else:
             dev_fw['diff_eql_max'] = 'Update-After-Single-Year'
-        dev_fw['dt_base'] = int(dev_fw['max_id'].replace('.',''))
+        dev_fw['dt_base_i'] = int(dev_fw['max_id'].replace('.',''))
+        dev_fw['dt_base'] = difference(dev_fw['max_id'])
 
     # IPS Patch in between catalogs
     elif dev_fw['eql_id'] == "00.00.00" and dev_fw['prev_id'] != "00.00.00":
         dev_fw['diff_eql_max'] = 'IPS/Demoted-Update'
         #dev_fw['prev_id'] = imin['min_cat']
-        dev_fw['dt_base'] = int(dev_fw['max_id'].replace('.','')) - \
+        dev_fw['dt_base_i'] = int(dev_fw['max_id'].replace('.','')) - \
                             int(dev_fw['prev_id'].replace('.',''))
+        dev_fw['dt_base'] = difference(dev_fw['max_id'], dev_fw['prev_id'])
 
     # One Update inside year applied!!!
     # will never happen, since prev_id <= eql_id
     elif dev_fw['eql_id'] != "00.00.00" and dev_fw['prev_id'] == "00.00.00":
         dev_fw['diff_eql_max'] = 'Rare-Update-One-Applied'
-        dev_fw['dt_base'] = int(dev_fw['max_id'].replace('.','')) - \
+        dev_fw['dt_base_i'] = int(dev_fw['max_id'].replace('.','')) - \
                             int(dev_fw['eql_id'].replace('.',''))
+        dev_fw['dt_base'] = difference(dev_fw['max_id'], dev_fw['eql_id'])
 
     # Multiple Updates inside year, at least one applied!!!
     elif dev_fw['eql_id'] != "00.00.00" and dev_fw['prev_id'] != "00.00.00":
         dev_fw['diff_eql_max'] = 'Multiple-Updates-One-Applied'
-        dev_fw['dt_base'] = int(dev_fw['max_id'].replace('.','')) - \
+        dev_fw['dt_base_i'] = int(dev_fw['max_id'].replace('.','')) - \
                             int(dev_fw['eql_id'].replace('.',''))
+        dev_fw['dt_base'] = difference(dev_fw['max_id'], dev_fw['eql_id'])
 
     dev_fw['eql>max'] = dev_fw['eql_id'] <= dev_fw['max_id']
     dev_fw['eql<min'] = dev_fw['eql_id'] >= dev_fw['prev_id']
