@@ -119,9 +119,10 @@ def clustering(fname):
     show_data(new_data, pd.DataFrame(clust_labels))
 
 class Charting(object):
-    def __init__(self, title, names, show_children, components):
+    def __init__(self, title, names, flags, show_children, components):
         self.title = title
         self.names = names
+        self.flags = flags
         self.show_children = show_children
         self.components = components
 
@@ -190,6 +191,8 @@ class Charting(object):
         pass
 
     def _accumulate(self, ips, entries, filtered):
+        if self.flags:
+            entries[0][0] += 1
         if len(filtered):
             for idx in filtered:
                 entries[filtered[0]][idx]+=(ips[idx] if self.components else 1)
@@ -197,33 +200,12 @@ class Charting(object):
     def _filter(self, data, i):
         return data['HostName'][i] in [ 'linux/esx', 'Unknown', 'win', 'bare-metal' ]
 
-class UpdateImpact(Charting):
-    def __init__(self, show_children = True, components=False):
-        names = ['', 'Vulnerability', 'Security', 'Availability',
-                   'Reliability', 'Performance', ]
-        super().__init__('Update Impact', names, show_children, components)
-
-    # pivoted field
-    # names are columns 
-    # 0 is sumof all()
-    def _accept(self, ips, data, i):
-        if data['dt_base'][i] in [-999999] or self.components:
-            return False
-        for iname in range(0, len(self.names)):
-            if self.names[iname] in data and data[self.names[iname]][i] > 0.0:
-                ips[data['IPAddress'][i]][iname] = 1
-        return True
-
-    def _accumulate(self, ips, entries, filtered):
-        entries[0][0] += 1
-        super()._accumulate(ips, entries, filtered)
-
 
 class UpdateStatusBase(Charting):
-    def __init__(self, title, cost_type, names, show_children = True, components = False):
+    def __init__(self, title, cost_type, names, flags=False, show_children = True, components = False):
         self.cost_type = cost_type
         self.components = components
-        super().__init__(title, names, show_children, components)
+        super().__init__(title, names, flags, show_children, components)
 
     def cost_it(self, data, i):
         if self.cost_type == "status":
@@ -262,9 +244,14 @@ class UpdateStatusBase(Charting):
         if data['dt_base'][i] in [-999999] or (type(data['FQDD_orig'][i]) != str):
             return False
         comp = data['FQDD_orig'][i].split('.')[0] if self.components else data['IPAddress'][i]
-        val = ips[comp][self.names.index(self.cost_it(data, i))]
-        val = val + 1 if self.components else 1
-        ips[comp][self.names.index(self.cost_it(data, i))] = val
+        if self.flags:
+            for iname in range(0, len(self.names)):
+                if self.names[iname] in data and data[self.names[iname]][i] > 0.0:
+                    ips[comp][iname] = 1
+        else:
+            val = ips[comp][self.names.index(self.cost_it(data, i))]
+            val = val + 1 if self.components else 1
+            ips[comp][self.names.index(self.cost_it(data, i))] = val
 
 class UpdateCost(Charting):
     def __init__(self, show_children = True, cost_type="cost"):
@@ -292,7 +279,7 @@ class UpdateCost(Charting):
             'Enclosure' : 15,
             'RAID' : 0,
         }
-        super().__init__('Update Cost', names, show_children, False)
+        super().__init__('Update Cost', names, False, show_children, False)
 
     def _init(self):
         self.ips_comps = {}
@@ -303,9 +290,7 @@ class UpdateCost(Charting):
         return 1
 
     def _accept(self, ips, data, i):
-        if data['dt_base'][i] in [-999999]:
-            return False
-        if type(data['FQDD_orig'][i]) != str:
+        if data['dt_base'][i] in [-999999] or (type(data['FQDD_orig'][i]) != str):
             return False
         comp = data['FQDD_orig'][i].split('.')[0]
         device = data['IPAddress'][i]
@@ -327,12 +312,10 @@ class UpdateCost(Charting):
                 cks.append(self.ips_comps[i]['_a'])
             dd[self.ips_comps[i]['_a']][i] = ips[i][0]
         cks.sort()
-        dump(self.ips_comps)
         tt = []
         for i in self.ips_comps:
             tt.append([j for j in self.ips_comps[i] \
                       if j != "_a" and self.ips_comps[i][j] != 'At-Latest'])
-        dump(tt)
 
         fig, ax = plt.subplots()
         values = [sum(dd[i].values()) for i in cks]
@@ -360,7 +343,7 @@ class UpdateStatus(UpdateStatusBase):
             'Update-After-Multiple-Years',
             'No-Update-Found'
         ]
-        super().__init__('Update Status', 'status', names, show_children, components)
+        super().__init__('Update Status', 'status', names, False, show_children, components)
 
 
 class UpdateByWhen(UpdateStatusBase):
@@ -372,7 +355,13 @@ class UpdateByWhen(UpdateStatusBase):
             'In 180 Days',
             'X-Rev'
         ]
-        super().__init__('Update Status', 'bywhen', names, show_children, components)
+        super().__init__('Update By When', 'bywhen', names, False, show_children, components)
+
+class UpdateImpact(UpdateStatusBase):
+    def __init__(self, show_children = True, components=False):
+        names = ['', 'Vulnerability', 'Security', 'Availability',
+                   'Reliability', 'Performance', ]
+        super().__init__('Update Impact', 'impacts', names, True, show_children, components)
 
 class UpdateItemsets(Charting):
     def __init__(self, show_children = True, include=['At-Latest'], exclude=[], support = 0.4):
@@ -396,7 +385,7 @@ class UpdateItemsets(Charting):
         else:
             self.include = set(include) if len(include) > 0 else self.all_s
             self.exclude = set(self.all_s) - self.include
-        super().__init__('Update Itemsets', names, show_children, False)
+        super().__init__('Update Itemsets', names, False, show_children, False)
 
     def _init(self):
         self.ips_comps = {}
