@@ -10,6 +10,15 @@ import glob
 import json
 import re
 
+class Enumerator(object):
+    def __init__(self):
+        self.names = []
+
+    def get_enum(self, name):
+        if name not in self.names:
+            self.names.append(name)
+        return self.names.index(name)+1
+
 class Indexer(object):
     def __init__(self, entity):
         self.indexes = {}
@@ -88,10 +97,11 @@ class FieldCollector(Base):
 
 
 class DataCollector(Base):
-    def __init__(self, fields):
+    def __init__(self, name, oc):
         self.ipaddr = None
         self.sp_fields = []
         self.entity = {}
+        self.enums = oc
 
     def op(self, join_entries, filter_fields, spec):
         final_it = self.entity
@@ -144,10 +154,9 @@ class DataCollector(Base):
         return str(value)
 
 class DeviceCollector(DataCollector):
-    def __init__(self, fname):
-        super().__init__('DeviceCollector')
-        self.sp_fields = [
-            "FQDD", "Model", "SystemID"]
+    def __init__(self, fname, oc):
+        super().__init__('DeviceCollector', oc)
+        self.sp_fields = ["FQDD", "Model", "SystemID"]
         ipaddr = re.sub('.*\\\\', '', fname)
         pathdir = re.sub(ipaddr + '$', '', fname)
         self.entity.update({ 'doc.props' : [ { 'IPAddress' : ipaddr } ] })
@@ -161,7 +170,18 @@ class DeviceCollector(DataCollector):
         if fname in ['SystemID']:
             value = "000{0:X}".format(int(value))[-4:]
         elif fname in ['FQDD']:
-            value = value.split('.')[0]
+            value = self.enums[fname].get_enum(value.split('.')[0])
+        elif fname in ['HostName']:
+            if value.lower().startswith('win'):
+                value='win'
+            elif value.lower().startswith('localhost') or \
+                 value.lower().startswith('esx') or \
+                 value.lower().startswith('ubuntu'):
+                value = 'linux/esx'
+            elif value in [ "Not Available", "0"]:
+                value = 'bare-metal'
+            else:
+                value = 'Unknown'
         elif fname in ['VersionString','ComponentID' 'DeviceID',
                        'SubDeviceID', 'SubVendorID', 'VendorID']:
             if value is None: value = ""
@@ -171,9 +191,10 @@ class DeviceCollector(DataCollector):
 class Objects(object):
 
     def __init__(self, directory, typeo, join_entries=None, filter_fields=None):
+        self.enums = { 'FQDD' : Enumerator() }
         self.objects = []
         for i in glob.glob(directory):
-            self.objects.append(typeo(i))
+            self.objects.append(typeo(i, self.enums))
         fields = FieldCollector(typeo.__name__)
         for i in self.objects:
             fields.op(i.entity, i.sp_fields, join_entries)
@@ -195,18 +216,6 @@ class Objects(object):
 def spec(obj):
         return True
 
-class FieldModifier(object):
-    pass
-
-from datetime import datetime
-class DateModifier(FieldModifier):
-    def __init__(self, name):
-        self.name = name
-        self.date_format = "%Y-%m-%dT%H:%M:%SZ"
-
-    def beautify(self, value):
-        return datetime.strptime(value, self.date_format).strftime('%y%m')
-
 dev = Objects('../omdata/Store/Master/*/*/100*', DeviceCollector,
         join_entries = ['Firmware', 'System', 'doc.props'],
         filter_fields = [ 'IPAddress',
@@ -214,6 +223,7 @@ dev = Objects('../omdata/Store/Master/*/*/100*', DeviceCollector,
 
             'Model',
             'FQDD_orig',
+            'HostName',
 
             'FQDD',
             'SystemID',
@@ -230,12 +240,18 @@ dev = Objects('../omdata/Store/Master/*/*/100*', DeviceCollector,
 
 fnames = []
 fnames.extend(dev.filter_fields)
-fnames.extend(['dd','max_id', 'max_vs', 'prev_id','prev_vs','eql_id', 'eql_vs',
-'eql>max', 'eql<min', 'min<max', 'dt_base', 'diff_eql_max' ])
+#fnames.extend(['dd','max_id', 'max_vs', 'prev_id','prev_vs','eql_id', 'eql_vs',
+#               'eql>max', 'eql<min', 'min<max'])
+fnames.extend(['max_id', 'max_id_min'])
+fnames.extend(['attributes','Vulnerability','Security','Availability','Performance','Reliability','dt_base', 'diff_eql_max' ])
 
 fw_fields = {}
+fw_anal_fields = {}
 with open('../omdata/SDKRepo/PDK.json', "r") as f:
     fw_fields = json.load(f)
+
+with open('../omdata/SDKRepo/T.json', "r") as f:
+    fw_anal_fields = json.load(f)
 
 def cmpx(i, j):
     if (i == j):
@@ -277,7 +293,9 @@ def cmp_vers(device, catalog, msg):
     else:
         print(">>>>>>")
 
-print(",".join(fnames))
+def doprint(data):
+    print(data)
+doprint(",".join(fnames))
 for dev_fw in dev.processed:
     for d in ['ComponentID', 'DeviceID', 'SubDeviceID',
             'SubVendorID', 'VendorID']:
@@ -312,7 +330,7 @@ for dev_fw in dev.processed:
     if t1 not in fw_fields:
         dev_fw['diff_eql_max'] = 'No-Update-Found'
         dev_fw['dt_base'] = -999999
-        print(",".join([str(dev_fw[k]) if k in dev_fw else "" for k in fnames]))
+        doprint(",".join([str(dev_fw[k]) if k in dev_fw else "" for k in fnames]))
         continue
 
     imin = None
@@ -323,12 +341,19 @@ for dev_fw in dev.processed:
       imin = None
       imax = None
       exact = None
+      dev_fw['attributes'] = ""
       for ent in fw_fields[t1]['_plist']:
         cat_fw = fw_fields[t1][ent]
+        isequal = False
         if (cmp_vers(dev_fw[k], cat_fw[v], "==")):
             if not exact or cmp_vers(exact['catalog_version'], cat_fw['catalog_version'], "<"):
                 exact = cat_fw
+                isequal = True
         if (cmp_vers(dev_fw[k], cat_fw[v], "<=")):
+            if not isequal:
+                dev_fw['attributes']+=","+fw_anal_fields[ent]['Attributes']
+            if not isequal and 'Vulnerability' in fw_anal_fields[ent]:
+                dev_fw['attributes']+=",[0]" + fw_anal_fields[ent]['Vulnerability']
             if not imax or cmp_vers(imax['catalog_version'], cat_fw['catalog_version'], "<"):
                 imax = cat_fw
         if (cmp_vers(dev_fw[k], cat_fw[v], ">=")):
@@ -337,8 +362,21 @@ for dev_fw in dev.processed:
 
     # 4: 063A--165F-0639-14E4-1028 : 7.10 in 2018-07; 20.6.52 in 18.03
     # max version=GA6E; installed GA6C
+    dev_fw['attributes'] = list(set(dev_fw['attributes'].split(',')))
+    for at in dev_fw['attributes']:
+        if at[3:] == '': continue
+        if at[3:].startswith('CVE-'):
+            at = "[0]Vulnerability"
+        if at[3:] not in dev_fw:
+            dev_fw[at[3:]] = 0
+        dev_fw[at[3:]] += 1
+
+    dev_fw['attributes'].sort()
+    dev_fw['attributes'] = ":".join(dev_fw['attributes'])
+
 
     dev_fw['max_id'] = imax['max_cat'] if imax else "99.99.99"
+    dev_fw['max_id_min'] = imax['min_cat'] if imax else "99.99.99"
     dev_fw['max_vs'] = imax['vendorVersion'] if imax else "99.99.99"
     dev_fw['eql_id'] = exact['max_cat'] if exact else "00.00.00"
     dev_fw['eql_vs'] = exact['vendorVersion'] if exact else "00.00.00"
@@ -374,7 +412,7 @@ for dev_fw in dev.processed:
 
     # IPS Patch in between catalogs
     elif dev_fw['eql_id'] == "00.00.00" and dev_fw['prev_id'] != "00.00.00":
-        dev_fw['diff_eql_max'] = 'IPS-In-Between'
+        dev_fw['diff_eql_max'] = 'IPS/Demoted-Update'
         #dev_fw['prev_id'] = imin['min_cat']
         dev_fw['dt_base'] = int(dev_fw['max_id'].replace('.','')) - \
                             int(dev_fw['prev_id'].replace('.',''))
@@ -396,4 +434,4 @@ for dev_fw in dev.processed:
     dev_fw['eql<min'] = dev_fw['eql_id'] >= dev_fw['prev_id']
     dev_fw['min<max'] = dev_fw['prev_id'] <= dev_fw['max_id']
 
-    print(",".join([str(dev_fw[i]) if i in dev_fw else "" for i in fnames]))
+    doprint(",".join([str(dev_fw[i]) if i in dev_fw else "" for i in fnames]))
