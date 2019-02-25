@@ -242,7 +242,7 @@ fnames = []
 fnames.extend(dev.filter_fields)
 #fnames.extend(['dd','max_id', 'max_vs', 'prev_id','prev_vs','eql_id', 'eql_vs',
 #               'eql>max', 'eql<min', 'min<max'])
-fnames.extend(['max_id', 'max_id_min', 'dt_base_i'])
+fnames.extend(['max_id', 'max_vs', 'max_id_min', 'dt_base_i', 'FWIndicator'])
 fnames.extend(['attributes','Vulnerability','Security','Availability','Performance','Reliability','dt_base', 'diff_eql_max' ])
 
 fw_fields = {}
@@ -338,9 +338,9 @@ for dev_fw in dev.processed:
             dev_fw['DeviceID'], dev_fw['SubDeviceID'],
             dev_fw['VendorID'], dev_fw['SubVendorID'])
     if t1 not in fw_fields:
-        t1 = "<not_found>"
+        t1 = "?"
 
-    dev_fw['dd'] = t1
+    dev_fw['FWIndicator'] = t1
 
     if t1 not in fw_fields:
         dev_fw['diff_eql_max'] = 'No-Update-Found'

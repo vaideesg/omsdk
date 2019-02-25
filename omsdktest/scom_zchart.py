@@ -43,7 +43,6 @@ def assoc_rules(fname):
     dataset =[]
     for i in itemset:
         dataset.append(itemset[i])
-    print(dataset)
     
     te = TransactionEncoder()
     te_ary = te.fit(dataset).transform(dataset)
@@ -109,6 +108,8 @@ def clustering(fname):
             'HostName',
             'max_id',
             'max_id_min',
+            'max_vs',
+            'FWIndicator',
             'diff_eql_max'
             ], axis=1)
     clean_data(new_data, lambda new_data,i : new_data.loc[i]['dt_base'] in [-999999, 999999])
@@ -120,17 +121,21 @@ def clustering(fname):
     show_data(new_data, pd.DataFrame(clust_labels))
 
 class Charting(object):
-    def __init__(self, title, names, flags, show_children, components):
+    def __init__(self, title, names, flags, show_children, components,
+                colors=None):
         self.title = title
         self.names = names
         self.flags = flags
         self.show_children = show_children
         self.components = components
+        if colors is None:
+            colors = [5, 6, 2, 1, 19, 8, 10]
+        self.colors = colors
 
     def process(self, fname):
-        self._init()
         data = pd.read_csv(fname)
         data.fillna(0, inplace=True)
+        self._init(data)
         ips = {}
         for i in data.index:
             if self.components and (type(data['FQDD_orig'][i]) != str):
@@ -153,32 +158,29 @@ class Charting(object):
             filtered = [j for j in range(0, len(self.names)) if ips[i][j] > 0.0]
             self._accumulate(ips[i], entries, filtered)
 
-        #for i in ips:
-        #    print("{0}->{1}".format(i, ips[i]))
-
         self._final(ips, entries)
 
-    def _init(self):
+    def _init(self, data):
         pass
 
     def _final(self, ips, entries):
         fig, ax = plt.subplots()
         values = [entries[i][i] for i in range(0, len(self.names))]
         cmap = plt.get_cmap("tab20")
-        outer_colors = cmap(np.array([5, 6, 2, 1, 19, 8, 10]))
-        cols =[5, 6, 2, 1, 19, 8, 10]
+        outer_colors = cmap(np.array(self.colors))
     
         size = 0.2
         ax.pie(values, labels=self.names,radius=1, colors=outer_colors,
         wedgeprops=dict(width=size, edgecolor='w'))
     
         if self.show_children:
-            for i in range(1, len(self.names)):
+            start = 1 if self.flags else 0
+            for i in range(start, len(self.names)):
                 row_i = []
                 for j in range(0, len(self.names)):
                     row_i.append(entries[j][i])
                     row_i.append(entries[j][j]-entries[j][i])
-                inner_colors = cmap(np.array([cols[i],15]))
+                inner_colors = cmap(np.array([self.colors[i], 15]))
                 width = 0.1
                 size = 1 - 0.2 - (i-1)*width
                 ax.pie(row_i, radius=size, colors=inner_colors,
@@ -203,10 +205,10 @@ class Charting(object):
 
 
 class UpdateStatusBase(Charting):
-    def __init__(self, title, cost_type, names, flags=False, show_children = True, components = False):
+    def __init__(self, title, cost_type, names, flags=False, show_children = True, components = False, colors=None):
         self.cost_type = cost_type
         self.components = components
-        super().__init__(title, names, flags, show_children, components)
+        super().__init__(title, names, flags, show_children, components, colors)
 
     def cost_it(self, data, i):
         if self.cost_type == "status":
@@ -282,7 +284,7 @@ class UpdateCost(Charting):
         }
         super().__init__('Update Cost', names, False, show_children, False)
 
-    def _init(self):
+    def _init(self, data):
         self.ips_comps = {}
 
     def cost_it(self, comp, data, i):
@@ -322,8 +324,7 @@ class UpdateCost(Charting):
         values = [sum(dd[i].values()) for i in cks]
 
         cmap = plt.get_cmap("tab20")
-        outer_colors = cmap(np.array([5, 6, 2, 1, 19, 8, 10]))
-        cols =[5, 6, 2, 1, 19, 8, 10]
+        outer_colors = cmap(np.array(self.colors))
     
         size = 0.2
         ax.pie(values, labels=cks,radius=1, colors=outer_colors,
@@ -364,6 +365,39 @@ class UpdateImpact(UpdateStatusBase):
                    'Reliability', 'Performance', ]
         super().__init__('Update Impact', 'impacts', names, True, show_children, components)
 
+class UpdateConfidence(UpdateStatusBase):
+    def __init__(self, show_children = True, components = False):
+        names = [
+            'Very High', #:0.95+',
+            'High', #:0.9-0.95',
+            'Medium', #:0.75-0.9',
+            'Low', #:0.5-0.75',
+            'Unknown', #:0',
+        ]
+        colors=[5, 19, 1, 2, 6]
+        super().__init__('Update Confidence', 'confidence', names, False, show_children, components, colors=colors)
+
+    def _init(self, data):
+        self.versions = {}
+        for i in data.index:
+            ver_string = "{0}-{1}".format(data['VersionString'][i],
+                data['FWIndicator'][i])
+            if ver_string not in self.versions:
+                self.versions[ver_string] = 0
+            self.versions[ver_string] += 1
+
+    def cost_it(self, data, i):
+        ver_string = "{0}-{1}".format(data['max_vs'][i],
+                data['FWIndicator'][i])
+        n = 0.0
+        if ver_string in self.versions:
+            n = self.versions[ver_string]/(self.versions[ver_string]+1)
+        if n == 0.0: return 'Unknown'
+        elif n < 0.75: return 'Low'
+        elif n < 0.9 : return 'Medium'
+        elif n < 0.95 : return 'High'
+        else: return 'Very High'
+
 class UpdateItemsets(Charting):
     def __init__(self, show_children = True, include=['At-Latest'], exclude=[], support = 0.4):
         names = ['Cost']
@@ -388,7 +422,7 @@ class UpdateItemsets(Charting):
             self.exclude = set(self.all_s) - self.include
         super().__init__('Update Itemsets', names, False, show_children, False)
 
-    def _init(self):
+    def _init(self, data):
         self.ips_comps = {}
 
     def _accept(self, ips, data, i):
@@ -461,18 +495,19 @@ class UpdateItemsets(Charting):
 
 # Insights
 print("---- insights ----")
-#UpdateImpact().process('o.csv')
+UpdateImpact().process('o.csv')
 #UpdateStatus().process('o.csv')
-clustering('o.csv')
+#clustering('o.csv')
 
 print("---- decision support ----")
 # Decision Making
 #UpdateByWhen().process('o.csv')
 #UpdateCost().process('o.csv')
-#UpdateItemsets(include=['At-Latest']).process('o.csv')
+UpdateConfidence().process('o.csv')
+UpdateItemsets(include=['At-Latest']).process('o.csv')
 #print("======")
 #UpdateItemsets(exclude=['At-Latest']).process('o.csv')
 #print("======")
-#UpdateItemsets(include=['IPS/Demoted-Update'],support=0.1).process('o.csv')
+UpdateItemsets(include=['IPS/Demoted-Update'],support=0.5).process('o.csv')
 
 print("---- remediation ----")
