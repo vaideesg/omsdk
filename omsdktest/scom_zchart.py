@@ -281,6 +281,7 @@ class UpdateCost(Charting):
             'BIOS' : 30,
             'Enclosure' : 15,
             'RAID' : 0,
+            'internal' : 0
         }
         super().__init__('Update Cost', names, False, show_children, False)
 
@@ -494,20 +495,22 @@ class UpdateItemsets(Charting):
 # Using Installation-Date sequences
 
 # Insights
-print("---- insights ----")
-UpdateImpact().process('o.csv')
-#UpdateStatus().process('o.csv')
-#clustering('o.csv')
+fname = 'Store_100.csv'
+if True:
+    print("---- insights ----")
+    UpdateImpact().process(fname)
+    UpdateStatus().process(fname)
+    clustering(fname)
 
-print("---- decision support ----")
-# Decision Making
-#UpdateByWhen().process('o.csv')
-#UpdateCost().process('o.csv')
-UpdateConfidence().process('o.csv')
-UpdateItemsets(include=['At-Latest']).process('o.csv')
+    print("---- decision support ----")
+    # Decision Making
+    UpdateByWhen().process(fname)
+UpdateCost().process(fname)
+UpdateConfidence().process(fname)
+UpdateItemsets(include=['At-Latest']).process(fname)
 #print("======")
-#UpdateItemsets(exclude=['At-Latest']).process('o.csv')
+#UpdateItemsets(exclude=['At-Latest']).process(fname)
 #print("======")
-UpdateItemsets(include=['IPS/Demoted-Update'],support=0.5).process('o.csv')
+UpdateItemsets(include=['IPS/Demoted-Update'],support=0.5).process(fname)
 
 print("---- remediation ----")

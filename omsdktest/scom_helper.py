@@ -134,8 +134,8 @@ class ListProc:
 
 
 class Helper:
-    def __init__(self, devlist, credstore, mode):
-        store = DeviceStore('.', '../omdata/Store')
+    def __init__(self, devlist, credstore, mode, store_path):
+        store = DeviceStore('.', store_path)
         tbuild = TopologyBuilder(store)
         tbuild.load()
         l =ListProc(sd, devlist, credstore, store, tbuild, mode)
@@ -144,7 +144,7 @@ class Helper:
 
 if __name__ == "__main__":
     if len(sys.argv) <= 1:
-        print("Usage: python -m omsdktest.scom_helper devlist creds scalable|detailed")
+        print("Usage: python -m omsdktest.scom_helper devlist creds [scalable|detailed [store]]")
         exit(1)
     #if not os.path.exists(sys.argv[1]) or os.path.isdir(sys.argv[1]):
     #    print(sys.argv[1] + " does not exist!")
@@ -163,15 +163,18 @@ if __name__ == "__main__":
     if len(sys.argv) > 2:
         if not os.path.exists(sys.argv[2]) or os.path.isdir(sys.argv[2]):
             print(sys.argv[2] + " does not exist!")
-            print("Usage: python -m {0} <jsonfile> [creds]".format(sys.argv[0]))
+            print("Usage: python <jsonfile> [creds]".format(sys.argv[0]))
             exit(1)
         credstore.load_file(sys.argv[2])
     if len(sys.argv) > 3:
         mode = sys.argv[3]
     if mode not in ['scalable', 'detailed']:
         print('invalid mode: ' + mode)
-        print("Usage: python -m {0} <jsonfile> [creds]".format(sys.argv[0]))
+        print("Usage: python <jsonfile> [creds]".format(sys.argv[0]))
         exit(1)
+    store_path = '../omdata/Store'
+    if len(sys.argv) > 4:
+        store_path = sys.argv[4]
 
     prep_list = {}
     if isinstance(devlist, list):
@@ -185,4 +188,4 @@ if __name__ == "__main__":
             prep_list.update(dict([(ip, cred) for ip in devlist[cred]]))
     #print(PrettyPrint.prettify_json(prep_list))
         
-    Helper(prep_list, credstore, mode)
+    Helper(prep_list, credstore, mode, store_path)

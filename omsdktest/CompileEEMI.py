@@ -23,6 +23,7 @@ with open('../omdata/MsgReg/defn.json') as f:
 cntr = {}
 flds = {}
 new_recs = {}
+host = {}
 f = pd.read_csv('../omdata/MsgRegistry.csv')
 for nrec in f.index:
     if type(f['Message'][nrec]) == float and math.isnan(f['Message'][nrec]):
@@ -53,14 +54,20 @@ for nrec in f.index:
         subject = "Operation:" + subject
     if subject not in new_recs:
         new_recs[subject] = []
+        host[subject] = []
 
     new_recs[subject].append(
         '{0},{1},{2},{3}'.\
             format(f['Name'][nrec], "/".join(verbs),
                    "/".join(ops), f['Message'][nrec]))
+    host[subject].append("/".join(verbs))
+
+klist = []
+for subject in host:
+    host[subject]=list(set([k for k in host[subject] if k]))
+    if len(host[subject]) == 0: klist.append(subject)
+for i in klist:
+    del host[i]
 
 print(json.dumps(new_recs, sort_keys=True, indent=4, \
           separators=(',', ': ')))
-#'"{0}","{1}","{2}","{3}","{4}","{5}","{6}"'.\
-#   format(f['Name'][nrec],f['Severity'][nrec],f['Message'][nrec],
-#   s, "/".join(verbs), "/".join(ops), "")) ]

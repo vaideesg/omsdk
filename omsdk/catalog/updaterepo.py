@@ -474,9 +474,6 @@ class UpdateRepo:
             entry = {}
             self._get_sub_child(entry)
 
-    def _get_sub_child(self, entry):
-        for child in entry:
-
     def get_old_json(self):
         self.root = self.tree.getroot()
         rjson = { 'SoftwareComponent' : [] }

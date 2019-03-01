@@ -3,6 +3,7 @@ import os
 import json
 sys.path.append(os.getcwd())
 from datetime import datetime
+from datetime import date, timedelta
 
 from sys import stdout, path
 
@@ -216,7 +217,9 @@ class Objects(object):
 def spec(obj):
         return True
 
-dev = Objects('../omdata/Store/Master/*/*/100*', DeviceCollector,
+#store_loc = '../omdata/Store'
+store_loc = 'Store.100'
+dev = Objects(store_loc + '/Master/*/*/100*', DeviceCollector,
         join_entries = ['Firmware', 'System', 'doc.props'],
         filter_fields = [ 'IPAddress',
             'LifecycleControllerVersion',
@@ -302,7 +305,6 @@ def difference(d1, d2 = None):
     if d2 is None:
         return 400
 
-    from datetime import date,timedelta
     today = date.today()
     t = [int(j) for j in d1.split('.')]
     catd1 = today.replace(2000+t[0], t[1], t[2]+15)
