@@ -32,6 +32,8 @@ for i in dictionary:
             count = count + 1
             names.append( (idx[0], "{0}-{1}".format("".join([y[0:1] for y in idx[0].split()]),count)) )
 
+# dict_mashup: noun | MsgId | verbs | string
+
 root = tree.getroot()
 
 def build_entry(entry, json_obj):
@@ -75,19 +77,17 @@ for i in root:
     argument = '_un:' + msg['MessageID']
     lookup = ''
     if msg['MessageID'] in dict_mashup:
-        if dict_mashup[msg['MessageID']][0] == "" or \
-            dict_mashup[msg['MessageID']][0].startswith("Operation"):
-            msgid = re.sub('[0-9]+', '', msg['MessageID'])
-            argument = '_op:' + msgid
-        else:
-            argument = '[^\s]+'
+        msgid = re.sub('[0-9]+', '', msg['MessageID'])
+        argument = '[^\s]+'
+        if '$' in dict_mashup[msg['MessageID']][0]:
             if 'Arg' in msg and type(msg['Arg']) != list:
                 argument = msg['Arg'].lower()
-            compiler = re.compile(re.sub('\${[^}]+}',
-                        argument, dict_mashup[msg['MessageID']][0]))
-            match = compiler.search(msg['Message'])
-            argument = match.group(0) if match else \
-                dict_mashup[msg['MessageID']][0]
+        compiler = re.compile(re.sub('\${[^}]+}',
+                    argument, dict_mashup[msg['MessageID']][0]))
+        match = compiler.search(msg['Message'])
+        argument = match.group(0) if match else \
+                dict_mashup[msg['MessageID']][0] \
+                if dict_mashup[msg['MessageID']][0] != "" else ('_op:' + msgid)
         lookup = dict_mashup[msg['MessageID']][2]
     if argument not in comps:
         comps[argument] = []
@@ -110,12 +110,28 @@ def compute_days_since(start, end=None):
     return int((end-start).seconds)
 
 maplist = [
-    ('created', 'deleted'),
+#    ('created', 'deleted'),
     ('started', 'completed'),
     ('created', 'exited'),
-    ('is low', 'is operating normally') #2
+    ('is low', 'is operating normally'), #2
+    ('returned to a ready state', 'is online'),
+    ('is down', 'started'),
+    ('turning off', 'turning on'),
     # completed | abruptly stopped'
 ]
+
+# version change detected is bad!
+# [ (detected),
+#    (is lost)
+#    ('auto discovery', disabled) ]
+#    ('was changed')
+# version change detected is good
+# [ (disabled) ]
+#
+# counters:
+#   powerdown,hardreset,powerup,shutdown => requests | frequency
+#   is lost | frequency
+
 oldrec = {}
 datasets = {}
 for i in comps:
@@ -152,4 +168,5 @@ for i in comps:
         #        j[0],j[1],j[2],j[3], j[4], j[5], j[6], i,sec))
         print(str(j) + "," + str(i) + "," + str(sec))
 
-print(datasets)
+print(json.dumps(datasets, sort_keys=True, indent=4, \
+          separators=(',', ': ')))
