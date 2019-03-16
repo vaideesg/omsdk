@@ -9,14 +9,6 @@ import zipfile, io, gzip, os, shutil, glob
 #1. Load Dictionary
 class Dictionary(object):
     def __init__(self, directory):
-        self.dictionary = {}
-        with open(os.path.join(directory,'s.json')) as f:
-            self.dictionary = json.load(f)
-        self.dict_mashup = {}
-        for i in self.dictionary:
-            for j in self.dictionary[i]:
-                idx = j.strip().split(',')
-                self.dict_mashup[idx[0]] = [i] + idx
         self.tverbs = {}
         self.build_verb_map()
 
@@ -46,7 +38,6 @@ class DeviceMapper(object):
     def __init__(self, directory, dictionary):
         self.directory = directory
         self.ipaddr = re.sub('\\\\.*$', '', re.sub('.*Master/Server.', '', directory))
-        self.dictionary = dictionary
         self.devicejson = {}
         self.tnames = {}
         self.fqdds = {}
@@ -117,28 +108,31 @@ class DeviceMapper(object):
                 "storage adapter",
                 "usb cable",
                 "power supplies",
-                "processing of update packages"
+                "fans",
+                "processing of update packages",
+                "factory default settings",
+                "network link",
+                "license"
                 ]:
             c = ".".join([i[0].upper()+i[1:] for i in ent_n.split()])
             self.update_lookup(c, ent_n)
-        self.names = self.do_sort_byname(self.tnames.keys())
+        self.do_sort_byname()
 
     def sp_clean(self, msg):
         return msg
 
-    def do_sort_byname(self, name_to_sort):
-        names = sorted(name_to_sort)
+    def do_sort_byname(self):
+        self.names = sorted(set(list(self.tnames.keys()) + self.verbs))
         i = 0
-        while i < len(names):
-            for j in range(i+1, len(names)):
-                if names[i] in names[j]:
+        while i < len(self.names):
+            for j in range(i+1, len(self.names)):
+                if self.names[i] in self.names[j]:
                     # move to end!
-                    names.append(names[i])
-                    del names[i]
+                    self.names.append(self.names[i])
+                    del self.names[i]
                     i = i - 1
                     break
             i = i+1
-        return names
 
     def update_lookup(self, ent_key, ent_n):
         if ent_key not in self.fqdds:
@@ -146,7 +140,7 @@ class DeviceMapper(object):
             if type(ent_n) == list:
                 ent_n = ent_n[0] if len(ent_n) else ent_key
             ent_n = ent_n.lower()
-            if ent_n in ['ac', 'system', 'license']:
+            if ent_n in ['ac', 'system']:
                 return False
             self.fqdds[ent_key] = ent_n
             self.tnames[ent_n] = ent_key
@@ -170,22 +164,45 @@ class DeviceMapper(object):
                 updated = True
         return updated
 
+    def _replace(self, final_msg, names, tnames, comps, tverbs, state):
+        for k in names:
+            end_count = len(final_msg)
+            midx = 0
+            while midx < end_count:
+                if k in final_msg[midx]:
+                    if k in tnames:
+                        if tnames[k] not in comps and tnames[k] != 'NotFound.1':
+                            comps.append(tnames[k])
+                    elif k in tverbs:
+                        if tverbs[k] not in comps and tverbs[k] != 'NotFound.1':
+                            state.append(tverbs[k])
+
+                    prev_part = final_msg[midx][0:final_msg[midx].index(k)].strip()
+                    end_part = final_msg[midx][final_msg[midx].index(k)+len(k):].strip()
+                    if prev_part != "":
+                        final_msg[midx] = prev_part
+                    else:
+                        del final_msg[midx]
+                        midx -= 1
+                    if end_part != "":
+                        final_msg.insert(midx+1, end_part)
+                    end_count = len(final_msg)
+                midx += 1
+        return True
+
     def lookup_collect_and_replace(self, msg, fqdd, msgarg, m=None):
         if self.discover_comps(msg) or self.update_lookup(fqdd, msgarg):
-            self.names = self.do_sort_byname(self.tnames.keys())
+            self.do_sort_byname()
         comps = []
-        for k in self.names:
-            if k in msg:
-                if self.tnames[k] not in comps and self.tnames[k] != 'NotFound.1':
-                    comps.append(self.tnames[k])
-                msg = msg.replace(k, self.tnames[k])
+        state = []
+        final_msg = [msg]
+        self._replace(final_msg, self.names, self.tnames, comps, self.tverbs, state)
+
         if fqdd not in comps and fqdd != 'NotFound.1':
             comps.append(fqdd)
-        state = []
-        for k in self.verbs:
-            if k in msg:
-                if k not in state: state.append(k)
-                msg = msg.replace(k, self.tverbs[k])
+
+        stop_words = ['.', 'the', 'requested', 'was', 'were', 'on', 'from', 'to', 'feature']
+        msg = "/".join([i for i in final_msg if i not in stop_words])
         return comps, state, msg
 
     def get_log(self):
@@ -227,11 +244,10 @@ class LogStream(object):
     #   powerdown,hardreset,powerup,shutdown => requests | frequency
     #   is lost | frequency
 
-    def __init__(self, filename, dictionary):
+    def __init__(self, filename):
         self.filename = filename
         self.tree = ET.parse(self.filename)
         self.root = self.tree.getroot()
-        self.dictionary = dictionary
         self.comps = { '_un' : [] }
         self.datasets = {}
 
@@ -360,13 +376,11 @@ class LogStream(object):
 
 dictionary = Dictionary('.')
 print(",".join(['ipaddr', 'state', 'msgid', 'date', 'sev', 'comps','msg', 'args']))
-for i in glob.glob('./log.xml'):
-#for i in glob.glob('../omdata/Store/Master/Server/*/*log.xml')[0:2]:
-    #directory = '../omdata/Store/Master/Server/DVRBR42'
+for i in glob.glob('../omdata/Store/Master/Server/*/*log.xml')[0:5]:
     directory = os.path.split(i)[0]
     dmap = DeviceMapper(directory, dictionary)
     dmap.build_name_map()
-    stream = LogStream(dmap.get_log(), dictionary)
+    stream = LogStream(dmap.get_log())
     stream.parse(dmap)
     for j in stream.comps:
         for k in stream.comps[j]:
