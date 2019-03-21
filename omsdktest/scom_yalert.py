@@ -69,6 +69,7 @@ class DeviceMapper(object):
                 ('system-server', 'System.Embedded.1'),
                 ('system cpu', 'System.CPU'),
                 ('system is', 'System.1'),
+                #('host system is', 'Host.System.1'),
                 ('disk-direct-ahci', 'Disk.Direct.1-1:AHCI.Slot.7-1'),
                 ('cpu 1', 'CPU.Socket.1'),
                 ('cpu 2', 'CPU.Socket.2'),
@@ -201,7 +202,7 @@ class DeviceMapper(object):
         if fqdd not in comps and fqdd != 'NotFound.1':
             comps.append(fqdd)
 
-        stop_words = ['.', 'the', 'requested', 'was', 'were', 'on', 'from', 'to', 'feature']
+        stop_words = ['.', 'the', 'requested', 'was', 'were', 'on', 'from', 'to', 'feature', 'for']
         msg = "/".join([i for i in final_msg if i not in stop_words])
         return comps, state, msg
 
@@ -217,7 +218,7 @@ class DeviceMapper(object):
 
 class LogStream(object):
     ignore_msgids = [
-        'USR0030', 'LOG007',
+        'USR0030', 'LOG007', 'LOG203',
         'USR0031', 'USR0034', 'USR0032', 'RAC1195',
         'USR0002', 'USR0005', 'USR0007', 'USR107',
     ]
@@ -244,11 +245,11 @@ class LogStream(object):
     #   powerdown,hardreset,powerup,shutdown => requests | frequency
     #   is lost | frequency
 
-    def __init__(self, filename):
+    def __init__(self, filename, comps = {}):
         self.filename = filename
         self.tree = ET.parse(self.filename)
         self.root = self.tree.getroot()
-        self.comps = { '_un' : [] }
+        self.comps = comps
         self.datasets = {}
 
     def build_entry(self, entry, prefix, json_obj):
@@ -284,11 +285,13 @@ class LogStream(object):
 
             if 'MessageArgs.Arg' not in msg:
                 msg['MessageArgs.Arg'] = []
+            if type(msg['MessageArgs.Arg']) != list:
+                msg['MessageArgs.Arg'] = [msg['MessageArgs.Arg']]
 
             if 'FQDD' not in msg:
                 args = msg['MessageArgs.Arg']
                 if len(args):
-                    msg['FQDD'] = args[0] if type(args) == list else args
+                    msg['FQDD'] = args[0]
                 else:
                     msg['FQDD'] = 'NotFound.1'
 
@@ -306,13 +309,30 @@ class LogStream(object):
                 dmap.lookup_collect_and_replace(msg['Message'],
                     msg['FQDD'], msg['MessageArgs.Arg'], msg)
 
-            if str(msg['Components']) not in self.comps:
-                self.comps[str(msg['Components'])] = []
+            comp = "//".join(msg['Components'])
+            if comp not in self.comps:
+                self.comps[comp] = {
+                    #State, MessageID, TS  Sev M   MA
+                    'State' : [],
+                    'MessageID' : [],
+                    "Timestamp" : [],
+                    "Severity" : [],
+                    "Message" : [],
+                    "MessageArgs.Arg" : []
+                }
+            self.comps[comp]['State'].append("-".join(msg['State']))
+            self.comps[comp]['MessageID'].append(msg['MessageID'])
+            self.comps[comp]['Timestamp'].append(msg['Timestamp'])
+            self.comps[comp]['Severity'].append(msg['Severity'])
+            self.comps[comp]['MessageArgs.Arg'].append("-".join(msg['MessageArgs.Arg']))
+            self.comps[comp]['Message'].append(msg['Message'])
 
-            self.comps[str(msg['Components'])].insert(0, [msg['State'],
-                    msg['MessageID'], msg['Timestamp'],
-                    msg['Severity'], msg['Components'], msg['Message'],
-                    msg['MessageArgs.Arg']])
+            #if str(msg['Components']) not in self.comps:
+            #    self.comps[str(msg['Components'])] = []
+            #self.comps[str(msg['Components'])].insert(0, [msg['State'],
+            #        msg['MessageID'], msg['Timestamp'],
+            #        msg['Severity'], msg['Components'], msg['Message'],
+            #        msg['MessageArgs.Arg']])
 
     def compute_days_since(self, start, end=None):
         date_format = "%Y-%m-%dT%H:%M:%S%z"
@@ -325,18 +345,23 @@ class LogStream(object):
                 start = start[0:start.rindex('Z')]
             elif 'z' in start:
                 start = start[0:start.rindex('z')]
-            if end and 'Z' in end:
-                end = end[0:end.rindex('Z')]
-            if end and 'z' in end:
-                end = end[0:end.rindex('z')]
             start = datetime.fromtimestamp(
                     datetime.strptime(start, date_format).timestamp())
 
         if end is None:
             end = datetime.now()
         else:
-            end = datetime.fromtimestamp(
-                datetime.strptime(end, date_format).timestamp())
+            try:
+                end = datetime.fromtimestamp(
+                    datetime.strptime(end, date_format).timestamp())
+            except ValueError:
+                date_format = "%Y-%m-%dT%H:%M:%S"
+                if end and 'Z' in end:
+                    end = end[0:end.rindex('Z')]
+                if end and 'z' in end:
+                    end = end[0:end.rindex('z')]
+                end = datetime.fromtimestamp(
+                    datetime.strptime(end, date_format).timestamp())
         return int((end-start).seconds)
 
     def process(self):
@@ -376,19 +401,200 @@ class LogStream(object):
 
 dictionary = Dictionary('.')
 print(",".join(['ipaddr', 'state', 'msgid', 'date', 'sev', 'comps','msg', 'args']))
-for i in glob.glob('../omdata/Store/Master/Server/*/*log.xml')[0:5]:
+comps = {}
+for i in glob.glob('../omdata/Store/Master/Server/*/*log.xml')[4:6]:
+    print(i)
     directory = os.path.split(i)[0]
     dmap = DeviceMapper(directory, dictionary)
     dmap.build_name_map()
-    stream = LogStream(dmap.get_log())
+    stream = LogStream(dmap.get_log(), comps)
     stream.parse(dmap)
-    for j in stream.comps:
-        for k in stream.comps[j]:
-            print(",".join([str(a).replace(',',';') for a in [dmap.ipaddr]+k]))
-    #print(json.dumps(stream.comps, sort_keys=True, indent=4, \
-    #      separators=(',', ': ')))
-    #stream.process()
-    #print(json.dumps(stream.datasets, sort_keys=True, indent=4, \
-    #      separators=(',', ': ')))
-    #print(json.dumps(dmap.tnames, sort_keys=True, indent=4, \
-    #      separators=(',', ': ')))
+
+Transitions = {
+
+    'iDRAC.Embedded.1' : {
+        "states" : [
+            "System.Hardreset",
+            "System.Powercycle",
+            "System.Powerdown",
+            "System.Powerup",
+            "System.Graceful.Shutdown",
+        ],
+        "init" : [
+            "System.Hardreset",
+            "System.Powercycle",
+            "System.Powerdown",
+            "System.Powerup",
+            "System.Graceful.Shutdown",
+            ],
+        "terminal" : [
+            "System.Powerup",
+        ],
+        "transitions" : {
+            "System.Hardreset" : ['System.Powerup'],
+            "System.Powercycle" : ['System.Powerup'],
+            "System.Powerdown" : ['System.Powerup'],
+            "System.Powerup" : ['System.Powerup'],
+            "System.Graceful.Shutdown" : ['System.Powerup'],
+        }
+    },
+    'Background.Initialization' : {
+        "states" : [ 'Has.Started', 'Has.Completed', 'Was.Cancelled'],
+        "init" : [ 'Has.Started' ],
+        "terminal" : [ 'Has.Completed', 'Was.Cancelled'],
+        "transitions" : {
+            "Has.Started" : [ "Has.Completed", "Was.Cancelled" ],
+        }
+    },
+    'System.1//' : {
+        "states" : [
+            'Turning.On',
+            'Turning.Off',
+            'Performing.A.Lpc.Reset',
+            'Powering.On',
+            'Powering.Off'
+        ],
+        "init" : [
+            'Turning.Off',
+            'Performing.A.Lpc.Reset',
+            'Powering.Off'
+            ],
+        "terminal" : [
+            'Turning.On',
+            'Performing.A.Lpc.Reset',
+            'Powering.On'
+        ],
+        "transitions" : {
+            'Turning.Off' : [ 'Turning.On'],
+            'Powering.Off' : [ 'Powering.On' ],
+        }
+    },
+    'Auto.Discovery//' : {
+        "states" : [ 'Licensed', 'Disabled', 'Enabled'],
+        "init" : [ 'Licensed', 'Enabled' ,'Disabled'],
+        "terminal" : [ 'Licensed', 'Enabled' ],
+        "transitions" : {
+            'Licensed' : [ 'Disabled', 'Enabled'],
+            'Disabled' : [ 'Disabled', 'Enabled' ]
+        }
+    },
+    "Chassis//": {
+        "states" : [ 
+            "Is.Open.While.The.Power.Is.On",
+            "Is.Closed.While.The.Power.Is.Off",
+            "Is.Closed.While.The.Power.Is.On",
+            "Is.Open.While.The.Power.Is.Off"
+        ],
+        "init" : [ 
+            "Is.Open.While.The.Power.Is.On",
+            "Is.Open.While.The.Power.Is.Off"
+        ],
+        "terminal" : [ 
+            "Is.Closed.While.The.Power.Is.Off",
+            "Is.Closed.While.The.Power.Is.On",
+        ],
+        "transitions" : {
+            "Is.Open.While.The.Power.Is.On" : [
+                "Is.Closed.While.The.Power.Is.Off",
+                "Is.Closed.While.The.Power.Is.On",
+                "Is.Open.While.The.Power.Is.Off"
+            ],
+            "Is.Open.While.The.Power.Is.Off" : [
+                "Is.Open.While.The.Power.Is.On",
+                "Is.Closed.While.The.Power.Is.Off",
+                "Is.Closed.While.The.Power.Is.On",
+            ]
+        }
+    }
+}
+
+c_stats = { }
+for i in comps:
+    found = None
+    for abc in Transitions:
+        if ('/' in abc and abc in i) or abc == i: 
+            found = abc
+            break
+    if not found: continue
+    print("********** {0} ************".format(found))
+
+    if found not in c_stats:
+        c_stats[found] = {
+            'found' : found,
+            'state' : None,
+            'time' : None,
+            's1' : 0, 's2' :0, 's3' : 0, 's4' : 0, 's5' : 0, 's6' : 0, 's7' : 0,
+            'times' : []
+        }
+    for j in range(0, len(comps[i]['State'])):
+        # none => init
+        if c_stats[found]['state'] is None:
+            if comps[i]['State'][j] not in Transitions[found]['init']:
+                c_stats[found]['s1'] += 1
+                print('{0}> is not an init state! Ignoring!'.format(
+                       comps[i]['State'][j]))
+            elif comps[i]['State'][j] not in Transitions[found]['transitions']:
+                if comps[i]['State'][j] not in Transitions[found]['terminal']:
+                    c_stats[found]['s2'] += 1
+                    print('no transition from {0} is found! Ignoring!'.format(
+                       comps[i]['State'][j]))
+                else:
+                    c_stats[found]['s3'] += 1
+                    print("==== self-terminal-state:" + comps[i]['State'][j])
+            else:
+                print("==== started")
+                c_stats[found]['state'] = comps[i]['State'][j]
+                c_stats[found]['time'] = comps[i]['Timestamp'][j]
+                print(" Entering " + c_stats[found]['state'])
+            continue
+            # what to do?
+        if comps[i]['State'][j] not in Transitions[found]['transitions'][c_stats[found]['state']]:
+            c_stats[found]['s4'] += 1
+            print('no transition from {0} to {1} is found! Ignoring!'.format(
+                       c_stats[found]['state'], comps[i]['State'][j]))
+            continue
+        # no transitions out of that state and also not terminal state! Ignore
+        if comps[i]['State'][j] not in Transitions[found]['transitions'] and \
+            comps[i]['State'][j] not in Transitions[found]['terminal']:
+            c_stats[found]['s5'] += 1
+            print('no transition from {0}! Ignoring!'.format(
+                       comps[i]['State'][j]))
+            continue
+        # valid transition found!
+        sec = stream.compute_days_since(comps[i]['Timestamp'][j], c_stats[found]['time'])
+        c_stats[found]['times'].append(
+            [c_stats[found]['state'], comps[i]['State'][j], sec]
+        )
+        c_stats[found]['state'] = comps[i]['State'][j]
+        c_stats[found]['time'] = comps[i]['Timestamp'][j]
+        print('moving to ' + c_stats[found]['state'] + " in " + str(sec) + " seconds")
+        if c_stats[found]['state'] in Transitions[found]['terminal']:
+            c_stats[found]['s6'] += 1
+            # if reached the terminal state switch to None
+            c_stats[found]['state'] = None
+            c_stats[found]['time'] = None
+            print("==== closed")
+        c_stats[found]['s7'] += 1
+    print("**************************************************")
+
+#print(json.dumps(comps, sort_keys=True, indent=4, \
+#        separators=(',', ': ')))
+for found in c_stats:
+    if c_stats[found]['state'] is None: continue
+    for state in Transitions[c_stats[found]['found']]['transitions'][c_stats[found]['state']]:
+        if state in Transitions[c_stats[found]['found']]['terminal']:
+            print("{0} Current={1}, Proposed={2}".format(found, c_stats[found]['state'],state))
+
+print(json.dumps(c_stats, sort_keys=True, indent=4, \
+        separators=(',', ': ')))
+
+def _summary(comps):
+    states = {}
+    for i in comps:
+        states[i] = {
+            'State' : list(set(comps[i]['State'])),
+            'MessageID' : list(set(comps[i]['MessageID']))
+        }
+
+    print(json.dumps(states, sort_keys=True, indent=4, \
+        separators=(',', ': ')))
