@@ -120,7 +120,7 @@ class ProtocolCredentialsFactory:
 class CredentialStore:
     DEFAULT_CREDS = {
         "default" : {
-            "User" : { "username" : "root", "password" : "calvin" },
+            "User" : { "username" : "root", "password" : "password" },
             "SNMPv2" : { "community" : "public" }
         }
     }

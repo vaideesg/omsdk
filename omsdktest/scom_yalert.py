@@ -5,6 +5,8 @@ from  datetime import datetime
 import zipfile, io, gzip, os, shutil, glob
 
 
+def dprint(msg):
+    pass
 
 #1. Load Dictionary
 class Dictionary(object):
@@ -245,12 +247,13 @@ class LogStream(object):
     #   powerdown,hardreset,powerup,shutdown => requests | frequency
     #   is lost | frequency
 
-    def __init__(self, filename, comps = {}):
+    def __init__(self, filename, comps = {}, counts ={}):
         self.filename = filename
         self.tree = ET.parse(self.filename)
         self.root = self.tree.getroot()
         self.comps = comps
         self.datasets = {}
+        self.counts = counts
 
     def build_entry(self, entry, prefix, json_obj):
         for i in entry:
@@ -279,6 +282,7 @@ class LogStream(object):
         for i in self.root:
             # Flatten entry
             msg = self.build_entry(i, [], {})
+            self.counts['total'] += 1 
 
             if type(msg['Message']) == list:
                 msg['Message'] = "::".join(msg['Message'])
@@ -298,6 +302,7 @@ class LogStream(object):
             msg['Subsystem'] = re.sub('[0-9]+', '', msg['MessageID'])
 
             if msg['MessageID'] in self.ignore_msgids:
+                self.counts['white_noise'] += 1
                 continue
 
             msg['Message'] = msg['Message'].lower()
@@ -356,12 +361,13 @@ class LogStream(object):
                     datetime.strptime(end, date_format).timestamp())
             except ValueError:
                 date_format = "%Y-%m-%dT%H:%M:%S"
-                if end and 'Z' in end:
-                    end = end[0:end.rindex('Z')]
-                if end and 'z' in end:
-                    end = end[0:end.rindex('z')]
+                #if end and 'Z' in end:
+                #    end = end[0:end.rindex('Z')]
+                #if end and 'z' in end:
+                #    end = end[0:end.rindex('z')]
+                end=end[0:19]
                 end = datetime.fromtimestamp(
-                    datetime.strptime(end, date_format).timestamp())
+                        datetime.strptime(end, date_format).timestamp())
         return int((end-start).seconds)
 
     def process(self):
@@ -370,6 +376,8 @@ class LogStream(object):
             for tupl in self.maplist:
                 for l in tupl:
                     oldrec[l] = None
+
+            self.counts['reduced'] += 1
         
             for j in self.comps[i]:
                 sec = 0
@@ -400,15 +408,24 @@ class LogStream(object):
 
 
 dictionary = Dictionary('.')
-print(",".join(['ipaddr', 'state', 'msgid', 'date', 'sev', 'comps','msg', 'args']))
+dprint(",".join(['ipaddr', 'state', 'msgid', 'date', 'sev', 'comps','msg', 'args']))
 comps = {}
-for i in glob.glob('../omdata/Store/Master/Server/*/*log.xml')[4:6]:
-    print(i)
+counts = { 'total' : 0, 'white_noise' : 0,
+            'reduced' : 0, 'actionable' : 0 }
+rcounts = { 'total' : 0, 'white_noise' : 0,
+            'reduced' : 0, 'actionable' : 0 }
+for i in glob.glob('../omdata/Store/Master/Server/*/*log.xml')[0:8]:
+    print("Loading log ..." + i)
     directory = os.path.split(i)[0]
     dmap = DeviceMapper(directory, dictionary)
     dmap.build_name_map()
-    stream = LogStream(dmap.get_log(), comps)
+    dmap.comps = {}
+    stream = LogStream(dmap.get_log(), comps, counts)
     stream.parse(dmap)
+    stream = LogStream(dmap.get_log(), dmap.comps, rcounts)
+    stream.parse(dmap)
+
+print("Log loading complete ======")
 
 Transitions = {
 
@@ -434,7 +451,6 @@ Transitions = {
             "System.Hardreset" : ['System.Powerup'],
             "System.Powercycle" : ['System.Powerup'],
             "System.Powerdown" : ['System.Powerup'],
-            "System.Powerup" : ['System.Powerup'],
             "System.Graceful.Shutdown" : ['System.Powerup'],
         }
     },
@@ -505,10 +521,53 @@ Transitions = {
                 "Is.Closed.While.The.Power.Is.On",
             ]
         }
+    },
+    "Firmware.Update//iDRAC.Embedded.1": {
+        "states" : [ 
+            "Initializing",
+            "Initialization.Complete",
+            "Checksumming.Image",
+            "Verify.Image.Headers",
+            "Programming.Flash",
+            "Successful"
+        ],
+        "init" : [ 
+            "Initializing",
+        ],
+        "terminal" : [ 
+            "Successful"
+        ],
+        "transitions" : {
+            "Initializing" : [ "Initialization.Complete" ],
+            "Initialization.Complete" : [ "Checksumming.Image" ],
+            "Checksumming.Image" : [ "Verify.Image.Headers" ],
+            "Verify.Image.Headers" : [ "Programming.Flash" ],
+            "Programming.Flash" : [ "Successful" ]
+        }
+    },
+    "Foreign.Configuration//": {
+        "states" : [ 
+            "Detected",
+            "Imported",
+            "Imported-Failed",
+            ""
+        ],
+        "init" : [ 
+            "Detected",
+        ],
+        "terminal" : [ 
+            "Imported",
+            "Imported-Failed",
+            ""
+        ],
+        "transitions" : {
+            "Detected" : [ "Imported", "", "Imported-Failed" ],
+        }
     }
 }
 
 c_stats = { }
+counts['reduced'] = len(comps)
 for i in comps:
     found = None
     for abc in Transitions:
@@ -516,7 +575,7 @@ for i in comps:
             found = abc
             break
     if not found: continue
-    print("********** {0} ************".format(found))
+    dprint("********** {0} ************".format(found))
 
     if found not in c_stats:
         c_stats[found] = {
@@ -531,33 +590,33 @@ for i in comps:
         if c_stats[found]['state'] is None:
             if comps[i]['State'][j] not in Transitions[found]['init']:
                 c_stats[found]['s1'] += 1
-                print('{0}> is not an init state! Ignoring!'.format(
+                dprint('{0}> is not an init state! Ignoring!'.format(
                        comps[i]['State'][j]))
             elif comps[i]['State'][j] not in Transitions[found]['transitions']:
                 if comps[i]['State'][j] not in Transitions[found]['terminal']:
                     c_stats[found]['s2'] += 1
-                    print('no transition from {0} is found! Ignoring!'.format(
+                    dprint('no transition from {0} is found! Ignoring!'.format(
                        comps[i]['State'][j]))
                 else:
                     c_stats[found]['s3'] += 1
-                    print("==== self-terminal-state:" + comps[i]['State'][j])
+                    dprint("==== self-terminal-state:" + comps[i]['State'][j])
             else:
-                print("==== started")
+                dprint("==== started")
                 c_stats[found]['state'] = comps[i]['State'][j]
                 c_stats[found]['time'] = comps[i]['Timestamp'][j]
-                print(" Entering " + c_stats[found]['state'])
+                dprint(" Entering " + c_stats[found]['state'])
             continue
             # what to do?
         if comps[i]['State'][j] not in Transitions[found]['transitions'][c_stats[found]['state']]:
             c_stats[found]['s4'] += 1
-            print('no transition from {0} to {1} is found! Ignoring!'.format(
+            dprint('no transition from {0} to {1} is found! Ignoring!'.format(
                        c_stats[found]['state'], comps[i]['State'][j]))
             continue
         # no transitions out of that state and also not terminal state! Ignore
         if comps[i]['State'][j] not in Transitions[found]['transitions'] and \
             comps[i]['State'][j] not in Transitions[found]['terminal']:
             c_stats[found]['s5'] += 1
-            print('no transition from {0}! Ignoring!'.format(
+            dprint('no transition from {0}! Ignoring!'.format(
                        comps[i]['State'][j]))
             continue
         # valid transition found!
@@ -567,34 +626,60 @@ for i in comps:
         )
         c_stats[found]['state'] = comps[i]['State'][j]
         c_stats[found]['time'] = comps[i]['Timestamp'][j]
-        print('moving to ' + c_stats[found]['state'] + " in " + str(sec) + " seconds")
+        dprint('moving to ' + c_stats[found]['state'] + " in " + str(sec) + " seconds")
         if c_stats[found]['state'] in Transitions[found]['terminal']:
             c_stats[found]['s6'] += 1
             # if reached the terminal state switch to None
             c_stats[found]['state'] = None
             c_stats[found]['time'] = None
-            print("==== closed")
+            dprint("==== closed")
         c_stats[found]['s7'] += 1
-    print("**************************************************")
+    dprint("**************************************************")
 
-#print(json.dumps(comps, sort_keys=True, indent=4, \
-#        separators=(',', ': ')))
+dprint(json.dumps(comps, sort_keys=True, indent=4, separators=(',', ': ')))
+
+def average(a):
+    if type(a) == list:
+        return sum(a)/len(a)
+    return a
+
+for found in c_stats:
+    for times in c_stats[found]['times']:
+        if 'tran_times' not in c_stats[found]:
+            c_stats[found]['tran_times'] = {}
+        s1 = times[0]
+        s2 = times[1]
+        if s1 not in c_stats[found]['tran_times']:
+            c_stats[found]['tran_times'][s1] = {}
+        if s2 not in c_stats[found]['tran_times'][s1]:
+            c_stats[found]['tran_times'][s1][s2] = []
+        c_stats[found]['tran_times'][s1][s2].append(times[2])
+for found in c_stats:
+    for times in c_stats[found]['times']:
+        s1 = times[0]
+        s2 = times[1]
+        c_stats[found]['tran_times'][s1][s2] = average(c_stats[found]['tran_times'][s1][s2])
+
+dprint(json.dumps(c_stats, sort_keys=True, indent=4, separators=(',', ': ')))
+for found in c_stats:
+    for abc in ['times', 'time', 's1', 's2', 's3', 's4', 's5', 's6', 's7']:
+        if abc in c_stats[found]:
+            del c_stats[found][abc]
+
+print("===== Identified Actions. Use Ansible Modules to set states")
 for found in c_stats:
     if c_stats[found]['state'] is None: continue
     for state in Transitions[c_stats[found]['found']]['transitions'][c_stats[found]['state']]:
         if state in Transitions[c_stats[found]['found']]['terminal']:
-            print("{0} Current={1}, Proposed={2}".format(found, c_stats[found]['state'],state))
 
-print(json.dumps(c_stats, sort_keys=True, indent=4, \
+            if state in c_stats[found]['tran_times'][c_stats[found]['state']]:
+                print("{0}: Current={1}, Proposed={2} | After={3} sec".format(found, c_stats[found]['state'],state,c_stats[found]['tran_times'][c_stats[found]['state']][state]))
+            else:
+                print("{0}: Current={1}, Proposed={2} |".format(found, c_stats[found]['state'],state))
+print("===== End Actions")
+
+dprint(json.dumps(c_stats, sort_keys=True, indent=4, separators=(',', ': ')))
+print("==== Processed Stats")
+print(json.dumps(counts, sort_keys=True, indent=4, \
         separators=(',', ': ')))
-
-def _summary(comps):
-    states = {}
-    for i in comps:
-        states[i] = {
-            'State' : list(set(comps[i]['State'])),
-            'MessageID' : list(set(comps[i]['MessageID']))
-        }
-
-    print(json.dumps(states, sort_keys=True, indent=4, \
-        separators=(',', ': ')))
+print("==== End Processed Stats")

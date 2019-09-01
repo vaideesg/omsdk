@@ -81,7 +81,7 @@ class RestRequest:
                 "ShareName" : "sammba",
                 "ShareType" : 0,
                 "UserName"  : "root",
-                "Password"  : "calvin",
+                "Password"  : "password",
                 "FileName"  : "/root/file.xml",
             }
         }

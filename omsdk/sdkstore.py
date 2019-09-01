@@ -170,10 +170,10 @@ class DeviceStore(EntityStore):
             for comp in influencers:
                 # build a hashmap of old keys
                 hmap = {}
-                for comp_inst in old_json[comp]:
+                for comp_inst in old_json.get(comp, []):
                     hmap[comp_inst['Key']] = comp_inst
 
-                for comp_inst in new_json[comp]:
+                for comp_inst in new_json.get(comp, []):
                     # check if new key is present in old map
                     # if not present, new entry
                     if comp_inst['Key'] not in hmap:
@@ -191,7 +191,7 @@ class DeviceStore(EntityStore):
                             return updateGroupsNeeded
                     # visited node
                     hmap[comp_inst['Key']] = None
-                for comp_inst in old_json[comp]:
+                for comp_inst in old_json.get(comp, []):
                     if hmap[comp_inst['Key']]:
                         return updateGroupsNeeded
         return False

@@ -1,0 +1,216 @@
+{
+
+    "iDRAC.Embedded.1" : {
+        "states" : [
+            "System.Hardreset",
+            "System.Powercycle",
+            "System.Powerdown",
+            "System.Powerup",
+            "System.Graceful.Shutdown"
+        ],
+        "init" : [
+            "System.Hardreset",
+            "System.Powercycle",
+            "System.Powerdown",
+            "System.Powerup",
+            "System.Graceful.Shutdown"
+            ],
+        "terminal" : [
+            "System.Powerup",
+            "System.Hardreset"
+        ],
+        "transitions" : {
+            "System.Hardreset" : ["System.Powerup", "System.Hardreset"],
+            "System.Powercycle" : ["System.Powerup"],
+            "System.Powerdown" : ["System.Powerup"],
+            "System.Graceful.Shutdown" : ["System.Powerup"]
+        }
+    },
+    "Background.Initialization" : {
+        "states" : [ "Has.Started", "Has.Completed", "Was.Cancelled"],
+        "init" : [ "Has.Started" ],
+        "terminal" : [ "Has.Completed", "Was.Cancelled"],
+        "transitions" : {
+            "Has.Started" : [ "Has.Completed", "Was.Cancelled" ]
+        }
+    },
+    "System.1//" : {
+        "states" : [
+            "Turning.On",
+            "Turning.Off",
+            "Performing.A.Lpc.Reset",
+            "Powering.On",
+            "Powering.Off"
+        ],
+        "init" : [
+            "Turning.Off",
+            "Performing.A.Lpc.Reset",
+            "Powering.Off"
+            ],
+        "terminal" : [
+            "Turning.On",
+            "Performing.A.Lpc.Reset",
+            "Powering.On"
+        ],
+        "transitions" : {
+            "Turning.Off" : [ "Turning.On"],
+            "Powering.Off" : [ "Powering.On" ]
+        }
+    },
+    "Auto.Discovery//iDRAC.Embedded.1" : {
+        "states" : [ "Licensed", "Disabled", "Enabled"],
+        "init" : [ "Licensed", "Enabled" ,"Disabled"],
+        "terminal" : [ "Licensed", "Enabled" ],
+        "transitions" : {
+            "Licensed" : [ "Disabled", "Enabled"],
+            "Disabled" : [ "Disabled", "Enabled" ]
+        }
+    },
+    "Chassis//System.Embedded.1": {
+        "states" : [ 
+            "Is.Open.While.The.Power.Is.On",
+            "Is.Closed.While.The.Power.Is.Off",
+            "Is.Closed.While.The.Power.Is.On",
+            "Is.Open.While.The.Power.Is.Off"
+        ],
+        "init" : [ 
+            "Is.Open.While.The.Power.Is.On",
+            "Is.Open.While.The.Power.Is.Off"
+        ],
+        "terminal" : [ 
+            "Is.Closed.While.The.Power.Is.Off",
+            "Is.Closed.While.The.Power.Is.On"
+        ],
+        "transitions" : {
+            "Is.Open.While.The.Power.Is.On" : [
+                "Is.Closed.While.The.Power.Is.Off",
+                "Is.Closed.While.The.Power.Is.On",
+                "Is.Open.While.The.Power.Is.Off"
+            ],
+            "Is.Open.While.The.Power.Is.Off" : [
+                "Is.Open.While.The.Power.Is.On",
+                "Is.Closed.While.The.Power.Is.Off",
+                "Is.Closed.While.The.Power.Is.On"
+            ]
+        }
+    },
+    "Firmware.Update//iDRAC.Embedded.1": {
+        "states" : [ 
+            "Initializing",
+            "Initialization.Complete",
+            "Checksumming.Image",
+            "Verify.Image.Headers",
+            "Programming.Flash",
+            "Successful"
+        ],
+        "init" : [ 
+            "Initializing"
+        ],
+        "terminal" : [ 
+            "Successful"
+        ],
+        "transitions" : {
+            "Initializing" : [ "Initialization.Complete" ],
+            "Initialization.Complete" : [ "Checksumming.Image" ],
+            "Checksumming.Image" : [ "Verify.Image.Headers" ],
+            "Verify.Image.Headers" : [ "Programming.Flash" ],
+            "Programming.Flash" : [ "Successful" ]
+        }
+    },
+    "Foreign.Configuration//": {
+        "states" : [ 
+            "Detected",
+            "Imported",
+            "Imported-Failed",
+            ""
+        ],
+        "init" : [ 
+            "Detected"
+        ],
+        "terminal" : [ 
+            "Imported",
+            "Imported-Failed",
+            ""
+        ],
+        "transitions" : {
+            "Detected" : [
+                "Imported",
+                "",
+                "Imported-Failed"
+            ]
+        }
+    },
+
+
+
+
+    "System.1//iDRAC.Embedded.1#HostPowerCtrl" : {
+        "states" : [ "Turning.Off", "Turning.On", "Performing.A.Lpc.Reset" ],
+        "init" : [  "Turning.Off" ],
+        "terminal" : [ "Turning.On" ],
+        "transitions" : {
+            "Turning.Off" : [ "Turning.On" ]
+        }
+    },
+    "System.CPU//iDRAC.Embedded.1#HostPowerCtrl" : {
+        "states" : [ "Resetting" ],
+        "init" : [  "Resetting" ],
+        "terminal" : [ "Resetting" ],
+        "info" : [ "Resetting" ],
+        "transitions" : { }
+    },
+    "USC.Embedded.1:LC.Embedded.1" : {
+        "states" : [ "Version.Change.Detected" ],
+        "init" : [  ],
+        "terminal" : [  "Version.Change.Detected" ],
+        "info" : [  "Version.Change.Detected" ],
+        "transitions" : { }
+    },
+    "CPLD.Embedded.1" : {
+        "states" : [ "Version.Change.Detected" ],
+        "init" : [  ],
+        "terminal" : [  "Version.Change.Detected" ],
+        "info" : [  "Version.Change.Detected" ],
+        "transitions" : { }
+    },
+    "POWER SUPPLY" : {
+        "states" : [ "Replacement.Part.Was.Detected" ],
+        "init" : [  ],
+        "terminal" : [  "Replacement.Part.Was.Detected" ],
+        "info" : [  "Replacement.Part.Was.Detected" ],
+        "transitions" : { }
+    },
+    "iDRAC//iDRAC.Embedded.1//power_management_firmware" : {
+        "states" : [ "Unable.To.Communicate", "Restored" ],
+        "init" : [ "Unable.To.Communicate" ],
+        "terminal" : [ "Restored"  ],
+        "transitions" : {
+            "Unable.To.Communicate" : [ "Restored" ]
+        }
+    },
+    "mX1yY1Zdte9wPLlPxO9iJqkb//License//iDRAC" : {
+        "states" : [ "Imported-Successfully" ],
+        "init" : [  ],
+        "terminal" : [  "Imported-Successfully" ],
+        "info" : [  "Imported-Successfully" ],
+        "transitions" : { }
+    },
+    "Virtual.Media.Session//iDRAC.Embedded.1" : {
+        "states" : [ "Started", "Created", "Exited" ],
+        "init" : [ "Started" ],
+        "terminal" : [ "Exited" ],
+        "transitions" : {
+            "Started" : [ "Exited", "Created" ],
+            "Created" : [ "Exited" ]
+        }
+    },
+    "Virtual.Console.Session//iDRAC.Embedded.1" : {
+        "states" : [ "Started", "Created", "Exited" ],
+        "init" : [ "Started" ],
+        "terminal" : [ "Exited" ],
+        "transitions" : {
+            "Started" : [ "Exited", "Created" ],
+            "Created" : [ "Exited" ]
+        }
+    }
+}

@@ -38,7 +38,7 @@ def CompareInventory(arglist):
     #    default='root', help="Username to use for iDRAC")
     #parser.add_argument('-p', '--password', 
     #    action="store", dest="password", type=str,
-    #    default='calvin', help="Password to use for iDRAC")
+    #    default='password', help="Password to use for iDRAC")
     #parser.add_argument('-i', '--ipaddress',
     #    action="store", dest="idrac_ip", nargs='+',
     #    help="ipaddress of iDRAC")
