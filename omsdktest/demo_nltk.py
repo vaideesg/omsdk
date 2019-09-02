@@ -1,13 +1,62 @@
 import nltk
-import xml.etree.ElementTree as ET
-import json
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
+import xml.etree.ElementTree as ET
+import json
 import re
+from  datetime import datetime
+import zipfile, io, gzip, os, shutil, glob
+
+
+def dprint(msg):
+    pass
 
 def jprint(msg):
     print(json.dumps(msg, sort_keys=True, indent=4, \
             separators=(',', ': ')))
+
+class DeviceMapper(object):
+    def __init__(self, directory, srvname = ""):
+        self.directory = directory
+        self.ipaddr = re.sub('\\\\.*$', '', re.sub('.*Master/Server.', '', directory))
+        self.devicejson = {}
+        self.tnames = {}
+        self.server_name = srvname
+
+
+    def build_name_map(self):
+        with open(os.path.join(directory, 'Key_Inventory_ConfigState.json'), 'r') as f:
+            self.devicejson = json.load(f)
+
+        for comp in self.devicejson:
+            if comp in ['System', 'Subsystem']: continue
+            for ent in self.devicejson[comp]:
+                for name in ['DeviceDescription', 'ElementName',
+                          'LicenseDescription']:
+                    if name in ent:
+                        if type(ent[name]) != list:
+                            self.tnames[ent[name].lower()] = ent['Key']
+                        elif len(ent[n]) > 0:
+                            self.tnames[ent[name][0].lower()] = ent['Key']
+
+        for (ent_n,ent_key) in  [
+                ('power supply 1', 'PSU.Slot.1'),
+                ('power supply 2', 'PSU.Slot.2'),
+                ('power control', 'iDRAC.Embedded.1#HostPowerCtrl'),
+                ('cpu 1', 'CPU.Socket.1'),
+                ('cpu 2', 'CPU.Socket.2') ]:
+            if ent_n not in self.tnames:
+                self.tnames[ent_n.lower()] = ent_key
+
+    def get_log(self):
+        logfiles = glob.glob(os.path.join(directory, '*.xml'))
+        if len(logfiles) == 0:
+            logfiles = [os.path.join(directory, 'dummy.log.xml')]
+            with open(logfiles[0], 'w') as f:
+                f.write('<LCLogEvents></LCLogEvents>\n')
+                f.flush()
+        return logfiles[0]
+
 
 class EEMI(object):
 
@@ -16,7 +65,6 @@ class EEMI(object):
         comma = ""
         if doprint_attributes:
             for i in ent.attrib:
-                #tmsg += i + "=" + ent.attrib[i] + comma
                 tmsg += ent.attrib[i] + comma
                 comma = " "
         nchild = 0
@@ -117,37 +165,7 @@ class EEMI(object):
                                "terminal" : [], "transitions" : {} }
             for s in self.doit[i]:
                 self.output[i]['states'].append(s)
-
-                isTerminal = False
-                isEndState = False
-                isInitState = False
-                if 'init' in s or 'create' in s or \
-                   'start' in s or 'resume' in s:
-                   isInitState = True
-
-                for verbs in [ 'restarted', 'restored',
-                    'turning on', 'completed']:
-                    if verbs in s:
-                        isTerminal = True
-                        isEndState = True
-
-                for verbs in [ 'failed', 'cancel']:
-                    if verbs in s:
-                        isEndState = True
-
-                for vblist in [
-                    [ 'success', [ 'unsuccess' ] ],
-                    [ 'enabled', [ 'not' ] ],
-                    [ 'normal', [ 'above', 'below' ] ]
-                ]:
-                    if vblist[0] not in s:
-                        continue
-                    isEndState = True
-                    for vbs in vblist[1]:
-                        if vbs in s:
-                            isEndState = False
-                    if isEndState:
-                        isTerminal = True
+                isTerminal, isEnd, isInit = pp.check_state(s)
 
                 if isTerminal:
                     self.output[i]["terminal"].append(s)
@@ -167,7 +185,21 @@ class EEMI(object):
 
 class Parser(object):
 
-    def __init__(self):
+    def _do_sort_byname(self, tnames):
+        names = sorted(set(list(tnames.keys())))
+        i = 0
+        while i < len(names):
+            for j in range(i+1, len(names)):
+                if names[i] in names[j]:
+                    # move to end!
+                    names.append(names[i])
+                    del names[i]
+                    i = i - 1
+                    break
+            i = i+1
+        return names
+
+    def __init__(self, tnames):
         self.ignore_swords = set(['not','under', 'over']) 
         self.swords = set(stopwords.words('english'))
         self.swords = set(['is', 'the', 'a', 'an', 'for', 'you', 'your', 'was', 'has', 'been',
@@ -287,7 +319,6 @@ class Parser(object):
             "system error",
             "system event log",
             "system fault event",
-            "system graceful shutdown",
             "system health",
             "system id",
             "system information",
@@ -309,8 +340,80 @@ class Parser(object):
             "system software event",
             "system time and date",
         ]
+        self.comp_names2fqdd = tnames
+        self.comp_names = self._do_sort_byname(tnames)
 
-    def parse_message(self, message, msg_type):
+    def check_state(self, verb_phrase):
+
+        init_classifier = [
+            [ 'init',    None, None ],
+            [ 'create',     None, None ],
+            [ 'start',   None, None ],
+            [ 'resume',    None, None ],
+        ]
+
+        terminal_classifier = [
+            [ 'restarted',         None, None ],
+            [ 'inserted',          None, None ],
+            [ 'restored',          None, None ],
+            [ 'turning on',        None, None ],
+            [ 'turning off',        None, None ],
+            [ 'complete',          None, None ],
+            [ 'detected',          None, None ],
+            [ 'changed',           None, None ],
+            [ 'exported',          None, None ],
+            [ 'imported',          None, None ],
+            [ 'exited',            None, None ],
+            [ 'requested powerup', None, None ],
+            [ 'not licensed',      None, None ],
+            [ 'success',           'unsuccess',   None ],
+            [ 'enabled',           'not',         None ],
+            [ 'normal',            'above|below', None ],
+        ]
+
+        end_classifier = [
+            [ 'failed',    None, None ],
+            [ 'cancel',     None, None ],
+        ]
+
+        isInitState = False
+        for vb_class in init_classifier:
+            if vb_class[0] not in verb_phrase:
+                continue
+            # primary verb matches
+            # check if others match
+            if vb_class[1] is not None and \
+               re.search(vb_class[1], verb_phrase):
+               continue
+            isInitState = True
+
+        isTerminal = False
+        isEndState = False
+        for vb_class in terminal_classifier:
+            if vb_class[0] not in verb_phrase:
+                continue
+            # primary verb matches
+            # check if others match
+            if vb_class[1] is not None and \
+               re.search(vb_class[1], verb_phrase):
+               continue
+            isTerminal = True
+            isEndState = True
+
+        for vb_class in end_classifier:
+            if vb_class[0] not in verb_phrase:
+                continue
+            # primary verb matches
+            # check if others match
+            if vb_class[1] is not None and \
+               re.search(vb_class[1], verb_phrase):
+               continue
+            isEndState = True
+
+        return isTerminal, isEndState, isInitState
+
+    def parse_message(self, message, msg_type, comps = None):
+        dprint(">0:::" + message)
         text = re.sub('[(][^[)]*[)]', '', message.lower())
         text = re.sub('(-[a-zA-Z0-9]) option', 'option \\1', text)
         text = re.sub('\\.$', '', text)
@@ -320,6 +423,19 @@ class Parser(object):
         text = text.replace("over voltage fault", "voltage fault over")
         text = text.replace("under voltage fault", "voltage fault under")
         text = text.replace("controller cache is preserved", "controller preserved cache")
+        if 'partition' not in text:
+            text = re.sub('nic embedded ([^\s]+) port ([^\s]+)',
+                     'embedded nic \\1 port \\2 partition 1', text)
+            text = re.sub('nic mezzanine ([^\s]+) port ([^\s]+)',
+                     'nic in mezzanine \\1a port \\2 partition 1', text)
+
+        dprint(">1:::" + text)
+        for k in self.comp_names:
+            if k not in text: continue
+            if comps: comps.append(self.comp_names2fqdd[k])
+            text = text.replace(k, self.comp_names2fqdd[k])
+        dprint(">2:::" + text)
+
         text = nltk.word_tokenize(text)
         phrase = [ [], [] ]
         counter = 0
@@ -367,36 +483,107 @@ class Parser(object):
             return [msg_type + "<UNPARSEABLE>", " ".join(text)]
         return [" ".join(phrase[0]), " ".join(phrase[1])]
 
-class StreamProcessor(object):
-    def __init__(self, filename):
-        self.tree = ET.parse(filename)
-        self.root = self.tree.getroot()
-        self.comps = {}
-        self.datasets = {}
-        self.counts = {
-            'total' : 0,
-            'white_noise' : 0,
-            'reduced' : 0,
-            'actionable' : 0
+class Blackboard(object):
+
+    def _compute_since(self, start, end=None):
+        date_format = "%Y-%m-%dT%H:%M:%S%z"
+        try:
+            start = datetime.fromtimestamp(
+                    datetime.strptime(start, date_format).timestamp())
+        except ValueError:
+            date_format = "%Y-%m-%dT%H:%M:%S"
+            if 'Z' in start:
+                start = start[0:start.rindex('Z')]
+            elif 'z' in start:
+                start = start[0:start.rindex('z')]
+            start = datetime.fromtimestamp(
+                    datetime.strptime(start, date_format).timestamp())
+
+        if end is None:
+            end = datetime.now()
+        else:
+            try:
+                end = datetime.fromtimestamp(
+                    datetime.strptime(end, date_format).timestamp())
+            except ValueError:
+                date_format = "%Y-%m-%dT%H:%M:%S"
+                #if end and 'Z' in end:
+                #    end = end[0:end.rindex('Z')]
+                #if end and 'z' in end:
+                #    end = end[0:end.rindex('z')]
+                end=end[0:19]
+                end = datetime.fromtimestamp(
+                        datetime.strptime(end, date_format).timestamp())
+        return int((end-start).seconds)
+
+    def __init__(self, comp):
+        self.comp = comp
+        self.prev_state = None
+        self.cur_state = None
+        self.cur_tstamp = None
+        self.transition_times = {}
+        self.transition_counts = {}
+
+    def to_json(self):
+        return {
+            'cur_state' : self.cur_state,
+            'cur_tstamp' : self.cur_tstamp,
+            'transition_times' : self.transition_times,
+            'transition_counts' : self.transition_counts,
         }
-        self.blackboard = {}
-        self.statistics = {}
 
-    def build_entry(self, entry, prefix, json_obj):
-        for i in entry:
-            json_obj.update(entry.attrib)
-            if len(i): self.build_entry(i, prefix + [i.tag], json_obj)
-            elif i.text:
-                i_tag = ".".join(prefix + [i.tag])
-                if i_tag in json_obj:
-                    if type(json_obj[i_tag]) != list:
-                        json_obj[i_tag] = [json_obj[i_tag]]
-                    else:
-                        json_obj[i_tag].append(i.text.strip())
-                else:
-                    json_obj[i_tag] = i.text.strip()
-        return json_obj
+    def update_state(self, state, tstamp, isTerminal):
 
+        if isTerminal and self.cur_state is None:
+            print("Already in terminal state. No action")
+            return False
+
+        elif self.cur_state is None:
+            self.cur_state = "__"
+            print("{0}: Entering new state({1})", self.comp, state)
+
+        if self.cur_state not in self.transition_times:
+            self.transition_times[self.cur_state] = {}
+            self.transition_counts[self.cur_state] = {}
+
+        if state not in self.transition_times[self.cur_state]:
+            self.transition_times[self.cur_state][state] = []
+            self.transition_counts[self.cur_state][state] = [0]
+
+        if self.cur_tstamp:
+            self.transition_times[self.cur_state][state].append(
+                self._compute_since(self.cur_tstamp, tstamp))
+
+        # asking for moving to same state.  Is this allowed?
+
+        if self.cur_state == state:
+
+            self.transition_counts[self.cur_state][state][-1] += 1
+            print("{0}: Move from an state({1}) to same state({2}): {3}".format(
+                self.comp, self.cur_state, state,
+                self.transition_counts[self.cur_state][state][-1]))
+
+        # is this a valid transition?, need transition table!
+        #elif not is_valid(self.cur_state, state):
+        #
+        #    return False
+        #
+        # Valid transition to Terminal State
+        else:
+            if self.prev_state == self.cur_state:
+                self.transition_counts[self.prev_state][self.cur_state].append(0)
+            print("{0}: Move from a state({1}) to another state({2})".format(
+                self.comp, self.cur_state, state))
+            if isTerminal:
+                print("Reached terminal state. Removing from backboard")
+
+        self.prev_state = self.cur_state
+        self.cur_state = None if isTerminal else state
+        self.cur_tstamp = tstamp
+        return True
+
+
+class StreamProcessor(object):
     ignore_msgids = [
         'USR0030', 'LOG007', 'LOG203',
         'USR0031', 'USR0034', 'USR0032', 'RAC1195',
@@ -416,62 +603,95 @@ class StreamProcessor(object):
         "HWC2014",
     ]
 
-    def check_state(self, s):
-        isTerminal = False
-        isEndState = False
-        isInitState = False
-        if 'init' in s or 'create' in s or \
-           'start' in s or 'resume' in s:
-           isInitState = True
+    def __init__(self, dmap):
+        self.dmap = dmap
+        self.filename = dmap.get_log()
+        self.tree = ET.parse(self.filename)
+        self.root = self.tree.getroot()
+        self.comps = {}
+        self.datasets = {}
+        self.counts = {
+            'total' : 0,
+            'white_noise' : 0,
+            'reduced' : 0,
+            'actionable' : 0
+        }
+        self.blackboard = {}
+        self.parser = Parser(dmap.tnames)
 
-        for verbs in [ 'restarted', 'restored',
-            'turning on', 'completed',
-            
-            'detected', 'created', 'changed',
-            'started', 'exported', 'imported', 'exited',
-            'not licensed'
-            ]:
-            if verbs in s:
-                isTerminal = True
-                isEndState = True
+    def _build_msg(self, entry, prefix, json_obj):
+        for i in entry:
+            json_obj.update(entry.attrib)
+            if len(i): self._build_msg(i, prefix + [i.tag], json_obj)
+            elif i.text:
+                i_tag = ".".join(prefix + [i.tag])
+                if i_tag in json_obj:
+                    if type(json_obj[i_tag]) != list:
+                        json_obj[i_tag] = [json_obj[i_tag]]
+                    else:
+                        json_obj[i_tag].append(i.text.strip())
+                else:
+                    json_obj[i_tag] = i.text.strip()
+        return json_obj
 
-        for verbs in [ 'failed', 'cancel']:
-            if verbs in s:
-                isEndState = True
+    def blackboard_to_json(self):
+        myjson = {}
+        for i in self.blackboard:
+            if self.blackboard[i].cur_state:
+                myjson[i] = self.blackboard[i].cur_state
+        return myjson
 
-        for vblist in [
-            [ 'success', [ 'unsuccess' ] ],
-            [ 'enabled', [ 'not' ] ],
-            [ 'normal', [ 'above', 'below' ] ]
-        ]:
-            if vblist[0] not in s:
-                continue
-            isEndState = True
-            for vbs in vblist[1]:
-                if vbs in s:
-                    isEndState = False
-            if isEndState:
-                isTerminal = True
-        return isTerminal
+    def blackboard_details(self):
+        myjson = {}
+        for i in self.blackboard:
+            myjson[i] = self.blackboard[i].to_json()
+        return myjson
 
     def parse(self):
-        pp = Parser()
         for i in self.root:
             # Flatten entry
-            msg = self.build_entry(i, [], {})
+            msg = self._build_msg(i, [], {})
             self.counts['total'] += 1 
 
+            # Ignore Messages 
             if msg['MessageID'] in self.ignore_msgids:
                 self.counts['white_noise'] += 1
                 continue
 
-            print(":::::" + msg['Message'])
-            msg1 = pp.parse_message(msg['Message'], 'XYZ')
-            if self.check_state(msg1[1]):
-                print(">>>>> is Terminal")
-            else:
-                jprint(msg1)
+            # Normalize Message
+            if type(msg['Message']) == list:
+                msg['Message'] = "::".join(msg['Message'])
 
+            if 'MessageArgs.Arg' not in msg:
+                msg['MessageArgs.Arg'] = []
+            elif type(msg['MessageArgs.Arg']) != list:
+                msg['MessageArgs.Arg'] = [msg['MessageArgs.Arg']]
+
+
+            #print(":::::" + msg['MessageID'] + "::"+ msg['Message'])
+            msg1 = self.parser.parse_message(msg['Message'], 'XYZ', msg['MessageArgs.Arg'])
+            msg['Components'] = list(set(msg['MessageArgs.Arg']))
+
+            isTerminal, isEnd, isInit = self.parser.check_state(msg1[1])
+
+            if msg1[0] == "system" and isTerminal:
+                for i in self.blackboard:
+                    self.blackboard[i].update_state('<SYS_TURN_OFF>', msg['Timestamp'], isTerminal)
+                print("===== updated blackboard")
+                jprint(self.blackboard_to_json())
+                print("===== updated blackboard ends")
+            else:
+                if msg1[0] not in self.blackboard:
+                    self.blackboard[msg1[0]] = Blackboard(msg1[0])
+                if self.blackboard[msg1[0]].update_state(msg1[1], msg['Timestamp'], isTerminal):
+                    print("===== updated blackboard")
+                    jprint(self.blackboard_to_json())
+                    print("===== updated blackboard ends")
+
+        print("===== final blackboard")
+        jprint(self.blackboard_to_json())
+        jprint(self.blackboard_details())
+        print("===== final blackboard ends")
 
 myd=3
 
@@ -484,5 +704,13 @@ if myd == 2:
     pp = Parser()
     print(pp.parse_message(msg))
 if myd == 3:
-    s =StreamProcessor('../omdata/Store/Master/Server/100.96.24.187/log.xml')
+#for i in glob.glob('../omdata/Store/Master/Server/*/*log.xml')[0:3]:
+    logfile ='../omdata/Store/Master/Server/100.96.24.187/log.xml'
+    logfile ='../omdata/Store/Master/Server/100.96.45.225/SRVTAG-log.xml'
+    #logfile ='./187/log.xml'
+    directory = os.path.split(logfile)[0]
+    server_name = os.path.split(directory)[1]
+    dmap = DeviceMapper(directory, server_name)
+    dmap.build_name_map()
+    s = StreamProcessor(dmap)
     s.parse()
