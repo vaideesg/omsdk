@@ -1,12 +1,15 @@
 import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet
 import xml.etree.ElementTree as ET
 import json
 import re
 from  datetime import datetime
 import zipfile, io, gzip, os, shutil, glob
 
+#from nltk.corpus import nltk_words
+#EnglishDict = dict.fromkeys(nltk_words.words(), None)
 
 def dprint(msg):
     pass
@@ -126,19 +129,44 @@ class EEMI(object):
         counter = 1
         self.messages = {}
         self.doit = {}
-        pp = Parser()
+        self.actions = {}
+        pp = Parser({})
         self.counts = { 'Total' : { "MessageCount" : 0,
                                     "ComponentCount" : 0,
                                     "UnparseCount" : 0} }
+        self.act_words = set()
         for ent in self.root.findall('.//reg:MESSAGE', ns):
             self.messages[counter] = {}
             self.collect_info(ent, self.messages[counter])
             self.messages[counter]['PHRASES'] = pp.parse_message(
                 self.messages[counter]['MESSAGE_COMPONENTS'],
                 self.messages[counter]['PREFIX'])
-            #if self.messages[counter]['PREFIX'] not in [
-            #    'VLT', 'TEMP', 'PDR', 'VDR', 'CTL' ]:
-            #    continue
+
+            mm = self.messages[counter]['RECOMMENDED_ACTION'].lower()
+            types = {
+                'review system' : 'CHECK',
+                'check system logs' : 'LOGS',
+                'No response' : 'IGNORE',
+                'reseat' : 'H&E',
+                'reinstall' : 'H&E',
+                'reset'  : 'RESET',
+                'turn off'  : 'RESET',
+                'retry'  : 'RETRY',
+                'remove'  : 'H&E',
+                're-apply'  : 'H&E',
+                'latest' : 'UPGRADE',
+                'contact your' : 'SOS',
+                'contact techincal' : 'SOS'
+            }
+
+            mm_msg = []
+            for tt in types:
+                if tt in mm: mm_msg.append(types[tt])
+
+            for mmword in set(mm.split()):
+                #if mmword in EnglishDict:
+                if wordnet.synsets(mmword):
+                    self.act_words |= set([mmword])
 
             prefix = self.messages[counter]['PREFIX']
             if prefix not in self.counts:
@@ -147,6 +175,7 @@ class EEMI(object):
                                         "UnparseCount" : 0}
 
             noun_phrase = self.messages[counter]['PHRASES'][0]
+            verb_phrase = self.messages[counter]['PHRASES'][1]
             self.counts[prefix]['MessageCount'] += 1
             self.counts['Total']['MessageCount'] += 1
             if "<UNPARSEABLE>" in noun_phrase:
@@ -154,35 +183,38 @@ class EEMI(object):
                 self.counts[prefix]['UnparseCount'] += 1
             if noun_phrase not in self.doit:
                 self.doit[noun_phrase] = []
+                self.actions[noun_phrase] = {}
                 self.counts[prefix]['ComponentCount'] += 1
                 self.counts['Total']['ComponentCount'] += 1
-            self.doit[noun_phrase].append(self.messages[counter]['PHRASES'][1])
+            self.doit[noun_phrase].append(verb_phrase)
+            self.actions[noun_phrase][verb_phrase] = ",".join(mm_msg)
             counter = counter + 1
-        self.output = {}
-        for i in self.doit:
-            self.output[i] = { "states" : [], "init" : [],
-                               "end" : [],
-                               "terminal" : [], "transitions" : {} }
-            for s in self.doit[i]:
-                self.output[i]['states'].append(s)
-                isTerminal, isEnd, isInit = pp.check_state(s)
-
-                if isTerminal:
-                    self.output[i]["terminal"].append(s)
-                if isEndState:
-                    self.output[i]["end"].append(s)
-                if isInitState:
-                    self.output[i]["init"].append(s)
-
-
-            for s in self.output[i]['states']:
-                if s in self.output[i]['end']:
-                    continue
-                self.output[i]['transitions'][s] = []
-                for s1 in self.output[i]['states']:
-                    if s1 == s: continue
-                    self.output[i]['transitions'][s].append(s1)
-
+        if False:
+            self.output = {}
+            for i in self.doit:
+                self.output[i] = { "states" : [], "init" : [],
+                                "end" : [],
+                                "terminal" : [], "transitions" : {} }
+                for s in self.doit[i]:
+                    self.output[i]['states'].append(s)
+                    isTerminal, isEnd, isInit = pp.check_state(s)
+    
+                    if isTerminal:
+                        self.output[i]["terminal"].append(s)
+                    if isEnd:
+                        self.output[i]["end"].append(s)
+                    if isInit:
+                        self.output[i]["init"].append(s)
+    
+    
+                for s in self.output[i]['states']:
+                    if s in self.output[i]['end']:
+                        continue
+                    self.output[i]['transitions'][s] = []
+                    for s1 in self.output[i]['states']:
+                        if s1 == s: continue
+                        self.output[i]['transitions'][s].append(s1)
+    
 class Parser(object):
 
     def _do_sort_byname(self, tnames):
@@ -357,7 +389,7 @@ class Parser(object):
             [ 'inserted',          None, None ],
             [ 'restored',          None, None ],
             [ 'turning on',        None, None ],
-            [ 'turning off',        None, None ],
+            [ 'turning off',       None, None ],
             [ 'complete',          None, None ],
             [ 'detected',          None, None ],
             [ 'changed',           None, None ],
@@ -422,7 +454,10 @@ class Parser(object):
         text = text.replace("virtual_disk", "vd_name")
         text = text.replace("over voltage fault", "voltage fault over")
         text = text.replace("under voltage fault", "voltage fault under")
-        text = text.replace("controller cache is preserved", "controller preserved cache")
+        text = text.replace("controller cache is preserved",
+                            "controller preserved cache")
+        text = text.replace('on device idrac',
+                            'assigned to device idrac')
         if 'partition' not in text:
             text = re.sub('nic embedded ([^\s]+) port ([^\s]+)',
                      'embedded nic \\1 port \\2 partition 1', text)
@@ -483,9 +518,46 @@ class Parser(object):
             return [msg_type + "<UNPARSEABLE>", " ".join(text)]
         return [" ".join(phrase[0]), " ".join(phrase[1])]
 
+class PDF(object):
+    def __init__(self, entries):
+        self.entries = entries
+        self.count = 10
+        self.max_ent = max(entries)
+        self.min_ent = min(entries)
+        self.interval = round((self.max_ent-self.min_ent)/self.count)
+        if self.interval == 0:
+            self.count = 0
+            self.pdf = [1.0]
+        else:
+            frequencies=[0 for i in range(0,self.count+1)]
+            for i in entries:
+                frequencies[int((i-self.min_ent)/self.interval)] += 1
+            sum_ent = sum(frequencies)
+            self.pdf = [i/sum_ent for i in frequencies]
+
+    def to_json(self):
+        return {
+            'Min' : self.min_ent,
+            'Max' : self.max_ent,
+            'Interval' : self.interval,
+            'Function' : self.pdf
+
+        }
+
+    def predict(self, at_least = 0.5):
+        values = 0
+        for i in range(0,self.count+1):
+            values += self.pdf[i]
+            if values > at_least:
+                return [ ((i+0) * self.interval + self.min_ent),
+                         ((i+1) * self.interval + self.min_ent) ]
+        return [ ((self.count+0) * self.interval + self.min_ent),
+                 ((self.count+1) * self.interval + self.min_ent) ]
+
 class Blackboard(object):
 
-    def _compute_since(self, start, end=None):
+    @staticmethod
+    def _compute_since(start, end=None):
         date_format = "%Y-%m-%dT%H:%M:%S%z"
         try:
             start = datetime.fromtimestamp(
@@ -514,54 +586,82 @@ class Blackboard(object):
                 end=end[0:19]
                 end = datetime.fromtimestamp(
                         datetime.strptime(end, date_format).timestamp())
-        return int((end-start).seconds)
+        return int((end-start).total_seconds())
 
-    def __init__(self, comp):
+    def __init__(self, comp, sysblackboard):
         self.comp = comp
         self.prev_state = None
         self.cur_state = None
         self.cur_tstamp = None
         self.transition_times = {}
         self.transition_counts = {}
+        self.transition_state = {}
+        self.sysblackboard = sysblackboard
 
     def to_json(self):
+        pdf = {}
+        for i in self.transition_times:
+            pdf[i] = {}
+            for j in self.transition_times[i]:
+                pdf[i][j] = PDF(self.transition_times[i][j]).to_json()
+
         return {
             'cur_state' : self.cur_state,
             'cur_tstamp' : self.cur_tstamp,
-            'transition_times' : self.transition_times,
-            'transition_counts' : self.transition_counts,
+            #'transition_times' : self.transition_times,
+            #'transition_counts' : self.transition_counts,
+            #'transition_state' : self.transition_state,
+            'pdf' : pdf
         }
 
     def update_state(self, state, tstamp, isTerminal):
+        printMsg = True
+        if state == "<SYS_TURN_OFF>":
+            printMsg = False
 
-        if isTerminal and self.cur_state is None:
-            print("Already in terminal state. No action")
-            return False
+        old_state = state
 
-        elif self.cur_state is None:
-            self.cur_state = "__"
-            print("{0}: Entering new state({1})", self.comp, state)
+        if isTerminal:
+            state = "<TERMINAL>"
+
+        if self.cur_state is None:
+            self.cur_state = "<init>"
+            self.prev_state = None
+
+        if self.cur_tstamp is None:
+            self.cur_tstamp = tstamp
 
         if self.cur_state not in self.transition_times:
             self.transition_times[self.cur_state] = {}
             self.transition_counts[self.cur_state] = {}
+            self.transition_state[self.cur_state] = {}
 
         if state not in self.transition_times[self.cur_state]:
             self.transition_times[self.cur_state][state] = []
-            self.transition_counts[self.cur_state][state] = [0]
+            self.transition_counts[self.cur_state][state] = []
+            self.transition_state[self.cur_state][state] = []
 
-        if self.cur_tstamp:
-            self.transition_times[self.cur_state][state].append(
-                self._compute_since(self.cur_tstamp, tstamp))
+        tsecs = self._compute_since(self.cur_tstamp, tstamp)
+        if tsecs < 0: tsecs = 0
+        self.transition_times[self.cur_state][state].append(tsecs)
+
+        self.transition_state[self.cur_state][state].append(old_state)
 
         # asking for moving to same state.  Is this allowed?
 
         if self.cur_state == state:
 
-            self.transition_counts[self.cur_state][state][-1] += 1
-            print("{0}: Move from an state({1}) to same state({2}): {3}".format(
-                self.comp, self.cur_state, state,
-                self.transition_counts[self.cur_state][state][-1]))
+            if self.prev_state != self.cur_state:
+                self.transition_counts[self.cur_state][state].append(1)
+            else:
+                self.transition_counts[self.cur_state][state][-1] += 1
+
+            if printMsg:
+                print("{0}: Move from an state({1}) to same state({2}): {3}".format(
+                    self.comp, self.cur_state, state,
+                    self.transition_counts[self.cur_state][state][-1]))
+                print("------ {0} => {1} | {2}".format(self.cur_tstamp, tstamp,
+                    self.transition_times[self.cur_state][state][-1]))
 
         # is this a valid transition?, need transition table!
         #elif not is_valid(self.cur_state, state):
@@ -570,17 +670,64 @@ class Blackboard(object):
         #
         # Valid transition to Terminal State
         else:
-            if self.prev_state == self.cur_state:
-                self.transition_counts[self.prev_state][self.cur_state].append(0)
-            print("{0}: Move from a state({1}) to another state({2})".format(
-                self.comp, self.cur_state, state))
-            if isTerminal:
-                print("Reached terminal state. Removing from backboard")
+
+            self.transition_counts[self.cur_state][state].append(1)
+
+            if printMsg:
+                print("{0}: Move from a state({1}) to another state({2})".format(
+                    self.comp, self.cur_state, state))
+                if isTerminal:
+                    print("Reached terminal state. Removing from backboard")
+                print("------ {0} => {1} | {2}".format(self.cur_tstamp, tstamp,
+                    self.transition_times[self.cur_state][state][-1]))
 
         self.prev_state = self.cur_state
         self.cur_state = None if isTerminal else state
         self.cur_tstamp = tstamp
         return True
+
+class SystemBlackboard(object):
+    def __init__(self):
+        self.blackboard = {}
+        self.reset_times = []
+        self.reset_acts = []
+        self.cur_tstamp = None
+
+    def update_state_all(self, state, tstamp, isTerminal):
+        self._update_time('system', state, tstamp)
+        for i in self.blackboard:
+            self.blackboard[i].update_state(state, tstamp, isTerminal)
+        return True
+
+    def update_state(self, comp, state, tstamp, isTerminal):
+        self._update_time(comp, state, tstamp)
+        if comp not in self.blackboard:
+            self.blackboard[comp] = Blackboard(comp, self)
+        return self.blackboard[comp].update_state(state,
+            tstamp, isTerminal)
+
+    def _update_time(self, comp, state, tstamp):
+        if not self.cur_tstamp:
+            self.cur_tstamp = tstamp
+        if Blackboard._compute_since(self.cur_tstamp, tstamp) < 0:
+            self.reset_times.append([self.cur_tstamp, tstamp])
+            self.reset_acts.append([comp, state])
+        self.cur_tstamp = tstamp
+
+    def to_json(self):
+        myjson = {}
+        for i in self.blackboard:
+            if self.blackboard[i].cur_state:
+                myjson[i] = self.blackboard[i].cur_state
+        return myjson
+
+    def details(self):
+        myjson = {}
+        for i in self.blackboard:
+            myjson[i] = self.blackboard[i].to_json()
+        myjson['_reset_times'] = self.reset_times
+        myjson['_reset_acts'] = self.reset_acts
+        return myjson
 
 
 class StreamProcessor(object):
@@ -616,7 +763,7 @@ class StreamProcessor(object):
             'reduced' : 0,
             'actionable' : 0
         }
-        self.blackboard = {}
+        self.blackboard = SystemBlackboard()
         self.parser = Parser(dmap.tnames)
 
     def _build_msg(self, entry, prefix, json_obj):
@@ -633,19 +780,6 @@ class StreamProcessor(object):
                 else:
                     json_obj[i_tag] = i.text.strip()
         return json_obj
-
-    def blackboard_to_json(self):
-        myjson = {}
-        for i in self.blackboard:
-            if self.blackboard[i].cur_state:
-                myjson[i] = self.blackboard[i].cur_state
-        return myjson
-
-    def blackboard_details(self):
-        myjson = {}
-        for i in self.blackboard:
-            myjson[i] = self.blackboard[i].to_json()
-        return myjson
 
     def parse(self):
         for i in self.root:
@@ -667,30 +801,32 @@ class StreamProcessor(object):
             elif type(msg['MessageArgs.Arg']) != list:
                 msg['MessageArgs.Arg'] = [msg['MessageArgs.Arg']]
 
+            dprint("{0}:{1}::{2}".format(msg['Sequence'], msg['Timestamp'], msg['Message']))
 
-            #print(":::::" + msg['MessageID'] + "::"+ msg['Message'])
-            msg1 = self.parser.parse_message(msg['Message'], 'XYZ', msg['MessageArgs.Arg'])
+            parsed_msg = self.parser.parse_message(msg['Message'], 'XYZ', msg['MessageArgs.Arg'])
             msg['Components'] = list(set(msg['MessageArgs.Arg']))
+            # parsed_msg[0] => noun phrase, parsed_msg[1] => verb_phrase
 
-            isTerminal, isEnd, isInit = self.parser.check_state(msg1[1])
+            isTerminal, isEnd, isInit = self.parser.check_state(parsed_msg[1])
 
-            if msg1[0] == "system" and isTerminal:
-                for i in self.blackboard:
-                    self.blackboard[i].update_state('<SYS_TURN_OFF>', msg['Timestamp'], isTerminal)
+            # Handle Reboot scenarios. This will reset all the state machines!
+            # Need to handle this, otherwise, there will be spurious transitions
+            if parsed_msg[0] == "system" and isTerminal:
+                self.blackboard.update_state_all('<SYS_TURN_OFF>', 
+                    msg['Timestamp'], isTerminal)
                 print("===== updated blackboard")
-                jprint(self.blackboard_to_json())
+                jprint(self.blackboard.to_json())
                 print("===== updated blackboard ends")
             else:
-                if msg1[0] not in self.blackboard:
-                    self.blackboard[msg1[0]] = Blackboard(msg1[0])
-                if self.blackboard[msg1[0]].update_state(msg1[1], msg['Timestamp'], isTerminal):
+                if self.blackboard.update_state(parsed_msg[0],parsed_msg[1],
+                        msg['Timestamp'], isTerminal):
                     print("===== updated blackboard")
-                    jprint(self.blackboard_to_json())
+                    jprint(self.blackboard.to_json())
                     print("===== updated blackboard ends")
 
         print("===== final blackboard")
-        jprint(self.blackboard_to_json())
-        jprint(self.blackboard_details())
+        jprint(self.blackboard.to_json())
+        jprint(self.blackboard.details())
         print("===== final blackboard ends")
 
 myd=3
@@ -698,7 +834,7 @@ myd=3
 if myd == 1:
     eemi = EEMI()
     #jprint(eemi.output)
-    jprint(eemi.doit)
+    jprint(list(eemi.act_words))
 if myd == 2:
     msg = "an under voltage fault detected power supply number"
     pp = Parser()
@@ -708,6 +844,7 @@ if myd == 3:
     logfile ='../omdata/Store/Master/Server/100.96.24.187/log.xml'
     logfile ='../omdata/Store/Master/Server/100.96.45.225/SRVTAG-log.xml'
     #logfile ='./187/log.xml'
+    print(logfile)
     directory = os.path.split(logfile)[0]
     server_name = os.path.split(directory)[1]
     dmap = DeviceMapper(directory, server_name)
