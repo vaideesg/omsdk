@@ -52,11 +52,35 @@ test_run = [
         'Message' : 'Virtual Console session exited.',
         'FQDD' : 'iDRAC.Embedded.1',
         'MessageArgs.Arg' : [ ],
-        'Host' : '100.96.45.247'
-    }
+        'Host' : '10.96.45.246'
+    },
+    {
+        'MessageID' : 'input'
+    },
+    {
+        'MessageID' : 'VME0005',
+        'Message' : 'Virtual Console session exited.',
+        'FQDD' : 'iDRAC.Embedded.1',
+        'MessageArgs.Arg' : [ ],
+        'Host' : '100.96.45.246'
+    },
+    {
+        'MessageID' : 'input'
+    },
+    {
+        'MessageID' : 'VME0007',
+        'Message' : 'Virtual Console session created.',
+        'FQDD' : 'iDRAC.Embedded.1',
+        'MessageArgs.Arg' : [ ],
+        'Host' : '100.96.45.246'
+    },
 ]
 
 for message in test_run:
+  print(message)
+  if message['MessageID'] == 'input':
+        m = input()
+        continue
   errorIndication, errorStatus, errorIndex, varBinds = next(
     sendNotification(
         SnmpEngine(),

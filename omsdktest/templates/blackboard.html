@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display Table</title>
+    <script type="text/javascript" src="/templates/app.js"></script>
+    <meta http-equiv="refresh" content="3"/>
+</head>
+<body>
+<input type="button" value = "Refresh" onclick="history.go(0)" />
+        <table id="table">
+        <tr>
+            {% for key in ['Timestamp', 'IP Address', 'Component', 'State', 'Type', 'ETA'] %}
+                <th onclick="sortTable({{ loop.index0 }})" style="cursor:crosshair">{{ key }}</th>
+            {% endfor %}
+        </tr>
+
+        {% for entry in json_table %}
+        <tr>
+            {% for value in entry %}
+                <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

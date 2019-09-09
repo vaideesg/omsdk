@@ -12,6 +12,8 @@ from pysnmp.carrier.asynsock.dispatch import AsynsockDispatcher
 from pysnmp.carrier.asynsock.dgram import udp, udp6
 from pyasn1.codec.ber import decoder
 from pysnmp.proto import api
+from flask import Flask, render_template, request, url_for
+import threading
 
 def dprint(msg):
     pass
@@ -112,14 +114,30 @@ class EEMI(object):
                     'PREFIX' : re.sub('[0-9]+', '', msg['MessageID'])
             }
 
-    def __init__(self):
-        self.filename = 'omsdktest/iDRAC_MsgReg_15G_Halo_2019Q4.xml'
+    def __init__(self, device_spec):
+        self.filename = device_spec.get_message_catalog()
         self.tree = ET.parse(self.filename)
         reg = "http://schemas.dmtf.org/wbem/messageregistry/1"
         self.ns = { 'reg' : reg }
         self.root = self.tree.getroot()
         self.messages = {}
         self.act_phrase = {}
+
+        replaces = {
+            'end user license agreement' : 'eula',
+            'yyyy-mm-ddthh:mm:ss' : '',
+            '&(apos|gt|lt);' : '',
+            '(idrac) ([0-9])' : '\\1\\2',
+            '[(]([^)]+)[)]' : '\\1'
+        }
+        racadms = [
+            'racadm help NIC.VndrConfigGroup.1.VirtWWPN',
+            'racadm set idrac.os-bmc.PTMode usb-p2p',
+            'racadm set idrac.os-bmc.UsbNicIpAddress ip address',
+            'racadm set idrac.os-bmc.adminstate enabled',
+        ]
+        for i in range(0,len(racadms)):
+            racadms[i] = racadms[i].lower()
 
         for ent in self.root.findall('.//reg:MESSAGE', self.ns):
             collect = {}
@@ -128,8 +146,25 @@ class EEMI(object):
             self.messages[counter] = collect
             action = self.messages[counter]['RECOMMENDED_ACTION'].lower()
 
+            action = action.replace('(s)', '')
+            action = re.sub('"([^\s]+)"', '\\1', action)
+            action = re.sub('[<>]', '', action)
+            for rac in racadms:
+                action = action.replace(rac, '"{0}"'.format(rac))
+            
             joined_actions = []
-            for act_phrase in re.split('[^a-zA-Z0-9\s]', action):
+            for fld in ['"', "'"]:
+                if fld in action:
+                    act_string = []
+                    for p in action.split(fld):
+                        p1 = p.strip()
+                        if p1 != '' and not p1.startswith('racadm'):
+                            act_string.append(p1)
+                    action = " ".join(act_string)
+
+            for act_phrase in replaces:
+                action = re.sub(act_phrase, replaces[act_phrase], action)
+            for act_phrase in re.split('[^-/a-zA-Z0-9_,\s]', action):
                 act_phrase = act_phrase.strip()
                 if act_phrase == '': continue
 
@@ -142,7 +177,6 @@ class EEMI(object):
                         act not in joined_actions:
                         joined_actions.append(act)
             self.messages[counter]['ACTIONS'] = ";".join(joined_actions)
-
 
     def _do_load_messages(self):
         counter = 1
@@ -417,27 +451,36 @@ class Blackboard(object):
         self.transition_state = {}
         self.sysblackboard = sysblackboard
         self.history = []
+        self._lock = threading.Lock()
 
     def prepare(self):
-        self.pdf = {}
-        for i in self.transition_times:
-            self.pdf[i] = {}
-            for j in self.transition_times[i]:
-                self.pdf[i][j] = PDF(self.transition_times[i][j])
+        with self._lock:
+            self.pdf = {}
+            for i in self.transition_times:
+                self.pdf[i] = {}
+                for j in self.transition_times[i]:
+                    self.pdf[i][j] = PDF(self.transition_times[i][j])
 
-    def to_json(self):
-        pdf_json = {}
-        for i in self.transition_times:
-            pdf_json[i] = {}
-            for j in self.transition_times[i]:
-                pdf_json[i][j] = self.pdf[i][j].to_json()
+    def predict(self, i, j, at_least = 0.5):
+        ptime = timedelta(0)
+        with self._lock:
+            #jprint(self.transition_times[i][j])
+            ptime = self.pdf[i][j].predict(at_least)
+        return ptime
 
-        return {
-            'cur_state' : self.cur_state,
-            'cur_tstamp' : self.cur_tstamp,
-            'pdf' : pdf_json,
-            'cur_action' : self.cur_action
-        }
+    #def to_json(self):
+    #    pdf_json = {}
+    #    for i in self.transition_times:
+    #        pdf_json[i] = {}
+    #        for j in self.transition_times[i]:
+    #            pdf_json[i][j] = self.pdf[i][j].to_json()
+    #
+    #    return {
+    #       'cur_state' : self.cur_state,
+    #       'cur_tstamp' : self.cur_tstamp,
+    #       'pdf' : pdf_json,
+    #       'cur_action' : self.cur_action
+    #   }
 
     def update_state(self, state, tstamp, isTerminal, action, prefix):
         printMsg = True
@@ -563,9 +606,10 @@ class SystemBlackboard(object):
                 elif '<TERMINAL>' not in spdf[cstate]:
                     predict_it = "not_found<{0}->TERMINAL>".format(cstate)
                 else:
-                    predict_it = Blackboard._tstamp_to_datetime(ctstamp) + \
-                        spdf[cstate]['<TERMINAL>'].predict(at_least=0.8)
-                    predict_it = predict_it.strftime("%Y-%m-%dT%H:%M:%S")
+                    #predict_it = Blackboard._tstamp_to_datetime(ctstamp) + \
+                    #        spdf[cstate]['<TERMINAL>'].predict(0.8)
+                    #predict_it = predict_it.strftime("%Y-%m-%dT%H:%M:%S")
+                    predict_it = str(self.blackboard[comp].predict(cstate, '<TERMINAL>', 0.8))
                 myjson.append([
                     self.blackboard[comp].cur_tstamp,
                     self.host,
@@ -694,10 +738,6 @@ class DeviceLogAnalyzer(object):
 
         self.blackboard.online = True
         self.blackboard.jprint('final')
-        #self.blackboard.jhistory('final')
-        #self.blackboard.jdetails('final')
-
-        exit()
 
     def parse(self, msg):
         if True:
@@ -763,6 +803,9 @@ class DeviceLogAnalyzer(object):
 myd=3
 
 class iDRAC(object):
+
+    def get_message_catalog(self):
+        return 'omsdktest/iDRAC_MsgReg_15G_Halo_2019Q4.xml'
 
     def get_init_classifier(self):
         return [
@@ -1020,7 +1063,8 @@ class DeviceSDK(object):
 
     def get_device_json(self):
         if not self.devicejson:
-            with open(os.path.join(directory, 'Key_Inventory_ConfigState.json'), 'r') as f:
+            with open(os.path.join(self.directory,
+               'Key_Inventory_ConfigState.json'), 'r') as f:
                 self.devicejson = json.load(f)
         return self.devicejson
 
@@ -1035,7 +1079,11 @@ class DeviceSDK(object):
 
 
 class Caller(object):
+
+    doit = 1
     def __init__(self):
+        print (Caller.doit)
+        Caller.doit += 1
         self.count = 1
         self.devices = {}
 
@@ -1104,17 +1152,42 @@ class Caller(object):
             transportDispatcher.closeDispatcher()
             raise
 
-eemi = EEMI()
-device_spec = iDRAC()
-uber = UberBlackboard()
-device = None
-for logfile in glob.glob('../omdata/Store/Master/Server/*/*log.xml')[2:3]:
-    directory = os.path.split(logfile)[0]
-    server_name = os.path.split(directory)[1]
-    print(server_name)
-    device_sdk = DeviceSDK(directory, server_name)
-    device = DeviceLogAnalyzer(device_sdk, device_spec, eemi, uber)
-    device.load_log()
-    break
+class Enigma(object):
 
-Caller().add_device(device).start_process()
+    def __init__(self):
+        device_spec = iDRAC()
+        eemi = EEMI(device_spec)
+        uber = UberBlackboard()
+        device = None
+        self.caller = Caller()
+
+        for lfile in glob.glob('../omdata/Store/Master/Server/*/*log.xml')[2:3]:
+            directory = os.path.split(lfile)[0]
+            server_name = os.path.split(directory)[1]
+            print(server_name)
+            print(directory)
+            device_sdk = DeviceSDK(directory, server_name)
+            device = DeviceLogAnalyzer(device_sdk, device_spec, eemi, uber)
+            self.caller.add_device(device)
+            device.load_log()
+            print("======= here =====")
+            threading.Thread(target=self.thread_function, args=(1,)).start()
+
+    def thread_function(self, name):
+        print(name)
+        self.caller.start_process()
+
+
+app = Flask(__name__, template_folder='templates')
+enigma = Enigma()
+
+@app.route("/", methods = ['POST','GET'])
+def table():
+    if request.method == 'GET':
+        mlist = []
+        for i in enigma.caller.devices:
+            mlist.extend(enigma.caller.devices[i].blackboard.to_json())
+        return render_template('blackboard.html', json_table=mlist)
+
+if __name__ == '__main__':
+    app.run(debug=True, use_reloader=False)
