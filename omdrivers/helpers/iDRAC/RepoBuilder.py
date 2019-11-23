@@ -98,6 +98,13 @@ def RepoBuilder(arglist):
     UpdateManager.configure(updshare, site=options.site,
             protocol=options.protocol)
 
+    if options.dld_index:
+        print("=======================")
+        if options.protocol != DownloadProtocolEnum.HashCheck:
+            print("Updating index from downloads.dell.com...")
+        UpdateManager.update_index()
+        print("=======================")
+
     if options.dld_catalog:
         if options.protocol != DownloadProtocolEnum.HashCheck:
             print("Updating Catalog from downloads.dell.com...")
@@ -106,10 +113,6 @@ def RepoBuilder(arglist):
         if options.protocol != DownloadProtocolEnum.HashCheck:
             print("Building Repository Catalog ....")
             UpdateHelper.build_repo(options.catalog, True, *options.component)
-    if options.dld_index:
-        if options.protocol != DownloadProtocolEnum.HashCheck:
-            print("Updating index from downloads.dell.com...")
-        UpdateManager.update_index()
 
     if options.dld_dups:
         if options.protocol != DownloadProtocolEnum.HashCheck:

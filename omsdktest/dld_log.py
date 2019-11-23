@@ -200,6 +200,8 @@ class T(HttpEndPoint):
 
     def download_logs(self, todir):
         self.connect()
+        response = None
+        tofile = None
         for (login_url, log_url, data_fmt, header_creds) in [
             ('/data/login', '/lcldata?set=lclExport()',
                     'user={0}&password={1}', False),
@@ -225,7 +227,7 @@ class T(HttpEndPoint):
                 if self.XSRF_TOKEN:
                     headers["XSRF-TOKEN"] = self.XSRF_TOKEN
                 response, tofile = self._download_file(todir, log_url, headers)
-                return True
+                return response, tofile
             except HttpEndPointProtocolAuthException:
                 pass
             except HttpEndPointProtocolException:
@@ -235,35 +237,78 @@ class T(HttpEndPoint):
             f.write(todir)
             f.flush()
         print("Unable to write to " + todir)
-        return False
+        return response, tofile
 
-ToCopy.unzip_files('../omdata/Store/Master/Server/*/*.gz')
-exit()
+    @staticmethod
+    def unzip_file(filezip):
+        if not filezip.endswith('.gz'):
+            print('[nozip ]       ' + filezip)
+            return False
+        tgt_file = filezip[0:filezip.rindex('.')]
+        if os.path.exists(tgt_file) and os.path.getsize(tgt_file) > 0:
+            print('[Skip  ] unzip ' + filezip)
+            return False
+        try:
+            with gzip.open(filezip, 'rb') as f_in:
+                with open(tgt_file, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+        except (EOFError, OSError):
+            try :
+                data = ""
+                ets = '</Event>'
+                with open(tgt_file, 'r') as f:
+                    data = f.read(-1)
+                data = data[0:data.rindex(ets)+len(ets)]+"\n</LCLogEvents>"
+                with open(tgt_file, 'w') as f:
+                    f.write(data)
+                    f.flush()
+                data = None
+            except:
+                print('[Failed] unzip ' + filezip)
+            else:
+                print('[Fixed ] unzip ' + filezip)
+        else:
+            print('[Done  ] unzip ' + filezip)
+
+#ToCopy.unzip_files('../omdata/Store/Master/Server/*/*.gz')
+#exit()
 
 hostlist = []
-with open('../omdata/Store/list2.txt', 'r') as f:
-    hostlist=[i.strip() for i in f.readlines()]
+#with open('../omdata/Store/list2.txt', 'r') as f:
+#    hostlist=[i.strip() for i in f.readlines()]
 
 #with open('_unable_to_download.txt', 'r') as f:
 #    hostlist=[i.strip() for i in f.readlines()]
 
-for hostname in hostlist:
-    todir = os.path.join('s', hostname)
+for i in glob.glob("../omdata/Store/Master/Server/*/100*"):
+    hostname = os.path.basename(i)
+    todir = os.path.dirname(i)
     if not os.path.exists(todir):
         os.makedirs(todir)
     op = HttpEndPointOptions()
     skip = False
+    fname = []
     for logname in ['*.xml.gz', 'log.csv', 'log.xml']:
-        if len(glob.glob(os.path.join(todir, logname))):
-            skip = True
-            break
+        fname.extend(glob.glob(os.path.join(todir, logname)))
     try:
-        if not skip:
+        if len(fname) <= 0:
             a = T(hostname,creds=UserCredentials('root','calvin'), pOptions=op)
-            a.download_logs(todir)
+            ign, fname = a.download_logs(todir)
+            print(fname)
+            fname = os.path.join(todir, fname)
+            print("::" + fname)
+        else:
+            gzfile = [i for i in fname if i.endswith('.gz')]
+            if len(gzfile):
+                fname = gzfile[0]
+            else:
+                fname = fname[0]
+            print(":::" + fname)
+        T.unzip_file(fname)
     except:
         with open('_unable_to_download.txt', 'a') as f:
             f.write(todir + "\n")
             f.flush()
-        print("Unable to write to " + todir)
+        print("fname" + fname)
+        exit()
 

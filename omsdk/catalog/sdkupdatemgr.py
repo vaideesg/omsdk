@@ -97,7 +97,7 @@ class _UpdateIndexCacheManager(object):
         self._indexes = {}
         self._masters = {}
         self._conn = DownloadHelper(site = site, protocol = protocol)
-        self._conn = SkipDownloadHelper(site = site, protocol = protocol)
+        #self._conn = SkipDownloadHelper(site = site, protocol = protocol)
 
     def update_index(self):
         folder = self._master_index.local_folder_path

@@ -84,7 +84,7 @@ class FieldCollector(Base):
 
     @property
     def PersistentObject(self):
-        return "../omdata/__data/" + self.name + "_fields.txt"
+        return "../omdata/" + self.name + "_fields.txt"
 
     def serialize(self):
         with open(self.PersistentObject, "w") as f:
@@ -218,7 +218,7 @@ def spec(obj):
         return True
 
 #store_loc = '../omdata/Store'
-store_loc = 'Store.100'
+store_loc = '../omdata/Store'
 dev = Objects(store_loc + '/Master/*/*/100*', DeviceCollector,
         join_entries = ['Firmware', 'System', 'doc.props'],
         filter_fields = [ 'IPAddress',
